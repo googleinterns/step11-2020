@@ -4,8 +4,6 @@ import com.google.appengine.api.datastore.Entity;
 
 public class UserAccount {
 
-  public static final String ENTITY_TYPE = "UserAccount";
-
   private String nickname;
   private String userID;
 
@@ -17,5 +15,13 @@ public class UserAccount {
   public UserAccount(Entity entity) {
     this.nickname = (String) entity.getProperty("nickname");
     this.userID = (String) entity.getProperty("userID");
+  }
+
+  public String getNickname() {
+    return nickname;
+  }
+
+  public String getUserID() {
+    return userID;
   }
 }
