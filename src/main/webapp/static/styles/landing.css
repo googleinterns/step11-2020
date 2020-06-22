@@ -1,0 +1,33 @@
+.content-block#join-mentor-matcher {
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
+#join-mentor-matcher > .join-matcher-button {
+  font-size: 7em;
+  font-weight: bolder;
+  padding: 0.5em;
+  margin: 0.5em;
+  box-sizing: border-box;
+  width: 40%;
+  height: 4em;
+  text-align: center;
+  vertical-align: middle;
+  background-color: var(--dark-blue-lightened)
+}
+
+#member-sign-in {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#login-button {
+  background-color: var(--dark-blue-lightened);
+}
