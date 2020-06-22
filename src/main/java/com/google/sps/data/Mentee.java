@@ -1,5 +1,5 @@
 package com.google.sps.data;
 
-
-public interface Mentee {
+public class Mentee {
+  public static final String ENTITY_TYPE = "Mentee";
 }

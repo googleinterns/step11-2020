@@ -1,5 +1,3 @@
 package com.google.sps.data;
 
-
-public interface MentorToMenteeRequest {
-}
+public class MentorToMenteeRequest extends MentorshipRequest {}

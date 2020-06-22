@@ -1,25 +1,97 @@
 package com.google.sps.data;
 
-import com.google.sps.data.Mentee;
-import com.google.sps.data.Mentor;
-import com.google.sps.data.MenteeToMentorRequest;
-import com.google.sps.data.MentorToMenteeRequest;
-import java.util.Collection;
+import com.google.appengine.api.datastore.Key;
 import java.util.ArrayList;
+import java.util.Collection;
 
-public interface DummyDataAccess {
+public interface DummyDataAccess extends DataAccess {
 
-  public static Collection<Mentor> getRelatedMentors(Mentee mentee) {
-    ArrayList<Mentor> relatedMentors = new ArrayList(5);
-    for (int i = 0; i < 5; i++) {
-      
-    }
+  public default UserAccount getUser(String userID) {
+    return new Mentor(
+        "Bob", userID, "05/23/1985", "medicine", "Master's in Biomedical Engineering");
   }
 
-  public static Collection<Mentee> getRelatedMentees(Mentor mentor);
+  public default UserAccount getUser(Key datastoreKey) {
+    return new Mentor(
+        "Bob",
+        "" + datastoreKey.getId(),
+        "05/23/1985",
+        "medicine",
+        "Master's in Biomedical Engineering");
+  }
 
-  public static Collection<MenteeToMentorRequest> getIncomingRequests(Mentor mentor);
+  public default Collection<Mentor> getRelatedMentors(Mentee mentee) {
+    Collection<Mentor> relatedMentors = new ArrayList<>(5);
+    relatedMentors.add(
+        new Mentor("Alice", "12345", "03/17/2001", "technology", "Master's in Computer Science"));
+    relatedMentors.add(
+        new Mentor("Bob", "23456", "05/23/1985", "medicine", "Master's in Biomedical Engineering"));
+    relatedMentors.add(
+        new Mentor("Charlie", "34567", "07/27/1960", "mental health", "PhD is Psychology"));
+    relatedMentors.add(
+        new Mentor("Dave", "45678", "11/08/1992", "arts and crafts", "Bachelor of Arts"));
+    relatedMentors.add(
+        new Mentor("Edward", "56789", "09/31/1972", "personal branding", "Highschool Graduate"));
+    return relatedMentors;
+  }
 
-  public static Collection<MentorToMenteeRequest> getIncomingRequests(Mentee mentee);
+  public default Collection<Mentee> getRelatedMentees(Mentor mentor) {
+    Collection<Mentee> mentees = new ArrayList(5);
+    for (int i = 0; i < 5; i++) {
+      mentees.add(new Mentee());
+    }
+    return mentees;
+  }
 
+  public default Collection<MenteeToMentorRequest> getIncomingRequests(Mentor mentor) {
+    Collection<MenteeToMentorRequest> data = new ArrayList(5);
+    for (int i = 0; i < 5; i++) {
+      data.add(new MenteeToMentorRequest());
+    }
+    return data;
+  }
+
+  public default Collection<MentorToMenteeRequest> getIncomingRequests(Mentee mentee) {
+    Collection<MentorToMenteeRequest> data = new ArrayList(5);
+    for (int i = 0; i < 5; i++) {
+      data.add(new MentorToMenteeRequest());
+    }
+    return data;
+  }
+
+  public default Collection<MentorToMenteeRequest> getOutgoingRequests(Mentor mentor) {
+    Collection<MentorToMenteeRequest> data = new ArrayList(5);
+    for (int i = 0; i < 5; i++) {
+      data.add(new MentorToMenteeRequest());
+    }
+    return data;
+  }
+
+  public default Collection<MenteeToMentorRequest> getOutgoingRequests(Mentee mentee) {
+    Collection<MenteeToMentorRequest> data = new ArrayList(5);
+    for (int i = 0; i < 5; i++) {
+      data.add(new MenteeToMentorRequest());
+    }
+    return data;
+  }
+
+  public default void saveUser(UserAccount user) {}
+
+  public default Collection<Connection> getConnections(UserAccount user) {
+    Collection<Connection> data = new ArrayList(5);
+    for (int i = 0; i < 5; i++) {
+      data.add(new Connection());
+    }
+    return data;
+  }
+
+  public default void publishRequest(MentorshipRequest request) {}
+
+  public default void deleteRequest(MentorshipRequest request) {}
+
+  // delete request object and create connection object
+  public default void approveRequest(MentorshipRequest request) {}
+
+  // delete request object
+  public default void denyRequest(MentorshipRequest request) {}
 }
