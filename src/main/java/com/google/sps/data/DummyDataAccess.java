@@ -4,14 +4,14 @@ import com.google.appengine.api.datastore.Key;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public interface DummyDataAccess extends DataAccess {
+public class DummyDataAccess implements DataAccess {
 
-  public default UserAccount getUser(String userID) {
+  public UserAccount getUser(String userID) {
     return new Mentor(
         "Bob", userID, "05/23/1985", "medicine", "Master's in Biomedical Engineering");
   }
 
-  public default UserAccount getUser(Key datastoreKey) {
+  public UserAccount getUser(Key datastoreKey) {
     return new Mentor(
         "Bob",
         "" + datastoreKey.getId(),
@@ -20,7 +20,7 @@ public interface DummyDataAccess extends DataAccess {
         "Master's in Biomedical Engineering");
   }
 
-  public default Collection<Mentor> getRelatedMentors(Mentee mentee) {
+  public Collection<Mentor> getRelatedMentors(Mentee mentee) {
     Collection<Mentor> relatedMentors = new ArrayList<>(5);
     relatedMentors.add(
         new Mentor("Alice", "12345", "03/17/2001", "technology", "Master's in Computer Science"));
@@ -35,7 +35,7 @@ public interface DummyDataAccess extends DataAccess {
     return relatedMentors;
   }
 
-  public default Collection<Mentee> getRelatedMentees(Mentor mentor) {
+  public Collection<Mentee> getRelatedMentees(Mentor mentor) {
     Collection<Mentee> mentees = new ArrayList(5);
     for (int i = 0; i < 5; i++) {
       mentees.add(new Mentee());
@@ -43,7 +43,7 @@ public interface DummyDataAccess extends DataAccess {
     return mentees;
   }
 
-  public default Collection<MenteeToMentorRequest> getIncomingRequests(Mentor mentor) {
+  public Collection<MenteeToMentorRequest> getIncomingRequests(Mentor mentor) {
     Collection<MenteeToMentorRequest> data = new ArrayList(5);
     for (int i = 0; i < 5; i++) {
       data.add(new MenteeToMentorRequest());
@@ -51,7 +51,7 @@ public interface DummyDataAccess extends DataAccess {
     return data;
   }
 
-  public default Collection<MentorToMenteeRequest> getIncomingRequests(Mentee mentee) {
+  public Collection<MentorToMenteeRequest> getIncomingRequests(Mentee mentee) {
     Collection<MentorToMenteeRequest> data = new ArrayList(5);
     for (int i = 0; i < 5; i++) {
       data.add(new MentorToMenteeRequest());
@@ -59,7 +59,7 @@ public interface DummyDataAccess extends DataAccess {
     return data;
   }
 
-  public default Collection<MentorToMenteeRequest> getOutgoingRequests(Mentor mentor) {
+  public Collection<MentorToMenteeRequest> getOutgoingRequests(Mentor mentor) {
     Collection<MentorToMenteeRequest> data = new ArrayList(5);
     for (int i = 0; i < 5; i++) {
       data.add(new MentorToMenteeRequest());
@@ -67,7 +67,7 @@ public interface DummyDataAccess extends DataAccess {
     return data;
   }
 
-  public default Collection<MenteeToMentorRequest> getOutgoingRequests(Mentee mentee) {
+  public Collection<MenteeToMentorRequest> getOutgoingRequests(Mentee mentee) {
     Collection<MenteeToMentorRequest> data = new ArrayList(5);
     for (int i = 0; i < 5; i++) {
       data.add(new MenteeToMentorRequest());
@@ -75,9 +75,9 @@ public interface DummyDataAccess extends DataAccess {
     return data;
   }
 
-  public default void saveUser(UserAccount user) {}
+  public void saveUser(UserAccount user) {}
 
-  public default Collection<Connection> getConnections(UserAccount user) {
+  public Collection<Connection> getConnections(UserAccount user) {
     Collection<Connection> data = new ArrayList(5);
     for (int i = 0; i < 5; i++) {
       data.add(new Connection());
@@ -85,13 +85,13 @@ public interface DummyDataAccess extends DataAccess {
     return data;
   }
 
-  public default void publishRequest(MentorshipRequest request) {}
+  public void publishRequest(MentorshipRequest request) {}
 
-  public default void deleteRequest(MentorshipRequest request) {}
+  public void deleteRequest(MentorshipRequest request) {}
 
   // delete request object and create connection object
-  public default void approveRequest(MentorshipRequest request) {}
+  public void approveRequest(MentorshipRequest request) {}
 
   // delete request object
-  public default void denyRequest(MentorshipRequest request) {}
+  public void denyRequest(MentorshipRequest request) {}
 }

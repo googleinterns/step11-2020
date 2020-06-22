@@ -2,7 +2,7 @@ package com.google.sps.data;
 
 import com.google.appengine.api.datastore.Entity;
 
-public class UserAccount {
+class UserAccount {
 
   private String nickname;
   private String userID;
