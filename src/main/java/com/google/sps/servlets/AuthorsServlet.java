@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.sps.util.ResourceConstants;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
@@ -41,7 +42,8 @@ public class AuthorsServlet extends HttpServlet {
     Jinjava jinjava = new Jinjava(config);
     try {
       jinjava.setResourceLocator(
-          new FileLocator(new File(this.getClass().getResource("/templates").toURI())));
+          new FileLocator(
+              new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
       System.err.println("templates dir not found!");
     }
@@ -52,7 +54,7 @@ public class AuthorsServlet extends HttpServlet {
     try {
       String template =
           Resources.toString(
-              this.getClass().getResource("/templates/authors.html"), Charsets.UTF_8);
+              this.getClass().getResource(ResourceConstants.TEMPLATE_AUTHORS), Charsets.UTF_8);
       staticResponse = jinjava.render(template, context);
     } catch (IOException e) {
       System.err.println("template not found");

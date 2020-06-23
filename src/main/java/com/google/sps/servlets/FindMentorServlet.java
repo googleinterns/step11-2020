@@ -44,7 +44,8 @@ public class FindMentorServlet extends HttpServlet {
     Jinjava jinjava = new Jinjava(config);
     try {
       jinjava.setResourceLocator(
-          new FileLocator(new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
+          new FileLocator(
+              new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException e) {
       System.err.println("templates dir not found!");
     }
