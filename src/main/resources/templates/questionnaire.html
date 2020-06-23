@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Mentor Matching{% endblock %}
+
+{% block styles %}
+  {{ super() }}
+  {% set styles = [
+      "static/styles/questionnaire.css"
+    ] %}
+  {% for style in styles %}
+    <link rel="stylesheet" type="text/css" href={{ style }}>
+  {% endfor %}
+{% endblock %}
+
+{% block main_content %}
+
+<div class = "form-container">
+  <form action="action_page.php">
+    <h3> Step 1: Basic Personal Information </h3>
+    <label for="fname">First Name</label>
+    <input type="text" id="fname" name="firstname" placeholder="Your name.." required>
+
+    <label for="lname">Last Name</label>
+    <input type="text" id="lname" name="lastname" placeholder="Your last name.." required>
+
+    <label for="dob">Date of Birth:</label>
+    <input type="date" name="dob" required>
+
+    <label for="country">Country</label>
+    <select id="country" name="country" required>
+      {% for country in countries %}
+      <option value="{{country}}">{{country}}</option>
+      {% endfor %}
+    </select>
+
+    <label for="state">State</label>
+    <select id="state" name="state" required>
+      {% for state in states %}
+    	<option value="{{state.abbreviation}}">{{state.name}}</option>
+      {% endfor %}
+    </select>
+
+
+
+    <label for="city">City</label>
+    <input type="text" id="city" name="city" required>
+    <h3> Step 2: More Personal Information </h3>
+    <p> This information is used to find a person that best fits you.
+       Feel free to fill in with whatever you're comfortable sharing: everything in this step is optional </p>
+    <div id="ethnicity">
+      <p> Check off whatever best applies to you </p>
+      <input type="checkbox" name="asian" value="asian">
+      <label for="asian"> Asian</label><br>
+      <input type="checkbox" name="black-african" value="black-african">
+      <label for="black-african"> Black/African</label><br>
+      <input type="checkbox" name="caucasian" value="caucasian">
+      <label for="caucasian"> Caucasian</label><br>
+      <input type="checkbox" name="hispanic" value="hispanic">
+      <label for="hispanic"> Hispanic/Latinx</label><br>
+      <input type="checkbox" name="native" value="native">
+      <label for="native"> Native American </label><br>
+      <input type="checkbox" name="islander" value="islander">
+      <label for="islander"> Pacific Islander</label><br>
+      <input type="checkbox" name="other" value="other">
+      <label for="other"> Other</label><br>
+    </div>
+
+    <label for="gender">Gender</label>
+    <select id="gender" name="gender" onchange="checkGender(this.value)">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+      <option value="tmale">Transgender Male</option>
+      <option value="tfemale">Transgender Female</option>
+      <option value="nonbinary">Nonbinary</option>
+      <option value="other"> A gender not listed</option>
+    </select>
+    <div id="other-box"></div>
+
+    <p> Are you currently pursuing a degree? </p>
+    <input type="radio" value="yes"> Yes </input>
+    <input type="radio" value="no"> No </input>
+  <!--When they select yes in previous option-->
+    <label for="education">Current Level of Education</label>
+    <select id="education" name="education">
+      <option value="" selected="selected" disabled="disabled">-- select one --</option>
+      <option value="Secondary education">Primary education or middle school</option>
+      <option value="Secondary education">Secondary education or high school</option>
+      <option value="Vocational qualification">Vocational School</option>
+      <option value="Bachelor's degree">Undegraduate</option>
+      <option value="Master's degree">Pursuing a Masters</option>
+      <option value="Doctorate or higher">Pursuing a Doctorate or higher</option>
+    </select>
+ <!--When they select no in previous option-->
+    <label for="education">Highest Level of Education</label>
+    <select id="education" name="education">
+      <option value="" selected="selected" disabled="disabled">-- select one --</option>
+      <option value="No formal education">No formal education</option>
+      <option value="Secondary education">Secondary education or high school</option>
+      <option value="GED">GED</option>
+      <option value="Vocational qualification">Vocational qualification</option>
+      <option value="Bachelor's degree">Bachelor's degree</option>
+      <option value="Master's degree">Master's degree</option>
+      <option value="Doctorate or higher">Doctorate or higher</option>
+    </select>
+    <!-- Will show up if user is registering as a mentor or if the mentee is in highschool or higher -->
+    <label for="in-school"> Do/did you consider yourself a first generation or low income student </label>
+    <input type="radio" value="yes"> Yes </input>
+    <input type="radio" value="no"> No </input>
+
+    <label for="in-school"> Do you identify as a person with disabilities </label>
+    <input type="radio" value="yes"> Yes </input>
+    <input type="radio" value="no"> No </input>
+
+    <h3> Step 3: Goals and Logistics </h3>
+    <label for="goals"> What type of Mentor are you looking for </label>
+    <select id="goals" name="goals" required>
+      <option value="tutor">Tutor</option>
+      <option value="college">College Advisor</option>
+      <option value="career">Career Advisor</option>
+    </select>
+
+    <div id="mentor-type">
+      <p> What type of Mentor would you like to be? (Choose all that apply). </p>
+      <input type="checkbox" name="tutor" value="tutor">
+      <label for="tutor"> Tutor </label><br>
+      <input type="checkbox" name="college" value="college">
+      <label for="college"> College Advisor</label><br>
+      <input type="checkbox" name="career" value="career">
+      <label for="career"> Career Advisor</label><br>
+    </div>
+
+    <label for="frequency">How often would you like to meet?</label>
+    <select id="frequency" name="frequency" required>
+      <option value="almost-everyday">More than once a week</option>
+      <option value="weekly">Every week</option>
+      <option value="biweekly">Every other week</option>
+      <option value="monthly">Once a month</option>
+      <option value="rarely">Less than once a month</option>
+    </select>
+
+    <h3> Step 4: Extra </h3>
+
+    <label for="image-upload"> (Optional) Upload an image of yourself </label>
+    <input type="file" id="image-upload" name="image-upload">
+
+    <label for="bio"> (Optional) Write a short bio about yourself</label>
+    <input type="text" name="bio" placeholder="For example, what are your hobbies...">
+    <input type="submit" value="Submit">
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {% set scripts = [
+      "static/scripts/questionnaire.js"
+    ]%}
+  {% for script in scripts %}
+    <script charset="utf-8" type="text/javascript" src={{ script }}></script>
+  {% endfor %}
+{% endblock %}
