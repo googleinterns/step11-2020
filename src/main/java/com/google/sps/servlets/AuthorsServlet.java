@@ -20,10 +20,9 @@ import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.annotation.WebServlet;
@@ -43,17 +42,21 @@ public class AuthorsServlet extends HttpServlet {
     try {
       jinjava.setResourceLocator(
           new FileLocator(new File(this.getClass().getResource("/templates").toURI())));
-    } catch (URISyntaxException e) {
+    } catch (URISyntaxException | FileNotFoundException e) {
       System.err.println("templates dir not found!");
     }
 
     Map<String, Object> context = new HashMap<>();
     context.put("url", "/authors");
 
-    String template =
-        Resources.toString(this.getClass().getResource("/templates/authors.html"), Charsets.UTF_8);
-
-    staticResponse = jinjava.render(template, context);
+    try {
+      String template =
+          Resources.toString(
+              this.getClass().getResource("/templates/authors.html"), Charsets.UTF_8);
+      staticResponse = jinjava.render(template, context);
+    } catch (IOException e) {
+      System.err.println("template not found");
+    }
   }
 
   @Override
