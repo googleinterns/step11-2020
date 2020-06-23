@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.State;
+import com.google.sps.util.ResourceConstants;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
@@ -35,7 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = "/questionnaire")
-public class QuestionnaireServlet extends HttpServlet {
+public class QuestionnaireServlet extends HttpServlet
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -46,7 +47,7 @@ public class QuestionnaireServlet extends HttpServlet {
     Jinjava jinjava = new Jinjava(config);
     try {
       jinjava.setResourceLocator(
-          new FileLocator(new File(this.getClass().getResource("/templates").toURI())));
+          new FileLocator(new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException e) {
       System.err.println("templates dir not found!");
     }
@@ -57,22 +58,22 @@ public class QuestionnaireServlet extends HttpServlet {
     context.put("states", getStates());
     String template =
         Resources.toString(
-            this.getClass().getResource("/templates/questionnaire.html"), Charsets.UTF_8);
+            this.getClass().getResource(HTML_FILE), Charsets.UTF_8);
     String renderedTemplate = jinjava.render(template, context);
 
     response.getWriter().println(renderedTemplate);
   }
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
   }
 
 
   private Collection<String> getCountries() {
     ArrayList<String> countries = new ArrayList<>();
     try {
-      URL url = this.getClass().getClassLoader().getResource("data/countries.txt");
+      URL url = this.getClass().getClassLoader().getResource(ResourceConstants.COUNTRIES);
       Scanner s = new Scanner(new File(url.getFile()));
       while (s.hasNext()) {
         countries.add(s.nextLine());
@@ -87,7 +88,7 @@ public class QuestionnaireServlet extends HttpServlet {
   private Collection<State> getStates() {
     ArrayList<State> states = new ArrayList<>();
     try {
-      URL url = this.getClass().getClassLoader().getResource("data/states.txt");
+      URL url = this.getClass().getClassLoader().getResource(ResourceConstants.STATES);
       Scanner s = new Scanner(new File(url.getFile()));
       while (s.hasNext()) {
         String[] nameAbbreviation = s.nextLine().split(", ");

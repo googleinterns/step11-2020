@@ -33,36 +33,27 @@
       {% endfor %}
     </select>
 
-    <label for="state">State</label>
-    <select id="state" name="state" required>
-      {% for state in states %}
-    	<option value="{{state.abbreviation}}">{{state.name}}</option>
+    <select id="timezone" name="timezone" required>
+      {% for timezone in timezones %}
+      <option value="{{timezone.abbreviation}}"> {{timezone.name}} </option>
       {% endfor %}
     </select>
 
+    <select id="language" name="language" required>
+      {% for language in language %}
+      <option value="{{language.abbreviation}}"> {{language.name}} </option>
+      {% endfor %}
+    </select>
 
-
-    <label for="city">City</label>
-    <input type="text" id="city" name="city" required>
     <h3> Step 2: More Personal Information </h3>
     <p> This information is used to find a person that best fits you.
        Feel free to fill in with whatever you're comfortable sharing: everything in this step is optional </p>
     <div id="ethnicity">
       <p> Check off whatever best applies to you </p>
-      <input type="checkbox" name="asian" value="asian">
-      <label for="asian"> Asian</label><br>
-      <input type="checkbox" name="black-african" value="black-african">
-      <label for="black-african"> Black/African</label><br>
-      <input type="checkbox" name="caucasian" value="caucasian">
-      <label for="caucasian"> Caucasian</label><br>
-      <input type="checkbox" name="hispanic" value="hispanic">
-      <label for="hispanic"> Hispanic/Latinx</label><br>
-      <input type="checkbox" name="native" value="native">
-      <label for="native"> Native American </label><br>
-      <input type="checkbox" name="islander" value="islander">
-      <label for="islander"> Pacific Islander</label><br>
-      <input type="checkbox" name="other" value="other">
-      <label for="other"> Other</label><br>
+      {% for ethnicity in ethnicities %}
+      <input type="checkbox" name="{{ethnicity}}" value="{{ethnicity}}">
+      <label for="{{ethnicity}}"> {{ethnicity}} </label><br>
+      {% endfor %}
     </div>
 
     <label for="gender">Gender</label>
@@ -133,7 +124,7 @@
     <select id="frequency" name="frequency" required>
       <option value="almost-everyday">More than once a week</option>
       <option value="weekly">Every week</option>
-      <option value="biweekly">Every other week</option>
+      <opt ion value="biweekly">Every other week</option>
       <option value="monthly">Once a month</option>
       <option value="rarely">Less than once a month</option>
     </select>
