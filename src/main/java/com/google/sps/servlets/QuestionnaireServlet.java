@@ -63,6 +63,12 @@ public class QuestionnaireServlet extends HttpServlet {
     response.getWriter().println(renderedTemplate);
   }
 
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    
+  }
+
+
   private Collection<String> getCountries() {
     ArrayList<String> countries = new ArrayList<>();
     try {
