@@ -16,19 +16,14 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.sps.data.State;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -54,9 +49,9 @@ public class AboutServlet extends HttpServlet {
     Map<String, Object> context = new HashMap<>();
     context.put("url", "/");
     String template =
-        Resources.toString(
-            this.getClass().getResource("/templates/about.html"), Charsets.UTF_8);
+        Resources.toString(this.getClass().getResource("/templates/about.html"), Charsets.UTF_8);
     String renderedTemplate = jinjava.render(template, context);
 
     response.getWriter().println(renderedTemplate);
   }
+}
