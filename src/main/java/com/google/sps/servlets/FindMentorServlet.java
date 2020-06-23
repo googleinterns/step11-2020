@@ -52,7 +52,7 @@ public class FindMentorServlet extends HttpServlet {
 
     Map<String, Object> context = new HashMap<>();
     context.put("url", "/find-mentor");
-    Collection<Mentor> relatedMentors = DummyDataAccess.getRelatedMentors();
+    Collection<Mentor> relatedMentors = new DummyDataAccess().getRelatedMentors(null);
     context.put("mentors", relatedMentors);
 
     String template =
