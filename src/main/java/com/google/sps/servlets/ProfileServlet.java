@@ -49,9 +49,15 @@ public final class ProfileServlet extends HttpServlet {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       PreparedQuery result = datastore.prepare(query);
       Entity userEntity = result.asSingleEntity();
-      UserAccount userAccount = new UserAccount(userEntity);
+      String jsonString;
+      if (userEntity.getProperty("userType" == 0) {
+        jsonString = new Gson().toJson(new Mentor(userEntity));
+      }
+      else {
+        jsonString = new Gson().toJson(new Mentee(userEntity));
+      }
       response.setContentType("application/json;");
-      response.getWriter().println(new Gson().toJson(userAccount));
+      response.getWriter().println(jsonString);
     }
   }
 

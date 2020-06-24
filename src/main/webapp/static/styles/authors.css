@@ -1,0 +1,10 @@
+#creator-cards-container {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.creator-card {
+  max-width: min-content;
+}

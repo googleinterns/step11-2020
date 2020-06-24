@@ -16,8 +16,6 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.sps.data.DummyDataAccess;
-import com.google.sps.data.Mentor;
 import com.google.sps.util.ResourceConstants;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -25,7 +23,6 @@ import com.hubspot.jinjava.loader.FileLocator;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.annotation.WebServlet;
@@ -33,11 +30,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {"/find-mentor"})
-public class FindMentorServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/about")
+public class AboutServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    System.out.println("REQUEST AT: " + request.getServletPath());
     response.setContentType("text/html;");
 
     JinjavaConfig config = new JinjavaConfig();
@@ -51,14 +49,10 @@ public class FindMentorServlet extends HttpServlet {
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put("url", "/find-mentor");
-    Collection<Mentor> relatedMentors = new DummyDataAccess().getRelatedMentors(null);
-    context.put("mentors", relatedMentors);
-
+    context.put("url", "/");
     String template =
         Resources.toString(
-            this.getClass().getResource(ResourceConstants.TEMPLATE_FIND_MENTOR), Charsets.UTF_8);
-
+            this.getClass().getResource(ResourceConstants.TEMPLATE_ABOUT), Charsets.UTF_8);
     String renderedTemplate = jinjava.render(template, context);
 
     response.getWriter().println(renderedTemplate);

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Mentor Matching{% endblock %}
+
+{% block styles %}
+  {{ super() }}
+  {% set styles = [
+      "static/styles/authors.css"
+    ] %}
+  {% for style in styles %}
+    <link rel="stylesheet" type="text/css" href={{ style }}>
+  {% endfor %}
+{% endblock %}
+
+{% block header %}
+  {% set nav_items = [
+      {
+        "baseURL": "/about", "iconLabel": "question-circle", "text": "About",
+        "adjust": "left"
+      },
+      {
+        "baseURL": "/authors", "iconLabel": "users", "text": "Meet the Creators",
+        "adjust": "left"
+      },
+      {
+        "baseURL": "/authenticate", "iconLabel": "user", "text": "Login",
+        "adjust": "right"
+      }
+    ] %}
+  {% include "navbar.html" %}
+{% endblock %}
+
+{% block main_content %}
+<div class="content-block" id="title-block">
+  <h1 class="page-title" id="title">Meet The Creators</h1>
+</div>
+<div class="content-block" id="creator-cards-container">
+  <div class="creator-card" id="thomas-card">
+    <img class="creator-picture" src="static/images/thomas.jpg" alt="Thomas Quintanilla" />
+    <h3 class="creator-name">Thomas Quintanilla</h3>
+    <p class="creator-college">Duke University</p>
+    <p class="creator-description">I'm a kool boi. I do computer science things. I make cool mp3 and me project.
+        I love mentorship, and I am a passionate boi.</p>
+  </div>
+  <div class="creator-card" id="sylvia-card">
+    <img class="creator-picture" src="static/images/sylvia.jpg" alt="Sylvia Ziyu Zhang" />
+    <h3 class="creator-name">Sylvia Ziyu Zhang</h3>
+    <p class="creator-college">Carnegie Mellon University</p>
+    <p class="creator-description">I'm a kool gal. I do computer science things. I do cool natural language processing
+        things. I am a teaching assistant, and I am a passionate gal.</p>
+  </div>
+  <div class="creator-card" id="mudit-card">
+    <img class="creator-picture" src="static/images/mudit.jpg" alt="Mudit Gupta" />
+    <h3 class="creator-name">Mudit Gupta</h3>
+    <p class="creator-college">Georgia Institute of Technology</p>
+    <p class="creator-description">I'm a kool boi. I do computer science things. I make cool visualization project.
+        I love mentoring, and I am a passionate boi.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {% set scripts = [
+      "static/scripts/authors.js"
+    ]%}
+  {% for script in scripts %}
+    <script charset="utf-8" type="text/javascript" src={{ script }}></script>
+  {% endfor %}
+{% endblock %}

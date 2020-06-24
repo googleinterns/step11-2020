@@ -59,5 +59,6 @@ public class MainServlet extends HttpServlet {
     String renderedTemplate = jinjava.render(template, context);
 
     response.getWriter().println(renderedTemplate);
+    response.sendRedirect("/landing");
   }
 }
