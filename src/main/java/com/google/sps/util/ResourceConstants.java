@@ -8,7 +8,5 @@ public class ResourceConstants {
   private static final String TEMPLATE_QUESTIONNAIRE = "/templates/questionnaire.html";
   private static final String TEMPLATE_LANDING = "/templates/landing.html";
   private static final String TEMPLATE_PROFILE = "/templates/profile.html";
-  private static final String TEMPLATE_QUESTIONNAIRE = "/templates/questionnaire.html";
-  private static final String COUNTRIES = "data/countries.txt";
-  private static final String STATES = "data/states.txt";
+
 }

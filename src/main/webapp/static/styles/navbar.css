@@ -1,8 +1,6 @@
 .nav-bar {
   overflow: hidden;
-  background-color: #000;
-  display: flex;
-  align-items: center;
+  background-color: var(--blue);
   position: fixed;
   left: 0;
   top: 0;
@@ -11,20 +9,32 @@
   z-index: 5;
 }
 
-.nav-bar .logo {
-  display: inline-block;
-  height: 40px;
-  padding: 5px 14px;
+.nav-bar * {
+  box-sizing: border-box;
+  height: 50px;
 }
 
-/* Style the links inside the navigation bar */
-.nav-bar a {
+.nav-bar .left {
   float: left;
-  color: #f2f2f2;
+}
+.nav-bar .right {
+  float: right;
+}
+
+.nav-bar .logo {
+  display: inline-block;
+  padding: 5px 14px;
+}
+.nav-bar .logo:hover{
+  background-color: var(--blue-lightened);
+  filter: invert(0);
+}
+
+.nav-bar a {
+  color: white;
   text-align: center;
   padding: 15px 16px;
   text-decoration: none;
-  /* font-size: 17px; */
 }
 
 .nav-bar a.menu {
@@ -33,27 +43,17 @@
 
 /* Change the color of links on hover */
 .nav-bar a:hover {
-  background-color: #ddd;
+  background-color: var(--blue-lightened);
   color: black;
 }
 /* Add a color to the active/current link */
 .nav-bar a.active {
-  background-color: #4CAF50;
-  color: white;
+  background-color: var(--dark-blue);
 }
 .nav-bar a.active:hover {
-  background-color: #72c475;
+  background-color: var(--dark-blue-lightened);
 }
 
-.nav-bar .logo {
-  filter: invert(1);
-  /* padding-top: 2px;
-  height: 44px; */
-}
-.nav-bar .logo:hover{
-  background-color: #ddd;
-  filter: invert(0);
-}
 
 @media screen and (max-width: 700px) {
   .nav-bar {
