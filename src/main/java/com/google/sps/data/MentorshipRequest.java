@@ -1,5 +1,7 @@
 package com.google.sps.data;
 
+import com.google.appengine.api.datastore.Entity;
+
 public class MentorshipRequest {
   public static final String ENTITY_TYPE = "MentorshipRequest";
 
@@ -13,19 +15,31 @@ public class MentorshipRequest {
     this.fromUserKey = fromUserKey;
   }
 
-	public long getToUserKey() {
-		return toUserKey;
-	}
+  public MentorshipRequest(Entity entity) {
+    this.toUserKey = (long) entity.getProperty("toUserKey");
+    this.fromUserKey = (long) entity.getProperty("fromUserKey");
+  }
 
-	public long getFromUserKey() {
-		return fromUserKey;
-	}
+  public Entity convertToEntity() {
+    Entity entity = new Entity(ENTITY_TYPE);
+    entity.setProperty("toUserKey", toUserKey);
+    entity.setProperty("fromUserKey", fromUserKey);
+    return entity;
+  }
 
-	public UserAccount getToUser() {
-		return toUser;
-	}
+  public long getToUserKey() {
+    return toUserKey;
+  }
 
-	public UserAccount getFromUser() {
-		return fromUser;
-	}
+  public long getFromUserKey() {
+    return fromUserKey;
+  }
+
+  public UserAccount getToUser() {
+    return toUser;
+  }
+
+  public UserAccount getFromUser() {
+    return fromUser;
+  }
 }

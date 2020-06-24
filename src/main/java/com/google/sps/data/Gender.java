@@ -15,7 +15,6 @@ public enum Gender {
   MASCULINE("Masculine"),
   NEUTROIS("Neutrois"),
   NONBINARY("Nonbinary"),
-  OTHER("Other"),
   PANGENDER("Pangender"),
   THIRD_GENDER("Third Gender"),
   WOMAN("Woman"),

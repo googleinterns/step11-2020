@@ -1,6 +1,6 @@
 package com.google.sps.data;
 
-import java.util.Date;
+import com.google.appengine.api.datastore.Entity;
 
 public class Connection {
   public static final String ENTITY_TYPE = "Connection";
@@ -10,25 +10,36 @@ public class Connection {
   private Mentor mentor;
   private Mentee mentee;
 
-
   public Connection(long mentorKey, long menteeKey) {
     this.mentorKey = mentorKey;
     this.menteeKey = menteeKey;
   }
 
-	public long getMentorKey() {
-		return mentorKey;
-	}
+  public Connection(Entity entity) {
+    this.mentorKey = (long) entity.getProperty("mentorKey");
+    this.menteeKey = (long) entity.getProperty("menteeKey");
+  }
 
-	public long getMenteeKey() {
-		return menteeKey;
-	}
+  public Entity convertToEntity() {
+    Entity entity = new Entity(ENTITY_TYPE);
+    entity.setProperty("mentorKey", mentorKey);
+    entity.setProperty("menteeKey", menteeKey);
+    return entity;
+  }
 
-	public Mentor getMentor() {
-		return mentor;
-	}
+  public long getMentorKey() {
+    return mentorKey;
+  }
 
-	public Mentee getMentee() {
-		return mentee;
-	}
+  public long getMenteeKey() {
+    return menteeKey;
+  }
+
+  public Mentor getMentor() {
+    return mentor;
+  }
+
+  public Mentee getMentee() {
+    return mentee;
+  }
 }
