@@ -25,30 +25,8 @@ public class MainServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("REQUEST AT: " + request.getServletPath());
-    if (request.getServletPath() != "" && request.getServletPath() != "/") {
-      response.sendRedirect("/");
-      // return;
-    }
-    response.setContentType("text/html;");
-
-    // JinjavaConfig config = new JinjavaConfig();
-    // Jinjava jinjava = new Jinjava(config);
-    // try {
-    //   jinjava.setResourceLocator(
-    //       new FileLocator(new File(this.getClass().getResource("/templates").toURI())));
-    // } catch (URISyntaxException e) {
-    //   System.err.println("templates dir not found!");
-    // }
-    //
-    // Map<String, Object> context = new HashMap<>();
-    // context.put("url", "/");
-    //
-    // String template =
-    //     Resources.toString(this.getClass().getResource("/templates/home.html"), Charsets.UTF_8);
-    //
-    // String renderedTemplate = jinjava.render(template, context);
-
-    response.getWriter().println("hello!");
+    // TODO: do some user auth logic to only go to landing if not logged in, otherwise go to
+    // dashboard
+    response.sendRedirect("/landing");
   }
 }
