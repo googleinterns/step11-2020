@@ -1,6 +1,6 @@
 package com.google.sps.data;
 
-public abstract class MentorshipRequest {
+public class MentorshipRequest {
   public static final String ENTITY_TYPE = "MentorshipRequest";
 
   private long toUserKey;
