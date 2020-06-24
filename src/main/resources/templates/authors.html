@@ -35,14 +35,27 @@
   <h1 class="page-title" id="title">Meet The Creators</h1>
 </div>
 <div class="content-block" id="creator-cards-container">
-  {% for creator in authors %}
-    <div class="creator-card" id="{{ creator.name }}-card">
-      <img class="creator-picture" src="static/images/{{ creator.imageURL }}" alt="{{ creator.name }}" />
-      <h3 class="creator-name">{{ creator.name }}</h3>
-      <p class="creator-college">{{ creator.college }}</p>
-      <p class="creator-description">{{ creator.description }}</p>
-    </div>
-  {% endfor %}
+  <div class="creator-card" id="thomas-card">
+    <img class="creator-picture" src="static/images/thomas.jpg" alt="Thomas Quintanilla" />
+    <h3 class="creator-name">Thomas Quintanilla</h3>
+    <p class="creator-college">Duke University</p>
+    <p class="creator-description">I'm a kool boi. I do computer science things. I make cool mp3 and me project.
+        I love mentorship, and I am a passionate boi.</p>
+  </div>
+  <div class="creator-card" id="sylvia-card">
+    <img class="creator-picture" src="static/images/sylvia.jpg" alt="Sylvia Ziyu Zhang" />
+    <h3 class="creator-name">Sylvia Ziyu Zhang</h3>
+    <p class="creator-college">Carnegie Mellon University</p>
+    <p class="creator-description">I'm a kool gal. I do computer science things. I do cool natural language processing
+        things. I am a teaching assistant, and I am a passionate gal.</p>
+  </div>
+  <div class="creator-card" id="mudit-card">
+    <img class="creator-picture" src="static/images/mudit.jpg" alt="Mudit Gupta" />
+    <h3 class="creator-name">Mudit Gupta</h3>
+    <p class="creator-college">Georgia Institute of Technology</p>
+    <p class="creator-description">I'm a kool boi. I do computer science things. I make cool visualization project.
+        I love mentoring, and I am a passionate boi.</p>
+  </div>
 </div>
 {% endblock %}
 

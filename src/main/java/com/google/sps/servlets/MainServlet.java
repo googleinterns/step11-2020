@@ -25,8 +25,6 @@ public class MainServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("REQUEST AT: " + request.getServletPath());
-
     // TODO: do some user auth logic to only go to landing if not logged in, otherwise go to
     // dashboard
     response.sendRedirect("/landing");
