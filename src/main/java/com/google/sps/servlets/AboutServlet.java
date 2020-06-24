@@ -21,7 +21,6 @@ import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -31,44 +30,29 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {"/authors"})
-public class AuthorsServlet extends HttpServlet {
-
-  private String staticResponse;
+@WebServlet(urlPatterns = "/about")
+public class AboutServlet extends HttpServlet {
 
   @Override
-  public void init() {
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    System.out.println("REQUEST AT: " + request.getServletPath());
+    response.setContentType("text/html;");
+
     JinjavaConfig config = new JinjavaConfig();
     Jinjava jinjava = new Jinjava(config);
     try {
       jinjava.setResourceLocator(
-          new FileLocator(
-              new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
-    } catch (URISyntaxException | FileNotFoundException e) {
+          new FileLocator(new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
+    } catch (URISyntaxException e) {
       System.err.println("templates dir not found!");
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put("url", "/authors");
+    context.put("url", "/");
+    String template =
+        Resources.toString(this.getClass().getResource(ResourceConstants.TEMPLATE_ABOUT), Charsets.UTF_8);
+    String renderedTemplate = jinjava.render(template, context);
 
-    try {
-      String template =
-          Resources.toString(
-              this.getClass().getResource(ResourceConstants.TEMPLATE_AUTHORS), Charsets.UTF_8);
-      staticResponse = jinjava.render(template, context);
-    } catch (IOException e) {
-      System.err.println("template not found");
-    }
-  }
-
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-
-    if (staticResponse == null) {
-      init();
-    }
-
-    response.getWriter().println(staticResponse);
+    response.getWriter().println(renderedTemplate);
   }
 }

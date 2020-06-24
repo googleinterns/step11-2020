@@ -18,6 +18,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentor;
+import com.google.sps.util.ResourceConstants;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
@@ -37,27 +38,26 @@ public class FindMentorServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("REQUEST AT: " + request.getServletPath());
-
     response.setContentType("text/html;");
 
     JinjavaConfig config = new JinjavaConfig();
     Jinjava jinjava = new Jinjava(config);
     try {
       jinjava.setResourceLocator(
-          new FileLocator(new File(this.getClass().getResource("/templates").toURI())));
+          new FileLocator(
+              new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException e) {
       System.err.println("templates dir not found!");
     }
 
     Map<String, Object> context = new HashMap<>();
     context.put("url", "/find-mentor");
-    Collection<Mentor> relatedMentors = DummyDataAccess.getRelatedMentors();
+    Collection<Mentor> relatedMentors = new DummyDataAccess().getRelatedMentors(null);
     context.put("mentors", relatedMentors);
 
     String template =
         Resources.toString(
-            this.getClass().getResource("/templates/find-mentor.html"), Charsets.UTF_8);
+            this.getClass().getResource(ResourceConstants.TEMPLATE_FIND_MENTOR), Charsets.UTF_8);
 
     String renderedTemplate = jinjava.render(template, context);
 
