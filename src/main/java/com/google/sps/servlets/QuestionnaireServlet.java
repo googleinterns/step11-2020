@@ -36,8 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = "/questionnaire")
-public class QuestionnaireServlet extends HttpServlet
-
+public class QuestionnaireServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     System.out.println("REQUEST AT: " + request.getServletPath());
@@ -58,7 +57,7 @@ public class QuestionnaireServlet extends HttpServlet
     context.put("states", getStates());
     String template =
         Resources.toString(
-            this.getClass().getResource(HTML_FILE), Charsets.UTF_8);
+            this.getClass().getResource(TEMPLATE_QUESTIONNAIRE), Charsets.UTF_8);
     String renderedTemplate = jinjava.render(template, context);
 
     response.getWriter().println(renderedTemplate);

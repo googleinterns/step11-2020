@@ -28,10 +28,12 @@
 
     <label for="country">Country</label>
     <select id="country" name="country" required>
+      <option value="none" selected disabled hidden> select an option </option>
       {% for country in countries %}
       <option value="{{country}}">{{country}}</option>
       {% endfor %}
     </select>
+
 
     <select id="timezone" name="timezone" required>
       {% for timezone in timezones %}
