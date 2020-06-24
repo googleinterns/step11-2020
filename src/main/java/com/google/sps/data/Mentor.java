@@ -4,36 +4,33 @@ import com.google.appengine.api.datastore.Entity;
 
 public class Mentor extends UserAccount {
 
-  public static final String ENTITY_TYPE = "Mentor";
+  private boolean visibility;
+  private Collection<Topic> focusList;
+  private MentorType mentorType;
 
-  private String dateOfBirth;
-  private String focus;
-  private String educationLevel;
-
-  public Mentor(
-      String nickname, String userID, String dateOfBirth, String focus, String educationLevel) {
-    super(nickname, userID);
-    this.dateOfBirth = dateOfBirth;
-    this.focus = focus;
-    this.educationLevel = educationLevel;
+  public Mentor(Map<String, Object> accountData) {
+    super(accountData);
+    this.visibility = accountData.get("visibility");
+    this.focusList = accountData.get("focusList");
+    this.mentorType = accountData.get("mentorType");
   }
 
   public Mentor(Entity entity) {
     super(entity);
-    this.dateOfBirth = (String) entity.getProperty("dateOfBirth");
-    this.focus = (String) entity.getProperty("focus");
-    this.educationLevel = (String) entity.getProperty("educationLevel");
+    this.visibility = (boolean) entity.getProperty("visibility");
+    this.focusList = getFocusListFromProperty(entity.getProperty("focusList"));
+    this.mentorType = MentorType.values()[(int) entity.getProperty("mentorType")];
   }
 
-  public String getDateOfBirth() {
-    return dateOfBirth;
+  public String getVisibility() {
+    return visibility;
   }
 
-  public String getfocus() {
-    return focus;
+  public String getFocusList() {
+    return focusList;
   }
 
-  public String getEducationLevel() {
-    return educationLevel;
+  public String getMentorType() {
+    return mentorType;
   }
 }

@@ -18,7 +18,8 @@ public enum Gender {
   OTHER("Other"),
   PANGENDER("Pangender"),
   THIRD_GENDER("Third Gender"),
-  WOMAN("Woman");
+  WOMAN("Woman"),
+  OTHER("Other");
 
   private String title;
 

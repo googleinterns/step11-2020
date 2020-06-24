@@ -6,7 +6,8 @@ public enum EducationLevel {
   ASSOCIATES("Associate's Degree"),
   BACHELORS("Bachelor's Degree"),
   MASTERS("Master's Degree"),
-  DOCTORATE("Doctoral Degree");
+  DOCTORATE("Doctoral Degree"),
+  OTHER("Other");
 
   private String title;
 
