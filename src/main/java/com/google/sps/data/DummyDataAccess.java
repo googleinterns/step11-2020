@@ -27,7 +27,7 @@ public class DummyDataAccess implements DataAccess {
     relatedMentors.add(
         new Mentor("Bob", "23456", "05/23/1985", "medicine", "Master's in Biomedical Engineering"));
     relatedMentors.add(
-        new Mentor("Charlie", "34567", "07/27/1960", "mental health", "PhD is Psychology"));
+        new Mentor("Charlie", "34567", "07/27/1960", "mental health", "PhD in Psychology"));
     relatedMentors.add(
         new Mentor("Dave", "45678", "11/08/1992", "arts and crafts", "Bachelor of Arts"));
     relatedMentors.add(
