@@ -26,7 +26,9 @@
         "baseURL": "/authenticate", "iconLabel": "user", "text": "Login",
         "adjust": "right"
       }
-    ] %}
+    ]
+%}
+
 {% include "navbar.html" %}
 {% endblock %}
 
@@ -50,10 +52,22 @@
 
 				<div class="stats row">
 					User demographics here.
+          <ul id="userInfo"></ul>
 				</div>
 				<p class="desc">About Me here</p>
 			</div>
 
 	</main>
 </div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {% set scripts = [
+      "static/scripts/profile.js"
+    ]%}
+  {% for script in scripts %}
+    <script charset="utf-8" type="text/javascript" src={{ script }} onload="loadUserInfo()">
+    </script>
+  {% endfor %}
 {% endblock %}
