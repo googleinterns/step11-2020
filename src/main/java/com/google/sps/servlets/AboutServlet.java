@@ -21,6 +21,7 @@ import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -32,29 +33,41 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = "/about")
 public class AboutServlet extends HttpServlet {
+  private String staticResponse;
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("REQUEST AT: " + request.getServletPath());
-    response.setContentType("text/html;");
-
+  public void init() {
     JinjavaConfig config = new JinjavaConfig();
     Jinjava jinjava = new Jinjava(config);
     try {
       jinjava.setResourceLocator(
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
-    } catch (URISyntaxException e) {
+    } catch (URISyntaxException | FileNotFoundException e) {
       System.err.println("templates dir not found!");
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put("url", "/");
-    String template =
-        Resources.toString(
-            this.getClass().getResource(ResourceConstants.TEMPLATE_ABOUT), Charsets.UTF_8);
-    String renderedTemplate = jinjava.render(template, context);
+    context.put("url", "/about");
 
-    response.getWriter().println(renderedTemplate);
+    try {
+      String template =
+          Resources.toString(
+              this.getClass().getResource(ResourceConstants.TEMPLATE_ABOUT), Charsets.UTF_8);
+      staticResponse = jinjava.render(template, context);
+    } catch (IOException e) {
+      System.err.println("template not found");
+    }
+  }
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    response.setContentType("text/html;");
+
+    if (staticResponse == null) {
+      init();
+    }
+
+    response.getWriter().println(staticResponse);
   }
 }

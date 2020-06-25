@@ -1,33 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}Mentor Matching{% endblock %}
-
 {% block styles %}
   {{ super() }}
-  {% set styles = [
-      "static/styles/find-mentor.css"
-    ] %}
-  {% for style in styles %}
-    <link rel="stylesheet" type="text/css" href={{ style }}>
-  {% endfor %}
-{% endblock %}
-
-{% block header %}
-  {% set nav_items = [
-      {
-        "baseURL": "/about", "iconLabel": "question-circle", "text": "About",
-        "adjust": "left"
-      },
-      {
-        "baseURL": "/authors", "iconLabel": "users", "text": "Meet the Creators",
-        "adjust": "left"
-      },
-      {
-        "baseURL": "/authenticate", "iconLabel": "user", "text": "Login",
-        "adjust": "right"
-      }
-    ] %}
-  {% include "navbar.html" %}
+  <link rel="stylesheet" type="text/css" href="static/styles/find-mentor.css">
 {% endblock %}
 
 {% block main_content %}
@@ -53,10 +28,5 @@
 
 {% block scripts %}
   {{ super() }}
-  {% set scripts = [
-      "static/scripts/find-mentor.js"
-    ]%}
-  {% for script in scripts %}
-    <script charset="utf-8" type="text/javascript" src={{ script }}></script>
-  {% endfor %}
+  <script charset="utf-8" type="text/javascript" src="static/scripts/find-mentor.js"></script>
 {% endblock %}
