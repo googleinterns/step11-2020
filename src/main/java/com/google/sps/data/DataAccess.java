@@ -13,13 +13,9 @@ interface DataAccess {
 
   Collection<Mentee> getRelatedMentees(Mentor mentor);
 
-  Collection<MenteeToMentorRequest> getIncomingRequests(Mentor mentor);
+  Collection<MentorshipRequest> getIncomingRequests(UserAccount user);
 
-  Collection<MentorToMenteeRequest> getIncomingRequests(Mentee mentee);
-
-  Collection<MentorToMenteeRequest> getOutgoingRequests(Mentor mentor);
-
-  Collection<MenteeToMentorRequest> getOutgoingRequests(Mentee mentee);
+  Collection<MentorshipRequest> getOutgoingRequests(UserAccount user);
 
   void saveUser(UserAccount user);
 
