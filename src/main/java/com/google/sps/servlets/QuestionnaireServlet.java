@@ -57,7 +57,7 @@ public class QuestionnaireServlet extends HttpServlet {
     context.put("states", getStates());
     String template =
         Resources.toString(
-            this.getClass().getResource(TEMPLATE_QUESTIONNAIRE), Charsets.UTF_8);
+            this.getClass().getResource(ResourceConstants.TEMPLATE_QUESTIONNAIRE), Charsets.UTF_8);
     String renderedTemplate = jinjava.render(template, context);
 
     response.getWriter().println(renderedTemplate);
@@ -72,7 +72,7 @@ public class QuestionnaireServlet extends HttpServlet {
   private Collection<String> getCountries() {
     ArrayList<String> countries = new ArrayList<>();
     try {
-      URL url = this.getClass().getClassLoader().getResource(ResourceConstants.COUNTRIES);
+      URL url = this.getClass().getClassLoader().getResource(ResourceConstants.COUNTRIES_FILE);
       Scanner s = new Scanner(new File(url.getFile()));
       while (s.hasNext()) {
         countries.add(s.nextLine());
@@ -87,7 +87,7 @@ public class QuestionnaireServlet extends HttpServlet {
   private Collection<State> getStates() {
     ArrayList<State> states = new ArrayList<>();
     try {
-      URL url = this.getClass().getClassLoader().getResource(ResourceConstants.STATES);
+      URL url = this.getClass().getClassLoader().getResource(ResourceConstants.STATES_FILE);
       Scanner s = new Scanner(new File(url.getFile()));
       while (s.hasNext()) {
         String[] nameAbbreviation = s.nextLine().split(", ");
