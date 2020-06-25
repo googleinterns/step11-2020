@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import java.util.Date;
+import java.util.TimeZone;
 
 class UserAccount {
   public static final String ENTITY_TYPE = "UserAccount";
@@ -114,7 +115,7 @@ class UserAccount {
     this.dateOfBirth = (Date) entity.getProperty(DATE_OF_BIRTH);
     this.country = Country.values()[(int) entity.getProperty(COUNTRY)];
     this.language = Language.values()[(int) entity.getProperty(LANGUAGE)];
-    this.timezone = TimeZone.values()[(int) entity.getProperty(TIMEZONE)];
+    this.timezone = TimeZone.getTimeZone((String) entity.getProperty(TIMEZONE));
     this.ethnicity = Ethnicity.values()[(int) entity.getProperty(ETHNICITY)];
     this.ethnicityOther = (String) entity.getProperty(ETHNICITY_OTHER);
     this.gender = Gender.values()[(int) entity.getProperty(GENDER)];
@@ -136,7 +137,7 @@ class UserAccount {
     entity.setProperty(DATE_OF_BIRTH, this.dateOfBirth);
     entity.setProperty(COUNTRY, this.country.ordinal());
     entity.setProperty(LANGUAGE, this.language.ordinal());
-    entity.setProperty(TIMEZONE, this.timezone.ordinal());
+    entity.setProperty(TIMEZONE, this.timezone.getID());
     entity.setProperty(ETHNICITY, this.ethnicity);
     entity.setProperty(ETHNICITY_OTHER, this.ethnicityOther);
     entity.setProperty(GENDER, this.gender);

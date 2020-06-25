@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class DummyDataAccess implements DataAccess {
 
@@ -16,7 +17,7 @@ public class DummyDataAccess implements DataAccess {
         .dateOfBirth(new Date())
         .country(Country.AU)
         .language(Language.ES)
-        .timezone(TimeZone.EDT)
+        .timezone(TimeZone.getDefault())
         .ethnicity(Ethnicity.CAUCASIAN)
         .ethnicityOther("")
         .gender(Gender.WOMAN)
@@ -40,7 +41,7 @@ public class DummyDataAccess implements DataAccess {
         .dateOfBirth(new Date())
         .country(Country.AU)
         .language(Language.ES)
-        .timezone(TimeZone.EDT)
+        .timezone(TimeZone.getDefault())
         .ethnicity(Ethnicity.CAUCASIAN)
         .ethnicityOther("")
         .gender(Gender.WOMAN)
@@ -66,7 +67,7 @@ public class DummyDataAccess implements DataAccess {
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(TimeZone.EDT)
+            .timezone(TimeZone.getDefault())
             .ethnicity(Ethnicity.CAUCASIAN)
             .ethnicityOther("")
             .gender(Gender.WOMAN)
@@ -88,7 +89,7 @@ public class DummyDataAccess implements DataAccess {
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(TimeZone.EDT)
+            .timezone(TimeZone.getDefault())
             .ethnicity(Ethnicity.CAUCASIAN)
             .ethnicityOther("")
             .gender(Gender.MAN)
@@ -110,7 +111,7 @@ public class DummyDataAccess implements DataAccess {
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(TimeZone.EDT)
+            .timezone(TimeZone.getDefault())
             .ethnicity(Ethnicity.CAUCASIAN)
             .ethnicityOther("")
             .gender(Gender.NONBINARY)
@@ -137,7 +138,7 @@ public class DummyDataAccess implements DataAccess {
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(TimeZone.EDT)
+            .timezone(TimeZone.getDefault())
             .ethnicity(Ethnicity.CAUCASIAN)
             .ethnicityOther("")
             .gender(Gender.MAN)
@@ -158,7 +159,7 @@ public class DummyDataAccess implements DataAccess {
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(TimeZone.EDT)
+            .timezone(TimeZone.getDefault())
             .ethnicity(Ethnicity.CAUCASIAN)
             .ethnicityOther("")
             .gender(Gender.MAN)
@@ -179,7 +180,7 @@ public class DummyDataAccess implements DataAccess {
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(TimeZone.EDT)
+            .timezone(TimeZone.getDefault())
             .ethnicity(Ethnicity.CAUCASIAN)
             .ethnicityOther("")
             .gender(Gender.WOMAN)
