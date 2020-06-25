@@ -4,6 +4,9 @@ import com.google.appengine.api.datastore.Entity;
 
 public class Mentee extends UserAccount {
 
+  private static final String GOAL = "goal";
+  private static final String DESIRED_MEETING_FREQUENCY = "desiredMeetingFrequency";
+
   private Topic goal;
   private MeetingFrequency desiredMeetingFrequency;
 
@@ -15,15 +18,15 @@ public class Mentee extends UserAccount {
 
   public Mentee(Entity entity) {
     super(entity);
-    this.goal = Topic.values()[(int) entity.getProperty("goal")];
+    this.goal = Topic.values()[(int) entity.getProperty(GOAL)];
     this.desiredMeetingFrequency =
-        MeetingFrequency.values()[(int) entity.getProperty("desiredMeetingFrequency")];
+        MeetingFrequency.values()[(int) entity.getProperty(DESIRED_MEETING_FREQUENCY)];
   }
 
   public Entity convertToEntity() {
     Entity entity = super.convertToEntity();
-    entity.setProperty("goal", goal.ordinal());
-    entity.setProperty("desiredMeetingFrequency", desiredMeetingFrequency.ordinal());
+    entity.setProperty(GOAL, goal.ordinal());
+    entity.setProperty(DESIRED_MEETING_FREQUENCY, desiredMeetingFrequency.ordinal());
     return entity;
   }
 

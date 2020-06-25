@@ -5,6 +5,9 @@ import com.google.appengine.api.datastore.Entity;
 public class MentorshipRequest {
   public static final String ENTITY_TYPE = "MentorshipRequest";
 
+  private static final String TO_USER_KEY = "toUserKey";
+  private static final String FROM_USER_KEY = "fromUserKey";
+
   private long toUserKey;
   private long fromUserKey;
   private UserAccount toUser;
@@ -16,14 +19,14 @@ public class MentorshipRequest {
   }
 
   public MentorshipRequest(Entity entity) {
-    this.toUserKey = (long) entity.getProperty("toUserKey");
-    this.fromUserKey = (long) entity.getProperty("fromUserKey");
+    this.toUserKey = (long) entity.getProperty(TO_USER_KEY);
+    this.fromUserKey = (long) entity.getProperty(FROM_USER_KEY);
   }
 
   public Entity convertToEntity() {
     Entity entity = new Entity(ENTITY_TYPE);
-    entity.setProperty("toUserKey", toUserKey);
-    entity.setProperty("fromUserKey", fromUserKey);
+    entity.setProperty(TO_USER_KEY, toUserKey);
+    entity.setProperty(FROM_USER_KEY, fromUserKey);
     return entity;
   }
 

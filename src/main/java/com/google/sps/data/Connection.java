@@ -5,6 +5,9 @@ import com.google.appengine.api.datastore.Entity;
 public class Connection {
   public static final String ENTITY_TYPE = "Connection";
 
+  private static final String MENTOR_KEY = "mentorKey";
+  private static final String MENTEE_KEY = "menteeKey";
+
   private long mentorKey;
   private long menteeKey;
   private Mentor mentor;
@@ -16,8 +19,8 @@ public class Connection {
   }
 
   public Connection(Entity entity) {
-    this.mentorKey = (long) entity.getProperty("mentorKey");
-    this.menteeKey = (long) entity.getProperty("menteeKey");
+    this.mentorKey = (long) entity.getProperty(MENTOR_KEY);
+    this.menteeKey = (long) entity.getProperty(MENTEE_KEY);
   }
 
   public Entity convertToEntity() {
