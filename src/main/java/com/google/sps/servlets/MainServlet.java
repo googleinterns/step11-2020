@@ -14,13 +14,14 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.util.URLPatterns;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {"/", "/main"})
+@WebServlet(urlPatterns = {URLPatterns.BASE, URLPatterns.MAIN})
 public class MainServlet extends HttpServlet {
 
   @Override
