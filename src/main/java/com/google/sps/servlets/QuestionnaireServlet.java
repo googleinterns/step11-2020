@@ -16,7 +16,15 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.sps.data.State;
+import com.google.sps.data.Country;
+import com.google.sps.data.EducationLevel;
+import com.google.sps.data.Ethnicity;
+import com.google.sps.data.Gender;
+import com.google.sps.data.Language;
+import com.google.sps.data.MeetingFrequency;
+import com.google.sps.data.MentorType;
+import com.google.sps.data.TimeZoneInfo;
+import com.google.sps.data.Topic;
 import com.google.sps.util.ResourceConstants;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -24,12 +32,11 @@ import com.hubspot.jinjava.loader.FileLocator;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
+import java.util.TimeZone;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -46,15 +53,14 @@ public class QuestionnaireServlet extends HttpServlet {
     Jinjava jinjava = new Jinjava(config);
     try {
       jinjava.setResourceLocator(
-          new FileLocator(new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
+          new FileLocator(
+              new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException e) {
       System.err.println("templates dir not found!");
     }
 
-    Map<String, Object> context = new HashMap<>();
+    Map<String, Object> context = selectionListsForFrontEnd();
     context.put("url", "/");
-    context.put("countries", getCountries());
-    context.put("states", getStates());
     String template =
         Resources.toString(
             this.getClass().getResource(ResourceConstants.TEMPLATE_QUESTIONNAIRE), Charsets.UTF_8);
@@ -64,39 +70,26 @@ public class QuestionnaireServlet extends HttpServlet {
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {}
 
-  }
+  private Map<String, Object> selectionListsForFrontEnd() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("countries", Country.values());
+    map.put("ethnicities", Ethnicity.values());
+    map.put("genders", Gender.values());
+    map.put("languages", Language.values());
+    map.put("mentorTypes", MentorType.values());
 
-
-  private Collection<String> getCountries() {
-    ArrayList<String> countries = new ArrayList<>();
-    try {
-      URL url = this.getClass().getClassLoader().getResource(ResourceConstants.COUNTRIES_FILE);
-      Scanner s = new Scanner(new File(url.getFile()));
-      while (s.hasNext()) {
-        countries.add(s.nextLine());
-      }
-      s.close();
-    } catch (IOException e) {
-      System.out.println("failed to find file");
-    }
-    return countries;
-  }
-
-  private Collection<State> getStates() {
-    ArrayList<State> states = new ArrayList<>();
-    try {
-      URL url = this.getClass().getClassLoader().getResource(ResourceConstants.STATES_FILE);
-      Scanner s = new Scanner(new File(url.getFile()));
-      while (s.hasNext()) {
-        String[] nameAbbreviation = s.nextLine().split(", ");
-        states.add(new State(nameAbbreviation[0], nameAbbreviation[1]));
-      }
-      s.close();
-    } catch (IOException e) {
-      System.out.println("failed to find file");
-    }
-    return states;
+    map.put(
+        "timezones",
+        TimeZoneInfo.getListOfNamesToDisplay(
+            Arrays.asList(TimeZone.getAvailableIDs()).stream()
+                .filter(strID -> strID.toUpperCase().equals(strID))
+                .map(strID -> TimeZone.getTimeZone(strID))
+                .collect(Collectors.toList())));
+    map.put("educationLevels", EducationLevel.values());
+    map.put("topics", Topic.values());
+    map.put("meetingFrequencies", MeetingFrequency.values());
+    return map;
   }
 }

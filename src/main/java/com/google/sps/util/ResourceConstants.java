@@ -9,6 +9,6 @@ public class ResourceConstants {
   public static final String TEMPLATE_LANDING = "/templates/landing.html";
   public static final String TEMPLATE_PROFILE = "/templates/profile.html";
   public static final String TEMPLATE_QUESTIONNAIRE = "/templates/questionnaire.html";
-  public final static String COUNTRIES_FILE = "data/countries.txt";
-  public final static String STATES_FILE = "data/states.txt";
+  public static final String COUNTRIES_FILE = "data/countries.txt";
+  public static final String STATES_FILE = "data/states.txt";
 }

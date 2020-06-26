@@ -30,20 +30,21 @@
     <select id="country" name="country" required>
       <option value="none" selected disabled hidden> select an option </option>
       {% for country in countries %}
-      <option value="{{country}}">{{country}}</option>
+      <option value="{{country}}">{{country.longName}}</option>
       {% endfor %}
     </select>
 
-
+    <label for="timezone">Your Location's Timezone</label>
     <select id="timezone" name="timezone" required>
       {% for timezone in timezones %}
-      <option value="{{timezone.abbreviation}}"> {{timezone.name}} </option>
+      <option value="{{timezone.name}}"> {{timezone.name}}: {{timezone.offset}} </option>
       {% endfor %}
     </select>
 
+    <label for="country">Preferred Language</label>
     <select id="language" name="language" required>
-      {% for language in language %}
-      <option value="{{language.abbreviation}}"> {{language.name}} </option>
+      {% for language in languages %}
+      <option value="{{language}}"> {{language.longName}}</option>
       {% endfor %}
     </select>
 
@@ -54,81 +55,84 @@
       <p> Check off whatever best applies to you </p>
       {% for ethnicity in ethnicities %}
       <input type="checkbox" name="{{ethnicity}}" value="{{ethnicity}}">
-      <label for="{{ethnicity}}"> {{ethnicity}} </label><br>
+      <label for="{{ethnicity}}"> {{ethnicity.title}} </label><br>
       {% endfor %}
-    </div>
+    </div> <br>
 
     <label for="gender">Gender</label>
-    <select id="gender" name="gender" onchange="checkGender(this.value)">
-      <option value="male">Male</option>
-      <option value="female">Female</option>
-      <option value="tmale">Transgender Male</option>
-      <option value="tfemale">Transgender Female</option>
-      <option value="nonbinary">Nonbinary</option>
-      <option value="other"> A gender not listed</option>
+    <select id="gender" name="gender" onchange="checkForOther(this.value)">
+      {% for gender in genders %}
+      <option value="{{gender}}"> {{gender.title}}</option>
+      {% endfor %}
     </select>
     <div id="other-box"></div>
 
     <p> Are you currently pursuing a degree? </p>
     <input type="radio" value="yes"> Yes </input>
-    <input type="radio" value="no"> No </input>
+    <input type="radio" value="no"> No </input> <br>
   <!--When they select yes in previous option-->
     <label for="education">Current Level of Education</label>
     <select id="education" name="education">
-      <option value="" selected="selected" disabled="disabled">-- select one --</option>
-      <option value="Secondary education">Primary education or middle school</option>
-      <option value="Secondary education">Secondary education or high school</option>
-      <option value="Vocational qualification">Vocational School</option>
-      <option value="Bachelor's degree">Undegraduate</option>
-      <option value="Master's degree">Pursuing a Masters</option>
-      <option value="Doctorate or higher">Pursuing a Doctorate or higher</option>
+      {% for education in educationLevels %}
+      <option value="{{education}}"> {{education.title}}</option>
+      {% endfor %}
     </select>
  <!--When they select no in previous option-->
     <label for="education">Highest Level of Education</label>
-    <select id="education" name="education">
-      <option value="" selected="selected" disabled="disabled">-- select one --</option>
-      <option value="No formal education">No formal education</option>
-      <option value="Secondary education">Secondary education or high school</option>
-      <option value="GED">GED</option>
-      <option value="Vocational qualification">Vocational qualification</option>
-      <option value="Bachelor's degree">Bachelor's degree</option>
-      <option value="Master's degree">Master's degree</option>
-      <option value="Doctorate or higher">Doctorate or higher</option>
+    <select id="education" name="education" onchange="checkForOther(this.value)">
+      {% for education in educationLevels %}
+      <option value="{{education}}"> {{education.title}}</option>
+      {% endfor %}
     </select>
-    <!-- Will show up if user is registering as a mentor or if the mentee is in highschool or higher -->
-    <label for="in-school"> Do/did you consider yourself a first generation or low income student </label>
-    <input type="radio" value="yes"> Yes </input>
-    <input type="radio" value="no"> No </input>
+    <div id="other-box"></div>
 
-    <label for="in-school"> Do you identify as a person with disabilities </label>
-    <input type="radio" value="yes"> Yes </input>
-    <input type="radio" value="no"> No </input>
-
-    <h3> Step 3: Goals and Logistics </h3>
-    <label for="goals"> What type of Mentor are you looking for </label>
-    <select id="goals" name="goals" required>
-      <option value="tutor">Tutor</option>
-      <option value="college">College Advisor</option>
-      <option value="career">Career Advisor</option>
-    </select>
-
-    <div id="mentor-type">
-      <p> What type of Mentor would you like to be? (Choose all that apply). </p>
-      <input type="checkbox" name="tutor" value="tutor">
-      <label for="tutor"> Tutor </label><br>
-      <input type="checkbox" name="college" value="college">
-      <label for="college"> College Advisor</label><br>
-      <input type="checkbox" name="career" value="career">
-      <label for="career"> Career Advisor</label><br>
+    <div id="first-gen">
+      <label> Do/did you consider yourself a first generation student</label>
+      <input type="radio" value="yes"> Yes </input>
+      <input type="radio" value="no"> No </input>
+    </div>
+    <div id="low-income">
+      <label> Do/did you consider yourself a low income student</label>
+      <input type="radio" value="yes"> Yes </input>
+      <input type="radio" value="no"> No </input>
     </div>
 
-    <label for="frequency">How often would you like to meet?</label>
-    <select id="frequency" name="frequency" required>
-      <option value="almost-everyday">More than once a week</option>
-      <option value="weekly">Every week</option>
-      <opt ion value="biweekly">Every other week</option>
-      <option value="monthly">Once a month</option>
-      <option value="rarely">Less than once a month</option>
+    <div id = "disabilities">
+      <label> Do you identify as a person with disabilities </label>
+      <input type="radio" value="yes"> Yes </input>
+      <input type="radio" value="no"> No </input>
+    </div>
+
+    <h3> Step 3: Goals and Logistics </h3>
+    <!-- Displayed to those who selected "Find a Mentor" -->
+    <label for="goals"> What type of Mentor are you looking for </label>
+    <select id="goals" name="goals" required>
+      {% for mentorType in mentorTypes %}
+      <option value="{{mentorType}}"> {{mentorType.title}}</option>
+      {% endfor %}
+    </select>
+    <!-- Displayed to those who selected "Become a Mentor" -->
+    <div id="mentor-type">
+      <p> What type of Mentor would you like to be? (Choose all that apply). </p>
+      {% for mentorType in mentorTypes %}
+      <input type="checkbox" name="{{mentorType}}" value="{{mentorType}}">
+      <label for="{{mentorType}}"> {{mentorType.title}} </label><br>
+      {% endfor %}
+    </div>
+
+    <div id="topic">
+      <p> What areas would you like to focus on (Choose all that apply). </p>
+      {% for topic in topics %}
+      <input type="checkbox" name="{{topic}}" value="{{topic}}">
+      <label for="{{topic}}"> {{topic.title}} </label><br>
+      {% endfor %}
+    </div>
+
+    <label for="meeting-frequency">How often would you like to meet?</label>
+    <select id="meeting-frequency" name="meeting-frequency" required>
+      {% for meetingFrequency in meetingFrequencies %}
+      <option value="{{meetingFrequency}}"> {{meetingFrequency.title}}</option>
+      {% endfor %}
     </select>
 
     <h3> Step 4: Extra </h3>
