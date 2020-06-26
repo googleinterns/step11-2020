@@ -23,12 +23,11 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.sps.data.Mentee;
+import com.google.sps.data.Mentor;
+import com.google.sps.util.ResourceConstants;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
-import com.hubspot.jinjava.loader.FileLocator;
-import com.google.sps.data.Mentor;
-import com.google.sps.data.Mentee;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,9 +42,11 @@ public final class ProfileServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String contextPath = request.getContextPath().toString();
-    String[] paths = contextPath.split('/');
+    String paths[] = contextPath.split("/");
     String requestedUserID = paths[0];
     UserService userService = UserServiceFactory.getUserService();
+    JinjavaConfig config = new JinjavaConfig();
+    Jinjava jinjava = new Jinjava(config);
     if (!userService.isUserLoggedIn()) {
       response.sendRedirect("/landing");
     } else {
