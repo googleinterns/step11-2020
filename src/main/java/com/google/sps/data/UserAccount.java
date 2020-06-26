@@ -135,7 +135,7 @@ class UserAccount {
 
   public Entity convertToEntity() {
     Key key = KeyFactory.createKey(ENTITY_TYPE, this.datastoreKey);
-    Entity entity = new Entity(ENTITY_TYPE);
+    Entity entity = new Entity(key);
     entity.setProperty(USER_ID, this.userID);
     entity.setProperty(EMAIL, this.email);
     entity.setProperty(NAME, this.name);
