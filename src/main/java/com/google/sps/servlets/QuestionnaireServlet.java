@@ -69,7 +69,7 @@ public class QuestionnaireServlet extends HttpServlet {
               this.getClass().getResource(ResourceConstants.TEMPLATE_QUESTIONNAIRE), Charsets.UTF_8);
       staticResponse = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println("template not found");
+      System.err.println("template"  + TEMPLATE_QUESTIONNAIRE +  " not found");
     }
   }
 
@@ -80,9 +80,6 @@ public class QuestionnaireServlet extends HttpServlet {
 
     response.getWriter().println(staticResponse);
   }
-
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {}
 
   private Map<String, Object> selectionListsForFrontEnd() {
     Map<String, Object> map = new HashMap<>();
