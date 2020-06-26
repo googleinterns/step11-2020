@@ -21,43 +21,54 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.gson.Gson;
-import com.google.sps.data.UserAccount;
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
+import com.google.sps.data.Mentor;
+import com.google.sps.data.Mentee;
+
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that maintains the comment section. */
-@WebServlet("/load-profile")
+@WebServlet(urlPatterns = {"/profile"})
 public final class ProfileServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String requestedUserID = getParameter(request, "userPath", "");
+    String contextPath = request.getContextPath().toString();
+    String[] paths = contextPath.split('/');
+    String requestedUserID = paths[0];
     UserService userService = UserServiceFactory.getUserService();
     if (!userService.isUserLoggedIn()) {
-      response.sendRedirect('/');
+      response.sendRedirect("/landing");
     } else {
-      // Remember to explicitly supply the userId when the User instance is
-      // created upon registration
       String userId = userService.getCurrentUser().getUserId();
       Query query =
           new Query("UserAccount")
-              .setFilter(new Query.FilterPredicate("userID", Query.FilterOperator.EQUAL, userId));
+              .setFilter(
+                  new Query.FilterPredicate("userID", Query.FilterOperator.EQUAL, requestedUserID));
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       PreparedQuery result = datastore.prepare(query);
       Entity userEntity = result.asSingleEntity();
-      String jsonString;
-      if (userEntity.getProperty("userType" == 0) {
-        jsonString = new Gson().toJson(new Mentor(userEntity));
+      Map<String, Object> context = new HashMap();
+      context.put("url", "/requestedUserID/profile");
+      context.put("userType", (int) (userEntity.getProperty("userType")));
+      context.put("browsingUserProfileURL", "/" + userId + "/profile");
+      if ((int) (userEntity.getProperty("userType")) == 0) {
+        context.put("mentor", new Mentor(userEntity));
+      } else {
+        context.put("mentee", new Mentee(userEntity));
       }
-      else {
-        jsonString = new Gson().toJson(new Mentee(userEntity));
-      }
-      response.setContentType("application/json;");
-      response.getWriter().println(jsonString);
+      String template =
+          Resources.toString(
+              this.getClass().getResource(ResourceConstants.TEMPLATE_PROFILE), Charsets.UTF_8);
+      String renderedTemplate = jinjava.render(template, context);
+      response.setContentType("text/html;");
+      response.getWriter().println(renderedTemplate);
     }
   }
 
