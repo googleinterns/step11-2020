@@ -6,14 +6,14 @@ import java.util.TimeZone;
 
 public class TimeZoneInfo {
 
-  private static final double MILLISECONDS_TO_HOURS = 3600000.0;
+  private static final double MILLISECONDS_PER_HOURS = 3600000.0;
 
   String name;
   double offset;
 
   private TimeZoneInfo(TimeZone timeZone) {
     this.name = timeZone.getID();
-    this.offset = timeZone.getRawOffset() / MILLISECONDS_TO_HOURS;
+    this.offset = timeZone.getRawOffset() / MILLISECONDS_PER_HOURS;
   }
 
   public String getName() {
