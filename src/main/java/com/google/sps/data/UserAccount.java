@@ -134,13 +134,8 @@ class UserAccount {
   }
 
   public Entity convertToEntity() {
-    Entity entity;
-    if (this.datastoreKey != 0) {
-      Key key = KeyFactory.createKey(ENTITY_TYPE, this.datastoreKey);
-      entity = new Entity(key);
-    } else {
-      entity = new Entity(ENTITY_TYPE);
-    }
+    Key key = KeyFactory.createKey(ENTITY_TYPE, this.datastoreKey);
+    Entity entity = new Entity(ENTITY_TYPE);
     entity.setProperty(USER_ID, this.userID);
     entity.setProperty(EMAIL, this.email);
     entity.setProperty(NAME, this.name);
