@@ -3,24 +3,23 @@
     "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
   ] %}
 {% for style in styles %}
-  <link rel="stylesheet" type="text/css" href={{ style }}>
+<link rel="stylesheet" type="text/css" href={{ style }}>
 {% endfor %}
 <div id="top-nav" class="nav-bar">
-  <img class="logo left{% if url == "landing" %} active{% endif %}" src="static/images/logo.png" alt=""
+	<img class="logo left{% if url == "landing" %} active{% endif %}" src="static/images/logo.png" alt=""
       onclick="goToPageSection('/', '')">
   {% for nav_item in nav_items %}
-    <a class="nav-bar-item
+	<a class="nav-bar-item {{ nav_item.class }}
         {% if nav_item.adjust == "right" %} right{% else %} left{% endif %}
-        {% if nav_item.baseURL == url %} active{% endif %}"
-        id="nav-{{ nav_item.sectionID }}"
-        onclick="goToPageSection('{{nav_item.baseURL}}', '{{nav_item.sectionID}}')">
-          <i class="fa fa-fw fa-{{ nav_item.iconLabel }}"></i> {{ nav_item.text }}
-    </a>
-  {% endfor %}
+        {% if nav_item.baseURL == url %} active{% endif %}" id="nav-{{ nav_item.sectionID }}"
+		onclick="goToPageSection('{{nav_item.baseURL}}', '{{nav_item.sectionID}}')">
+		<i class="fa fa-fw fa-{{ nav_item.iconLabel }}"></i> {{ nav_item.text }}
+	</a>
+	{% endfor %}
 </div>
 {% set scripts = [
     "static/scripts/navbar.js"
   ] %}
 {% for script in scripts %}
-  <script charset="utf-8" type="text/javascript" src={{ script }} defer></script>
+<script charset="utf-8" type="text/javascript" src={{ script }} defer></script>
 {% endfor %}
