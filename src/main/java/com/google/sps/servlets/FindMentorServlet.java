@@ -19,7 +19,6 @@ import com.google.common.io.Resources;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentor;
 import com.google.sps.util.ResourceConstants;
-import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
@@ -35,8 +34,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// TODO: make PR for URL constants
-@WebServlet(urlPatterns = {URLPatterns.FIND_MENTOR})
+@WebServlet(urlPatterns = {"/find-mentor"})
 public class FindMentorServlet extends HttpServlet {
   private Jinjava jinjava;
   private String findMentorTemplate;
@@ -54,7 +52,7 @@ public class FindMentorServlet extends HttpServlet {
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put(URLPatterns.URL, URLPatterns.FIND_MENTOR);
+    context.put("url", "/find-mentor");
 
     try {
       String template =
@@ -71,6 +69,7 @@ public class FindMentorServlet extends HttpServlet {
     response.setContentType("text/html;");
 
     Map<String, Object> context = new HashMap<>();
+
     Collection<Mentor> relatedMentors = new DummyDataAccess().getRelatedMentors(null);
     context.put("mentors", relatedMentors);
 
