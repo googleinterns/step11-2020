@@ -1,0 +1,15 @@
+{% set nav_items = [
+    {
+      "baseURL": "/about", "iconLabel": "question-circle", "text": "About",
+      "adjust": "left"
+    },
+    {
+      "baseURL": "/authors", "iconLabel": "users", "text": "Meet the Creators",
+      "adjust": "left"
+    },
+    {
+      "baseURL": "/authenticate", "iconLabel": "user", "text": "Login",
+      "adjust": "right"
+    }
+  ] %}
+{% include "navbar.html" %}
