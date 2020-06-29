@@ -9,6 +9,8 @@ interface DataAccess {
 
   UserAccount getUser(Key datastoreKey);
 
+  UserAccount getCurrentUser();
+
   Collection<Mentor> getRelatedMentors(Mentee mentee);
 
   Collection<Mentee> getRelatedMentees(Mentor mentor);
@@ -30,4 +32,5 @@ interface DataAccess {
 
   // delete request object
   void denyRequest(MentorshipRequest request);
+
 }
