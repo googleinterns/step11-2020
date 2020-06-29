@@ -1,10 +1,11 @@
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.KeyRange;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -68,8 +69,8 @@ class UserAccount {
       String educationLevelOther,
       String description,
       UserType userType) {
-    DatastireService datastore = DatastoreServiceFactory.getDatastoreService();
-    KeyRange keyRange = datastore.allocateIDs(ENTITY_TYPE, 1);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    KeyRange keyRange = datastore.allocateIds(ENTITY_TYPE, 1);
     this.datastoreKey = keyRange.getStart().getId();
     this.userID = userID;
     this.email = email;
