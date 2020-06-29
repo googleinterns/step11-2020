@@ -30,4 +30,6 @@ interface DataAccess {
 
   // delete request object
   void denyRequest(MentorshipRequest request);
+
+  UserAccount getCurrentUser();
 }
