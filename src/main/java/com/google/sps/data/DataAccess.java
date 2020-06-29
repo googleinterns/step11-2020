@@ -1,6 +1,7 @@
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.users.User;
 import java.util.Collection;
 
 interface DataAccess {
@@ -9,7 +10,7 @@ interface DataAccess {
 
   UserAccount getUser(Key datastoreKey);
 
-  UserAccount getCurrentUser();
+  User getCurrentUser();
 
   Collection<Mentor> getRelatedMentors(Mentee mentee);
 
@@ -32,5 +33,4 @@ interface DataAccess {
 
   // delete request object
   void denyRequest(MentorshipRequest request);
-
 }
