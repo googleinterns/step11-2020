@@ -11,5 +11,5 @@ public class URLPatterns {
   public static final String MAIN = "/main";
   public static final String PROFILE = "/profile";
   public static final String QUESTIONNAIRE = "/questionnaire";
-  public static final String CONNECTION_REQUESTS = "/connection-requests";
+  public static final String CONNECTION_REQUEST = "/connection-requests";
 }

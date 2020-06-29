@@ -9,7 +9,7 @@ import com.google.appengine.api.datastore.KeyRange;
 import java.util.Date;
 import java.util.TimeZone;
 
-class UserAccount {
+public class UserAccount {
   public static final String ENTITY_TYPE = "UserAccount";
 
   private static final String USER_ID = "userID";
@@ -50,7 +50,7 @@ class UserAccount {
   private String description;
   private UserType userType;
 
-  private UserAccount(
+  public UserAccount(
       long datastoreKey,
       String userID,
       String email,
