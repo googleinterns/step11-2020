@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
@@ -46,7 +47,7 @@ public class AuthorsServlet extends HttpServlet {
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      System.err.println("templates dir not found!");
+      System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = new HashMap<>();
@@ -58,7 +59,7 @@ public class AuthorsServlet extends HttpServlet {
               this.getClass().getResource(ResourceConstants.TEMPLATE_AUTHORS), Charsets.UTF_8);
       staticResponse = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println("template not found");
+      System.err.println(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_AUTHORS));
     }
   }
 
@@ -67,7 +68,8 @@ public class AuthorsServlet extends HttpServlet {
     response.setContentType("text/html;");
 
     if (staticResponse == null) {
-      init();
+      response.setStatus(500);
+      return;
     }
 
     response.getWriter().println(staticResponse);
