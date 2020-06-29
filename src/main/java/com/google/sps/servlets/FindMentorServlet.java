@@ -94,7 +94,7 @@ public class FindMentorServlet extends HttpServlet {
         return;
       }
     }
-    response.sendRedirect("/landing");
+    response.sendRedirect(URLPatterns.LANDING);
   }
 
   @Override
