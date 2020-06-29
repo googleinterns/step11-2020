@@ -14,10 +14,15 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
+import com.google.sps.data.MentorshipRequest;
+import com.google.sps.data.UserAccount;
+import com.google.sps.data.UserType;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -53,7 +58,7 @@ public class FindMentorServlet extends HttpServlet {
       jinjava.setResourceLocator(
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
-    } catch (URISyntaxException e) {
+    } catch (URISyntaxException|FileNotFoundException e) {
       System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
@@ -66,22 +71,30 @@ public class FindMentorServlet extends HttpServlet {
               this.getClass().getResource(ResourceConstants.TEMPLATE_FIND_MENTOR), Charsets.UTF_8);
       findMentorTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println("template not found");
+      System.err.println(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_FIND_MENTOR));
     }
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
+    User user = dataAccess.getCurrentUser();
+    if (user != null) {
+      Mentee mentee = dataAccess.getMentee(user.getUserId());
+      if (mentee != null) {
+        response.setContentType("text/html;");
 
-    Map<String, Object> context = new HashMap<>();
+        Map<String, Object> context = new HashMap<>();
 
-    Collection<Mentor> relatedMentors = dataAccess.getRelatedMentors(null);
-    context.put("mentors", relatedMentors);
+        Collection<Mentor> relatedMentors = dataAccess.getRelatedMentors(null);
+        context.put("mentors", relatedMentors);
 
-    String renderedTemplate = jinjava.render(findMentorTemplate, context);
+        String renderedTemplate = jinjava.render(findMentorTemplate, context);
 
-    response.getWriter().println(renderedTemplate);
+        response.getWriter().println(renderedTemplate);
+        return;
+      }
+    }
+    response.sendRedirect("/landing");
   }
 
   @Override
@@ -91,13 +104,15 @@ public class FindMentorServlet extends HttpServlet {
 
     boolean success = false;
 
-    if (dataAccess.getCurrentUser() != null) {
-
+    User user = dataAccess.getCurrentUser();
+    if (user != null) {
+      Mentee mentee = dataAccess.getMentee(user.getUserId());
+      if (mentee != null) {
+        MentorshipRequest mentorshipRequest = new MentorshipRequest(Long.parseLong(mentorKey), mentee.getDatastoreKey());
+        dataAccess.publishRequest(mentorshipRequest);
+        success = true;
+      }
     }
-
-    MentorshipRequest mentorshipRequest = new MentorshipRequest();
-
-    dataAccess.publishRequest(mentorshipRequest);
 
     response.setContentType("application/json;");
     response.getWriter().println("{\"success\": " + success + "}");

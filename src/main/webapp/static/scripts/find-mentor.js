@@ -12,16 +12,27 @@ const getMiddleCard = () => {
   return middleCard;
 };
 
-mentorCardContainer.addEventListener("scroll", (event) => {
+const updateChoiceButtons = () => {
   const middleCard = getMiddleCard();
   const name = middleCard.querySelector(".mentor-name").innerText;
   yesButton.innerText = `${YES_TEXT} (${name})`;
   maybeButton.innerText = `${MAYBE_TEXT} (${name})`;
   noButton.innerText = `${NO_TEXT} (${name})`;
+}
+updateChoiceButtons();
+
+mentorCardContainer.addEventListener("scroll", (event) => {
+  updateChoiceButtons();
 });
 
-for (const buttonName of ["yes", "maybe", "no"]) {
-  window[`${buttonName}Button`].addEventListener("click", async (event) => {
+const buttonDict = {
+  "yes": yesButton,
+  "maybe": maybeButton,
+  "no": noButton
+}
+
+for (const buttonName in buttonDict) {
+  buttonDict[buttonName].addEventListener("click", async (event) => {
     const middleCard = getMiddleCard();
     const mentorID = middleCard.querySelector(".mentor-id").innerText;
     let response = await fetch("/find-mentor", {
@@ -30,5 +41,6 @@ for (const buttonName of ["yes", "maybe", "no"]) {
       });
     let text = await response.text();
     let data = JSON.parse(text);
+    console.log(data);
   });
 }
