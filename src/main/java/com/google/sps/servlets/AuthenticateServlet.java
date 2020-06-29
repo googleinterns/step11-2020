@@ -14,18 +14,11 @@
 
 package com.google.sps.servlets;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
-import com.google.sps.util.ResourceConstants;
-import com.google.sps.data.LoginState;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import java.io.File;
-import java.io.FileNotFoundException;
+import com.google.gson.Gson;
+import com.google.sps.data.LoginState;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 public class AuthenticateServlet extends HttpServlet {
 
   private LoginState loginState = new LoginState();
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json");
@@ -44,11 +38,10 @@ public class AuthenticateServlet extends HttpServlet {
       String redirUrlAfterLogin = request.getRequestURL().toString();
       loginState.toggleLoginURL = userService.createLoginURL(redirUrlAfterLogin);
       loginState.isLoggedIn = false;
-    }
-    else {
+    } else {
       String redirUrlAfterLogout = "/";
       loginState.toggleLoginURL = userService.createLogoutURL(redirUrlAfterLogout);
-      loginState.userProfileURL = "/" + userService.getCurrentUser().getUserID(); + "/profile";
+      loginState.userProfileURL = "/" + userService.getCurrentUser().getUserId() + "/profile";
       loginState.isLoggedIn = true;
     }
     response.getWriter().println(new Gson().toJson(loginState));

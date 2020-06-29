@@ -14,9 +14,6 @@
 
 package com.google.sps.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class LoginState {
   public String userProfileURL;
   public String toggleLoginURL;

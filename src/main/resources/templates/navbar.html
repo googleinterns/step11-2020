@@ -12,7 +12,9 @@
 	<a class="nav-bar-item {{ nav_item.class }}
         {% if nav_item.adjust == "right" %} right{% else %} left{% endif %}
         {% if nav_item.baseURL == url %} active{% endif %}" id="nav-{{ nav_item.sectionID }}"
-		onclick="goToPageSection('{{nav_item.baseURL}}', '{{nav_item.sectionID}}')">
+    {% if nav_item.baseURL != "" %} 
+		  onclick="goToPageSection('{{nav_item.baseURL}}', '{{nav_item.sectionID}}')"
+    {% endif %}>
 		<i class="fa fa-fw fa-{{ nav_item.iconLabel }}"></i> {{ nav_item.text }}
 	</a>
 	{% endfor %}

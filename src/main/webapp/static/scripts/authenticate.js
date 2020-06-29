@@ -14,16 +14,20 @@
 
 function loadAuthButton() {
   fetch('/authenticate').then(handleFetchErrors).then(response => response.json())
-  .then (loginState => {
-    const authButtonElem = document.getElementsByClassName("auth-button");
-    if (loginState.isLoggedIn)
-      authButtonElem.innerText = "Log Out";
-    else
-      authButtonElem.innerText = "Log In";
-    authButtonElem.onclick = (event) => {
-      window.location = loginState.toggleLoginURL;
-    }
-  })
+    .then(loginState => {
+      console.log("Rendering auth button links");
+      const authButtonElem = document.getElementsByClassName("auth-button");
+      console.log(authButtonElem);
+      if (loginState.isLoggedIn)
+        authButtonElem.innerText = "Log Out";
+      else {
+        console.log("changine display")
+        authButtonElem.innerText = "Log In";
+      }
+      authButtonElem.onclick = (event) => {
+        window.location = loginState.toggleLoginURL;
+      }
+    })
 }
 
 function handleFetchErrors(response) {
