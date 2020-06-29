@@ -17,12 +17,14 @@ package com.google.sps.servlets;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +33,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {"/landing"})
+@WebServlet(urlPatterns = URLPatterns.LANDING)
 public class LandingServlet extends HttpServlet {
 
   private String staticResponse;
@@ -49,7 +51,7 @@ public class LandingServlet extends HttpServlet {
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put("url", "/authors");
+    context.put(URLPatterns.URL, URLPatterns.LANDING);
 
     try {
       String template =

@@ -1,6 +1,9 @@
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -220,6 +223,11 @@ public class DummyDataAccess implements DataAccess {
       // data.add(new Connection());
     }
     return data;
+  }
+
+  public User getCurrentUser() {
+    UserService userService = UserServiceFactory.getUserService();
+    return userService.getCurrentUser();
   }
 
   public void publishRequest(MentorshipRequest request) {}
