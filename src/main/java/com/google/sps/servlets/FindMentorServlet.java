@@ -18,6 +18,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentor;
+import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
@@ -48,7 +49,7 @@ public class FindMentorServlet extends HttpServlet {
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException e) {
-      System.err.println("templates dir not found!");
+      System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = new HashMap<>();
