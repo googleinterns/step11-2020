@@ -16,25 +16,35 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.sps.data.Country;
+import com.google.sps.data.EducationLevel;
+import com.google.sps.data.Ethnicity;
+import com.google.sps.data.Gender;
+import com.google.sps.data.Language;
+import com.google.sps.data.MeetingFrequency;
+import com.google.sps.data.MentorType;
+import com.google.sps.data.TimeZoneInfo;
+import com.google.sps.data.Topic;
 import com.google.sps.util.ResourceConstants;
-import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = URLPatterns.LANDING)
-public class LandingServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/questionnaire")
+public class QuestionnaireServlet extends HttpServlet {
 
   private String staticResponse;
 
@@ -50,27 +60,45 @@ public class LandingServlet extends HttpServlet {
       System.err.println("templates dir not found!");
     }
 
-    Map<String, Object> context = new HashMap<>();
-    context.put(URLPatterns.URL, URLPatterns.LANDING);
+    Map<String, Object> context = selectionListsForFrontEnd();
+    context.put("url", "/");
 
     try {
       String template =
           Resources.toString(
-              this.getClass().getResource(ResourceConstants.TEMPLATE_LANDING), Charsets.UTF_8);
+              this.getClass().getResource(ResourceConstants.TEMPLATE_QUESTIONNAIRE), Charsets.UTF_8);
       staticResponse = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println("template not found");
+      System.err.println("template"  + ResourceConstants.TEMPLATE_QUESTIONNAIRE +  " not found");
     }
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    System.out.println("REQUEST AT: " + request.getServletPath());
     response.setContentType("text/html;");
 
-    if (staticResponse == null) {
-      init();
-    }
-
     response.getWriter().println(staticResponse);
+  }
+
+  private Map<String, Object> selectionListsForFrontEnd() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("countries", Country.values());
+    map.put("ethnicities", Ethnicity.values());
+    map.put("genders", Gender.values());
+    map.put("languages", Language.values());
+    map.put("mentorTypes", MentorType.values());
+
+    map.put(
+        "timezones",
+        TimeZoneInfo.getListOfNamesToDisplay(
+            Arrays.asList(TimeZone.getAvailableIDs()).stream()
+                .filter(strID -> strID.toUpperCase().equals(strID))
+                .map(strID -> TimeZone.getTimeZone(strID))
+                .collect(Collectors.toList())));
+    map.put("educationLevels", EducationLevel.values());
+    map.put("topics", Topic.values());
+    map.put("meetingFrequencies", MeetingFrequency.values());
+    return map;
   }
 }
