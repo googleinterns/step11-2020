@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Mentor Matching{% endblock %}
+
+{% block styles %}
+  {{ super() }}
+  {% set styles = [
+      "static/styles/questionnaire.css"
+    ] %}
+  {% for style in styles %}
+    <link rel="stylesheet" type="text/css" href={{ style }}>
+  {% endfor %}
+{% endblock %}
+
+{% block main_content %}
+
+<div class = "form-container">
+  <form action="/questionnaire" method="POST">
+    <h3> Step 1: Basic Personal Information </h3>
+    <label for="fname">First Name</label>
+    <input type="text" id="fname" name="firstname" placeholder="Your name.." required>
+
+    <label for="lname">Last Name</label>
+    <input type="text" id="lname" name="lastname" placeholder="Your last name.." required>
+
+    <label for="dob">Date of Birth:</label>
+    <input type="date" name="dob" required>
+
+    <label for="country">Country</label>
+    <select id="country" name="country" required>
+      <option value="none" selected disabled hidden> select an option </option>
+      {% for country in countries %}
+      <option value="{{country}}">{{country.longName}}</option>
+      {% endfor %}
+    </select>
+
+    <label for="timezone">Your Location's Timezone</label>
+    <select id="timezone" name="timezone" required>
+      {% for timezone in timezones %}
+      <option value="{{timezone.name}}"> {{timezone.name}}: {{timezone.offset}} </option>
+      {% endfor %}
+    </select>
+
+    <label for="country">Preferred Language</label>
+    <select id="language" name="language" required>
+      {% for language in languages %}
+      <option value="{{language}}"> {{language.longName}}</option>
+      {% endfor %}
+    </select>
+
+    <h3> Step 2: More Personal Information </h3>
+    <p> This information is used to find a person that best fits you.
+       Feel free to fill in with whatever you're comfortable sharing: everything in this step is optional </p>
+    <div id="ethnicity">
+      <p> Check off whatever best applies to you </p>
+      {% for ethnicity in ethnicities %}
+      <input type="checkbox" name="{{ethnicity}}" value="{{ethnicity}}">
+      <label for="{{ethnicity}}"> {{ethnicity.title}} </label><br>
+      {% endfor %}
+    </div> <br>
+
+    <label for="gender">Gender</label>
+    <select id="gender" name="gender" onchange="checkForOther(this.value)">
+      {% for gender in genders %}
+      <option value="{{gender}}"> {{gender.title}}</option>
+      {% endfor %}
+    </select>
+    <div id="other-box"></div>
+
+    <p> Are you currently pursuing a degree? </p>
+    <input type="radio" value="yes"> Yes </input>
+    <input type="radio" value="no"> No </input> <br>
+  <!--When they select yes in previous option-->
+    <label for="education">Current Level of Education</label>
+    <select id="education" name="education">
+      {% for education in educationLevels %}
+      <option value="{{education}}"> {{education.title}}</option>
+      {% endfor %}
+    </select>
+ <!--When they select no in previous option-->
+    <label for="education">Highest Level of Education</label>
+    <select id="education" name="education" onchange="checkForOther(this.value)">
+      {% for education in educationLevels %}
+      <option value="{{education}}"> {{education.title}}</option>
+      {% endfor %}
+    </select>
+    <div id="other-box"></div>
+
+    <div id="first-gen">
+      <label> Do/did you consider yourself a first generation student</label>
+      <input type="radio" value="yes"> Yes </input>
+      <input type="radio" value="no"> No </input>
+    </div>
+    <div id="low-income">
+      <label> Do/did you consider yourself a low income student</label>
+      <input type="radio" value="yes"> Yes </input>
+      <input type="radio" value="no"> No </input>
+    </div>
+
+    <div id = "disabilities">
+      <label> Do you identify as a person with disabilities </label>
+      <input type="radio" value="yes"> Yes </input>
+      <input type="radio" value="no"> No </input>
+    </div>
+
+    <h3> Step 3: Goals and Logistics </h3>
+    <!-- Displayed to those who selected "Find a Mentor" -->
+    <label for="goals"> What type of Mentor are you looking for </label>
+    <select id="goals" name="goals" required>
+      {% for mentorType in mentorTypes %}
+      <option value="{{mentorType}}"> {{mentorType.title}}</option>
+      {% endfor %}
+    </select>
+    <!-- Displayed to those who selected "Become a Mentor" -->
+    <div id="mentor-type">
+      <p> What type of Mentor would you like to be? (Choose all that apply). </p>
+      {% for mentorType in mentorTypes %}
+      <input type="checkbox" name="{{mentorType}}" value="{{mentorType}}">
+      <label for="{{mentorType}}"> {{mentorType.title}} </label><br>
+      {% endfor %}
+    </div>
+
+    <div id="topic">
+      <p> What areas would you like to focus on (Choose all that apply). </p>
+      {% for topic in topics %}
+      <input type="checkbox" name="{{topic}}" value="{{topic}}">
+      <label for="{{topic}}"> {{topic.title}} </label><br>
+      {% endfor %}
+    </div>
+
+    <label for="meeting-frequency">How often would you like to meet?</label>
+    <select id="meeting-frequency" name="meeting-frequency" required>
+      {% for meetingFrequency in meetingFrequencies %}
+      <option value="{{meetingFrequency}}"> {{meetingFrequency.title}}</option>
+      {% endfor %}
+    </select>
+
+    <h3> Step 4: Extra </h3>
+
+    <label for="image-upload"> (Optional) Upload an image of yourself </label>
+    <input type="file" id="image-upload" name="image-upload">
+
+    <label for="bio"> (Optional) Write a short bio about yourself</label>
+    <input type="text" name="bio" placeholder="For example, what are your hobbies...">
+    <input type="submit" value="Submit">
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {% set scripts = [
+      "static/scripts/questionnaire.js"
+    ]%}
+  {% for script in scripts %}
+    <script charset="utf-8" type="text/javascript" src={{ script }}></script>
+  {% endfor %}
+{% endblock %}
