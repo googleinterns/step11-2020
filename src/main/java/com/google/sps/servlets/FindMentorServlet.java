@@ -40,8 +40,12 @@ public class FindMentorServlet extends HttpServlet {
   private Jinjava jinjava;
   private String findMentorTemplate;
 
+  private DummyDataAccess dataAccess;
+
   @Override
   public void init() {
+    dataAccess = new DummyDataAccess();
+
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
     try {
@@ -71,11 +75,30 @@ public class FindMentorServlet extends HttpServlet {
 
     Map<String, Object> context = new HashMap<>();
 
-    Collection<Mentor> relatedMentors = new DummyDataAccess().getRelatedMentors(null);
+    Collection<Mentor> relatedMentors = dataAccess.getRelatedMentors(null);
     context.put("mentors", relatedMentors);
 
     String renderedTemplate = jinjava.render(findMentorTemplate, context);
 
     response.getWriter().println(renderedTemplate);
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    final String mentorKey = request.getParameter("mentorID");
+    final String choice = request.getParameter("choice");
+
+    boolean success = false;
+
+    if (dataAccess.getCurrentUser() != null) {
+      
+    }
+
+    MentorshipRequest mentorshipRequest = new MentorshipRequest();
+
+    dataAccess.publishRequest(mentorshipRequest);
+
+    response.setContentType("application/json;");
+    response.getWriter().println("{\"success\": " + success + "}");
   }
 }
