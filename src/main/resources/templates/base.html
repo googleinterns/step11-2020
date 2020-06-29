@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>{% block title %}{% endblock %}</title>
+	<title>{% block title %}Mentor Matching{% endblock %}</title>
 	{% block icon %}
     <link rel="icon" type="image/png" sizes="32x32" href="static/images/logo.png">
   {% endblock %}
@@ -14,7 +14,9 @@
 
 <body>
 	<header>
-    {% block header %}{% endblock %}
+    {% block header %}
+      {% include "header.html" %}
+    {% endblock %}
 	</header>
 	<div class="main-body">
 		<div class="main-content">
@@ -22,7 +24,7 @@
     </div>
   </div>
   {% block scripts %}
-	<script charset="utf-8" type="text/javascript" src="static/scripts/base.js"></script>
+	  <script charset="utf-8" type="text/javascript" src="static/scripts/base.js"></script>
   {% endblock %}
 </body>
 
