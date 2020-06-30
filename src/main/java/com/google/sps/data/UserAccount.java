@@ -51,7 +51,6 @@ public class UserAccount {
   private UserType userType;
 
   public UserAccount(
-      long datastoreKey,
       String userID,
       String email,
       String name,
@@ -69,7 +68,6 @@ public class UserAccount {
       String educationLevelOther,
       String description,
       UserType userType) {
-    this.datastoreKey = datastoreKey;
     this.userID = userID;
     this.email = email;
     this.name = name;
