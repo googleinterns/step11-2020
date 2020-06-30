@@ -36,10 +36,9 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.CONNECTION_REQUESTS)
 public class ConnectionRequestsServlet extends HttpServlet {
-  private String staticResponse;
   private DummyDataAccess dummyDataAccess;
   private Jinjava jinjava;
-  private String template;
+  private String connectionRequestTemplate;
   @Override
   public void init() {
     dummyDataAccess = new DummyDataAccess();
@@ -57,11 +56,11 @@ public class ConnectionRequestsServlet extends HttpServlet {
     context.put("url", "/");
 
     try {
-      template =
+      String template =
           Resources.toString(
               this.getClass().getResource(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS),
               Charsets.UTF_8);
-      staticResponse = jinjava.render(template, context);
+       connectionRequestTemplate = jinjava.render(template, context);
     } catch (IOException e) {
       System.err.println(
           "template" + ResourceConstants.TEMPLATE_CONNECTION_REQUESTS + " not found");
@@ -74,9 +73,8 @@ public class ConnectionRequestsServlet extends HttpServlet {
     response.setContentType("text/html;");
 
     Map<String, Object> context = new HashMap<>();
-    context.put("connection-requests", dummyDataAccess.getIncomingRequests(dummyDataAccess.getUser("woah")));
-
-    staticResponse = jinjava.render(template, context);
-    response.getWriter().println(staticResponse);
+    context.put("connectionRequests", dummyDataAccess.getMenteesByMentorshipRequests(dummyDataAccess.getIncomingRequests(dummyDataAccess.getUser("woah"))));
+    String renderTemplate = jinjava.render(connectionRequestTemplate, context);
+    response.getWriter().println(renderTemplate);
   }
 }
