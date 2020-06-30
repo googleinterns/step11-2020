@@ -14,11 +14,14 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.URLPatterns;
+import com.google.sps.data.Mentee;
+import com.google.sps.data.MentorshipRequest;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.UserAccount;
 import com.hubspot.jinjava.Jinjava;
@@ -37,12 +40,15 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.CONNECTION_REQUESTS)
 public class ConnectionRequestsServlet extends HttpServlet {
-  private DummyDataAccess dummyDataAccess;
+  private static final String ACCEPT = "accept";
+  private static final String DENY = "deny";
+
+  private DummyDataAccess dataAccess;
   private Jinjava jinjava;
   private String connectionRequestTemplate;
   @Override
   public void init() {
-    dummyDataAccess = new DummyDataAccess();
+    dataAccess = new DummyDataAccess();
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
     try {
@@ -50,11 +56,11 @@ public class ConnectionRequestsServlet extends HttpServlet {
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      System.err.println("templates dir not found!");
+      System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put("url", "/");
+    context.put(URLPatterns.URL, URLPatterns.CONNECTION_REQUESTS);
 
     try {
       String template =
@@ -69,7 +75,6 @@ public class ConnectionRequestsServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("REQUEST AT: " + request.getServletPath());
     response.setContentType("text/html;");
 
     if (connectionRequestTemplate == null) {
@@ -78,8 +83,37 @@ public class ConnectionRequestsServlet extends HttpServlet {
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put("connectionRequests", dummyDataAccess.getMenteesByMentorshipRequests(dummyDataAccess.getIncomingRequests(dummyDataAccess.getUser("woah"))));
+    context.put("connectionRequests", dataAccess.getIncomingRequests(dataAccess.getUser("woah")));
     String renderTemplate = jinjava.render(connectionRequestTemplate, context);
     response.getWriter().println(renderTemplate);
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    final String requestKey = request.getParameter("requestID");
+    final String choice = request.getParameter("choice");
+
+    boolean success = false;
+
+    User user = dataAccess.getCurrentUser();
+    if (user != null) {
+      Mentee mentee = dataAccess.getMentee(user.getUserId());
+      if (mentee != null) {
+        MentorshipRequest mentorshipRequest =
+            dataAccess.getMentorshipRequest(Long.parseLong(requestKey));
+        if (mentorshipRequest != null) {
+          if (choice.equals(ACCEPT)) {
+            dataAccess.approveRequest(mentorshipRequest);
+            success = true;
+          } else if (choice.equals(DENY)) {
+            dataAccess.denyRequest(mentorshipRequest);
+            success = true;
+          }
+        }
+      }
+    }
+
+    response.setContentType("application/json;");
+    response.getWriter().println("{\"success\": " + success + "}");
   }
 }

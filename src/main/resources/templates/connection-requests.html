@@ -8,13 +8,14 @@
 <div class="content-block" id="title-block">
   <h1 class="page-title" id="title">Connection Requests</h1>
 </div>
-<div class="content-block">
-
+<div class="content-block" id="mentee-card-container">
   {% raw %}{% for request in connectionRequests %}
-    <div class="mentor-card" id="{{ request.datastoreKey }}-card">
-      <h3 class="mentee-name">Name: {{ request.name }}</h3>
-      <p class="mentee-name">UserKey: {{ request.datastoreKey }}</p>
-      <div>
+    {% set mentee = request.fromUser %}
+    <div class="mentee-card" id="{{ mentee.name }}-card">
+      <p class="request-id" hidden>{{ request.datastoreKey }}</p>
+      <h3 class="mentee-name">Name: {{ mentee.name }}</h3>
+      <p class="mentee-name">UserKey: {{ mentee.datastoreKey }}</p>
+      <div class="request-buttons">
         <button id="yes">Accept</button>
         <button id="no">Decline</button>
       </div>
@@ -25,4 +26,5 @@
 
 {% block scripts %}
   {{ super() }}
+  <script charset="utf-8" type="text/javascript" src="static/scripts/connection-requests.js"></script>
 {% endblock %}

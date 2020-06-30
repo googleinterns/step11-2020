@@ -34,6 +34,8 @@ interface DataAccess {
 
   Collection<Connection> getConnections(UserAccount user);
 
+  MentorshipRequest getMentorshipRequest(long requestKey);
+
   void publishRequest(MentorshipRequest request);
 
   void deleteRequest(MentorshipRequest request);
