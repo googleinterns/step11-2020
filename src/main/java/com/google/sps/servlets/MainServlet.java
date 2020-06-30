@@ -13,13 +13,14 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
+
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
 import java.io.File;
-import com.google.sps.util.URLPatterns;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;

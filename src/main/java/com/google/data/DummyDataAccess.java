@@ -12,7 +12,7 @@ import java.util.TimeZone;
 
 public class DummyDataAccess implements DataAccess {
 
-  public UserAccount getUser(String userID) {
+  public Mentor getUser(String userID) {
     return (new Mentor.Builder())
         .name("Alice")
         .userID("321432")
