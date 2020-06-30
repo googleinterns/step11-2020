@@ -18,4 +18,6 @@ public class LoginState {
   public String userProfileURL;
   public String toggleLoginURL;
   public boolean isLoggedIn;
+  public boolean autoRedir;
+  public boolean isMentor;
 }

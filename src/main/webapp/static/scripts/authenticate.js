@@ -17,17 +17,17 @@ function loadAuthButton() {
   console.log(request);
   fetch(request).then(handleFetchErrors).then(response => response.json())
     .then(loginState => {
-      if (!loginState.isLoggedIn) {
+      if (loginState.autoRedir && (!loginState.isLoggedIn)) {
         window.location.href = loginState.toggleLoginURL;
       }
       else {
-        console.log("Rendering auth button links");
         const authButtonList = document.getElementsByClassName("auth-button");
         for (let i = 0; i < authButtonList.length; i++) {
           let authButtonElem = authButtonList[i];
-          console.log(authButtonElem);
-          authButtonElem.innerText = "Log Out";
-          console.log(loginState.toggleLoginURL);
+          if (loginState.isLoggedIn)
+            authButtonElem.innerText = "Log Out";
+          else
+            authButtonElem.innerText = "Log In";
           authButtonElem.onclick =
             (event) => { window.location = loginState.toggleLoginURL; };
         }
