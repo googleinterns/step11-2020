@@ -39,7 +39,7 @@ function loadUserInfo () {
   const userInfoElem = document.getElementById('userInfo');
   userInfoElem.innerHTML = '';
   const pathName = window.location.pathname;
-  const request = '/load-profile?userPath=' + (pathName.split('/')[0]);
+  const request = '/profile?userID=' + (pathName.split('/')[0]);
   fetch(request).then(handleFetchErrors).
     then(response => response.json()).then((userAccount) => {
       for (memberKey in userAccount) {
