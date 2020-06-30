@@ -52,11 +52,12 @@ public class QuestionnaireServlet extends HttpServlet {
 
   private String questionnaireTemplate;
   private Jinjava jinjava;
-
+  private String formType;
   @Override
   public void init() {
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
+    formType = "";
     try {
       jinjava.setResourceLocator(
           new FileLocator(
@@ -87,12 +88,11 @@ public class QuestionnaireServlet extends HttpServlet {
       response.setStatus(500);
       return;
     }
-    String formType = request.getParameter("formType");
-    System.out.println(formType);
-    if(formType != null ) {
+    formType = request.getParameter("formType");
+    if(formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
       Map<String, Object> context = new HashMap<>();
 
-      context.put("isMentor", true);
+      context.put("isMentor", formType.equals(MENTOR));
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
@@ -103,7 +103,11 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.sendRedirect("/find-mentor");
+    if (formType.equals(MENTEE)) {
+      response.sendRedirect(URLPatterns.FIND_MENTOR);
+    } else {
+      response.sendRedirect(URLPatterns.PROFILE);
+    }
   }
 
   private Map<String, Object> selectionListsForFrontEnd() {
