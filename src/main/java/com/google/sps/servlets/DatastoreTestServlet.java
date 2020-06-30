@@ -6,7 +6,8 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
-import com.google.sps.data.*;
+import com.google.sps.data.UserAccount;
+import com.google.sps.data.DummyDataAccess;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +19,10 @@ public class DatastoreTestServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Entity entity = UserAccount.convertToEntity(DummyDataAccess.getUser("alice"));
+    datastore.put(entity);
+    response.sendRedirect("/");
+  }
 
 }
