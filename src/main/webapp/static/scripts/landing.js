@@ -2,11 +2,11 @@ const btnJoinAsMentee = document.getElementById("join-as-mentee");
 const btnJoinAsMentor = document.getElementById("join-as-mentor");
 
 btnJoinAsMentee.addEventListener("click", (event) => {
-  window.location.pathname = "/questionnaire?t=mentee";
+  window.location.href = "/questionnaire?formType=mentee";
 });
 
 btnJoinAsMentor.addEventListener("click", (event) => {
-  window.location.pathname = "/questionnaire?t=mentor";
+  window.location.href = "/questionnaire?formType=mentor";
 });
 
 const loginButton = document.getElementById("login-button");
