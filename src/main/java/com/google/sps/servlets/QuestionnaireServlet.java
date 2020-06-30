@@ -66,7 +66,7 @@ public class QuestionnaireServlet extends HttpServlet {
     }
 
     Map<String, Object> context = selectionListsForFrontEnd();
-    context.put("url", "/");
+    context.put(URLPatterns.URL, URLPatterns.QUESTIONNAIRE);
 
     try {
       String template =
