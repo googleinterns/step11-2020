@@ -101,6 +101,11 @@ public class QuestionnaireServlet extends HttpServlet {
     }
   }
 
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    response.sendRedirect("/find-mentor");
+  }
+
   private Map<String, Object> selectionListsForFrontEnd() {
     Map<String, Object> map = new HashMap<>();
     map.put("countries", Country.values());
