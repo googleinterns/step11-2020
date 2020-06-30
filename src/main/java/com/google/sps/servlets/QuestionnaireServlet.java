@@ -26,6 +26,8 @@ import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ErrorMessages;
+import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
@@ -43,15 +45,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = "/questionnaire")
+@WebServlet(urlPatterns = URLPatterns.QUESTIONNAIRE)
 public class QuestionnaireServlet extends HttpServlet {
+  private static final String MENTOR = "mentor";
+  private static final String MENTEE = "mentee";
 
-  private String staticResponse;
-
+  private String questionnaireTemplate;
+  private Jinjava jinjava;
+  private String formType;
   @Override
   public void init() {
     JinjavaConfig config = new JinjavaConfig();
-    Jinjava jinjava = new Jinjava(config);
+    jinjava = new Jinjava(config);
+    formType = "";
     try {
       jinjava.setResourceLocator(
           new FileLocator(
@@ -61,15 +67,15 @@ public class QuestionnaireServlet extends HttpServlet {
     }
 
     Map<String, Object> context = selectionListsForFrontEnd();
-    context.put("url", "/");
+    context.put(URLPatterns.URL, URLPatterns.QUESTIONNAIRE);
 
     try {
       String template =
           Resources.toString(
               this.getClass().getResource(ResourceConstants.TEMPLATE_QUESTIONNAIRE), Charsets.UTF_8);
-      staticResponse = jinjava.render(template, context);
+      questionnaireTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println("template"  + ResourceConstants.TEMPLATE_QUESTIONNAIRE +  " not found");
+      System.err.println(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_QUESTIONNAIRE));
     }
   }
 
@@ -78,7 +84,30 @@ public class QuestionnaireServlet extends HttpServlet {
     System.out.println("REQUEST AT: " + request.getServletPath());
     response.setContentType("text/html;");
 
-    response.getWriter().println(staticResponse);
+    if (questionnaireTemplate == null) {
+      response.setStatus(500);
+      return;
+    }
+    formType = request.getParameter("formType");
+    if(formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
+      Map<String, Object> context = new HashMap<>();
+
+      context.put("isMentor", formType.equals(MENTOR));
+      String renderTemplate = jinjava.render(questionnaireTemplate, context);
+      response.getWriter().println(renderTemplate);
+    } else {
+      System.err.println("insufficient or invalid parameters");
+      response.sendRedirect("/landing");
+    }
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    if (formType.equals(MENTEE)) {
+      response.sendRedirect(URLPatterns.FIND_MENTOR);
+    } else {
+      response.sendRedirect(URLPatterns.PROFILE);
+    }
   }
 
   private Map<String, Object> selectionListsForFrontEnd() {
