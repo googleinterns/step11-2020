@@ -41,9 +41,8 @@ public final class ProfileServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String contextPath = request.getContextPath().toString();
-    String paths[] = contextPath.split("/");
-    String requestedUserID = paths[0];
+    String requestedUserID = getParameter(request, "userID", "alice");
+
     UserService userService = UserServiceFactory.getUserService();
     JinjavaConfig config = new JinjavaConfig();
     Jinjava jinjava = new Jinjava(config);
@@ -59,9 +58,9 @@ public final class ProfileServlet extends HttpServlet {
       PreparedQuery result = datastore.prepare(query);
       Entity userEntity = result.asSingleEntity();
       Map<String, Object> context = new HashMap();
-      context.put("url", "/requestedUserID/profile");
+      context.put("url", "/profile?userID=" + requestedUserID);
       context.put("userType", (int) (userEntity.getProperty("userType")));
-      context.put("browsingUserProfileURL", "/" + userId + "/profile");
+      context.put("browsingUserProfileURL", "/profile?userID=" + userId);
       if ((int) (userEntity.getProperty("userType")) == 0) {
         context.put("mentor", new Mentor(userEntity));
       } else {
