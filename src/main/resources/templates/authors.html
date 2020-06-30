@@ -1,33 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}Mentor Matching{% endblock %}
-
 {% block styles %}
   {{ super() }}
-  {% set styles = [
-      "static/styles/authors.css"
-    ] %}
-  {% for style in styles %}
-    <link rel="stylesheet" type="text/css" href={{ style }}>
-  {% endfor %}
-{% endblock %}
-
-{% block header %}
-  {% set nav_items = [
-      {
-        "baseURL": "/about", "iconLabel": "question-circle", "text": "About",
-        "adjust": "left"
-      },
-      {
-        "baseURL": "/authors", "iconLabel": "users", "text": "Meet the Creators",
-        "adjust": "left"
-      },
-      {
-        "baseURL": "/authenticate", "iconLabel": "user", "text": "Login",
-        "adjust": "right"
-      }
-    ] %}
-  {% include "navbar.html" %}
+  <link rel="stylesheet" type="text/css" href="static/styles/authors.css">
 {% endblock %}
 
 {% block main_content %}
@@ -57,14 +32,4 @@
         I love mentoring, and I am a passionate boi.</p>
   </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-  {{ super() }}
-  {% set scripts = [
-      "static/scripts/authors.js"
-    ]%}
-  {% for script in scripts %}
-    <script charset="utf-8" type="text/javascript" src={{ script }}></script>
-  {% endfor %}
 {% endblock %}
