@@ -12,7 +12,7 @@ public class TimeZoneInfo {
   double offset;
 
   private TimeZoneInfo(TimeZone timeZone) {
-    this.name = timeZone.getID();
+    this.name = timeZone.getDisplayName();
     this.offset = timeZone.getRawOffset() / MILLISECONDS_PER_HOURS;
   }
 
