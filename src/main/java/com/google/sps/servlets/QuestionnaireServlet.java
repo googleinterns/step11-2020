@@ -26,6 +26,8 @@ import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ErrorMessages;
+import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
@@ -43,15 +45,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = "/questionnaire")
+@WebServlet(urlPatterns = URLPatterns.QUESTIONNAIRE)
 public class QuestionnaireServlet extends HttpServlet {
+  private static final String MENTOR = "mentor";
+  private static final String MENTEE = "mentee";
 
-  private String staticResponse;
+  private String questionnaireTemplate;
+  private Jinjava jinjava;
 
   @Override
   public void init() {
     JinjavaConfig config = new JinjavaConfig();
-    Jinjava jinjava = new Jinjava(config);
+    jinjava = new Jinjava(config);
     try {
       jinjava.setResourceLocator(
           new FileLocator(
@@ -67,9 +72,9 @@ public class QuestionnaireServlet extends HttpServlet {
       String template =
           Resources.toString(
               this.getClass().getResource(ResourceConstants.TEMPLATE_QUESTIONNAIRE), Charsets.UTF_8);
-      staticResponse = jinjava.render(template, context);
+      questionnaireTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println("template"  + ResourceConstants.TEMPLATE_QUESTIONNAIRE +  " not found");
+      System.err.println(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_QUESTIONNAIRE));
     }
   }
 
@@ -78,7 +83,22 @@ public class QuestionnaireServlet extends HttpServlet {
     System.out.println("REQUEST AT: " + request.getServletPath());
     response.setContentType("text/html;");
 
-    response.getWriter().println(staticResponse);
+    if (questionnaireTemplate == null) {
+      response.setStatus(500);
+      return;
+    }
+    String formType = request.getParameter("formType");
+    System.out.println(formType);
+    if(formType != null ) {
+      Map<String, Object> context = new HashMap<>();
+
+      context.put("isMentor", true);
+      String renderTemplate = jinjava.render(questionnaireTemplate, context);
+      response.getWriter().println(renderTemplate);
+    } else {
+      System.err.println("insufficient or invalid parameters");
+      response.sendRedirect("/landing");
+    }
   }
 
   private Map<String, Object> selectionListsForFrontEnd() {
