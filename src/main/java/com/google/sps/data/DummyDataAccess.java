@@ -12,10 +12,15 @@ import java.util.TimeZone;
 
 public class DummyDataAccess implements DataAccess {
 
+  public User getCurrentUser() {
+    UserService userService = UserServiceFactory.getUserService();
+    return userService.getCurrentUser();
+  }
+
   public UserAccount getUser(String userID) {
     return (new Mentor.Builder())
         .name("Alice")
-        .userID("321432")
+        .userID(userID)
         .email("alice@gmail.com")
         .dateOfBirth(new Date())
         .country(Country.AU)
@@ -58,6 +63,62 @@ public class DummyDataAccess implements DataAccess {
         .visibility(true)
         .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
         .build();
+  }
+
+  public Mentee getMentee(String userID) {
+    return (new Mentee.Builder())
+        .name("Alice")
+        .userID("321432")
+        .email("alice@gmail.com")
+        .dateOfBirth(new Date())
+        .country(Country.AU)
+        .language(Language.ES)
+        .timezone(TimeZone.getDefault())
+        .ethnicity(Ethnicity.CAUCASIAN)
+        .ethnicityOther("")
+        .gender(Gender.WOMAN)
+        .genderOther("")
+        .firstGen(true)
+        .lowIncome(true)
+        .educationLevel(EducationLevel.BACHELORS)
+        .educationLevelOther("")
+        .description("hi im alice")
+        .goal(Topic.COMPUTER_SCIENCE)
+        .desiredMeetingFrequency(MeetingFrequency.WEEKLY)
+        .build();
+  }
+
+  public Mentee getMentee(Key datastoreKey) {
+    return (new Mentee.Builder())
+        .name("Alice")
+        .userID("321432")
+        .email("alice@gmail.com")
+        .dateOfBirth(new Date())
+        .country(Country.AU)
+        .language(Language.ES)
+        .timezone(TimeZone.getDefault())
+        .ethnicity(Ethnicity.CAUCASIAN)
+        .ethnicityOther("")
+        .gender(Gender.WOMAN)
+        .genderOther("")
+        .firstGen(true)
+        .lowIncome(true)
+        .educationLevel(EducationLevel.BACHELORS)
+        .educationLevelOther("")
+        .description("hi im alice")
+        .goal(Topic.COMPUTER_SCIENCE)
+        .desiredMeetingFrequency(MeetingFrequency.WEEKLY)
+        .build();
+  }
+
+  public Mentor getMentor(String userID) {
+    UserAccount user = getUser(userID);
+    return user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
+  }
+
+  public Mentor getMentor(Key datastoreKey) {
+    UserAccount user = getUser(datastoreKey);
+    return user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
   }
 
   public Collection<Mentor> getRelatedMentors(Mentee mentee) {
@@ -282,11 +343,6 @@ public class DummyDataAccess implements DataAccess {
       // data.add(new Connection());
     }
     return data;
-  }
-
-  public User getCurrentUser() {
-    UserService userService = UserServiceFactory.getUserService();
-    return userService.getCurrentUser();
   }
 
   public void publishRequest(MentorshipRequest request) {}

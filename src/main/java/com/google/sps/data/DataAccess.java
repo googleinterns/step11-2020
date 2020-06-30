@@ -6,11 +6,17 @@ import java.util.Collection;
 
 interface DataAccess {
 
+  User getCurrentUser();
+
   UserAccount getUser(String userID);
 
   UserAccount getUser(Key datastoreKey);
 
-  User getCurrentUser();
+  Mentee getMentee(String userID);
+  Mentee getMentee(Key datastoreKey);
+
+  Mentor getMentor(String userID);
+  Mentor getMentor(Key datastoreKey);
 
   Collection<Mentor> getRelatedMentors(Mentee mentee);
 
