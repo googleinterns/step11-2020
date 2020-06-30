@@ -1,63 +1,27 @@
 {% extends "base.html" %}
 
-{% block title %}Mentor Matching{% endblock %}
-
 {% block styles %}
-{{ super() }}
-{% set styles = [
-      "static/styles/find-mentor.css"
-    ] %}
-{% for style in styles %}
-<link rel="stylesheet" type="text/css" href={{ style }}>
-{% endfor %}
-{% endblock %}
-
-{% block header %}
-{% set nav_items = [
-      {
-        "baseURL": "/about", "iconLabel": "question-circle", "text": "About",
-        "adjust": "left"
-      },
-      {
-        "baseURL": "/authors", "iconLabel": "users", "text": "Meet the Creators",
-        "adjust": "left"
-      },
-      {
-        "baseURL": "", "iconLabel": "user", "text": "",
-        "adjust": "right", "class": "auth-button"
-      }
-    ] %}
-{% include "navbar.html" %}
+  {{ super() }}
+  <link rel="stylesheet" type="text/css" href="static/styles/find-mentor.css">
 {% endblock %}
 
 {% block main_content %}
 <div class="content-block" id="title-block">
-	<h1 class="page-title" id="title">Find a Mentor</h1>
+  <h1 class="page-title" id="title">Find a Mentor</h1>
 </div>
 <div class="content-block" id="mentor-cards-container">
-	{% for mentor in mentors %}
-	<div class="mentor-card" id="{{ mentor.nickname }}-card">
-		<h3 class="mentor-name">{{ mentor.nickname }}</h3>
-		<p class="mentor-dob">{{ mentor.dateOfBirth }}</p>
-		<p class="mentor-education-level">{{ mentor.educationLevel }}</p>
-		<p class="mentor-focus">{{ mentor.focus }}</p>
-	</div>
-	{% endfor %}
+  {% raw %}{% for mentor in mentors %}
+    {% include "mentor-card.html" %}
+  {% endfor %}{% endraw %}
 </div>
 <div class="content-block" id="mentor-rating-buttons">
-	<button class="pretty-button mentor-rating-button" id="yes">I like this mentor!</button>
-	<button class="pretty-button mentor-rating-button" id="maybe">I might work with this mentor.</button>
-	<button class="pretty-button mentor-rating-button" id="no">This mentor doesn't match my preferences.</button>
+  <button class="pretty-button mentor-rating-button" id="yes">I like this mentor!</button>
+  <button class="pretty-button mentor-rating-button" id="maybe">I might work with this mentor.</button>
+  <button class="pretty-button mentor-rating-button" id="no">This mentor doesn't match my preferences.</button>
 </div>
 {% endblock %}
 
 {% block scripts %}
-{{ super() }}
-{% set scripts = [
-      "static/scripts/find-mentor.js"
-    ]%}
-{% for script in scripts %}
-<script charset="utf-8" type="text/javascript" src={{ script }}></script>
-{% endfor %}
-<script charset="utf-8" type="text/javascript" src="static/scripts/authenticate.js" onload="loadAuthButton()"></script>
+  {{ super() }}
+  <script charset="utf-8" type="text/javascript" src="static/scripts/find-mentor.js"></script>
 {% endblock %}

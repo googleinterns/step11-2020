@@ -1,12 +1,15 @@
 package com.google.sps.data;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.KeyRange;
 import java.util.Date;
 import java.util.TimeZone;
 
-class UserAccount {
+public class UserAccount {
   public static final String ENTITY_TYPE = "UserAccount";
 
   private static final String USER_ID = "userID";
@@ -28,6 +31,7 @@ class UserAccount {
   private static final String USER_TYPE = "userType";
 
   private long datastoreKey;
+  private boolean keyInitialized;
   private String userID;
   private String email;
   private String name;
@@ -46,8 +50,7 @@ class UserAccount {
   private String description;
   private UserType userType;
 
-  private UserAccount(
-      long datastoreKey,
+  public UserAccount(
       String userID,
       String email,
       String name,
@@ -65,7 +68,6 @@ class UserAccount {
       String educationLevelOther,
       String description,
       UserType userType) {
-    this.datastoreKey = datastoreKey;
     this.userID = userID;
     this.email = email;
     this.name = name;
@@ -87,7 +89,6 @@ class UserAccount {
 
   protected UserAccount(Builder<?> builder) {
     this(
-        builder.datastoreKey,
         builder.userID,
         builder.email,
         builder.name,
@@ -105,6 +106,14 @@ class UserAccount {
         builder.educationLevelOther,
         builder.description,
         builder.userType);
+    this.keyInitialized = builder.keyInitialized;
+    if (builder.keyInitialized) {
+      this.datastoreKey = builder.datastoreKey;
+    } else {
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      KeyRange keyRange = datastore.allocateIds(ENTITY_TYPE, 1);
+      this.datastoreKey = keyRange.getStart().getId();
+    }
   }
 
   public UserAccount(Entity entity) {
@@ -138,9 +147,9 @@ class UserAccount {
     entity.setProperty(COUNTRY, this.country.ordinal());
     entity.setProperty(LANGUAGE, this.language.ordinal());
     entity.setProperty(TIMEZONE, this.timezone.getID());
-    entity.setProperty(ETHNICITY, this.ethnicity);
+    entity.setProperty(ETHNICITY, this.ethnicity.ordinal());
     entity.setProperty(ETHNICITY_OTHER, this.ethnicityOther);
-    entity.setProperty(GENDER, this.gender);
+    entity.setProperty(GENDER, this.gender.ordinal());
     entity.setProperty(GENDER_OTHER, this.genderOther);
     entity.setProperty(FIRST_GEN, this.firstGen);
     entity.setProperty(LOW_INCOME, this.lowIncome);
@@ -225,6 +234,7 @@ class UserAccount {
 
   protected abstract static class Builder<T extends Builder<T>> {
     private static long datastoreKey;
+    private static boolean keyInitialized = false;
     private static String userID;
     private static String email;
     private static String name;
@@ -244,10 +254,10 @@ class UserAccount {
     private static UserType userType;
 
     public Builder() {}
-    ;
 
     public T datastoreKey(long datastoreKey) {
       this.datastoreKey = datastoreKey;
+      this.keyInitialized = true;
       return (T) this;
     }
 
