@@ -20,9 +20,6 @@ import com.google.common.io.Resources;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
-import com.google.sps.data.MentorshipRequest;
-import com.google.sps.data.UserAccount;
-import com.google.sps.data.UserType;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -58,7 +55,7 @@ public class FindMentorServlet extends HttpServlet {
       jinjava.setResourceLocator(
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
-    } catch (URISyntaxException|FileNotFoundException e) {
+    } catch (URISyntaxException | FileNotFoundException e) {
       System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
@@ -71,7 +68,8 @@ public class FindMentorServlet extends HttpServlet {
               this.getClass().getResource(ResourceConstants.TEMPLATE_FIND_MENTOR), Charsets.UTF_8);
       findMentorTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_FIND_MENTOR));
+      System.err.println(
+          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_FIND_MENTOR));
     }
   }
 
@@ -85,7 +83,7 @@ public class FindMentorServlet extends HttpServlet {
 
         Map<String, Object> context = new HashMap<>();
 
-        Collection<Mentor> relatedMentors = dataAccess.getRelatedMentors(null);
+        Collection<Mentor> relatedMentors = dataAccess.getRelatedMentors(mentee);
         context.put("mentors", relatedMentors);
 
         String renderedTemplate = jinjava.render(findMentorTemplate, context);
@@ -107,9 +105,9 @@ public class FindMentorServlet extends HttpServlet {
     User user = dataAccess.getCurrentUser();
     if (user != null) {
       Mentee mentee = dataAccess.getMentee(user.getUserId());
+      Mentor mentor = dataAccess.getMentor(Long.parseLong(mentorKey));
       if (mentee != null) {
-        MentorshipRequest mentorshipRequest = new MentorshipRequest(Long.parseLong(mentorKey), mentee.getDatastoreKey());
-        dataAccess.publishRequest(mentorshipRequest);
+        dataAccess.addToShortlist(mentee, choice, mentor);
         success = true;
       }
     }

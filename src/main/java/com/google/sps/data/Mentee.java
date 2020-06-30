@@ -1,6 +1,7 @@
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.Entity;
+import java.util.Collection;
 
 public class Mentee extends UserAccount {
 
@@ -15,7 +16,6 @@ public class Mentee extends UserAccount {
   private Collection<Long> yesses;
   private Collection<Long> maybes;
   private Collection<Long> nos;
-
 
   private Mentee(Builder builder) {
     super(builder);

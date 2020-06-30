@@ -1,6 +1,5 @@
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.User;
 import java.util.Collection;
 
@@ -10,13 +9,17 @@ interface DataAccess {
 
   UserAccount getUser(String userID);
 
-  UserAccount getUser(Key datastoreKey);
+  UserAccount getUser(long datastoreKey);
 
   Mentee getMentee(String userID);
-  Mentee getMentee(Key datastoreKey);
+
+  Mentee getMentee(long datastoreKey);
 
   Mentor getMentor(String userID);
-  Mentor getMentor(Key datastoreKey);
+
+  Mentor getMentor(long datastoreKey);
+
+  void saveUser(UserAccount user);
 
   Collection<Mentor> getRelatedMentors(Mentee mentee);
 
@@ -26,11 +29,15 @@ interface DataAccess {
 
   Collection<MentorshipRequest> getOutgoingRequests(UserAccount user);
 
-  void saveUser(UserAccount user);
+  void addToShortlist(Mentee mentee, String whichList, Mentor mentor);
 
-  Collection<Connection> getConnections(UserAccount user);
+  void removeFromShortlist(Mentee mentee, String whichList, Mentor mentor);
+
+  Collection<Mentor> getShortlist(Mentee mentee, String whichList);
 
   void publishRequest(MentorshipRequest request);
+
+  MentorshipRequest getMentorshipRequest(long requestKey);
 
   void deleteRequest(MentorshipRequest request);
 
@@ -39,4 +46,8 @@ interface DataAccess {
 
   // delete request object
   void denyRequest(MentorshipRequest request);
+
+  void makeConnection(long mentorKey, long menteeKey);
+
+  Collection<Connection> getConnections(UserAccount user);
 }

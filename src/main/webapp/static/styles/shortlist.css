@@ -1,0 +1,12 @@
+#mentor-cards-container {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  width: 100%;
+  overflow-x: scroll;
+}
+
+.mentor-card {
+  min-width: 75ch;
+  margin: 3em;
+}

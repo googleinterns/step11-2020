@@ -14,10 +14,13 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
+import com.google.sps.data.MentorshipRequest;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -25,6 +28,7 @@ import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -37,6 +41,9 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.SHORTLIST)
 public class ShortlistServlet extends HttpServlet {
+  private static final String SEND = "send";
+  private static final String CANCEL = "cancel";
+
   private Jinjava jinjava;
   private String shortlistTemplate;
 
@@ -52,7 +59,7 @@ public class ShortlistServlet extends HttpServlet {
       jinjava.setResourceLocator(
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
-    } catch (URISyntaxException|FileNotFoundException e) {
+    } catch (URISyntaxException | FileNotFoundException e) {
       System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
@@ -79,9 +86,9 @@ public class ShortlistServlet extends HttpServlet {
 
         Map<String, Object> context = new HashMap<>();
 
-        Collection<Mentor> yesses = dataAccess.getYesses(mentee);
+        Collection<Mentor> yesses = dataAccess.getShortlist(mentee, "yes");
         context.put("yesses", yesses);
-        Collection<Mentor> maybes = dataAccess.getMaybes(mentee);
+        Collection<Mentor> maybes = dataAccess.getShortlist(mentee, "maybe");
         context.put("maybes", maybes);
 
         String renderedTemplate = jinjava.render(shortlistTemplate, context);
@@ -96,6 +103,7 @@ public class ShortlistServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     final String mentorKey = request.getParameter("mentorID");
+    final String whichList = request.getParameter("whichList");
     final String choice = request.getParameter("choice");
 
     boolean success = false;
@@ -103,9 +111,15 @@ public class ShortlistServlet extends HttpServlet {
     User user = dataAccess.getCurrentUser();
     if (user != null) {
       Mentee mentee = dataAccess.getMentee(user.getUserId());
+      Mentor mentor = dataAccess.getMentor(Long.parseLong(mentorKey));
       if (mentee != null) {
-        MentorshipRequest mentorshipRequest = new MentorshipRequest(Long.parseLong(mentorKey), mentee.getDatastoreKey());
-        dataAccess.publishRequest(mentorshipRequest);
+        if (choice.equals(SEND)) {
+          MentorshipRequest mentorshipRequest =
+              new MentorshipRequest(mentor.getDatastoreKey(), mentee.getDatastoreKey());
+          dataAccess.publishRequest(mentorshipRequest);
+        } else if (choice.equals(CANCEL)) {
+          dataAccess.removeFromShortlist(mentee, whichList, mentor);
+        }
         success = true;
       }
     }
