@@ -1,6 +1,7 @@
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.users.User;
 import java.util.Collection;
 
 interface DataAccess {
@@ -8,6 +9,8 @@ interface DataAccess {
   UserAccount getUser(String userID);
 
   UserAccount getUser(Key datastoreKey);
+
+  User getCurrentUser();
 
   Collection<Mentor> getRelatedMentors(Mentee mentee);
 

@@ -16,11 +16,14 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -30,31 +33,44 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = "/about")
+@WebServlet(urlPatterns = URLPatterns.ABOUT)
 public class AboutServlet extends HttpServlet {
+  private String staticResponse;
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("REQUEST AT: " + request.getServletPath());
-    response.setContentType("text/html;");
-
+  public void init() {
     JinjavaConfig config = new JinjavaConfig();
     Jinjava jinjava = new Jinjava(config);
     try {
       jinjava.setResourceLocator(
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
-    } catch (URISyntaxException e) {
-      System.err.println("templates dir not found!");
+    } catch (URISyntaxException | FileNotFoundException e) {
+      System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put("url", "/");
-    String template =
-        Resources.toString(
-            this.getClass().getResource(ResourceConstants.TEMPLATE_ABOUT), Charsets.UTF_8);
-    String renderedTemplate = jinjava.render(template, context);
+    context.put(URLPatterns.URL, URLPatterns.ABOUT);
 
-    response.getWriter().println(renderedTemplate);
+    try {
+      String template =
+          Resources.toString(
+              this.getClass().getResource(ResourceConstants.TEMPLATE_ABOUT), Charsets.UTF_8);
+      staticResponse = jinjava.render(template, context);
+    } catch (IOException e) {
+      System.err.println(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_ABOUT));
+    }
+  }
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    response.setContentType("text/html;");
+
+    if (staticResponse == null) {
+      response.setStatus(500);
+      return;
+    }
+
+    response.getWriter().println(staticResponse);
   }
 }

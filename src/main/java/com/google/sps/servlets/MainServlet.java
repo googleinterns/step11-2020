@@ -13,20 +13,52 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
-
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
+import com.hubspot.jinjava.Jinjava;
+import com.hubspot.jinjava.JinjavaConfig;
+import com.hubspot.jinjava.loader.FileLocator;
+import java.io.File;
+import com.google.sps.util.URLPatterns;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {"/", "/main"})
+@WebServlet(urlPatterns = {URLPatterns.BASE, URLPatterns.MAIN})
 public class MainServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // TODO: do some user auth logic to only go to landing if not logged in, otherwise go to
-    // dashboard
+    System.out.println("REQUEST AT: " + request.getServletPath());
+    if (request.getServletPath() != "" && request.getServletPath() != "/") {
+      response.sendRedirect("/");
+      // return;
+    }
+    response.setContentType("text/html;");
+
+    JinjavaConfig config = new JinjavaConfig();
+    Jinjava jinjava = new Jinjava(config);
+    try {
+      jinjava.setResourceLocator(
+          new FileLocator(new File(this.getClass().getResource("/templates").toURI())));
+    } catch (URISyntaxException e) {
+      System.err.println("templates dir not found!");
+    }
+
+    Map<String, Object> context = new HashMap<>();
+    context.put("url", "/");
+
+    String template =
+        Resources.toString(this.getClass().getResource("/templates/profile.html"), Charsets.UTF_8);
+
+    String renderedTemplate = jinjava.render(template, context);
+
+    response.getWriter().println(renderedTemplate);
     response.sendRedirect("/landing");
   }
 }
