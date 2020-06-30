@@ -66,10 +66,11 @@ public class QuestionnaireServlet extends HttpServlet {
     try {
       String template =
           Resources.toString(
-              this.getClass().getResource(ResourceConstants.TEMPLATE_QUESTIONNAIRE), Charsets.UTF_8);
+              this.getClass().getResource(ResourceConstants.TEMPLATE_QUESTIONNAIRE),
+              Charsets.UTF_8);
       staticResponse = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println("template"  + ResourceConstants.TEMPLATE_QUESTIONNAIRE +  " not found");
+      System.err.println("template" + ResourceConstants.TEMPLATE_QUESTIONNAIRE + " not found");
     }
   }
 
