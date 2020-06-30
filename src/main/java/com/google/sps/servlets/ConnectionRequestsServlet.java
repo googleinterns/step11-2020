@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.URLPatterns;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.UserAccount;
@@ -62,8 +63,7 @@ public class ConnectionRequestsServlet extends HttpServlet {
               Charsets.UTF_8);
        connectionRequestTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println(
-          "template" + ResourceConstants.TEMPLATE_CONNECTION_REQUESTS + " not found");
+      System.err.println(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS));
     }
   }
 
@@ -71,6 +71,11 @@ public class ConnectionRequestsServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     System.out.println("REQUEST AT: " + request.getServletPath());
     response.setContentType("text/html;");
+
+    if (connectionRequestTemplate == null) {
+      response.setStatus(500);
+      return;
+    }
 
     Map<String, Object> context = new HashMap<>();
     context.put("connectionRequests", dummyDataAccess.getMenteesByMentorshipRequests(dummyDataAccess.getIncomingRequests(dummyDataAccess.getUser("woah"))));
