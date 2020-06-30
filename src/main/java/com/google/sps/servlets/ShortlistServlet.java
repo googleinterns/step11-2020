@@ -37,32 +37,80 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.SHORTLIST)
 public class ShortlistServlet extends HttpServlet {
+  private Jinjava jinjava;
+  private String shortlistTemplate;
+
+  private DummyDataAccess dataAccess;
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
+  public void init() {
+    dataAccess = new DummyDataAccess();
 
     JinjavaConfig config = new JinjavaConfig();
-    Jinjava jinjava = new Jinjava(config);
+    jinjava = new Jinjava(config);
     try {
       jinjava.setResourceLocator(
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
-    } catch (URISyntaxException e) {
+    } catch (URISyntaxException|FileNotFoundException e) {
       System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = new HashMap<>();
     context.put(URLPatterns.URL, URLPatterns.SHORTLIST);
-    Collection<Mentor> relatedMentors = new DummyDataAccess().getRelatedMentors(null);
-    context.put("mentors", relatedMentors);
 
-    String template =
-        Resources.toString(
-            this.getClass().getResource(ResourceConstants.TEMPLATE_SHORTLIST), Charsets.UTF_8);
+    try {
+      String template =
+          Resources.toString(
+              this.getClass().getResource(ResourceConstants.TEMPLATE_SHORTLIST), Charsets.UTF_8);
+      shortlistTemplate = jinjava.render(template, context);
+    } catch (IOException e) {
+      System.err.println(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_SHORTLIST));
+    }
+  }
 
-    String renderedTemplate = jinjava.render(template, context);
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    User user = dataAccess.getCurrentUser();
+    if (user != null) {
+      Mentee mentee = dataAccess.getMentee(user.getUserId());
+      if (mentee != null) {
+        response.setContentType("text/html;");
 
-    response.getWriter().println(renderedTemplate);
+        Map<String, Object> context = new HashMap<>();
+
+        Collection<Mentor> yesses = dataAccess.getYesses(mentee);
+        context.put("yesses", yesses);
+        Collection<Mentor> maybes = dataAccess.getMaybes(mentee);
+        context.put("maybes", maybes);
+
+        String renderedTemplate = jinjava.render(shortlistTemplate, context);
+
+        response.getWriter().println(renderedTemplate);
+        return;
+      }
+    }
+    response.sendRedirect(URLPatterns.LANDING);
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    final String mentorKey = request.getParameter("mentorID");
+    final String choice = request.getParameter("choice");
+
+    boolean success = false;
+
+    User user = dataAccess.getCurrentUser();
+    if (user != null) {
+      Mentee mentee = dataAccess.getMentee(user.getUserId());
+      if (mentee != null) {
+        MentorshipRequest mentorshipRequest = new MentorshipRequest(Long.parseLong(mentorKey), mentee.getDatastoreKey());
+        dataAccess.publishRequest(mentorshipRequest);
+        success = true;
+      }
+    }
+
+    response.setContentType("application/json;");
+    response.getWriter().println("{\"success\": " + success + "}");
   }
 }
