@@ -37,6 +37,7 @@ public class DummyDataAccess implements DataAccess {
         .description("hi im alice")
         .mentorType(MentorType.TUTOR)
         .visibility(true)
+        .userType(UserType.MENTOR)
         .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
         .build();
   }
@@ -263,7 +264,7 @@ public class DummyDataAccess implements DataAccess {
   public Collection<MentorshipRequest> getIncomingRequests(UserAccount user) {
     Collection<MentorshipRequest> data = new ArrayList(5);
     for (int i = 0; i < 5; i++) {
-      data.add(new MentorshipRequest(i+1, i+2));
+      data.add(new MentorshipRequest(i + 1, i + 2));
     }
     return data;
   }
@@ -278,7 +279,7 @@ public class DummyDataAccess implements DataAccess {
 
   public Collection<Mentor> getMentorsByMentorshipRequests(Collection<MentorshipRequest> requests) {
     Collection<Mentor> mentors = new ArrayList<>();
-    for (MentorshipRequest request: requests) {
+    for (MentorshipRequest request : requests) {
       mentors.add(
           (new Mentor.Builder())
               .datastoreKey(request.getFromUserKey())
@@ -308,7 +309,7 @@ public class DummyDataAccess implements DataAccess {
 
   public Collection<Mentee> getMenteesByMentorshipRequests(Collection<MentorshipRequest> requests) {
     Collection<Mentee> mentees = new ArrayList<>();
-    for (MentorshipRequest request: requests) {
+    for (MentorshipRequest request : requests) {
       mentees.add(
           (new Mentee.Builder())
               .datastoreKey(request.getFromUserKey())
