@@ -19,6 +19,8 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.sps.data.LoginState;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +37,8 @@ public class AuthenticateServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     String responseString;
     if (!userService.isUserLoggedIn()) {
-      String redirUrlAfterLogin = request.getRequestURL().toString();
+      String redirUrlAfterLogin = getRedirPathname(request);
+      System.out.println(redirUrlAfterLogin);
       loginState.toggleLoginURL = userService.createLoginURL(redirUrlAfterLogin);
       loginState.isLoggedIn = false;
     } else {
@@ -45,5 +48,17 @@ public class AuthenticateServlet extends HttpServlet {
       loginState.isLoggedIn = true;
     }
     response.getWriter().println(new Gson().toJson(loginState));
+  }
+
+  private String getRedirPathname(HttpServletRequest request) {
+    String encodedPathname = request.getParameter("redir");
+    String pathname;
+    try {
+      pathname = URLDecoder.decode(encodedPathname, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      System.err.println("Invalid encoded redirection pathname" + encodedPathname);
+      return "/";
+    }
+    return pathname;
   }
 }

@@ -13,7 +13,9 @@
 // limitations under the License.
 
 function loadAuthButton() {
-  fetch('/authenticate').then(handleFetchErrors).then(response => response.json())
+  const request = '/authenticate?redir=' + encodeURIComponent(window.location.pathname);
+  console.log(request);
+  fetch(request).then(handleFetchErrors).then(response => response.json())
     .then(loginState => {
       console.log("Rendering auth button links");
       const authButtonList = document.getElementsByClassName("auth-button");
