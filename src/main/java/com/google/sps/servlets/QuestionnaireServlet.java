@@ -25,8 +25,8 @@ import com.google.sps.data.MeetingFrequency;
 import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
-import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.ErrorMessages;
+import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -53,6 +53,7 @@ public class QuestionnaireServlet extends HttpServlet {
   private String questionnaireTemplate;
   private Jinjava jinjava;
   private String formType;
+
   @Override
   public void init() {
     JinjavaConfig config = new JinjavaConfig();
@@ -72,10 +73,12 @@ public class QuestionnaireServlet extends HttpServlet {
     try {
       String template =
           Resources.toString(
-              this.getClass().getResource(ResourceConstants.TEMPLATE_QUESTIONNAIRE), Charsets.UTF_8);
+              this.getClass().getResource(ResourceConstants.TEMPLATE_QUESTIONNAIRE),
+              Charsets.UTF_8);
       questionnaireTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_QUESTIONNAIRE));
+      System.err.println(
+          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_QUESTIONNAIRE));
     }
   }
 
@@ -89,7 +92,7 @@ public class QuestionnaireServlet extends HttpServlet {
       return;
     }
     formType = request.getParameter("formType");
-    if(formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
+    if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
       Map<String, Object> context = new HashMap<>();
 
       context.put("isMentor", formType.equals(MENTOR));

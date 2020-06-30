@@ -16,11 +16,10 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.sps.util.ResourceConstants;
-import com.google.sps.util.ErrorMessages;
-import com.google.sps.util.URLPatterns;
 import com.google.sps.data.DummyDataAccess;
-import com.google.sps.data.UserAccount;
+import com.google.sps.util.ErrorMessages;
+import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
@@ -40,6 +39,7 @@ public class ConnectionRequestsServlet extends HttpServlet {
   private DummyDataAccess dummyDataAccess;
   private Jinjava jinjava;
   private String connectionRequestTemplate;
+
   @Override
   public void init() {
     dummyDataAccess = new DummyDataAccess();
@@ -61,9 +61,10 @@ public class ConnectionRequestsServlet extends HttpServlet {
           Resources.toString(
               this.getClass().getResource(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS),
               Charsets.UTF_8);
-       connectionRequestTemplate = jinjava.render(template, context);
+      connectionRequestTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS));
+      System.err.println(
+          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS));
     }
   }
 
@@ -78,7 +79,10 @@ public class ConnectionRequestsServlet extends HttpServlet {
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put("connectionRequests", dummyDataAccess.getMenteesByMentorshipRequests(dummyDataAccess.getIncomingRequests(dummyDataAccess.getUser("woah"))));
+    context.put(
+        "connectionRequests",
+        dummyDataAccess.getMenteesByMentorshipRequests(
+            dummyDataAccess.getIncomingRequests(dummyDataAccess.getUser("woah"))));
     String renderTemplate = jinjava.render(connectionRequestTemplate, context);
     response.getWriter().println(renderTemplate);
   }
