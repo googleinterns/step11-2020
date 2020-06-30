@@ -51,7 +51,6 @@ public class UserAccount {
   private UserType userType;
 
   public UserAccount(
-      long datastoreKey,
       String userID,
       String email,
       String name,
@@ -69,7 +68,6 @@ public class UserAccount {
       String educationLevelOther,
       String description,
       UserType userType) {
-    this.datastoreKey = datastoreKey;
     this.userID = userID;
     this.email = email;
     this.name = name;
@@ -149,9 +147,9 @@ public class UserAccount {
     entity.setProperty(COUNTRY, this.country.ordinal());
     entity.setProperty(LANGUAGE, this.language.ordinal());
     entity.setProperty(TIMEZONE, this.timezone.getID());
-    entity.setProperty(ETHNICITY, this.ethnicity);
+    entity.setProperty(ETHNICITY, this.ethnicity.ordinal());
     entity.setProperty(ETHNICITY_OTHER, this.ethnicityOther);
-    entity.setProperty(GENDER, this.gender);
+    entity.setProperty(GENDER, this.gender.ordinal());
     entity.setProperty(GENDER_OTHER, this.genderOther);
     entity.setProperty(FIRST_GEN, this.firstGen);
     entity.setProperty(LOW_INCOME, this.lowIncome);
