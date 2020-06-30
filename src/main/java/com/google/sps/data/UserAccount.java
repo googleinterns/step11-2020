@@ -50,44 +50,7 @@ public class UserAccount {
   private String description;
   private UserType userType;
 
-  private UserAccount(
-      String userID,
-      String email,
-      String name,
-      Date dateOfBirth,
-      Country country,
-      Language language,
-      TimeZone timezone,
-      Ethnicity ethnicity,
-      String ethnicityOther,
-      Gender gender,
-      String genderOther,
-      boolean firstGen,
-      boolean lowIncome,
-      EducationLevel educationLevel,
-      String educationLevelOther,
-      String description,
-      UserType userType) {
-    this.userID = userID;
-    this.email = email;
-    this.name = name;
-    this.dateOfBirth = dateOfBirth;
-    this.country = country;
-    this.language = language;
-    this.timezone = timezone;
-    this.ethnicity = ethnicity;
-    this.ethnicityOther = ethnicityOther;
-    this.gender = gender;
-    this.genderOther = genderOther;
-    this.firstGen = firstGen;
-    this.lowIncome = lowIncome;
-    this.educationLevel = educationLevel;
-    this.educationLevelOther = educationLevelOther;
-    this.description = description;
-    this.userType = userType;
-  }
-
-  private UserAccount(
+  public UserAccount(
       long datastoreKey,
       String userID,
       String email,

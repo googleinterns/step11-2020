@@ -13,21 +13,21 @@
 {% endblock %}
 
 {% block main_content %}
-
+<h1> Form </h1>
 <div class = "form-container">
   <form action="/questionnaire" method="POST">
     <h3> Step 1: Basic Personal Information </h3>
     <label for="fname">First Name</label>
-    <input type="text" id="fname" name="firstname" placeholder="Your name.." required>
+    <input type="text" id="fname" name="firstname" placeholder="Your name.." >
 
     <label for="lname">Last Name</label>
-    <input type="text" id="lname" name="lastname" placeholder="Your last name.." required>
+    <input type="text" id="lname" name="lastname" placeholder="Your last name.." >
 
     <label for="dob">Date of Birth:</label>
-    <input type="date" name="dob" required>
+    <input type="date" name="dob">
 
     <label for="country">Country</label>
-    <select id="country" name="country" required>
+    <select id="country" name="country" >
       <option value="none" selected disabled hidden> select an option </option>
       {% for country in countries %}
       <option value="{{country}}">{{country.longName}}</option>
@@ -35,14 +35,14 @@
     </select>
 
     <label for="timezone">Your Location's Timezone</label>
-    <select id="timezone" name="timezone" required>
+    <select id="timezone" name="timezone" >
       {% for timezone in timezones %}
       <option value="{{timezone.name}}"> {{timezone.name}}: {{timezone.offset}} </option>
       {% endfor %}
     </select>
 
     <label for="country">Preferred Language</label>
-    <select id="language" name="language" required>
+    <select id="language" name="language">
       {% for language in languages %}
       <option value="{{language}}"> {{language.longName}}</option>
       {% endfor %}

@@ -6,6 +6,7 @@ public class URLPatterns {
   public static final String BASE = "/";
   public static final String ABOUT = "/about";
   public static final String AUTHORS = "/authors";
+  public static final String CONNECTION_REQUESTS = "/connection-requests";
   public static final String FIND_MENTOR = "/find-mentor";
   public static final String LANDING = "/landing";
   public static final String MAIN = "/main";

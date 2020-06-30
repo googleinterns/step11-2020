@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block styles %}
+  {{ super() }}
+{% endblock %}
+
+{% block main_content %}
+<div class="content-block" id="title-block">
+  <h1 class="page-title" id="title">Connection Requests</h1>
+</div>
+<div class="content-block">
+
+  {% raw %}{% for request in connectionRequests %}
+    <div class="mentor-card" id="{{ request.datastoreKey }}-card">
+      <h3 class="mentee-name">Name: {{ request.name }}</h3>
+      <p class="mentee-name">UserKey: {{ request.datastoreKey }}</p>
+      <div>
+        <button id="yes">Accept</button>
+        <button id="no">Decline</button>
+      </div>
+    </div>
+  {% endfor %} {% endraw %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+{% endblock %}

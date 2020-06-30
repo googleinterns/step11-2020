@@ -264,7 +264,7 @@ public class DummyDataAccess implements DataAccess {
   public Collection<MentorshipRequest> getIncomingRequests(UserAccount user) {
     Collection<MentorshipRequest> data = new ArrayList(5);
     for (int i = 0; i < 5; i++) {
-      // data.add(new MentorshipRequest());
+      data.add(new MentorshipRequest(i+1, i+2));
     }
     return data;
   }
@@ -275,6 +275,65 @@ public class DummyDataAccess implements DataAccess {
       // data.add(new MentorshipRequest());
     }
     return data;
+  }
+
+  public Collection<Mentor> getMentorsByMentorshipRequests(Collection<MentorshipRequest> requests) {
+    Collection<Mentor> mentors = new ArrayList<>();
+    for (MentorshipRequest request: requests) {
+      mentors.add(
+          (new Mentor.Builder())
+              .datastoreKey(request.getFromUserKey())
+              .name("Alice")
+              .userID("321432")
+              .email("alice@gmail.com")
+              .dateOfBirth(new Date())
+              .country(Country.AU)
+              .language(Language.ES)
+              .timezone(TimeZone.getDefault())
+              .ethnicity(Ethnicity.CAUCASIAN)
+              .ethnicityOther("")
+              .gender(Gender.WOMAN)
+              .genderOther("")
+              .firstGen(true)
+              .lowIncome(true)
+              .educationLevel(EducationLevel.BACHELORS)
+              .educationLevelOther("")
+              .description("hi im alice")
+              .mentorType(MentorType.TUTOR)
+              .visibility(true)
+              .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
+              .build());
+    }
+    return mentors;
+  }
+
+  public Collection<Mentee> getMenteesByMentorshipRequests(Collection<MentorshipRequest> requests) {
+    Collection<Mentee> mentees = new ArrayList<>();
+    for (MentorshipRequest request: requests) {
+      mentees.add(
+          (new Mentee.Builder())
+              .datastoreKey(request.getFromUserKey())
+              .name("Stacy")
+              .userID("999999")
+              .email("stacy@gmail.com")
+              .dateOfBirth(new Date())
+              .country(Country.AU)
+              .language(Language.ES)
+              .timezone(TimeZone.getDefault())
+              .ethnicity(Ethnicity.CAUCASIAN)
+              .ethnicityOther("")
+              .gender(Gender.WOMAN)
+              .genderOther("")
+              .firstGen(true)
+              .lowIncome(true)
+              .educationLevel(EducationLevel.BACHELORS)
+              .educationLevelOther("")
+              .description("hi im STACY")
+              .goal(Topic.COMPUTER_SCIENCE)
+              .desiredMeetingFrequency(MeetingFrequency.WEEKLY)
+              .build());
+    }
+    return mentees;
   }
 
   public void addToShortlist(Mentee mentee, String whichList, Mentor mentor) {}
