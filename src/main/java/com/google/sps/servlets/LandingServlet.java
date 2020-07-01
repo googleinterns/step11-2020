@@ -16,7 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.sps.util.ContextFields;
+import com.google.sps.data.DummyDataAccess;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -38,11 +38,12 @@ import javax.servlet.http.HttpServletResponse;
 public class LandingServlet extends HttpServlet {
 
   private String staticResponse;
+  private Jinjava jinjava;
 
   @Override
   public void init() {
     JinjavaConfig config = new JinjavaConfig();
-    Jinjava jinjava = new Jinjava(config);
+    jinjava = new Jinjava(config);
     try {
       jinjava.setResourceLocator(
           new FileLocator(
@@ -52,7 +53,6 @@ public class LandingServlet extends HttpServlet {
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put(ContextFields.URL, URLPatterns.LANDING);
 
     try {
       String template =
@@ -73,6 +73,11 @@ public class LandingServlet extends HttpServlet {
       return;
     }
 
-    response.getWriter().println(staticResponse);
+    Map<String, Object> context =
+        new DummyDataAccess().getDefaultRenderingContext(URLPatterns.LANDING);
+
+    String rendered = jinjava.render(staticResponse, context);
+
+    response.getWriter().println(rendered);
   }
 }

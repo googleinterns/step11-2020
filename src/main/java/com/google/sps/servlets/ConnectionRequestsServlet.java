@@ -20,7 +20,6 @@ import com.google.common.io.Resources;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.MentorshipRequest;
-import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -61,7 +60,6 @@ public class ConnectionRequestsServlet extends HttpServlet {
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put(ContextFields.URL, URLPatterns.CONNECTION_REQUESTS);
 
     try {
       String template =
@@ -84,7 +82,8 @@ public class ConnectionRequestsServlet extends HttpServlet {
       return;
     }
 
-    Map<String, Object> context = new HashMap<>();
+    Map<String, Object> context =
+        dataAccess.getDefaultRenderingContext(URLPatterns.CONNECTION_REQUESTS);
     context.put("connectionRequests", dataAccess.getIncomingRequests(dataAccess.getUser("woah")));
     String renderTemplate = jinjava.render(connectionRequestTemplate, context);
     response.getWriter().println(renderTemplate);

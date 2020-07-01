@@ -1,3 +1,4 @@
+{% Set nav_items = [] %}
 {% if isLoggedIn %}
   {% if isMentor %}
     {% set nav_items = [
@@ -16,7 +17,7 @@
   {% endif %}
   {% set nav_items = nav_items + [
       {
-        "baseURL": "/dashboard", "iconLabel": "thumb-tack", "text": "Mentee Dashboard",
+        "baseURL": "/dashboard", "iconLabel": "thumb-tack", "text": "Dashboard",
         "adjust": "left"
       },
       {

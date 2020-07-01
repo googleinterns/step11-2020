@@ -97,7 +97,7 @@
 
     <h3> Step 3: Goals and Logistics </h3>
     <!-- Displayed to those who selected "Become a Mentor" -->
-    {% raw %}{% if isMentor %} {% endraw %}
+    {% raw %}{% if mentorForm %} {% endraw %}
     <div id="mentor-type">
       <p> What type of Mentor would you like to be? (Choose all that apply). </p>
       {% for mentorType in mentorTypes %}
@@ -108,7 +108,7 @@
 
     <!-- Displayed to those who selected "Find a Mentor" -->
     {% raw %} {% else %} {% endraw %}
-    value of formType is {{isMentor}}
+    value of formType is {{mentorForm}}
     <label for="goals"> What type of Mentor are you looking for </label>
     <select id="goals" name="goals" required>
       {% for mentorType in mentorTypes %}

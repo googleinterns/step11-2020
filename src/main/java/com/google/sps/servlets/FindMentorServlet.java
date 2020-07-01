@@ -21,7 +21,6 @@ import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorshipRequest;
-import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -65,7 +64,6 @@ public class FindMentorServlet extends HttpServlet {
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put(ContextFields.URL, URLPatterns.FIND_MENTOR);
 
     try {
       String template =
@@ -86,7 +84,8 @@ public class FindMentorServlet extends HttpServlet {
       if (mentee != null) {
         response.setContentType("text/html;");
 
-        Map<String, Object> context = new HashMap<>();
+        Map<String, Object> context =
+            dataAccess.getDefaultRenderingContext(URLPatterns.FIND_MENTOR);
 
         Collection<Mentor> relatedMentors = dataAccess.getRelatedMentors(mentee);
         context.put("mentors", relatedMentors);

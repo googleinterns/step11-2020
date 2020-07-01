@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.Country;
+import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.EducationLevel;
 import com.google.sps.data.Ethnicity;
 import com.google.sps.data.Gender;
@@ -25,7 +26,6 @@ import com.google.sps.data.MeetingFrequency;
 import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
-import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -69,7 +69,6 @@ public class QuestionnaireServlet extends HttpServlet {
     }
 
     Map<String, Object> context = selectionListsForFrontEnd();
-    context.put(ContextFields.URL, URLPatterns.QUESTIONNAIRE);
 
     try {
       String template =
@@ -94,8 +93,9 @@ public class QuestionnaireServlet extends HttpServlet {
     }
     formType = request.getParameter("formType");
     if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
-      Map<String, Object> context = new HashMap<>();
-      context.put("isMentor", formType.equals(MENTOR));
+      Map<String, Object> context =
+          new DummyDataAccess().getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
+      context.put("mentorForm", formType.equals(MENTOR));
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
