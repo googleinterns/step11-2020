@@ -1,6 +1,5 @@
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -42,7 +41,7 @@ public class DummyDataAccess implements DataAccess {
         .build();
   }
 
-  public UserAccount getUser(Key datastoreKey) {
+  public UserAccount getUser(long datastoreKey) {
     return (new Mentor.Builder())
         .name("Alice")
         .userID("321432")
@@ -89,7 +88,7 @@ public class DummyDataAccess implements DataAccess {
         .build();
   }
 
-  public Mentee getMentee(Key datastoreKey) {
+  public Mentee getMentee(long datastoreKey) {
     return (new Mentee.Builder())
         .name("Alice")
         .userID("321432")
@@ -117,14 +116,16 @@ public class DummyDataAccess implements DataAccess {
     return user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
   }
 
-  public Mentor getMentor(Key datastoreKey) {
+  public Mentor getMentor(long datastoreKey) {
     UserAccount user = getUser(datastoreKey);
     return user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
   }
 
+  public void saveUser(UserAccount user) {}
+
   public Collection<Mentor> getRelatedMentors(Mentee mentee) {
-    Collection<Mentor> relatedMentors = new ArrayList<>(5);
-    relatedMentors.add(
+    Collection<Mentor> mentors = new ArrayList<>(5);
+    mentors.add(
         (new Mentor.Builder())
             .name("Alice")
             .userID("321432")
@@ -146,7 +147,7 @@ public class DummyDataAccess implements DataAccess {
             .visibility(true)
             .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
             .build());
-    relatedMentors.add(
+    mentors.add(
         (new Mentor.Builder())
             .name("Ethan")
             .userID("532345")
@@ -168,7 +169,7 @@ public class DummyDataAccess implements DataAccess {
             .visibility(true)
             .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
             .build());
-    relatedMentors.add(
+    mentors.add(
         (new Mentor.Builder())
             .name("Sam")
             .userID("539032")
@@ -190,7 +191,7 @@ public class DummyDataAccess implements DataAccess {
             .visibility(true)
             .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
             .build());
-    return relatedMentors;
+    return mentors;
   }
 
   public Collection<Mentee> getRelatedMentees(Mentor mentor) {
@@ -362,17 +363,84 @@ public class DummyDataAccess implements DataAccess {
     return mentees;
   }
 
-  public void saveUser(UserAccount user) {}
+  public void dislikeMentor(Mentee mentee, Mentor mentor) {}
 
-  public Collection<Connection> getConnections(UserAccount user) {
-    Collection<Connection> data = new ArrayList(5);
-    for (int i = 0; i < 5; i++) {
-      // data.add(new Connection());
-    }
-    return data;
+  public Collection<Mentor> getDislikedMentors(Mentee mentee) {
+    Collection<Mentor> mentors = new ArrayList<>(5);
+    mentors.add(
+        (new Mentor.Builder())
+            .name("Alice")
+            .userID("321432")
+            .email("alice@gmail.com")
+            .dateOfBirth(new Date())
+            .country(Country.AU)
+            .language(Language.ES)
+            .timezone(TimeZone.getDefault())
+            .ethnicity(Ethnicity.CAUCASIAN)
+            .ethnicityOther("")
+            .gender(Gender.WOMAN)
+            .genderOther("")
+            .firstGen(true)
+            .lowIncome(true)
+            .educationLevel(EducationLevel.BACHELORS)
+            .educationLevelOther("")
+            .description("hi im alice")
+            .mentorType(MentorType.TUTOR)
+            .visibility(true)
+            .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
+            .build());
+    mentors.add(
+        (new Mentor.Builder())
+            .name("Ethan")
+            .userID("532345")
+            .email("ethan@gmail.com")
+            .dateOfBirth(new Date())
+            .country(Country.AU)
+            .language(Language.ES)
+            .timezone(TimeZone.getDefault())
+            .ethnicity(Ethnicity.CAUCASIAN)
+            .ethnicityOther("")
+            .gender(Gender.MAN)
+            .genderOther("")
+            .firstGen(true)
+            .lowIncome(true)
+            .educationLevel(EducationLevel.BACHELORS)
+            .educationLevelOther("")
+            .description("hi im ethan")
+            .mentorType(MentorType.TUTOR)
+            .visibility(true)
+            .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
+            .build());
+    mentors.add(
+        (new Mentor.Builder())
+            .name("Sam")
+            .userID("539032")
+            .email("sam@gmail.com")
+            .dateOfBirth(new Date())
+            .country(Country.AU)
+            .language(Language.ES)
+            .timezone(TimeZone.getDefault())
+            .ethnicity(Ethnicity.CAUCASIAN)
+            .ethnicityOther("")
+            .gender(Gender.NONBINARY)
+            .genderOther("")
+            .firstGen(true)
+            .lowIncome(true)
+            .educationLevel(EducationLevel.BACHELORS)
+            .educationLevelOther("")
+            .description("hi im sam")
+            .mentorType(MentorType.TUTOR)
+            .visibility(true)
+            .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
+            .build());
+    return mentors;
   }
 
   public void publishRequest(MentorshipRequest request) {}
+
+  public MentorshipRequest getMentorshipRequest(long requestKey) {
+    return new MentorshipRequest(requestKey + 1234, requestKey - 1234);
+  }
 
   public void deleteRequest(MentorshipRequest request) {}
 
@@ -381,4 +449,14 @@ public class DummyDataAccess implements DataAccess {
 
   // delete request object
   public void denyRequest(MentorshipRequest request) {}
+
+  public void makeConnection(long mentorKey, long menteeKey) {}
+
+  public Collection<Connection> getConnections(UserAccount user) {
+    Collection<Connection> data = new ArrayList(5);
+    for (int i = 0; i < 5; i++) {
+      // data.add(new Connection());
+    }
+    return data;
+  }
 }
