@@ -25,10 +25,15 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
+import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
+import com.hubspot.jinjava.loader.FileLocator;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.annotation.WebServlet;
@@ -46,6 +51,13 @@ public final class ProfileServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     JinjavaConfig config = new JinjavaConfig();
     Jinjava jinjava = new Jinjava(config);
+    try {
+      jinjava.setResourceLocator(
+          new FileLocator(
+              new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
+    } catch (URISyntaxException | FileNotFoundException e) {
+      System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
+    }
     if (!userService.isUserLoggedIn()) {
       response.sendRedirect("/landing");
     } else {
