@@ -17,6 +17,8 @@ const getMiddleCard = () => {
 const updateChoiceButtons = () => {
   const middleCard = getMiddleCard();
   if (!middleCard) {
+    sendRequestButton.innerText = `${SEND_REQUEST_TEXT}`;
+    dislikeMentorButton.innerText = `${DISLIKE_MENTOR_TEXT}`;
     return;
   }
   const name = middleCard.querySelector(".mentor-name").innerText;
