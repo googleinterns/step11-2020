@@ -30,11 +30,9 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = {"/authenticate"})
 public class AuthenticateServlet extends HttpServlet {
 
-  private LoginState loginState = new LoginState();
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("application/json");
+    LoginState loginState = new LoginState();
     UserService userService = UserServiceFactory.getUserService();
     String responseString;
     String redirDest = getRedirPathname(request);
@@ -50,6 +48,7 @@ public class AuthenticateServlet extends HttpServlet {
       loginState.userProfileURL = "/" + userService.getCurrentUser().getUserId() + "/profile";
       loginState.isLoggedIn = true;
     }
+    response.setContentType("application/json");
     response.getWriter().println(new Gson().toJson(loginState));
   }
 

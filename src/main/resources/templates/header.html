@@ -8,12 +8,14 @@
         }
       ] %}
   {% else %}
-    {% set nav_items = [
-        {
-          "baseURL": "/connection-requests", "iconLabel": "comment", "text": "Mentorship Requests",
-          "adjust": "left"
-        }
-      ] %}
+    {% if isMentee %}
+      {% set nav_items = [
+          {
+            "baseURL": "/connection-requests", "iconLabel": "comment", "text": "Mentorship Requests",
+            "adjust": "left"
+          }
+        ] %}
+    {% endif %}
   {% endif %}
   {% set nav_items = nav_items + [
       {

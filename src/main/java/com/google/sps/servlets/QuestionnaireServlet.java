@@ -84,7 +84,6 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("REQUEST AT: " + request.getServletPath());
     response.setContentType("text/html;");
 
     if (questionnaireTemplate == null) {
