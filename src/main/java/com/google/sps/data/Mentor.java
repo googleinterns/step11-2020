@@ -1,5 +1,7 @@
 package com.google.sps.data;
 
+import static java.lang.Math.toIntExact;
+
 import com.google.appengine.api.datastore.Entity;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -25,7 +27,7 @@ public class Mentor extends UserAccount {
     super(entity);
     this.visibility = (boolean) entity.getProperty(VISIBILITY);
     this.focusList = getFocusListFromProperty((Collection) entity.getProperty(FOCUS_LIST));
-    this.mentorType = MentorType.values()[(int) entity.getProperty(MENTOR_TYPE)];
+    this.mentorType = MentorType.values()[toIntExact((long) entity.getProperty(MENTOR_TYPE))];
   }
 
   public Entity convertToEntity() {
@@ -40,7 +42,7 @@ public class Mentor extends UserAccount {
   private static Collection<Topic> getFocusListFromProperty(Collection<Object> focusEnumIndexList) {
     return (Collection<Topic>)
         focusEnumIndexList.stream()
-            .map(index -> Topic.values()[(int) index])
+            .map(index -> Topic.values()[toIntExact((long) index)])
             .collect(Collectors.toList());
   }
 

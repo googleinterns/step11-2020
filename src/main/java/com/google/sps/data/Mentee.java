@@ -1,6 +1,7 @@
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.Entity;
+import static java.lang.Math.toIntExact;
 
 public class Mentee extends UserAccount {
 
@@ -18,9 +19,9 @@ public class Mentee extends UserAccount {
 
   public Mentee(Entity entity) {
     super(entity);
-    this.goal = Topic.values()[(int) entity.getProperty(GOAL)];
+    this.goal = Topic.values()[toIntExact((long) entity.getProperty(GOAL))];
     this.desiredMeetingFrequency =
-        MeetingFrequency.values()[(int) entity.getProperty(DESIRED_MEETING_FREQUENCY)];
+        MeetingFrequency.values()[toIntExact((long) entity.getProperty(DESIRED_MEETING_FREQUENCY))];
   }
 
   public Entity convertToEntity() {

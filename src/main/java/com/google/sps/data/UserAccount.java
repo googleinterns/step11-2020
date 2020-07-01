@@ -1,5 +1,7 @@
 package com.google.sps.data;
 
+import static java.lang.Math.toIntExact;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -122,19 +124,20 @@ public class UserAccount {
     this.email = (String) entity.getProperty(EMAIL);
     this.name = (String) entity.getProperty(NAME);
     this.dateOfBirth = (Date) entity.getProperty(DATE_OF_BIRTH);
-    this.country = Country.values()[(int) entity.getProperty(COUNTRY)];
-    this.language = Language.values()[(int) entity.getProperty(LANGUAGE)];
+    this.country = Country.values()[toIntExact((long) entity.getProperty(COUNTRY))];
+    this.language = Language.values()[toIntExact((long) entity.getProperty(LANGUAGE))];
     this.timezone = TimeZone.getTimeZone((String) entity.getProperty(TIMEZONE));
-    this.ethnicity = Ethnicity.values()[(int) entity.getProperty(ETHNICITY)];
+    this.ethnicity = Ethnicity.values()[toIntExact((long) entity.getProperty(ETHNICITY))];
     this.ethnicityOther = (String) entity.getProperty(ETHNICITY_OTHER);
-    this.gender = Gender.values()[(int) entity.getProperty(GENDER)];
+    this.gender = Gender.values()[toIntExact((long) entity.getProperty(GENDER))];
     this.genderOther = (String) entity.getProperty(GENDER_OTHER);
     this.firstGen = (boolean) entity.getProperty(FIRST_GEN);
     this.lowIncome = (boolean) entity.getProperty(LOW_INCOME);
-    this.educationLevel = EducationLevel.values()[(int) entity.getProperty(EDUCATION_LEVEL)];
+    this.educationLevel =
+        EducationLevel.values()[toIntExact((long) entity.getProperty(EDUCATION_LEVEL))];
     this.educationLevelOther = (String) entity.getProperty(EDUCATION_LEVEL_OTHER);
     this.description = (String) entity.getProperty(DESCRIPTION);
-    this.userType = UserType.values()[(int) entity.getProperty(USER_TYPE)];
+    this.userType = UserType.values()[toIntExact((long) entity.getProperty(USER_TYPE))];
   }
 
   public Entity convertToEntity() {
