@@ -452,7 +452,56 @@ public class DummyDataAccess implements DataAccess {
   public Collection<Connection> getConnections(UserAccount user) {
     Collection<Connection> data = new ArrayList(5);
     for (int i = 0; i < 5; i++) {
-      // data.add(new Connection());
+      Connection connection = new Connection(i + 1, i + 2);
+      if (user.getUserType() == UserType.MENTOR) {
+        connection.setMentor((Mentor) user);
+        connection.setMentee(
+            (new Mentee.Builder())
+                .name("Stacy")
+                .userID("999999")
+                .email("stacy@gmail.com")
+                .dateOfBirth(new Date())
+                .country(Country.AU)
+                .language(Language.ES)
+                .timezone(TimeZone.getDefault())
+                .ethnicity(Ethnicity.CAUCASIAN)
+                .ethnicityOther("")
+                .gender(Gender.WOMAN)
+                .genderOther("")
+                .firstGen(true)
+                .lowIncome(true)
+                .educationLevel(EducationLevel.BACHELORS)
+                .educationLevelOther("")
+                .description("hi im STACY")
+                .goal(Topic.COMPUTER_SCIENCE)
+                .desiredMeetingFrequency(MeetingFrequency.WEEKLY)
+                .build());
+      } else {
+        connection.setMentee((Mentee) user);
+        connection.setMentor(
+            (new Mentor.Builder())
+                .name("Sam")
+                .userID("539032")
+                .email("sam@gmail.com")
+                .dateOfBirth(new Date())
+                .country(Country.AU)
+                .language(Language.ES)
+                .timezone(TimeZone.getDefault())
+                .ethnicity(Ethnicity.CAUCASIAN)
+                .ethnicityOther("")
+                .gender(Gender.NONBINARY)
+                .genderOther("")
+                .firstGen(true)
+                .lowIncome(true)
+                .educationLevel(EducationLevel.BACHELORS)
+                .educationLevelOther("")
+                .description("hi im sam")
+                .mentorType(MentorType.TUTOR)
+                .visibility(true)
+                .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
+                .build());
+      }
+      data.add(connection);
     }
     return data;
   }
