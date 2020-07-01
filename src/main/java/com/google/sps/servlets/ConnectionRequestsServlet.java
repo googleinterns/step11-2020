@@ -17,8 +17,9 @@ package com.google.sps.servlets;
 import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.sps.util.ResourceConstants;
+import com.google.sps.data.DummyDataAccess;
 import com.google.sps.util.ErrorMessages;
+import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.MentorshipRequest;
@@ -46,6 +47,7 @@ public class ConnectionRequestsServlet extends HttpServlet {
   private DummyDataAccess dataAccess;
   private Jinjava jinjava;
   private String connectionRequestTemplate;
+
   @Override
   public void init() {
     dataAccess = new DummyDataAccess();
@@ -67,9 +69,10 @@ public class ConnectionRequestsServlet extends HttpServlet {
           Resources.toString(
               this.getClass().getResource(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS),
               Charsets.UTF_8);
-       connectionRequestTemplate = jinjava.render(template, context);
+      connectionRequestTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS));
+      System.err.println(
+          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS));
     }
   }
 
