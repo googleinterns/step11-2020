@@ -94,13 +94,12 @@ public class QuestionnaireServlet extends HttpServlet {
     formType = request.getParameter("formType");
     if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
       Map<String, Object> context = new HashMap<>();
-
       context.put("isMentor", formType.equals(MENTOR));
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
-      System.err.println("insufficient or invalid parameters");
-      response.sendRedirect("/landing");
+      System.err.println(ErrorMessages.INVALID_PARAMATERS);
+      response.sendRedirect(URLPatterns.LANDING);
     }
   }
 

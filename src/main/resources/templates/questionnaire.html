@@ -71,20 +71,12 @@
     <input type="radio" value="yes"> Yes </input>
     <input type="radio" value="no"> No </input> <br>
   <!--When they select yes in previous option-->
-    <label for="education">Current Level of Education</label>
+    <label for="education">Current/Highest Level of Education</label>
     <select id="education" name="education">
       {% for education in educationLevels %}
       <option value="{{education}}"> {{education.title}}</option>
       {% endfor %}
     </select>
- <!--When they select no in previous option-->
-    <label for="education">Highest Level of Education</label>
-    <select id="education" name="education" onchange="checkForOther(this.value)">
-      {% for education in educationLevels %}
-      <option value="{{education}}"> {{education.title}}</option>
-      {% endfor %}
-    </select>
-    <div id="other-box"></div>
 
     <div id="first-gen">
       <label> Do/did you consider yourself a first generation student</label>
@@ -104,14 +96,8 @@
     </div>
 
     <h3> Step 3: Goals and Logistics </h3>
-    <!-- Displayed to those who selected "Find a Mentor" -->
-    <label for="goals"> What type of Mentor are you looking for </label>
-    <select id="goals" name="goals" required>
-      {% for mentorType in mentorTypes %}
-      <option value="{{mentorType}}"> {{mentorType.title}}</option>
-      {% endfor %}
-    </select>
     <!-- Displayed to those who selected "Become a Mentor" -->
+    {% raw %}{% if isMentor %} {% endraw %}
     <div id="mentor-type">
       <p> What type of Mentor would you like to be? (Choose all that apply). </p>
       {% for mentorType in mentorTypes %}
@@ -119,6 +105,24 @@
       <label for="{{mentorType}}"> {{mentorType.title}} </label><br>
       {% endfor %}
     </div>
+
+    <!-- Displayed to those who selected "Find a Mentor" -->
+    {% raw %} {% else %} {% endraw %}
+    value of formType is {{isMentor}}
+    <label for="goals"> What type of Mentor are you looking for </label>
+    <select id="goals" name="goals" required>
+      {% for mentorType in mentorTypes %}
+      <option value="{{mentorType}}"> {{mentorType.title}}</option>
+      {% endfor %}
+    </select> <br>
+
+    <label for="meeting-frequency">How often would you like to meet?</label>
+    <select id="meeting-frequency" name="meeting-frequency" required>
+      {% for meetingFrequency in meetingFrequencies %}
+      <option value="{{meetingFrequency}}"> {{meetingFrequency.title}}</option>
+      {% endfor %}
+    </select>
+    {% raw %} {% endif %} {% endraw %}
 
     <div id="topic">
       <p> What areas would you like to focus on (Choose all that apply). </p>
@@ -128,12 +132,6 @@
       {% endfor %}
     </div>
 
-    <label for="meeting-frequency">How often would you like to meet?</label>
-    <select id="meeting-frequency" name="meeting-frequency" required>
-      {% for meetingFrequency in meetingFrequencies %}
-      <option value="{{meetingFrequency}}"> {{meetingFrequency.title}}</option>
-      {% endfor %}
-    </select>
 
     <h3> Step 4: Extra </h3>
 
