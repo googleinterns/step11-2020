@@ -41,6 +41,9 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.FIND_MENTOR)
 public class FindMentorServlet extends HttpServlet {
+  private static final String SEND = "sendRequest";
+  private static final String DISLIKE = "dislikeMentor";
+
   private Jinjava jinjava;
   private String findMentorTemplate;
 
@@ -84,7 +87,7 @@ public class FindMentorServlet extends HttpServlet {
 
         Map<String, Object> context = new HashMap<>();
 
-        Collection<Mentor> relatedMentors = dataAccess.getRelatedMentors(null);
+        Collection<Mentor> relatedMentors = dataAccess.getRelatedMentors(mentee);
         context.put("mentors", relatedMentors);
 
         String renderedTemplate = jinjava.render(findMentorTemplate, context);
@@ -106,11 +109,17 @@ public class FindMentorServlet extends HttpServlet {
     User user = dataAccess.getCurrentUser();
     if (user != null) {
       Mentee mentee = dataAccess.getMentee(user.getUserId());
-      if (mentee != null) {
-        MentorshipRequest mentorshipRequest =
-            new MentorshipRequest(Long.parseLong(mentorKey), mentee.getDatastoreKey());
-        dataAccess.publishRequest(mentorshipRequest);
-        success = true;
+      Mentor mentor = dataAccess.getMentor(Long.parseLong(mentorKey));
+      if (mentee != null && mentor != null) {
+        if (choice.equals(SEND)) {
+          MentorshipRequest mentorshipRequest =
+              new MentorshipRequest(mentor.getDatastoreKey(), mentee.getDatastoreKey());
+          dataAccess.publishRequest(mentorshipRequest);
+          success = true;
+        } else if (choice.equals(DISLIKE)) {
+          dataAccess.dislikeMentor(mentee, mentor);
+          success = true;
+        }
       }
     }
 
