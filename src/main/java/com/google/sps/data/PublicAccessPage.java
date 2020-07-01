@@ -7,5 +7,5 @@ import java.util.Set;
 public class PublicAccessPage {
 
   public static final Set<String> publicAccessPage =
-      new HashSet<>(Arrays.asList("/about", "/authors", "/landing"));
+      new HashSet<>(Arrays.asList("/about", "/authors", "/landing", "/"));
 }
