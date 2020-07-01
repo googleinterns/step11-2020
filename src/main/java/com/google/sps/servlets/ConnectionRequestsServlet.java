@@ -20,6 +20,7 @@ import com.google.common.io.Resources;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.MentorshipRequest;
+import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -60,7 +61,7 @@ public class ConnectionRequestsServlet extends HttpServlet {
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put(URLPatterns.URL, URLPatterns.CONNECTION_REQUESTS);
+    context.put(ContextFields.URL, URLPatterns.CONNECTION_REQUESTS);
 
     try {
       String template =

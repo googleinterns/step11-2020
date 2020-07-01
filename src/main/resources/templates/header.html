@@ -1,4 +1,31 @@
-{% set nav_items = [
+{% if isLoggedIn %}
+  {% if isMentor %}
+    {% set nav_items = [
+        {
+          "baseURL": "/find-mentor", "iconLabel": "search", "text": "Find Mentor",
+          "adjust": "left"
+        }
+      ] %}
+  {% else %}
+    {% set nav_items = [
+        {
+          "baseURL": "/connection-requests", "iconLabel": "comment", "text": "Mentorship Requests",
+          "adjust": "left"
+        }
+      ] %}
+  {% endif %}
+  {% set nav_items = nav_items + [
+      {
+        "baseURL": "/dashboard", "iconLabel": "thumb-tack", "text": "Mentee Dashboard",
+        "adjust": "left"
+      },
+      {
+        "baseURL": "/profile", "iconLabel": "user", "text": "Profile",
+        "adjust": "right"
+      }
+    ] %}
+{% endif %}
+{% set nav_items = nav_items + [
     {
       "baseURL": "/about", "iconLabel": "question-circle", "text": "About",
       "adjust": "left"

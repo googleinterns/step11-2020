@@ -1,7 +1,8 @@
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.Entity;
 import static java.lang.Math.toIntExact;
+
+import com.google.appengine.api.datastore.Entity;
 import java.util.Collection;
 
 public class Mentee extends UserAccount {

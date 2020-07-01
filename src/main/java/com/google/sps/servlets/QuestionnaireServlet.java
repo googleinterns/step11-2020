@@ -25,6 +25,7 @@ import com.google.sps.data.MeetingFrequency;
 import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
+import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -68,7 +69,7 @@ public class QuestionnaireServlet extends HttpServlet {
     }
 
     Map<String, Object> context = selectionListsForFrontEnd();
-    context.put(URLPatterns.URL, URLPatterns.QUESTIONNAIRE);
+    context.put(ContextFields.URL, URLPatterns.QUESTIONNAIRE);
 
     try {
       String template =

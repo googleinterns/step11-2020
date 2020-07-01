@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -51,7 +52,7 @@ public class LandingServlet extends HttpServlet {
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put(URLPatterns.URL, URLPatterns.LANDING);
+    context.put(ContextFields.URL, URLPatterns.LANDING);
 
     try {
       String template =
