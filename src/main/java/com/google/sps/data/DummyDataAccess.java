@@ -265,7 +265,30 @@ public class DummyDataAccess implements DataAccess {
   public Collection<MentorshipRequest> getIncomingRequests(UserAccount user) {
     Collection<MentorshipRequest> data = new ArrayList(5);
     for (int i = 0; i < 5; i++) {
-      data.add(new MentorshipRequest(i + 1, i + 2));
+      MentorshipRequest request = new MentorshipRequest(i + 1, i + 2);
+      request.setToUser(user);
+      request.setFromUser(
+          (new Mentee.Builder())
+              .name("Stacy")
+              .userID("999999")
+              .email("stacy@gmail.com")
+              .dateOfBirth(new Date())
+              .country(Country.AU)
+              .language(Language.ES)
+              .timezone(TimeZone.getDefault())
+              .ethnicity(Ethnicity.CAUCASIAN)
+              .ethnicityOther("")
+              .gender(Gender.WOMAN)
+              .genderOther("")
+              .firstGen(true)
+              .lowIncome(true)
+              .educationLevel(EducationLevel.BACHELORS)
+              .educationLevelOther("")
+              .description("hi im STACY")
+              .goal(Topic.COMPUTER_SCIENCE)
+              .desiredMeetingFrequency(MeetingFrequency.WEEKLY)
+              .build());
+      data.add(request);
     }
     return data;
   }
