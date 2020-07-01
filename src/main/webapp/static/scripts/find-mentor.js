@@ -1,23 +1,29 @@
 const mentorCardContainer = document.getElementById("mentor-cards-container");
-const yesButton = document.getElementById("yes");
-const YES_TEXT = yesButton.innerText;
-const maybeButton = document.getElementById("maybe");
-const MAYBE_TEXT = maybeButton.innerText;
-const noButton = document.getElementById("no");
-const NO_TEXT = noButton.innerText;
+const sendRequestButton = document.getElementById("send-request");
+const SEND_REQUEST_TEXT = sendRequestButton.innerText;
+const dislikeMentorButton = document.getElementById("dislike-mentor");
+const DISLIKE_MENTOR_TEXT = dislikeMentorButton.innerText;
 
 const getMiddleCard = () => {
-  const boundingBox = mentorCardContainer.getBoundingClientRect();
-  const middleCard = document.elementFromPoint(window.innerWidth/2,boundingBox.top + boundingBox.height / 2);
-  return middleCard;
+  const mentorCards = mentorCardContainer.children;
+  if (mentorCards.length > 1) {
+    const boundingBox = mentorCardContainer.getBoundingClientRect();
+    const middleCard = document.elementFromPoint(window.innerWidth/2,boundingBox.top + boundingBox.height / 2);
+    return middleCard;
+  }
+  return mentorCards[0];
 };
 
 const updateChoiceButtons = () => {
   const middleCard = getMiddleCard();
+  if (!middleCard) {
+    sendRequestButton.innerText = `${SEND_REQUEST_TEXT}`;
+    dislikeMentorButton.innerText = `${DISLIKE_MENTOR_TEXT}`;
+    return;
+  }
   const name = middleCard.querySelector(".mentor-name").innerText;
-  yesButton.innerText = `${YES_TEXT} (${name})`;
-  maybeButton.innerText = `${MAYBE_TEXT} (${name})`;
-  noButton.innerText = `${NO_TEXT} (${name})`;
+  sendRequestButton.innerText = `${SEND_REQUEST_TEXT} (${name})`;
+  dislikeMentorButton.innerText = `${DISLIKE_MENTOR_TEXT} (${name})`;
 }
 updateChoiceButtons();
 
@@ -26,9 +32,8 @@ mentorCardContainer.addEventListener("scroll", (event) => {
 });
 
 const buttonDict = {
-  "yes": yesButton,
-  "maybe": maybeButton,
-  "no": noButton
+  "sendRequest": sendRequestButton,
+  "dislikeMentor": dislikeMentorButton
 }
 
 for (const buttonName in buttonDict) {
@@ -41,6 +46,9 @@ for (const buttonName in buttonDict) {
       });
     let text = await response.text();
     let data = JSON.parse(text);
-    console.log(data);
+    if (data.success) {
+      mentorCardContainer.removeChild(middleCard);
+      updateChoiceButtons();
+    }
   });
 }
