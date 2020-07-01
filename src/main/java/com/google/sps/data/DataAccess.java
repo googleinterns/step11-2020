@@ -37,8 +37,6 @@ interface DataAccess {
 
   Collection<Mentor> getDislikedMentors(Mentee mentee);
 
-  MentorshipRequest getMentorshipRequest(long requestKey);
-
   void publishRequest(MentorshipRequest request);
 
   MentorshipRequest getMentorshipRequest(long requestKey);
