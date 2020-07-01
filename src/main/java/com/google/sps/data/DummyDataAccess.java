@@ -36,6 +36,7 @@ public class DummyDataAccess implements DataAccess {
         .description("hi im alice")
         .mentorType(MentorType.TUTOR)
         .visibility(true)
+        .userType(UserType.MENTOR)
         .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
         .build();
   }
