@@ -59,9 +59,9 @@ public final class ProfileServlet extends HttpServlet {
       Entity userEntity = result.asSingleEntity();
       Map<String, Object> context = new HashMap();
       context.put("url", "/profile?userID=" + requestedUserID);
-      context.put("userType", (int) (userEntity.getProperty("userType")));
+      context.put("userType", (long) (userEntity.getProperty("userType")));
       context.put("browsingUserProfileURL", "/profile?userID=" + userId);
-      if ((int) (userEntity.getProperty("userType")) == 0) {
+      if ((long) (userEntity.getProperty("userType")) == 0) {
         context.put("mentor", new Mentor(userEntity));
       } else {
         context.put("mentee", new Mentee(userEntity));
