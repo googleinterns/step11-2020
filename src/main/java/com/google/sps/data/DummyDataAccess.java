@@ -336,11 +336,9 @@ public class DummyDataAccess implements DataAccess {
     return mentees;
   }
 
-  public void addToShortlist(Mentee mentee, String whichList, Mentor mentor) {}
+  public void dislikeMentor(Mentee mentee, Mentor mentor) {}
 
-  public void removeFromShortlist(Mentee mentee, String whichList, Mentor mentor) {}
-
-  public Collection<Mentor> getShortlist(Mentee mentee, String whichList) {
+  public Collection<Mentor> getDislikedMentors(Mentee mentee) {
     Collection<Mentor> mentors = new ArrayList<>(5);
     mentors.add(
         (new Mentor.Builder())

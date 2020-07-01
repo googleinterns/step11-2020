@@ -33,11 +33,9 @@ interface DataAccess {
 
   Collection<Mentee> getMenteesByMentorshipRequests(Collection<MentorshipRequest> requests);
 
-  void addToShortlist(Mentee mentee, String whichList, Mentor mentor);
+  void dislikeMentor(Mentee mentee, Mentor mentor);
 
-  void removeFromShortlist(Mentee mentee, String whichList, Mentor mentor);
-
-  Collection<Mentor> getShortlist(Mentee mentee, String whichList);
+  Collection<Mentor> getDislikedMentors(Mentee mentee);
 
   void publishRequest(MentorshipRequest request);
 

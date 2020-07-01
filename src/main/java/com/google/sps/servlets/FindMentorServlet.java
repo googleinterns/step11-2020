@@ -20,6 +20,7 @@ import com.google.common.io.Resources;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
+import com.google.sps.data.MentorshipRequest;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -40,6 +41,9 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.FIND_MENTOR)
 public class FindMentorServlet extends HttpServlet {
+  private static final String SEND = "sendRequest";
+  private static final String DISLIKE = "dislikeMentor";
+
   private Jinjava jinjava;
   private String findMentorTemplate;
 
@@ -106,9 +110,16 @@ public class FindMentorServlet extends HttpServlet {
     if (user != null) {
       Mentee mentee = dataAccess.getMentee(user.getUserId());
       Mentor mentor = dataAccess.getMentor(Long.parseLong(mentorKey));
-      if (mentee != null) {
-        dataAccess.addToShortlist(mentee, choice, mentor);
-        success = true;
+      if (mentee != null && mentor != null) {
+        if (choice.equals(SEND)) {
+          MentorshipRequest mentorshipRequest =
+              new MentorshipRequest(mentor.getDatastoreKey(), mentee.getDatastoreKey());
+          dataAccess.publishRequest(mentorshipRequest);
+          success = true;
+        } else if (choice.equals(DISLIKE)) {
+          dataAccess.dislikeMentor(mentee, mentor);
+          success = true;
+        }
       }
     }
 
