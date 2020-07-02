@@ -3,86 +3,55 @@
 {% block title %}My Profile{% endblock %}
 
 {% block styles %}
-{{ super() }}
-{% set styles = [
-      "static/styles/profile.css"
-    ] %}
-{% for style in styles %}
-<link rel="stylesheet" type="text/css" href={{ style }}>
-{% endfor %}
+  {{ super() }}
+  <link rel="stylesheet" type="text/css" href="static/styles/profile.css">
 {% endblock %}
 
-{% block header %}
-{% set nav_items = [
-      {
-        "baseURL": "/about", "iconLabel": "question-circle", "text": "About",
-        "adjust": "left"
-      },
-      {
-        "baseURL": "/authors", "iconLabel": "users", "text": "Meet the Creators",
-        "adjust": "left"
-      },
-      {
-        "baseURL": browsingUserProfileURL, "iconLabel": "user", "text": "My Profile",
-        "adjust": "right"
-      }
-    ]
-%}
-
-{% include "navbar.html" %}
-{% endblock %}
-
-{% block main_content %}
+{% block main_content %}{% raw %}
 <div class="container">
-	<header>
-		<i class="fa fa-bars" aria-hidden="true"></i>
-	</header>
-	<main>
-		<div class="row">
-			<div class="left col-lg-4">
-				<div class="photo-left">
-					<img class="photo" src="https://images.pexels.com/photos/1804796/pexels-photo-1804796.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"/>
-					<div class="active"></div>
-					<h4 class="name">
+  <header>
+    <i class="fa fa-bars" aria-hidden="true"></i>
+  </header>
+  <main>
+    <div class="row">
+      <div class="left col-lg-4">
+        <div class="photo-left">
+          <img class="photo" src="https://images.pexels.com/photos/1804796/pexels-photo-1804796.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"/>
+          <div class="active"></div>
+          <h4 class="name">
             {% if userType == 0%}
               mentor.nickname
             {% else %}
               mentee.nickname
             {% endif %}
           </h4>
-					<p class="info">
+          <p class="info">
             {% if userType == 0%}
               mentor.email
             {% else %}
               mentee.email
             {% endif %}
           </p>
-				</div>
-			</div>
+        </div>
+      </div>
 
-			<div class="right col-lg-8">
-        
-				<div class="stats row">
-				{% if userType == 0 %}
+      <div class="right col-lg-8">
+
+        <div class="stats row">
+        {% if userType == 0 %}
           Mentor Information to display
         {% else %}
           Mentee Information to display
         {% endif %}
-				</div>
-				<p class="desc">About Me here</p>
-			</div>
-			<button onclick="location.href='/questionnaire';">Edit My Profile</button>
-	</main>
+        </div>
+        <p class="desc">About Me here</p>
+      </div>
+      <button onclick="location.href='/questionnaire';">Edit My Profile</button>
+  </main>
 </div>
-{% endblock %}
+{% endraw %}{% endblock %}
 
 {% block scripts %}
-{{ super() }}
-{% set scripts = [
-      "static/scripts/profile.js"
-    ]%}
-{% for script in scripts %}
-<script charset="utf-8" type="text/javascript" src={{ script }}>
-</script>
-{% endfor %}
+  {{ super() }}
+  <script charset="utf-8" type="text/javascript" src="static/scripts/profile.js"></script>
 {% endblock %}

@@ -17,7 +17,7 @@ public class DatastoreTestServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     DummyDataAccess dataAccess = new DummyDataAccess();
-    Entity entity = dataAccess.getMentor("alice").convertToEntity();
+    Entity entity = dataAccess.getMentor(dataAccess.getCurrentUser().getUserId()).convertToEntity();
     datastore.put(entity);
     response.sendRedirect("/");
   }
