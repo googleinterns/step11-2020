@@ -27,6 +27,7 @@ import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.UserAccount;
 import com.google.sps.util.ErrorMessages;
+import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
@@ -96,7 +97,7 @@ public final class ProfileServlet extends HttpServlet {
         new Query(UserAccount.ENTITY_TYPE)
             .setFilter(
                 new Query.FilterPredicate(
-                    UserAccount.USER_ID, Query.FilterOperator.EQUAL, requestedUserID));
+                    ParameterConstants.USER_ID, Query.FilterOperator.EQUAL, requestedUserID));
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery result = datastore.prepare(query);
     Entity userEntity = result.asSingleEntity();
