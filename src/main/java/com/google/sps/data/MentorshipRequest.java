@@ -4,12 +4,10 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.KeyRange;
+import com.google.sps.util.ParameterConstants;
 
 public class MentorshipRequest {
   public static final String ENTITY_TYPE = "MentorshipRequest";
-
-  private static final String TO_USER_KEY = "toUserKey";
-  private static final String FROM_USER_KEY = "fromUserKey";
 
   private long datastoreKey;
   private long toUserKey;
@@ -27,14 +25,14 @@ public class MentorshipRequest {
 
   public MentorshipRequest(Entity entity) {
     this.datastoreKey = entity.getKey().getId();
-    this.toUserKey = (long) entity.getProperty(TO_USER_KEY);
-    this.fromUserKey = (long) entity.getProperty(FROM_USER_KEY);
+    this.toUserKey = (long) entity.getProperty(ParameterConstants.TO_USER_KEY);
+    this.fromUserKey = (long) entity.getProperty(ParameterConstants.FROM_USER_KEY);
   }
 
   public Entity convertToEntity() {
     Entity entity = new Entity(ENTITY_TYPE);
-    entity.setProperty(TO_USER_KEY, toUserKey);
-    entity.setProperty(FROM_USER_KEY, fromUserKey);
+    entity.setProperty(ParameterConstants.TO_USER_KEY, toUserKey);
+    entity.setProperty(ParameterConstants.FROM_USER_KEY, fromUserKey);
     return entity;
   }
 

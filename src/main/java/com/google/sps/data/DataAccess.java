@@ -19,7 +19,7 @@ interface DataAccess {
 
   Mentor getMentor(long datastoreKey);
 
-  void saveUser(UserAccount user);
+  boolean saveUser(UserAccount user);
 
   Collection<Mentor> getRelatedMentors(Mentee mentee);
 
@@ -29,23 +29,23 @@ interface DataAccess {
 
   Collection<MentorshipRequest> getOutgoingRequests(UserAccount user);
 
-  void dislikeMentor(Mentee mentee, Mentor mentor);
+  boolean dislikeMentor(Mentee mentee, Mentor mentor);
 
   Collection<Mentor> getDislikedMentors(Mentee mentee);
 
-  void publishRequest(MentorshipRequest request);
+  boolean publishRequest(MentorshipRequest request);
 
   MentorshipRequest getMentorshipRequest(long requestKey);
 
-  void deleteRequest(MentorshipRequest request);
+  boolean deleteRequest(MentorshipRequest request);
 
   // delete request object and create connection object
-  void approveRequest(MentorshipRequest request);
+  boolean approveRequest(MentorshipRequest request);
 
   // delete request object
-  void denyRequest(MentorshipRequest request);
+  boolean denyRequest(MentorshipRequest request);
 
-  void makeConnection(long mentorKey, long menteeKey);
+  boolean makeConnection(long mentorKey, long menteeKey);
 
   Collection<Connection> getConnections(UserAccount user);
 }

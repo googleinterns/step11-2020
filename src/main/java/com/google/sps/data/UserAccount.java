@@ -131,7 +131,8 @@ public class UserAccount {
 
   public static UserAccount fromEntity(Entity userEntity) {
     return userEntity != null
-        ? UserType.values()[(int) userEntity.getProperty(UserAccount.USER_TYPE)] == UserType.MENTEE
+        ? UserType.values()[(int) userEntity.getProperty(ParameterConstants.USER_TYPE)]
+                == UserType.MENTEE
             ? new Mentee(userEntity)
             : new Mentor(userEntity)
         : null;

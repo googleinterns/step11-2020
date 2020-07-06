@@ -4,6 +4,7 @@ import static java.lang.Math.toIntExact;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.sps.util.ParameterConstants;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -43,10 +44,12 @@ public class Mentor extends UserAccount {
   }
 
   private static Collection<Topic> getFocusListFromProperty(Collection<Object> focusEnumIndexList) {
-    return (Collection<Topic>)
-        focusEnumIndexList.stream()
-            .map(index -> Topic.values()[toIntExact((long) index)])
-            .collect(Collectors.toList());
+    return focusEnumIndexList == null
+        ? new ArrayList<Topic>()
+        : (Collection<Topic>)
+            focusEnumIndexList.stream()
+                .map(index -> Topic.values()[toIntExact((long) index)])
+                .collect(Collectors.toList());
   }
 
   public boolean getVisibility() {

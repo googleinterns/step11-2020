@@ -23,4 +23,10 @@ public final class ParameterConstants {
   public static final String MENTEE_DISLIKED_MENTOR_KEYS = "dislikedMentorKeys";
   public static final String MENTOR_FOCUS_LIST = "focusList";
   public static final String MENTOR_TYPE = "mentorType";
+
+  public static final String TO_USER_KEY = "toUserKey";
+  public static final String FROM_USER_KEY = "fromUserKey";
+
+  public static final String MENTOR_KEY = "mentorKey";
+  public static final String MENTEE_KEY = "menteeKey";
 }

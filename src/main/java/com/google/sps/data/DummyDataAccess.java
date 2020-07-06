@@ -121,7 +121,9 @@ public class DummyDataAccess implements DataAccess {
     return user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
   }
 
-  public void saveUser(UserAccount user) {}
+  public boolean saveUser(UserAccount user) {
+  return false;
+}
 
   public Collection<Mentor> getRelatedMentors(Mentee mentee) {
     Collection<Mentor> mentors = new ArrayList<>(5);
@@ -301,7 +303,9 @@ public class DummyDataAccess implements DataAccess {
     return data;
   }
 
-  public void dislikeMentor(Mentee mentee, Mentor mentor) {}
+  public boolean dislikeMentor(Mentee mentee, Mentor mentor) {
+  return false;
+}
 
   public Collection<Mentor> getDislikedMentors(Mentee mentee) {
     Collection<Mentor> mentors = new ArrayList<>(5);
@@ -374,21 +378,31 @@ public class DummyDataAccess implements DataAccess {
     return mentors;
   }
 
-  public void publishRequest(MentorshipRequest request) {}
+  public boolean publishRequest(MentorshipRequest request) {
+  return false;
+}
 
   public MentorshipRequest getMentorshipRequest(long requestKey) {
     return new MentorshipRequest(requestKey + 1234, requestKey - 1234);
   }
 
-  public void deleteRequest(MentorshipRequest request) {}
+  public boolean deleteRequest(MentorshipRequest request) {
+  return false;
+}
 
   // delete request object and create connection object
-  public void approveRequest(MentorshipRequest request) {}
+  public boolean approveRequest(MentorshipRequest request) {
+  return false;
+}
 
   // delete request object
-  public void denyRequest(MentorshipRequest request) {}
+  public boolean denyRequest(MentorshipRequest request) {
+  return false;
+}
 
-  public void makeConnection(long mentorKey, long menteeKey) {}
+  public boolean makeConnection(long mentorKey, long menteeKey) {
+  return false;
+}
 
   public Collection<Connection> getConnections(UserAccount user) {
     Collection<Connection> data = new ArrayList(5);
