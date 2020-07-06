@@ -1,6 +1,6 @@
 package com.google.sps.util;
 
-public class URLPatterns {
+public final class URLPatterns {
   public static final String URL = "url";
 
   public static final String BASE = "/";
@@ -13,4 +13,5 @@ public class URLPatterns {
   public static final String MAIN = "/main";
   public static final String PROFILE = "/profile";
   public static final String QUESTIONNAIRE = "/questionnaire";
+  public static final String DASHBOARD = "/dashboard";
 }

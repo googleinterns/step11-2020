@@ -3,13 +3,10 @@ package com.google.sps.data;
 import static java.lang.Math.toIntExact;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.sps.util.ParameterConstants;
 import java.util.Set;
 
 public class Mentee extends UserAccount {
-
-  private static final String GOAL = "goal";
-  private static final String DESIRED_MEETING_FREQUENCY = "desiredMeetingFrequency";
-  private static final String DISLIKED_MENTOR_KEYS = "dislikedMentorKeys";
 
   private Topic goal;
   private MeetingFrequency desiredMeetingFrequency;
@@ -24,17 +21,22 @@ public class Mentee extends UserAccount {
 
   public Mentee(Entity entity) {
     super(entity);
-    this.goal = Topic.values()[toIntExact((long) entity.getProperty(GOAL))];
+    this.goal =
+        Topic.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTEE_GOAL))];
     this.desiredMeetingFrequency =
-        MeetingFrequency.values()[toIntExact((long) entity.getProperty(DESIRED_MEETING_FREQUENCY))];
-    this.dislikedMentorKeys = (Set<Long>) entity.getProperty(DISLIKED_MENTOR_KEYS);
+        MeetingFrequency.values()[
+            toIntExact(
+                (long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY))];
+    this.dislikedMentorKeys =
+        (Set<Long>) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS);
   }
 
   public Entity convertToEntity() {
     Entity entity = super.convertToEntity();
-    entity.setProperty(GOAL, goal.ordinal());
-    entity.setProperty(DESIRED_MEETING_FREQUENCY, desiredMeetingFrequency.ordinal());
-    entity.setProperty(DISLIKED_MENTOR_KEYS, this.dislikedMentorKeys);
+    entity.setProperty(ParameterConstants.MENTEE_GOAL, goal.ordinal());
+    entity.setProperty(
+        ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, desiredMeetingFrequency.ordinal());
+    entity.setProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS, this.dislikedMentorKeys);
     return entity;
   }
 

@@ -8,29 +8,12 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.KeyRange;
+import com.google.sps.util.ParameterConstants;
 import java.util.Date;
 import java.util.TimeZone;
 
 public class UserAccount {
   public static final String ENTITY_TYPE = "UserAccount";
-
-  public static final String USER_ID = "userID";
-  public static final String EMAIL = "email";
-  public static final String NAME = "name";
-  public static final String DATE_OF_BIRTH = "dateOfBirth";
-  public static final String COUNTRY = "country";
-  public static final String LANGUAGE = "language";
-  public static final String TIMEZONE = "timezone";
-  public static final String ETHNICITY = "ethnicity";
-  public static final String ETHNICITY_OTHER = "ethnicityOther";
-  public static final String GENDER = "gender";
-  public static final String GENDER_OTHER = "genderOther";
-  public static final String FIRST_GEN = "firstGen";
-  public static final String LOW_INCOME = "lowIncome";
-  public static final String EDUCATION_LEVEL = "educationLevel";
-  public static final String EDUCATION_LEVEL_OTHER = "educationLevelOther";
-  public static final String DESCRIPTION = "description";
-  public static final String USER_TYPE = "userType";
 
   private long datastoreKey;
   private boolean keyInitialized;
@@ -120,24 +103,30 @@ public class UserAccount {
 
   public UserAccount(Entity entity) {
     this.datastoreKey = entity.getKey().getId();
-    this.userID = (String) entity.getProperty(USER_ID);
-    this.email = (String) entity.getProperty(EMAIL);
-    this.name = (String) entity.getProperty(NAME);
-    this.dateOfBirth = (Date) entity.getProperty(DATE_OF_BIRTH);
-    this.country = Country.values()[toIntExact((long) entity.getProperty(COUNTRY))];
-    this.language = Language.values()[toIntExact((long) entity.getProperty(LANGUAGE))];
-    this.timezone = TimeZone.getTimeZone((String) entity.getProperty(TIMEZONE));
-    this.ethnicity = Ethnicity.values()[toIntExact((long) entity.getProperty(ETHNICITY))];
-    this.ethnicityOther = (String) entity.getProperty(ETHNICITY_OTHER);
-    this.gender = Gender.values()[toIntExact((long) entity.getProperty(GENDER))];
-    this.genderOther = (String) entity.getProperty(GENDER_OTHER);
-    this.firstGen = (boolean) entity.getProperty(FIRST_GEN);
-    this.lowIncome = (boolean) entity.getProperty(LOW_INCOME);
+    this.userID = (String) entity.getProperty(ParameterConstants.USER_ID);
+    this.email = (String) entity.getProperty(ParameterConstants.EMAIL);
+    this.name = (String) entity.getProperty(ParameterConstants.NAME);
+    this.dateOfBirth = (Date) entity.getProperty(ParameterConstants.DATE_OF_BIRTH);
+    this.country =
+        Country.values()[toIntExact((long) entity.getProperty(ParameterConstants.COUNTRY))];
+    this.language =
+        Language.values()[toIntExact((long) entity.getProperty(ParameterConstants.LANGUAGE))];
+    this.timezone = TimeZone.getTimeZone((String) entity.getProperty(ParameterConstants.TIMEZONE));
+    this.ethnicity =
+        Ethnicity.values()[toIntExact((long) entity.getProperty(ParameterConstants.ETHNICITY))];
+    this.ethnicityOther = (String) entity.getProperty(ParameterConstants.ETHNICITY_OTHER);
+    this.gender = Gender.values()[toIntExact((long) entity.getProperty(ParameterConstants.GENDER))];
+    this.genderOther = (String) entity.getProperty(ParameterConstants.GENDER_OTHER);
+    this.firstGen = (boolean) entity.getProperty(ParameterConstants.FIRST_GEN);
+    this.lowIncome = (boolean) entity.getProperty(ParameterConstants.LOW_INCOME);
     this.educationLevel =
-        EducationLevel.values()[toIntExact((long) entity.getProperty(EDUCATION_LEVEL))];
-    this.educationLevelOther = (String) entity.getProperty(EDUCATION_LEVEL_OTHER);
-    this.description = (String) entity.getProperty(DESCRIPTION);
-    this.userType = UserType.values()[toIntExact((long) entity.getProperty(USER_TYPE))];
+        EducationLevel.values()[
+            toIntExact((long) entity.getProperty(ParameterConstants.EDUCATION_LEVEL))];
+    this.educationLevelOther =
+        (String) entity.getProperty(ParameterConstants.EDUCATION_LEVEL_OTHER);
+    this.description = (String) entity.getProperty(ParameterConstants.DESCRIPTION);
+    this.userType =
+        UserType.values()[toIntExact((long) entity.getProperty(ParameterConstants.USER_TYPE))];
   }
 
   public static UserAccount fromEntity(Entity userEntity) {
@@ -151,23 +140,23 @@ public class UserAccount {
   public Entity convertToEntity() {
     Key key = KeyFactory.createKey(ENTITY_TYPE, this.datastoreKey);
     Entity entity = new Entity(key);
-    entity.setProperty(USER_ID, this.userID);
-    entity.setProperty(EMAIL, this.email);
-    entity.setProperty(NAME, this.name);
-    entity.setProperty(DATE_OF_BIRTH, this.dateOfBirth);
-    entity.setProperty(COUNTRY, this.country.ordinal());
-    entity.setProperty(LANGUAGE, this.language.ordinal());
-    entity.setProperty(TIMEZONE, this.timezone.getID());
-    entity.setProperty(ETHNICITY, this.ethnicity.ordinal());
-    entity.setProperty(ETHNICITY_OTHER, this.ethnicityOther);
-    entity.setProperty(GENDER, this.gender.ordinal());
-    entity.setProperty(GENDER_OTHER, this.genderOther);
-    entity.setProperty(FIRST_GEN, this.firstGen);
-    entity.setProperty(LOW_INCOME, this.lowIncome);
-    entity.setProperty(EDUCATION_LEVEL, this.educationLevel.ordinal());
-    entity.setProperty(EDUCATION_LEVEL_OTHER, this.educationLevelOther);
-    entity.setProperty(DESCRIPTION, this.description);
-    entity.setProperty(USER_TYPE, this.userType.ordinal());
+    entity.setProperty(ParameterConstants.USER_ID, this.userID);
+    entity.setProperty(ParameterConstants.EMAIL, this.email);
+    entity.setProperty(ParameterConstants.NAME, this.name);
+    entity.setProperty(ParameterConstants.DATE_OF_BIRTH, this.dateOfBirth);
+    entity.setProperty(ParameterConstants.COUNTRY, this.country.ordinal());
+    entity.setProperty(ParameterConstants.LANGUAGE, this.language.ordinal());
+    entity.setProperty(ParameterConstants.TIMEZONE, this.timezone.getID());
+    entity.setProperty(ParameterConstants.ETHNICITY, this.ethnicity.ordinal());
+    entity.setProperty(ParameterConstants.ETHNICITY_OTHER, this.ethnicityOther);
+    entity.setProperty(ParameterConstants.GENDER, this.gender.ordinal());
+    entity.setProperty(ParameterConstants.GENDER_OTHER, this.genderOther);
+    entity.setProperty(ParameterConstants.FIRST_GEN, this.firstGen);
+    entity.setProperty(ParameterConstants.LOW_INCOME, this.lowIncome);
+    entity.setProperty(ParameterConstants.EDUCATION_LEVEL, this.educationLevel.ordinal());
+    entity.setProperty(ParameterConstants.EDUCATION_LEVEL_OTHER, this.educationLevelOther);
+    entity.setProperty(ParameterConstants.DESCRIPTION, this.description);
+    entity.setProperty(ParameterConstants.USER_TYPE, this.userType.ordinal());
     return entity;
   }
 
