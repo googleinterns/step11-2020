@@ -1,6 +1,6 @@
 package com.google.sps.util;
 
-public class ResourceConstants {
+public final class ResourceConstants {
 
   public static final String TEMPLATES = "/templates";
   public static final String TEMPLATE_ABOUT = "/templates/about.html";
