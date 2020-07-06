@@ -12,4 +12,5 @@ public final class URLPatterns {
   public static final String MAIN = "/main";
   public static final String PROFILE = "/profile";
   public static final String QUESTIONNAIRE = "/questionnaire";
+  public static final String DASHBOARD = "/dashboard";
 }
