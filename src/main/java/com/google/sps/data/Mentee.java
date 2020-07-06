@@ -1,8 +1,9 @@
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.Entity;
 import static java.lang.Math.toIntExact;
-import java.util.Collection;
+
+import com.google.appengine.api.datastore.Entity;
+import java.util.Set;
 
 public class Mentee extends UserAccount {
 
@@ -12,7 +13,7 @@ public class Mentee extends UserAccount {
 
   private Topic goal;
   private MeetingFrequency desiredMeetingFrequency;
-  private Collection<Long> dislikedMentorKeys;
+  private Set<Long> dislikedMentorKeys;
 
   private Mentee(Builder builder) {
     super(builder);
@@ -26,7 +27,7 @@ public class Mentee extends UserAccount {
     this.goal = Topic.values()[toIntExact((long) entity.getProperty(GOAL))];
     this.desiredMeetingFrequency =
         MeetingFrequency.values()[toIntExact((long) entity.getProperty(DESIRED_MEETING_FREQUENCY))];
-    this.dislikedMentorKeys = (Collection<Long>) entity.getProperty(DISLIKED_MENTOR_KEYS);
+    this.dislikedMentorKeys = (Set<Long>) entity.getProperty(DISLIKED_MENTOR_KEYS);
   }
 
   public Entity convertToEntity() {
@@ -45,14 +46,14 @@ public class Mentee extends UserAccount {
     return desiredMeetingFrequency;
   }
 
-  public Collection<Long> getDislikedMentorKeys() {
+  public Set<Long> getDislikedMentorKeys() {
     return this.dislikedMentorKeys;
   }
 
   public static class Builder extends UserAccount.Builder<Builder> {
     private Topic goal;
     private MeetingFrequency desiredMeetingFrequency;
-    private Collection<Long> dislikedMentorKeys;
+    private Set<Long> dislikedMentorKeys;
 
     public Builder() {}
 
@@ -66,7 +67,7 @@ public class Mentee extends UserAccount {
       return this;
     }
 
-    public Builder dislikedMentorKeys(Collection<Long> dislikedMentorKeys) {
+    public Builder dislikedMentorKeys(Set<Long> dislikedMentorKeys) {
       this.dislikedMentorKeys = dislikedMentorKeys;
       return this;
     }

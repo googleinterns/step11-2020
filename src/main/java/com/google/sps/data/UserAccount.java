@@ -14,23 +14,23 @@ import java.util.TimeZone;
 public class UserAccount {
   public static final String ENTITY_TYPE = "UserAccount";
 
-  private static final String USER_ID = "userID";
-  private static final String EMAIL = "email";
-  private static final String NAME = "name";
-  private static final String DATE_OF_BIRTH = "dateOfBirth";
-  private static final String COUNTRY = "country";
-  private static final String LANGUAGE = "language";
-  private static final String TIMEZONE = "timezone";
-  private static final String ETHNICITY = "ethnicity";
-  private static final String ETHNICITY_OTHER = "ethnicityOther";
-  private static final String GENDER = "gender";
-  private static final String GENDER_OTHER = "genderOther";
-  private static final String FIRST_GEN = "firstGen";
-  private static final String LOW_INCOME = "lowIncome";
-  private static final String EDUCATION_LEVEL = "educationLevel";
-  private static final String EDUCATION_LEVEL_OTHER = "educationLevelOther";
-  private static final String DESCRIPTION = "description";
-  private static final String USER_TYPE = "userType";
+  public static final String USER_ID = "userID";
+  public static final String EMAIL = "email";
+  public static final String NAME = "name";
+  public static final String DATE_OF_BIRTH = "dateOfBirth";
+  public static final String COUNTRY = "country";
+  public static final String LANGUAGE = "language";
+  public static final String TIMEZONE = "timezone";
+  public static final String ETHNICITY = "ethnicity";
+  public static final String ETHNICITY_OTHER = "ethnicityOther";
+  public static final String GENDER = "gender";
+  public static final String GENDER_OTHER = "genderOther";
+  public static final String FIRST_GEN = "firstGen";
+  public static final String LOW_INCOME = "lowIncome";
+  public static final String EDUCATION_LEVEL = "educationLevel";
+  public static final String EDUCATION_LEVEL_OTHER = "educationLevelOther";
+  public static final String DESCRIPTION = "description";
+  public static final String USER_TYPE = "userType";
 
   private long datastoreKey;
   private boolean keyInitialized;
@@ -138,6 +138,14 @@ public class UserAccount {
     this.educationLevelOther = (String) entity.getProperty(EDUCATION_LEVEL_OTHER);
     this.description = (String) entity.getProperty(DESCRIPTION);
     this.userType = UserType.values()[toIntExact((long) entity.getProperty(USER_TYPE))];
+  }
+
+  public static UserAccount fromEntity(Entity userEntity) {
+    return userEntity != null
+        ? UserType.values()[(int) userEntity.getProperty(UserAccount.USER_TYPE)] == UserType.MENTEE
+            ? new Mentee(userEntity)
+            : new Mentor(userEntity)
+        : null;
   }
 
   public Entity convertToEntity() {

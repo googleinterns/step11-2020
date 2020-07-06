@@ -29,10 +29,6 @@ interface DataAccess {
 
   Collection<MentorshipRequest> getOutgoingRequests(UserAccount user);
 
-  Collection<Mentor> getMentorsByMentorshipRequests(Collection<MentorshipRequest> requests);
-
-  Collection<Mentee> getMenteesByMentorshipRequests(Collection<MentorshipRequest> requests);
-
   void dislikeMentor(Mentee mentee, Mentor mentor);
 
   Collection<Mentor> getDislikedMentors(Mentee mentee);
