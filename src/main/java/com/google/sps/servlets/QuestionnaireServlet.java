@@ -105,11 +105,30 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    getParameter(request, "name", "John Doe");
+    getParameter(request, "dob", "2000-01-01");
+    getParameter(request, "country", Country.US);
+    getParameter(request, "name");
+    getParameter(request, "name");
+    getParameter(request, "name");
+    getParameter(request, "name");
+    getParameter(request, "name");
+    getParameter(request, "name");
+    getParameter(request, "name");
+
     if (formType.equals(MENTEE)) {
       response.sendRedirect(URLPatterns.FIND_MENTOR);
     } else {
       response.sendRedirect(URLPatterns.PROFILE);
     }
+  }
+
+  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+    String value = request.getParameter(name);
+    if (value == null) {
+      value = defaultValue;
+    }
+    return value;
   }
 
   private Map<String, Object> selectionListsForFrontEnd() {

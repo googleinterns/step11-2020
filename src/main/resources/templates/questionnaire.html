@@ -17,11 +17,8 @@
 <div class = "form-container">
   <form action="/questionnaire" method="POST">
     <h3> Step 1: Basic Personal Information </h3>
-    <label for="fname">First Name</label>
-    <input type="text" id="fname" name="firstname" placeholder="Your name.." >
-
-    <label for="lname">Last Name</label>
-    <input type="text" id="lname" name="lastname" placeholder="Your last name.." >
+    <label for="fname">Your Name</label>
+    <input type="text" id="name" name="name" placeholder="Your name.." >
 
     <label for="dob">Date of Birth:</label>
     <input type="date" name="dob">
@@ -67,10 +64,6 @@
     </select>
     <div id="other-box"></div>
 
-    <p> Are you currently pursuing a degree? </p>
-    <input type="radio" value="yes"> Yes </input>
-    <input type="radio" value="no"> No </input> <br>
-  <!--When they select yes in previous option-->
     <label for="education">Current/Highest Level of Education</label>
     <select id="education" name="education">
       {% for education in educationLevels %}
@@ -108,7 +101,6 @@
 
     <!-- Displayed to those who selected "Find a Mentor" -->
     {% raw %} {% else %} {% endraw %}
-    value of formType is {{isMentor}}
     <label for="goals"> What type of Mentor are you looking for </label>
     <select id="goals" name="goals" required>
       {% for mentorType in mentorTypes %}
