@@ -1,12 +1,9 @@
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.sps.util.ParameterConstants;
 
 public class Connection {
-  public static final String ENTITY_TYPE = "Connection";
-
-  private static final String MENTOR_KEY = "mentorKey";
-  private static final String MENTEE_KEY = "menteeKey";
 
   private long mentorKey;
   private long menteeKey;
@@ -19,14 +16,14 @@ public class Connection {
   }
 
   public Connection(Entity entity) {
-    this.mentorKey = (long) entity.getProperty(MENTOR_KEY);
-    this.menteeKey = (long) entity.getProperty(MENTEE_KEY);
+    this.mentorKey = (long) entity.getProperty(ParameterConstants.MENTOR_KEY);
+    this.menteeKey = (long) entity.getProperty(ParameterConstants.MENTEE_KEY);
   }
 
   public Entity convertToEntity() {
-    Entity entity = new Entity(ENTITY_TYPE);
-    entity.setProperty("mentorKey", mentorKey);
-    entity.setProperty("menteeKey", menteeKey);
+    Entity entity = new Entity(ParameterConstants.ENTITY_TYPE_CONNECTION);
+    entity.setProperty(ParameterConstants.MENTOR_KEY, mentorKey);
+    entity.setProperty(ParameterConstants.MENTEE_KEY, menteeKey);
     return entity;
   }
 

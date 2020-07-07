@@ -9,8 +9,10 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.KeyRange;
 import com.google.sps.util.ParameterConstants;
+import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 public class UserAccount {
   public static final String ENTITY_TYPE = "UserAccount";
@@ -24,7 +26,7 @@ public class UserAccount {
   private Country country;
   private Language language;
   private TimeZone timezone;
-  private Ethnicity ethnicity;
+  private Collection<Ethnicity> ethnicityList;
   private String ethnicityOther;
   private Gender gender;
   private String genderOther;
@@ -43,7 +45,7 @@ public class UserAccount {
       Country country,
       Language language,
       TimeZone timezone,
-      Ethnicity ethnicity,
+      Collection<Ethnicity> ethnicityList,
       String ethnicityOther,
       Gender gender,
       String genderOther,
@@ -60,7 +62,7 @@ public class UserAccount {
     this.country = country;
     this.language = language;
     this.timezone = timezone;
-    this.ethnicity = ethnicity;
+    this.ethnicityList = ethnicityList;
     this.ethnicityOther = ethnicityOther;
     this.gender = gender;
     this.genderOther = genderOther;
@@ -81,7 +83,7 @@ public class UserAccount {
         builder.country,
         builder.language,
         builder.timezone,
-        builder.ethnicity,
+        builder.ethnicityList,
         builder.ethnicityOther,
         builder.gender,
         builder.genderOther,
@@ -112,8 +114,8 @@ public class UserAccount {
     this.language =
         Language.values()[toIntExact((long) entity.getProperty(ParameterConstants.LANGUAGE))];
     this.timezone = TimeZone.getTimeZone((String) entity.getProperty(ParameterConstants.TIMEZONE));
-    this.ethnicity =
-        Ethnicity.values()[toIntExact((long) entity.getProperty(ParameterConstants.ETHNICITY))];
+    this.ethnicityList =
+        getEthnicityListFromProperty((Collection) entity.getProperty(ParameterConstants.ETHNICITY));
     this.ethnicityOther = (String) entity.getProperty(ParameterConstants.ETHNICITY_OTHER);
     this.gender = Gender.values()[toIntExact((long) entity.getProperty(ParameterConstants.GENDER))];
     this.genderOther = (String) entity.getProperty(ParameterConstants.GENDER_OTHER);
@@ -148,7 +150,9 @@ public class UserAccount {
     entity.setProperty(ParameterConstants.COUNTRY, this.country.ordinal());
     entity.setProperty(ParameterConstants.LANGUAGE, this.language.ordinal());
     entity.setProperty(ParameterConstants.TIMEZONE, this.timezone.getID());
-    entity.setProperty(ParameterConstants.ETHNICITY, this.ethnicity.ordinal());
+    entity.setProperty(
+        ParameterConstants.ETHNICITY,
+        ethnicityList.stream().map(ethnicity -> ethnicity.ordinal()).collect(Collectors.toList()));
     entity.setProperty(ParameterConstants.ETHNICITY_OTHER, this.ethnicityOther);
     entity.setProperty(ParameterConstants.GENDER, this.gender.ordinal());
     entity.setProperty(ParameterConstants.GENDER_OTHER, this.genderOther);
@@ -193,8 +197,8 @@ public class UserAccount {
     return timezone;
   }
 
-  public Ethnicity getEthnicity() {
-    return ethnicity;
+  public Collection<Ethnicity> getEthnicityList() {
+    return ethnicityList;
   }
 
   public String getEthnicityOther() {
@@ -233,6 +237,14 @@ public class UserAccount {
     return userType;
   }
 
+  private static Collection<Ethnicity> getEthnicityListFromProperty(
+      Collection<Object> ethnicityEnumIndexList) {
+    return (Collection<Ethnicity>)
+        ethnicityEnumIndexList.stream()
+            .map(index -> Ethnicity.values()[toIntExact((long) index)])
+            .collect(Collectors.toList());
+  }
+
   protected abstract static class Builder<T extends Builder<T>> {
     private static long datastoreKey;
     private static boolean keyInitialized = false;
@@ -243,7 +255,7 @@ public class UserAccount {
     private static Country country;
     private static Language language;
     private static TimeZone timezone;
-    private static Ethnicity ethnicity;
+    private static Collection<Ethnicity> ethnicityList;
     private static String ethnicityOther;
     private static Gender gender;
     private static String genderOther;
@@ -297,8 +309,8 @@ public class UserAccount {
       return (T) this;
     }
 
-    public T ethnicity(Ethnicity ethnicity) {
-      this.ethnicity = ethnicity;
+    public T ethnicityList(Collection<Ethnicity> ethnicityList) {
+      this.ethnicityList = ethnicityList;
       return (T) this;
     }
 
