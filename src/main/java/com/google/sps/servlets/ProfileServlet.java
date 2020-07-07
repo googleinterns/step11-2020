@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import static java.lang.Math.toIntExact;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -82,7 +84,6 @@ public final class ProfileServlet extends HttpServlet {
     User user = dataAccess.getCurrentUser();
     if (user == null) {
       response.sendRedirect(URLPatterns.LANDING);
-      System.out.println("no user");
       return;
     }
     String userID = user.getUserId();
@@ -90,7 +91,6 @@ public final class ProfileServlet extends HttpServlet {
     UserAccount userAccount = dataAccess.getUser(userID);
     if (userAccount == null) {
       response.sendRedirect(URLPatterns.LANDING);
-      System.out.println("no account");
       return;
     }
 
@@ -105,13 +105,12 @@ public final class ProfileServlet extends HttpServlet {
     Entity userEntity = result.asSingleEntity();
     if (userEntity == null) {
       response.sendRedirect(URLPatterns.PROFILE);
-      System.out.println("user not found");
       return;
     }
     Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.PROFILE);
     context.put(
         ParameterConstants.USER_TYPE,
-        UserType.values()[(int) (long) (userEntity.getProperty(ParameterConstants.USER_TYPE))]
+        UserType.values()[toIntExact((long) (userEntity.getProperty(ParameterConstants.USER_TYPE)))]
                 == UserType.MENTOR
             ? "mentor"
             : "mentee");
