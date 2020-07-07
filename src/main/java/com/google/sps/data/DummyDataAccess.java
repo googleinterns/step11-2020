@@ -144,6 +144,10 @@ public class DummyDataAccess implements DataAccess {
     return user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
   }
 
+  public boolean createUser(UserAccount user) {
+    return false;
+  }
+
   public boolean saveUser(UserAccount user) {
     return false;
   }

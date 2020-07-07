@@ -22,6 +22,8 @@ interface DataAccess {
 
   Mentor getMentor(long datastoreKey);
 
+  boolean createUser(UserAccount user);
+
   boolean saveUser(UserAccount user);
 
   Collection<Mentor> getRelatedMentors(Mentee mentee);

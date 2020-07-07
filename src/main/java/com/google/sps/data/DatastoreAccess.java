@@ -189,6 +189,13 @@ public class DatastoreAccess implements DataAccess {
     return user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
   }
 
+  public boolean createUser(UserAccount user) {
+    if (getUser(user.getDatastoreKey()) == null) {
+      return saveUser(user);
+    }
+    return false;
+  }
+
   public boolean saveUser(UserAccount user) {
     datastoreService.put(user.convertToEntity());
     return true;
