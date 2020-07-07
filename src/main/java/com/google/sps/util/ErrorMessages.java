@@ -5,8 +5,13 @@ public final class ErrorMessages {
       "The templates directory was not found";
   public static final String TEMPLATE_FILE_NOT_FOUND = "The template was not found: ";
   public static final String INVALID_PARAMATERS = "insufficient or invalid parameters";
+  public static final String BAD_REDIRECT = "Invalid encoded redirection pathname";
 
   public static String templateFileNotFound(String templateURL) {
     return TEMPLATE_FILE_NOT_FOUND + templateURL;
+  }
+
+  public static String badRedirect(String encodedURL) {
+    return BAD_REDIRECT + encodedURL;
   }
 }
