@@ -19,6 +19,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.sps.data.LoginState;
 import com.google.sps.data.PublicAccessPage;
+import com.google.sps.util.URLPatterns;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -27,7 +28,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {"/authenticate"})
+@WebServlet(urlPatterns = {URLPatterns.AUTHENTICATE})
 public class AuthenticateServlet extends HttpServlet {
 
   @Override
@@ -43,7 +44,7 @@ public class AuthenticateServlet extends HttpServlet {
       loginState.toggleLoginURL = userService.createLoginURL(redirUrlAfterLogin);
       loginState.isLoggedIn = false;
     } else {
-      String redirUrlAfterLogout = "/";
+      String redirUrlAfterLogout = URLPatterns.BASE;
       loginState.toggleLoginURL = userService.createLogoutURL(redirUrlAfterLogout);
       loginState.userProfileURL = "/" + userService.getCurrentUser().getUserId() + "/profile";
       loginState.isLoggedIn = true;

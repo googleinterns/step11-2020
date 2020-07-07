@@ -26,6 +26,7 @@ import com.google.sps.data.MeetingFrequency;
 import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
+import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -53,13 +54,11 @@ public class QuestionnaireServlet extends HttpServlet {
 
   private String questionnaireTemplate;
   private Jinjava jinjava;
-  private String formType;
 
   @Override
   public void init() {
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
-    formType = "";
     try {
       jinjava.setResourceLocator(
           new FileLocator(
@@ -90,11 +89,11 @@ public class QuestionnaireServlet extends HttpServlet {
       response.setStatus(500);
       return;
     }
-    formType = request.getParameter("formType");
+    String formType = request.getParameter("formType");
     if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
       Map<String, Object> context =
           new DummyDataAccess().getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
-      context.put("mentorForm", formType.equals(MENTOR));
+      context.put(ContextFields.FORM_TYPE, formType);
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
@@ -105,6 +104,7 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String formType = request.getParameter("formType");
     if (formType.equals(MENTEE)) {
       response.sendRedirect(URLPatterns.FIND_MENTOR);
     } else {

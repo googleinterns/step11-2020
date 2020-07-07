@@ -19,18 +19,10 @@
           <img class="photo" src="https://images.pexels.com/photos/1804796/pexels-photo-1804796.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"/>
           <div class="active"></div>
           <h4 class="name">
-            {% if userType == 0%}
-              mentor.nickname
-            {% else %}
-              mentee.nickname
-            {% endif %}
+            {{user.name}}
           </h4>
           <p class="info">
-            {% if userType == 0%}
-              mentor.email
-            {% else %}
-              mentee.email
-            {% endif %}
+            {{user.emaail}}
           </p>
         </div>
       </div>
@@ -38,7 +30,7 @@
       <div class="right col-lg-8">
 
         <div class="stats row">
-        {% if userType == 0 %}
+        {% if userType == "mentor" %}
           Mentor Information to display
         {% else %}
           Mentee Information to display

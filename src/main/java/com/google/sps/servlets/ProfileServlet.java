@@ -23,9 +23,9 @@ import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DummyDataAccess;
-import com.google.sps.data.Mentee;
-import com.google.sps.data.Mentor;
 import com.google.sps.data.UserAccount;
+import com.google.sps.data.UserType;
+import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ResourceConstants;
@@ -82,6 +82,7 @@ public final class ProfileServlet extends HttpServlet {
     User user = dataAccess.getCurrentUser();
     if (user == null) {
       response.sendRedirect(URLPatterns.LANDING);
+      System.out.println("no user");
       return;
     }
     String userID = user.getUserId();
@@ -89,10 +90,11 @@ public final class ProfileServlet extends HttpServlet {
     UserAccount userAccount = dataAccess.getUser(userID);
     if (userAccount == null) {
       response.sendRedirect(URLPatterns.LANDING);
+      System.out.println("no account");
       return;
     }
 
-    String requestedUserID = getParameter(request, "userID", userID);
+    String requestedUserID = getParameter(request, ParameterConstants.USER_ID, userID);
     Query query =
         new Query(UserAccount.ENTITY_TYPE)
             .setFilter(
@@ -101,14 +103,19 @@ public final class ProfileServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery result = datastore.prepare(query);
     Entity userEntity = result.asSingleEntity();
-    Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.PROFILE);
-    context.put("userType", (long) (userEntity.getProperty("userType")));
-    context.put("browsingUserProfileURL", "/profile?userID=" + userID);
-    if ((long) (userEntity.getProperty("userType")) == 0) {
-      context.put("mentor", new Mentor(userEntity));
-    } else {
-      context.put("mentee", new Mentee(userEntity));
+    if (userEntity == null) {
+      response.sendRedirect(URLPatterns.PROFILE);
+      System.out.println("user not found");
+      return;
     }
+    Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.PROFILE);
+    context.put(
+        ParameterConstants.USER_TYPE,
+        UserType.values()[(int) (long) (userEntity.getProperty(ParameterConstants.USER_TYPE))]
+                == UserType.MENTOR
+            ? "mentor"
+            : "mentee");
+    context.put(ContextFields.PROFILE_USER, UserAccount.fromEntity(userEntity));
 
     String renderedTemplate = jinjava.render(profileTemplate, context);
     response.setContentType("text/html;");
@@ -117,7 +124,7 @@ public final class ProfileServlet extends HttpServlet {
 
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
-    if (value == null) {
+    if (value == null || value == "") {
       return defaultValue;
     }
     return value;
