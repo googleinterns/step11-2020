@@ -244,8 +244,12 @@ public class DatastoreAccess implements DataAccess {
   }
 
   public boolean dislikeMentor(Mentee mentee, Mentor mentor) {
-    mentee.getDislikedMentorKeys().add(mentor.getDatastoreKey());
-    saveUser(mentee);
+    if (getMentee(mentee.getDatastoreKey()) != null && getMentor(mentor.getDatastoreKey()) != null) {
+      if (mentee.dislikeMentor(mentor)) {
+      saveUser(mentee);
+      return true;
+    }
+    return false;
   }
 
   public Collection<Mentor> getDislikedMentors(Mentee mentee) {
@@ -261,7 +265,15 @@ public class DatastoreAccess implements DataAccess {
   }
 
   public boolean publishRequest(MentorshipRequest request) {
-    datastore.put(request.convertToEntity());
+    if (getMentorshipRequest(request.getDatastoreKey()) == null) {
+      UserAccount toUser = getUser(request.getToUserKey());
+      UserAccount fromUser = getUser(request.getFromUserKey());
+      if (toUser != null && fromUser != null && toUser.getUserType() != fromUser.getUserType()) {
+        datastore.put(request.convertToEntity());
+        return true;
+      }
+    }
+    return false;
   }
 
   public MentorshipRequest getMentorshipRequest(long requestKey) {
@@ -283,25 +295,65 @@ public class DatastoreAccess implements DataAccess {
 
   // delete request object and create connection object
   public boolean approveRequest(MentorshipRequest request) {
-    if (getMentorshipRequest(request.getDatastoreKey()) != null) {
-      datastore.delete(KeyFactory.createKey(MentorshipRequest.ENTITY_TYPE, request.getDatastoreKey()))
+    if (deleteRequest(request)) {
+      UserAccount toUser = request.getToUser();
+      if (toUser == null)   {
+        toUser = getUser(request.getToUserKey());
+      }
+      UserAccount fromUser = request.getFromUser();
+      if (fromUser == null)   {
+        fromUser = getUser(request.getFromUserKey());
+      }
+      UserAccount mentor = toUser.getUserType() == UserType.MENTOR ? toUser : fromUser;
+      UserAccount mentee = toUser.getUserType() == UserType.MENTEE ? toUser : fromUser;
+      return makeConnection(mentor.getDatastoreKey(), mentee.getDatastoreKey());
     }
+    return false;
   }
 
   // delete request object
   public boolean denyRequest(MentorshipRequest request) {
-    return false;
+    return deleteRequest(request);
   }
 
   public boolean makeConnection(long mentorKey, long menteeKey) {
+    if (getMentor(mentorKey) != null && getMentee(menteeKey) != null) {
+      Conenction connection = new Connection(mentorKey, menteeKey);
+      datastoreService.put(connection.convertToEntity());
+    }
     return false;
   }
 
   public Collection<Connection> getConnections(UserAccount user) {
-    Collection<Connection> data = new ArrayList(5);
-    for (int i = 0; i < 5; i++) {
-      // data.add(new Connection());
-    }
-    return data;
+    Query query =
+        new Query(Connection.ENTITY_TYPE)
+            .setFilter(
+                new Query.CompositeFilterOperator.or(
+                    new Query.FilterPredicate(
+                        ParameterConstants.MENTOR_KEY,
+                        Query.FilterOperator.EQUAL,
+                        user.getDatastoreKey()),
+                    new Query.FilterPredicate(
+                        ParameterConstants.MENTEE_KEY,
+                        Query.FilterOperator.EQUAL,
+                        user.getDatastoreKey())
+                  )
+              );
+    PreparedQuery results = datastoreService.prepare(query);
+    Collection<Connection> connections =
+        StreamSupport.stream(results.asIterable().spliterator(), false)
+            .map(Connection::new)
+            .collect(Collectors.toList());
+    connections.forEach(
+        connection -> {
+          if (user.getUserType() == UserType.MENTOR) {
+            connection.setMentor((Mentor) user);
+            connection.setMentee(getMentee(connection.getMenteeKey()));
+          } else if (user.getUserType() == UserType.MENTEE) {
+            connection.setMentee((Mentee) user);
+            connection.setMentor(getMentor(connection.getMentorKey()));
+          }
+        });
+    return connections;
   }
 }

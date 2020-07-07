@@ -40,6 +40,10 @@ public class Mentee extends UserAccount {
     return entity;
   }
 
+  public boolean dislikeMentor(Mentor mentor) {
+    return dislikedMentorKeys.add(mentor.getDatastoreKey());
+  }
+
   public Topic getGoal() {
     return goal;
   }
