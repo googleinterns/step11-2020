@@ -19,6 +19,8 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.sps.data.LoginState;
 import com.google.sps.data.PublicAccessPage;
+import com.google.sps.util.ErrorMessages;
+import com.google.sps.util.URLPatterns;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -27,14 +29,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {"/authenticate"})
+@WebServlet(urlPatterns = {URLPatterns.AUTHENTICATE})
 public class AuthenticateServlet extends HttpServlet {
-
-  private LoginState loginState = new LoginState();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("application/json");
+    LoginState loginState = new LoginState();
     UserService userService = UserServiceFactory.getUserService();
     String responseString;
     String redirDest = getRedirPathname(request);
@@ -45,23 +45,25 @@ public class AuthenticateServlet extends HttpServlet {
       loginState.toggleLoginURL = userService.createLoginURL(redirUrlAfterLogin);
       loginState.isLoggedIn = false;
     } else {
-      String redirUrlAfterLogout = "/";
+      String redirUrlAfterLogout = URLPatterns.BASE;
       loginState.toggleLoginURL = userService.createLogoutURL(redirUrlAfterLogout);
-      loginState.userProfileURL = "/" + userService.getCurrentUser().getUserId() + "/profile";
+      loginState.userProfileURL =
+          URLPatterns.PROFILE + "?userID=" + userService.getCurrentUser().getUserId();
       loginState.isLoggedIn = true;
     }
+    response.setContentType("application/json");
     response.getWriter().println(new Gson().toJson(loginState));
   }
 
   private String getRedirPathname(HttpServletRequest request) {
     String encodedPathname = request.getParameter("redir");
-    if (encodedPathname == null) return "/";
+    if (encodedPathname == null) return URLPatterns.BASE;
     String pathname;
     try {
       pathname = URLDecoder.decode(encodedPathname, "UTF-8");
     } catch (UnsupportedEncodingException e) {
-      System.err.println("Invalid encoded redirection pathname" + encodedPathname);
-      return "/";
+      System.err.println(ErrorMessages.badRedirect(encodedPathname));
+      return URLPatterns.BASE;
     }
     return pathname;
   }

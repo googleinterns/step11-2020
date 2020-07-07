@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.Country;
+import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.EducationLevel;
 import com.google.sps.data.Ethnicity;
 import com.google.sps.data.Gender;
@@ -25,6 +26,7 @@ import com.google.sps.data.MeetingFrequency;
 import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
+import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.ParameterConstants;
@@ -59,17 +61,15 @@ public class QuestionnaireServlet extends HttpServlet {
   public void init() {
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
-    formType = "";
     try {
       jinjava.setResourceLocator(
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      System.err.println("templates dir not found!");
+      System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = selectionListsForFrontEnd();
-    context.put(URLPatterns.URL, URLPatterns.QUESTIONNAIRE);
 
     try {
       String template =
@@ -85,17 +85,17 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("REQUEST AT: " + request.getServletPath());
     response.setContentType("text/html;");
 
     if (questionnaireTemplate == null) {
       response.setStatus(500);
       return;
     }
-    String formType = request.getParameter("formType");
+    String formType = request.getParameter(ContextFields.FORM_TYPE);
     if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
-      Map<String, Object> context = new HashMap<>();
-      context.put("isMentor", formType.equals(MENTOR));
+      Map<String, Object> context =
+          dataAccess.getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
+      context.put(ContextFields.FORM_TYPE, formType);
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
@@ -106,14 +106,21 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String formType = request.getParameter(ContextFields.FORM_TYPE);
     String name = getParameter(request, ParameterConstants.NAME, "John Doe");
     Date dateOfBirth = getParameter(request, ParameterConstants.DATE_OF_BIRTH, "2000-01-01");
     Country country = Country.valueOf(getParameter(request, ParameterConstants.COUNTRY, Country.US));
-    TimeZone timeZone = getParameter(request, ParameterConstants.TIMEZONE, "est");
+    TimeZone timeZone = TimeZone.getTimeZone(getParameter(request, ParameterConstants.TIMEZONE, "est"));
     Language language = Language.valueOf(getParameter(request, ParameterConstants.LANGUAGE, Language.ENGLISH));
-    ArrayList<Ethnicity> ethnicities = getParameter(request, ParameterConstants.ETHNICITY, "");
+
+    ArrayList<Ethnicity> ethnicities = new ArrayList<>();
+    String ethnicityString = getParameter(request, ParameterConstants.ETHNICITY, "");
+    for (String ethnicity: ethnicityString.split(', ')) {
+      ethnicities.add(Ethnicity.valueOf(ethnicity));
+    }
+
     String ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "")
-    Gender gender = getParameter(request, ParameterConstants.GENDER, "");
+    Gender gender = Gender.getParameter(request, ParameterConstants.GENDER, "");
     String genderOther = getParameter(request, ParameterConstants.GENDER_OTHER, "");
     Education educationLevel = getParameter(request, ParameterConstants.EDUCATION_LEVEL, "");
     String educationLevelOther = getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
@@ -121,6 +128,7 @@ public class QuestionnaireServlet extends HttpServlet {
     boolean lowIncome = getParameter(request, ParameterConstants.LOW_INCOME, "no");
     MentorType mentorType = getParameter(request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR);
     String description = getParameter(request, ParameterConstants.DESCRIPTION, "");
+
 
     if (formType.equals(MENTEE)) {
       MeetingFrequency desiredMeetingFrequency = getParameter(request, ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, MeetingFrequency.BIWEEKLY);

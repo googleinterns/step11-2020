@@ -30,6 +30,14 @@ public class Connection {
     return entity;
   }
 
+  public void setMentor(Mentor mentor) {
+    this.mentor = mentor;
+  }
+
+  public void setMentee(Mentee mentee) {
+    this.mentee = mentee;
+  }
+
   public long getMentorKey() {
     return mentorKey;
   }

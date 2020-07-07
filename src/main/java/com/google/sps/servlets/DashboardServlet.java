@@ -17,9 +17,10 @@ package com.google.sps.servlets;
 import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.sps.data.Connection;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentee;
-import com.google.sps.data.MentorshipRequest;
+import com.google.sps.data.Mentor;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -30,6 +31,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.annotation.WebServlet;
@@ -37,14 +39,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = URLPatterns.CONNECTION_REQUESTS)
-public class ConnectionRequestsServlet extends HttpServlet {
-  private static final String ACCEPT = "accept";
-  private static final String DENY = "deny";
+@WebServlet(urlPatterns = URLPatterns.DASHBOARD)
+public class DashboardServlet extends HttpServlet {
 
   private DummyDataAccess dataAccess;
   private Jinjava jinjava;
-  private String connectionRequestTemplate;
+  private String dashboardMentorTemplate;
+  private String dashboardMenteeTemplate;
 
   @Override
   public void init() {
@@ -60,61 +61,60 @@ public class ConnectionRequestsServlet extends HttpServlet {
     }
 
     Map<String, Object> context = new HashMap<>();
+    context.put(URLPatterns.URL, URLPatterns.DASHBOARD);
 
     try {
       String template =
           Resources.toString(
-              this.getClass().getResource(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS),
+              this.getClass().getResource(ResourceConstants.TEMPLATE_MENTOR_DASHBOARD),
               Charsets.UTF_8);
-      connectionRequestTemplate = jinjava.render(template, context);
+      dashboardMentorTemplate = jinjava.render(template, context);
     } catch (IOException e) {
       System.err.println(
-          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS));
+          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_MENTOR_DASHBOARD));
+    }
+    try {
+      String template =
+          Resources.toString(
+              this.getClass().getResource(ResourceConstants.TEMPLATE_MENTEE_DASHBOARD),
+              Charsets.UTF_8);
+      dashboardMenteeTemplate = jinjava.render(template, context);
+    } catch (IOException e) {
+      System.err.println(
+          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_MENTOR_DASHBOARD));
     }
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-
-    if (connectionRequestTemplate == null) {
-      response.setStatus(500);
-      return;
-    }
-
-    Map<String, Object> context =
-        dataAccess.getDefaultRenderingContext(URLPatterns.CONNECTION_REQUESTS);
-    context.put("connectionRequests", dataAccess.getIncomingRequests(dataAccess.getUser("woah")));
-    String renderTemplate = jinjava.render(connectionRequestTemplate, context);
-    response.getWriter().println(renderTemplate);
-  }
-
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    final String requestKey = request.getParameter("requestID");
-    final String choice = request.getParameter("choice");
-
-    boolean success = false;
 
     User user = dataAccess.getCurrentUser();
     if (user != null) {
+      response.setContentType("text/html;");
+      Map<String, Object> context = new HashMap<>();
+
+      Mentor mentor = dataAccess.getMentor(user.getUserId());
       Mentee mentee = dataAccess.getMentee(user.getUserId());
-      if (mentee != null) {
-        MentorshipRequest mentorshipRequest =
-            dataAccess.getMentorshipRequest(Long.parseLong(requestKey));
-        if (mentorshipRequest != null) {
-          if (choice.equals(ACCEPT)) {
-            dataAccess.approveRequest(mentorshipRequest);
-            success = true;
-          } else if (choice.equals(DENY)) {
-            dataAccess.denyRequest(mentorshipRequest);
-            success = true;
-          }
-        }
+      if (mentor != null) {
+        Collection<Connection> connectedMentees = dataAccess.getConnections(mentor);
+        System.out.println(connectedMentees);
+        context.put("connections", connectedMentees);
+
+        String renderedTemplate = jinjava.render(dashboardMentorTemplate, context);
+
+        response.getWriter().println(renderedTemplate);
+        return;
+      } else if (mentee != null) {
+        Collection<Connection> connectedMentors = dataAccess.getConnections(mentee);
+        System.out.println(connectedMentors);
+        context.put("connections", connectedMentors);
+
+        String renderedTemplate = jinjava.render(dashboardMenteeTemplate, context);
+
+        response.getWriter().println(renderedTemplate);
+        return;
       }
     }
-
-    response.setContentType("application/json;");
-    response.getWriter().println("{\"success\": " + success + "}");
+    response.sendRedirect(URLPatterns.LANDING);
   }
 }

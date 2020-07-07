@@ -31,10 +31,10 @@
       {% endfor %}
     </select>
 
-    <label for="timezone">Your Location's Timezone</label>
-    <select id="timezone" name="timezone" >
+    <label for="timeZone">Your Location's Timezone</label>
+    <select id="timeZone" name="timeZone" >
       {% for timezone in timezones %}
-      <option value="{{timezone.name}}"> {{timezone.name}}: {{timezone.offset}} </option>
+      <option value="{{timezone.id}}"> {{timezone.name}}: {{timezone.offset}} </option>
       {% endfor %}
     </select>
 
@@ -86,7 +86,7 @@
 
     <h3> Step 3: Goals and Logistics </h3>
     <!-- Displayed to those who selected "Become a Mentor" -->
-    {% raw %}{% if isMentor %} {% endraw %}
+    {% raw %}{% if formType == "mentor" %} {% endraw %}
     <label for="mentorType"> What type of Mentor would you like to be? </label>
     <select id="mentorType" name="mentorType" required>
       {% for mentorType in mentorTypes %}

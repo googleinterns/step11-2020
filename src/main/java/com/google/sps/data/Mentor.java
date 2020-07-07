@@ -3,14 +3,13 @@ package com.google.sps.data;
 import static java.lang.Math.toIntExact;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.sps.util.ParameterConstants;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class Mentor extends UserAccount {
 
   private static final String VISIBILITY = "visibility";
-  private static final String FOCUS_LIST = "focusList";
-  private static final String MENTOR_TYPE = "mentorType";
 
   private boolean visibility;
   private Collection<Topic> focusList;
@@ -26,16 +25,20 @@ public class Mentor extends UserAccount {
   public Mentor(Entity entity) {
     super(entity);
     this.visibility = (boolean) entity.getProperty(VISIBILITY);
-    this.focusList = getFocusListFromProperty((Collection) entity.getProperty(FOCUS_LIST));
-    this.mentorType = MentorType.values()[toIntExact((long) entity.getProperty(MENTOR_TYPE))];
+    this.focusList =
+        getFocusListFromProperty(
+            (Collection) entity.getProperty(ParameterConstants.MENTOR_FOCUS_LIST));
+    this.mentorType =
+        MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTOR_TYPE))];
   }
 
   public Entity convertToEntity() {
     Entity entity = super.convertToEntity();
     entity.setProperty(VISIBILITY, visibility);
     entity.setProperty(
-        FOCUS_LIST, focusList.stream().map(focus -> focus.ordinal()).collect(Collectors.toList()));
-    entity.setProperty(MENTOR_TYPE, mentorType.ordinal());
+        ParameterConstants.MENTOR_FOCUS_LIST,
+        focusList.stream().map(focus -> focus.ordinal()).collect(Collectors.toList()));
+    entity.setProperty(ParameterConstants.MENTOR_TYPE, mentorType.ordinal());
     return entity;
   }
 

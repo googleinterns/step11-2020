@@ -3,16 +3,39 @@ package com.google.sps.data;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.util.ContextFields;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class DummyDataAccess implements DataAccess {
 
+  private static final UserService userService = UserServiceFactory.getUserService();
+
+  public Map<String, Object> getDefaultRenderingContext(String currentURL) {
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put(ContextFields.URL, currentURL);
+    boolean loggedIn = userService.isUserLoggedIn();
+    context.put(ContextFields.IS_LOGGED_IN, loggedIn);
+    UserAccount currentUser = null;
+    boolean isMentor = false, isMentee = false;
+    if (loggedIn) {
+      User user = getCurrentUser();
+      currentUser = getUser(user.getUserId());
+      isMentor = currentUser.getUserType() == UserType.MENTOR;
+      isMentee = !isMentor && currentUser.getUserType() == UserType.MENTEE;
+    }
+    context.put(ContextFields.CURRENT_USER, currentUser);
+    context.put(ContextFields.IS_MENTOR, isMentor);
+    context.put(ContextFields.IS_MENTEE, isMentee);
+    return context;
+  }
+
   public User getCurrentUser() {
-    UserService userService = UserServiceFactory.getUserService();
     return userService.getCurrentUser();
   }
 
@@ -452,7 +475,56 @@ public class DummyDataAccess implements DataAccess {
   public Collection<Connection> getConnections(UserAccount user) {
     Collection<Connection> data = new ArrayList(5);
     for (int i = 0; i < 5; i++) {
-      // data.add(new Connection());
+      Connection connection = new Connection(i + 1, i + 2);
+      if (user.getUserType() == UserType.MENTOR) {
+        connection.setMentor((Mentor) user);
+        connection.setMentee(
+            (new Mentee.Builder())
+                .name("Stacy")
+                .userID("999999")
+                .email("stacy@gmail.com")
+                .dateOfBirth(new Date())
+                .country(Country.AU)
+                .language(Language.ES)
+                .timezone(TimeZone.getDefault())
+                .ethnicity(Ethnicity.CAUCASIAN)
+                .ethnicityOther("")
+                .gender(Gender.WOMAN)
+                .genderOther("")
+                .firstGen(true)
+                .lowIncome(true)
+                .educationLevel(EducationLevel.BACHELORS)
+                .educationLevelOther("")
+                .description("hi im STACY")
+                .goal(Topic.COMPUTER_SCIENCE)
+                .desiredMeetingFrequency(MeetingFrequency.WEEKLY)
+                .build());
+      } else {
+        connection.setMentee((Mentee) user);
+        connection.setMentor(
+            (new Mentor.Builder())
+                .name("Sam")
+                .userID("539032")
+                .email("sam@gmail.com")
+                .dateOfBirth(new Date())
+                .country(Country.AU)
+                .language(Language.ES)
+                .timezone(TimeZone.getDefault())
+                .ethnicity(Ethnicity.CAUCASIAN)
+                .ethnicityOther("")
+                .gender(Gender.NONBINARY)
+                .genderOther("")
+                .firstGen(true)
+                .lowIncome(true)
+                .educationLevel(EducationLevel.BACHELORS)
+                .educationLevelOther("")
+                .description("hi im sam")
+                .mentorType(MentorType.TUTOR)
+                .visibility(true)
+                .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
+                .build());
+      }
+      data.add(connection);
     }
     return data;
   }
