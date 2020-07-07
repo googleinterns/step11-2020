@@ -11,12 +11,15 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.util.ContextFields;
 import com.google.sps.util.ParameterConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
@@ -123,6 +126,25 @@ public class DatastoreAccess implements DataAccess {
     }
   }
 
+  public Map<String, Object> getDefaultRenderingContext(String currentURL) {
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put(ContextFields.URL, currentURL);
+    boolean loggedIn = userService.isUserLoggedIn();
+    context.put(ContextFields.IS_LOGGED_IN, loggedIn);
+    UserAccount currentUser = null;
+    boolean isMentor = false, isMentee = false;
+    if (loggedIn) {
+      User user = getCurrentUser();
+      currentUser = getUser(user.getUserId());
+      isMentor = currentUser.getUserType() == UserType.MENTOR;
+      isMentee = !isMentor && currentUser.getUserType() == UserType.MENTEE;
+    }
+    context.put(ContextFields.CURRENT_USER, currentUser);
+    context.put(ContextFields.IS_MENTOR, isMentor);
+    context.put(ContextFields.IS_MENTEE, isMentee);
+    return context;
+  }
+
   public User getCurrentUser() {
     return userService.getCurrentUser();
   }
@@ -169,6 +191,7 @@ public class DatastoreAccess implements DataAccess {
 
   public boolean saveUser(UserAccount user) {
     datastoreService.put(user.convertToEntity());
+    return true;
   }
 
   public Collection<Mentor> getRelatedMentors(Mentee mentee) {
@@ -244,10 +267,12 @@ public class DatastoreAccess implements DataAccess {
   }
 
   public boolean dislikeMentor(Mentee mentee, Mentor mentor) {
-    if (getMentee(mentee.getDatastoreKey()) != null && getMentor(mentor.getDatastoreKey()) != null) {
+    if (getMentee(mentee.getDatastoreKey()) != null
+        && getMentor(mentor.getDatastoreKey()) != null) {
       if (mentee.dislikeMentor(mentor)) {
-      saveUser(mentee);
-      return true;
+        saveUser(mentee);
+        return true;
+      }
     }
     return false;
   }
@@ -269,7 +294,7 @@ public class DatastoreAccess implements DataAccess {
       UserAccount toUser = getUser(request.getToUserKey());
       UserAccount fromUser = getUser(request.getFromUserKey());
       if (toUser != null && fromUser != null && toUser.getUserType() != fromUser.getUserType()) {
-        datastore.put(request.convertToEntity());
+        datastoreService.put(request.convertToEntity());
         return true;
       }
     }
@@ -287,7 +312,8 @@ public class DatastoreAccess implements DataAccess {
 
   public boolean deleteRequest(MentorshipRequest request) {
     if (getMentorshipRequest(request.getDatastoreKey()) != null) {
-      datastore.delete(KeyFactory.createKey(MentorshipRequest.ENTITY_TYPE, request.getDatastoreKey()));
+      datastoreService.delete(
+          KeyFactory.createKey(MentorshipRequest.ENTITY_TYPE, request.getDatastoreKey()));
       return true;
     }
     return false;
@@ -297,11 +323,11 @@ public class DatastoreAccess implements DataAccess {
   public boolean approveRequest(MentorshipRequest request) {
     if (deleteRequest(request)) {
       UserAccount toUser = request.getToUser();
-      if (toUser == null)   {
+      if (toUser == null) {
         toUser = getUser(request.getToUserKey());
       }
       UserAccount fromUser = request.getFromUser();
-      if (fromUser == null)   {
+      if (fromUser == null) {
         fromUser = getUser(request.getFromUserKey());
       }
       UserAccount mentor = toUser.getUserType() == UserType.MENTOR ? toUser : fromUser;
@@ -318,7 +344,7 @@ public class DatastoreAccess implements DataAccess {
 
   public boolean makeConnection(long mentorKey, long menteeKey) {
     if (getMentor(mentorKey) != null && getMentee(menteeKey) != null) {
-      Conenction connection = new Connection(mentorKey, menteeKey);
+      Connection connection = new Connection(mentorKey, menteeKey);
       datastoreService.put(connection.convertToEntity());
     }
     return false;
@@ -328,7 +354,7 @@ public class DatastoreAccess implements DataAccess {
     Query query =
         new Query(Connection.ENTITY_TYPE)
             .setFilter(
-                new Query.CompositeFilterOperator.or(
+                Query.CompositeFilterOperator.or(
                     new Query.FilterPredicate(
                         ParameterConstants.MENTOR_KEY,
                         Query.FilterOperator.EQUAL,
@@ -336,9 +362,7 @@ public class DatastoreAccess implements DataAccess {
                     new Query.FilterPredicate(
                         ParameterConstants.MENTEE_KEY,
                         Query.FilterOperator.EQUAL,
-                        user.getDatastoreKey())
-                  )
-              );
+                        user.getDatastoreKey())));
     PreparedQuery results = datastoreService.prepare(query);
     Collection<Connection> connections =
         StreamSupport.stream(results.asIterable().spliterator(), false)

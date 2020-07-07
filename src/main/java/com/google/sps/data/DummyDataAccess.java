@@ -145,8 +145,8 @@ public class DummyDataAccess implements DataAccess {
   }
 
   public boolean saveUser(UserAccount user) {
-  return false;
-}
+    return false;
+  }
 
   public Collection<Mentor> getRelatedMentors(Mentee mentee) {
     Collection<Mentor> mentors = new ArrayList<>(5);
@@ -327,8 +327,8 @@ public class DummyDataAccess implements DataAccess {
   }
 
   public boolean dislikeMentor(Mentee mentee, Mentor mentor) {
-  return false;
-}
+    return false;
+  }
 
   public Collection<Mentor> getDislikedMentors(Mentee mentee) {
     Collection<Mentor> mentors = new ArrayList<>(5);
@@ -402,30 +402,30 @@ public class DummyDataAccess implements DataAccess {
   }
 
   public boolean publishRequest(MentorshipRequest request) {
-  return false;
-}
+    return false;
+  }
 
   public MentorshipRequest getMentorshipRequest(long requestKey) {
     return new MentorshipRequest(requestKey + 1234, requestKey - 1234);
   }
 
   public boolean deleteRequest(MentorshipRequest request) {
-  return false;
-}
+    return false;
+  }
 
   // delete request object and create connection object
   public boolean approveRequest(MentorshipRequest request) {
-  return false;
-}
+    return false;
+  }
 
   // delete request object
   public boolean denyRequest(MentorshipRequest request) {
-  return false;
-}
+    return false;
+  }
 
   public boolean makeConnection(long mentorKey, long menteeKey) {
-  return false;
-}
+    return false;
+  }
 
   public Collection<Connection> getConnections(UserAccount user) {
     Collection<Connection> data = new ArrayList(5);
