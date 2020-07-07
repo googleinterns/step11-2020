@@ -9,7 +9,6 @@ import com.google.appengine.api.datastore.KeyRange;
 import com.google.sps.util.ParameterConstants;
 
 public class MentorshipRequest {
-  public static final String ENTITY_TYPE = "MentorshipRequest";
 
   private long datastoreKey;
   private long toUserKey;
@@ -19,7 +18,7 @@ public class MentorshipRequest {
 
   public MentorshipRequest(long toUserKey, long fromUserKey) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    KeyRange keyRange = datastore.allocateIds(ENTITY_TYPE, 1);
+    KeyRange keyRange = datastore.allocateIds(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, 1);
     this.datastoreKey = keyRange.getStart().getId();
     this.toUserKey = toUserKey;
     this.fromUserKey = fromUserKey;
@@ -32,7 +31,8 @@ public class MentorshipRequest {
   }
 
   public Entity convertToEntity() {
-    Key key = KeyFactory.createKey(ENTITY_TYPE, this.datastoreKey);
+    Key key =
+        KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, this.datastoreKey);
     Entity entity = new Entity(key);
     entity.setProperty(ParameterConstants.TO_USER_KEY, toUserKey);
     entity.setProperty(ParameterConstants.FROM_USER_KEY, fromUserKey);

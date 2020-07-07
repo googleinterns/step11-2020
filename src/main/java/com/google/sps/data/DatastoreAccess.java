@@ -76,7 +76,7 @@ public class DatastoreAccess implements DataAccess {
               .country(randomEnum(Country.class))
               .language(randomEnum(Language.class))
               .timezone(TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)]))
-              .ethnicity(randomEnum(Ethnicity.class))
+              .ethnicityList(Arrays.asList(randomEnum(Ethnicity.class)))
               .ethnicityOther(randomLetters(10))
               .gender(randomEnum(Gender.class))
               .genderOther(randomLetters(10))
@@ -105,7 +105,7 @@ public class DatastoreAccess implements DataAccess {
               .country(randomEnum(Country.class))
               .language(randomEnum(Language.class))
               .timezone(TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)]))
-              .ethnicity(randomEnum(Ethnicity.class))
+              .ethnicityList(Arrays.asList(randomEnum(Ethnicity.class)))
               .ethnicityOther(randomLetters(10))
               .gender(randomEnum(Gender.class))
               .genderOther(randomLetters(10))
@@ -151,7 +151,7 @@ public class DatastoreAccess implements DataAccess {
 
   public UserAccount getUser(String userID) {
     Query query =
-        new Query(UserAccount.ENTITY_TYPE)
+        new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT)
             .setFilter(
                 new Query.FilterPredicate(
                     ParameterConstants.USER_ID, Query.FilterOperator.EQUAL, userID));
@@ -163,7 +163,7 @@ public class DatastoreAccess implements DataAccess {
   public UserAccount getUser(long datastoreKey) {
     try {
       return UserAccount.fromEntity(
-          datastoreService.get(KeyFactory.createKey(UserAccount.ENTITY_TYPE, datastoreKey)));
+          datastoreService.get(KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, datastoreKey)));
     } catch (EntityNotFoundException e) {
       return null;
     }
@@ -203,7 +203,7 @@ public class DatastoreAccess implements DataAccess {
 
   public Collection<Mentor> getRelatedMentors(Mentee mentee) {
     Query query =
-        new Query(UserAccount.ENTITY_TYPE)
+        new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT)
             .setFilter(
                 new Query.FilterPredicate(
                     ParameterConstants.USER_TYPE,
@@ -218,7 +218,7 @@ public class DatastoreAccess implements DataAccess {
 
   public Collection<Mentee> getRelatedMentees(Mentor mentor) {
     Query query =
-        new Query(UserAccount.ENTITY_TYPE)
+        new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT)
             .setFilter(
                 new Query.FilterPredicate(
                     ParameterConstants.USER_TYPE,
@@ -233,7 +233,7 @@ public class DatastoreAccess implements DataAccess {
 
   public Collection<MentorshipRequest> getIncomingRequests(UserAccount user) {
     Query query =
-        new Query(MentorshipRequest.ENTITY_TYPE)
+        new Query(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST)
             .setFilter(
                 new Query.FilterPredicate(
                     ParameterConstants.TO_USER_KEY,
@@ -254,7 +254,7 @@ public class DatastoreAccess implements DataAccess {
 
   public Collection<MentorshipRequest> getOutgoingRequests(UserAccount user) {
     Query query =
-        new Query(MentorshipRequest.ENTITY_TYPE)
+        new Query(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST)
             .setFilter(
                 new Query.FilterPredicate(
                     ParameterConstants.FROM_USER_KEY,
@@ -288,7 +288,7 @@ public class DatastoreAccess implements DataAccess {
     return datastoreService
         .get(
             mentee.getDislikedMentorKeys().stream()
-                .map(longKey -> KeyFactory.createKey(UserAccount.ENTITY_TYPE, longKey))
+                .map(longKey -> KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, longKey))
                 .collect(Collectors.toList()))
         .values()
         .stream()
@@ -311,7 +311,7 @@ public class DatastoreAccess implements DataAccess {
   public MentorshipRequest getMentorshipRequest(long requestKey) {
     try {
       return new MentorshipRequest(
-          datastoreService.get(KeyFactory.createKey(MentorshipRequest.ENTITY_TYPE, requestKey)));
+          datastoreService.get(KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, requestKey)));
     } catch (EntityNotFoundException e) {
       return null;
     }
@@ -320,7 +320,7 @@ public class DatastoreAccess implements DataAccess {
   public boolean deleteRequest(MentorshipRequest request) {
     if (getMentorshipRequest(request.getDatastoreKey()) != null) {
       datastoreService.delete(
-          KeyFactory.createKey(MentorshipRequest.ENTITY_TYPE, request.getDatastoreKey()));
+          KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, request.getDatastoreKey()));
       return true;
     }
     return false;
@@ -359,7 +359,7 @@ public class DatastoreAccess implements DataAccess {
 
   public Collection<Connection> getConnections(UserAccount user) {
     Query query =
-        new Query(Connection.ENTITY_TYPE)
+        new Query(ParameterConstants.ENTITY_TYPE_CONNECTION)
             .setFilter(
                 Query.CompositeFilterOperator.or(
                     new Query.FilterPredicate(

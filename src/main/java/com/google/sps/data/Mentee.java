@@ -11,12 +11,14 @@ public class Mentee extends UserAccount {
   private Topic goal;
   private MeetingFrequency desiredMeetingFrequency;
   private Set<Long> dislikedMentorKeys;
+  private MentorType desiredMentorType;
 
   private Mentee(Builder builder) {
     super(builder);
     this.goal = builder.goal;
     this.desiredMeetingFrequency = builder.desiredMeetingFrequency;
     this.dislikedMentorKeys = builder.dislikedMentorKeys;
+    this.desiredMentorType = builder.desiredMentorType;
   }
 
   public Mentee(Entity entity) {
@@ -29,6 +31,8 @@ public class Mentee extends UserAccount {
                 (long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY))];
     this.dislikedMentorKeys =
         (Set<Long>) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS);
+    this.desiredMentorType =
+        MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTOR_TYPE))];
   }
 
   public Entity convertToEntity() {
@@ -37,6 +41,7 @@ public class Mentee extends UserAccount {
     entity.setProperty(
         ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, desiredMeetingFrequency.ordinal());
     entity.setProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS, this.dislikedMentorKeys);
+    entity.setProperty(ParameterConstants.MENTOR_TYPE, desiredMentorType.ordinal());
     return entity;
   }
 
@@ -46,6 +51,10 @@ public class Mentee extends UserAccount {
 
   public Topic getGoal() {
     return goal;
+  }
+
+  public MentorType getDesiredMentorType() {
+    return desiredMentorType;
   }
 
   public MeetingFrequency getDesiredMeetingFrequency() {
@@ -60,6 +69,7 @@ public class Mentee extends UserAccount {
     private Topic goal;
     private MeetingFrequency desiredMeetingFrequency;
     private Set<Long> dislikedMentorKeys;
+    private MentorType desiredMentorType;
 
     public Builder() {}
 
@@ -75,6 +85,11 @@ public class Mentee extends UserAccount {
 
     public Builder dislikedMentorKeys(Set<Long> dislikedMentorKeys) {
       this.dislikedMentorKeys = dislikedMentorKeys;
+      return this;
+    }
+
+    public Builder mentorType(MentorType desiredMentorType) {
+      this.desiredMentorType = desiredMentorType;
       return this;
     }
 
