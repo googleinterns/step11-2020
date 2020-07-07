@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.gson.Gson;
 import com.google.sps.data.DatastoreAccess;
+import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.util.URLPatterns;
@@ -21,6 +22,7 @@ public class DatastoreTestServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     DatastoreAccess dataAccess = new DatastoreAccess();
+    dataAccess.saveUser((new DummyDataAccess()).getMentor(dataAccess.getCurrentUser().getUserId()));
     response.setContentType("application/json;");
     Collection<Mentor> mentors = dataAccess.getRelatedMentors(null);
     Collection<Mentee> mentees = dataAccess.getRelatedMentees(null);

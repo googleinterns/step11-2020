@@ -3,16 +3,39 @@ package com.google.sps.data;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.util.ContextFields;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class DummyDataAccess implements DataAccess {
 
+  private static final UserService userService = UserServiceFactory.getUserService();
+
+  public Map<String, Object> getDefaultRenderingContext(String currentURL) {
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put(ContextFields.URL, currentURL);
+    boolean loggedIn = userService.isUserLoggedIn();
+    context.put(ContextFields.IS_LOGGED_IN, loggedIn);
+    UserAccount currentUser = null;
+    boolean isMentor = false, isMentee = false;
+    if (loggedIn) {
+      User user = getCurrentUser();
+      currentUser = getUser(user.getUserId());
+      isMentor = currentUser.getUserType() == UserType.MENTOR;
+      isMentee = !isMentor && currentUser.getUserType() == UserType.MENTEE;
+    }
+    context.put(ContextFields.CURRENT_USER, currentUser);
+    context.put(ContextFields.IS_MENTOR, isMentor);
+    context.put(ContextFields.IS_MENTEE, isMentee);
+    return context;
+  }
+
   public User getCurrentUser() {
-    UserService userService = UserServiceFactory.getUserService();
     return userService.getCurrentUser();
   }
 

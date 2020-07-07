@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.Country;
+import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.EducationLevel;
 import com.google.sps.data.Ethnicity;
 import com.google.sps.data.Gender;
@@ -25,6 +26,7 @@ import com.google.sps.data.MeetingFrequency;
 import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
+import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -52,23 +54,20 @@ public class QuestionnaireServlet extends HttpServlet {
 
   private String questionnaireTemplate;
   private Jinjava jinjava;
-  private String formType;
 
   @Override
   public void init() {
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
-    formType = "";
     try {
       jinjava.setResourceLocator(
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      System.err.println("templates dir not found!");
+      System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = selectionListsForFrontEnd();
-    context.put(URLPatterns.URL, URLPatterns.QUESTIONNAIRE);
 
     try {
       String template =
@@ -84,17 +83,17 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("REQUEST AT: " + request.getServletPath());
     response.setContentType("text/html;");
 
     if (questionnaireTemplate == null) {
       response.setStatus(500);
       return;
     }
-    formType = request.getParameter("formType");
+    String formType = request.getParameter("formType");
     if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
-      Map<String, Object> context = new HashMap<>();
-      context.put("isMentor", formType.equals(MENTOR));
+      Map<String, Object> context =
+          new DummyDataAccess().getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
+      context.put(ContextFields.FORM_TYPE, formType);
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
@@ -105,6 +104,7 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String formType = request.getParameter("formType");
     if (formType.equals(MENTEE)) {
       response.sendRedirect(URLPatterns.FIND_MENTOR);
     } else {

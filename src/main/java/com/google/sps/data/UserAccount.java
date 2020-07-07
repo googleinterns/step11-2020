@@ -129,13 +129,13 @@ public class UserAccount {
         UserType.values()[toIntExact((long) entity.getProperty(ParameterConstants.USER_TYPE))];
   }
 
-  public static UserAccount fromEntity(Entity userEntity) {
-    return userEntity != null
-        ? UserType.values()[(int) userEntity.getProperty(ParameterConstants.USER_TYPE)]
+  public static UserAccount fromEntity(Entity entity) {
+    return entity == null
+        ? null
+        : UserType.values()[toIntExact((long) (entity.getProperty(ParameterConstants.USER_TYPE)))]
                 == UserType.MENTEE
-            ? new Mentee(userEntity)
-            : new Mentor(userEntity)
-        : null;
+            ? new Mentee(entity)
+            : new Mentor(entity);
   }
 
   public Entity convertToEntity() {
