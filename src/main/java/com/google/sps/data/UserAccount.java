@@ -15,8 +15,6 @@ import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 public class UserAccount {
-  public static final String ENTITY_TYPE = "UserAccount";
-
   private long datastoreKey;
   private boolean keyInitialized;
   private String userID;
@@ -98,7 +96,7 @@ public class UserAccount {
       this.datastoreKey = builder.datastoreKey;
     } else {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      KeyRange keyRange = datastore.allocateIds(ENTITY_TYPE, 1);
+      KeyRange keyRange = datastore.allocateIds(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, 1);
       this.datastoreKey = keyRange.getStart().getId();
     }
   }
@@ -141,7 +139,7 @@ public class UserAccount {
   }
 
   public Entity convertToEntity() {
-    Key key = KeyFactory.createKey(ENTITY_TYPE, this.datastoreKey);
+    Key key = KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, this.datastoreKey);
     Entity entity = new Entity(key);
     entity.setProperty(ParameterConstants.USER_ID, this.userID);
     entity.setProperty(ParameterConstants.EMAIL, this.email);

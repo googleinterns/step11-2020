@@ -96,7 +96,7 @@ public final class ProfileServlet extends HttpServlet {
 
     String requestedUserID = getParameter(request, ParameterConstants.USER_ID, userID);
     Query query =
-        new Query(UserAccount.ENTITY_TYPE)
+        new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT)
             .setFilter(
                 new Query.FilterPredicate(
                     ParameterConstants.USER_ID, Query.FilterOperator.EQUAL, requestedUserID));

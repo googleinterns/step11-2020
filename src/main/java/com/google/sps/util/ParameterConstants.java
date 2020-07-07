@@ -1,6 +1,7 @@
 package com.google.sps.util;
 
 public final class ParameterConstants {
+  public static final String ENTITY_TYPE_USER_ACCOUNT = "UserAccount";
   public static final String USER_ID = "userID";
   public static final String EMAIL = "email";
   public static final String NAME = "name";
@@ -8,8 +9,6 @@ public final class ParameterConstants {
   public static final String COUNTRY = "country";
   public static final String LANGUAGE = "language";
   public static final String TIMEZONE = "timezone";
-  public static final String ENTITY_TYPE_CONNECTION = "Connection";
-  public static final String ENTITY_TYPE_MENTORSHIP_REQUEST = "MentorshipRequest";
   public static final String ETHNICITY = "ethnicity";
   public static final String ETHNICITY_OTHER = "ethnicityOther";
   public static final String GENDER = "gender";
@@ -25,8 +24,12 @@ public final class ParameterConstants {
   public static final String MENTEE_DISLIKED_MENTOR_KEYS = "dislikedMentorKeys";
   public static final String MENTOR_FOCUS_LIST = "focusList";
   public static final String MENTOR_TYPE = "mentorType";
-  public static final String MENTOR_KEY = "mentorKey";
-  public static final String MENTEE_KEY = "menteeKey";
+
+  public static final String ENTITY_TYPE_MENTORSHIP_REQUEST = "MentorshipRequest";
   public static final String TO_USER_KEY = "toUserKey";
   public static final String FROM_USER_KEY = "fromUserKey";
+
+  public static final String ENTITY_TYPE_CONNECTION = "Connection";
+  public static final String MENTOR_KEY = "mentorKey";
+  public static final String MENTEE_KEY = "menteeKey";
 }

@@ -3,6 +3,8 @@ package com.google.sps.data;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.KeyRange;
 import com.google.sps.util.ParameterConstants;
 
@@ -29,7 +31,9 @@ public class MentorshipRequest {
   }
 
   public Entity convertToEntity() {
-    Entity entity = new Entity(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST);
+    Key key =
+        KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, this.datastoreKey);
+    Entity entity = new Entity(key);
     entity.setProperty(ParameterConstants.TO_USER_KEY, toUserKey);
     entity.setProperty(ParameterConstants.FROM_USER_KEY, fromUserKey);
     return entity;
