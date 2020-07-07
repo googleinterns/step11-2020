@@ -45,17 +45,20 @@
       {% endfor %}
     </select>
 
+
     <h3> Step 2: More Personal Information </h3>
     <p> This information is used to find a person that best fits you.
        Feel free to fill in with whatever you're comfortable sharing: everything in this step is optional </p>
-    <div id="ethnicity">
+    <div id="ethnicity-div">
       <p> Check off whatever best applies to you </p>
       {% for ethnicity in ethnicities %}
-      <input type="checkbox" name="{{ethnicity}}" value="{{ethnicity}}">
+      <input type="checkbox" class="ethnicityCheckbox" name="{{ethnicity}}" value="{{ethnicity}}">
       <label for="{{ethnicity}}"> {{ethnicity.title}} </label><br>
       {% endfor %}
       <div id="other-box"></div>
+    <input type="hidden" name="ethnicity" id="ethnicity" value="" />
     </div> <br>
+    <!-- Used to store ethnicity values -->
 
     <label for="gender">Gender</label>
     <select id="gender" name="gender" onchange="checkForOther(this.value)">
@@ -84,6 +87,7 @@
       <input type="radio" value="false"> No </input>
     </div>
 
+
     <h3> Step 3: Goals and Logistics </h3>
     <!-- Displayed to those who selected "Become a Mentor" -->
     {% raw %}{% if formType == "mentor" %} {% endraw %}
@@ -97,9 +101,10 @@
     <div id="focusList">
       <p> What areas would you like to focus on (Choose all that apply). </p>
       {% for topic in topics %}
-      <input type="checkbox" name="{{topic}}" value="{{topic}}">
+      <input type="checkbox" class="focusListCheckbox" name="{{topic}}" value="{{topic}}">
       <label for="{{topic}}"> {{topic.title}} </label><br>
       {% endfor %}
+    <input type="hidden" name="focusList" id="focusList" value="" />
     </div>
 
     <!-- Displayed to those who selected "Find a Mentor" -->

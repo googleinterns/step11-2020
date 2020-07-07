@@ -26,6 +26,8 @@ import com.google.sps.data.MeetingFrequency;
 import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
+import com.google.sps.data.Mentor;
+import com.google.sps.data.Mentee;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
@@ -39,9 +41,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.Date;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -115,30 +119,79 @@ public class QuestionnaireServlet extends HttpServlet {
 
     ArrayList<Ethnicity> ethnicities = new ArrayList<>();
     String ethnicityString = getParameter(request, ParameterConstants.ETHNICITY, "");
-    for (String ethnicity: ethnicityString.split(', ')) {
-      ethnicities.add(Ethnicity.valueOf(ethnicity));
+    for (String ethnicity: ethnicityString.split(", ")) {
+      if (Ethnicity.valueOf(ethnicity) != null) {
+        ethnicities.add(Ethnicity.valueOf(ethnicity));
+      }
     }
 
-    String ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "")
-    Gender gender = Gender.getParameter(request, ParameterConstants.GENDER, "");
+    String ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
+    Gender gender = Gender.valueOf(getParameter(request, ParameterConstants.GENDER, ""));
     String genderOther = getParameter(request, ParameterConstants.GENDER_OTHER, "");
-    Education educationLevel = getParameter(request, ParameterConstants.EDUCATION_LEVEL, "");
+    EducationLevel educationLevel = Education.valueOf(getParameter(request, ParameterConstants.EDUCATION_LEVEL, ""));
     String educationLevelOther = getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
     boolean firstGen = getParameter(request, ParameterConstants.FIRST_GEN, "no");
     boolean lowIncome = getParameter(request, ParameterConstants.LOW_INCOME, "no");
-    MentorType mentorType = getParameter(request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR);
+    MentorType mentorType = MentorType.valueOf(getParameter(request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR));
     String description = getParameter(request, ParameterConstants.DESCRIPTION, "");
 
-
     if (formType.equals(MENTEE)) {
-      MeetingFrequency desiredMeetingFrequency = getParameter(request, ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, MeetingFrequency.BIWEEKLY);
-      Topic goal = getParameter(request, ParameterConstants.MENTEE_GOAL, "");
-      dataAccess.saveUser(new Mentee());
+      MeetingFrequency desiredMeetingFrequency = MeetingFrequency.valueOf(getParameter(request, ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, MeetingFrequency.BIWEEKLY));
+      Topic goal = Topic.valueOf(getParameter(request, ParameterConstants.MENTEE_GOAL, ""));
+      dataAccess.saveUser((new Mentee().Builder())
+          .name(name)
+          .userID(dataAccess.getCurrentUser().getUserId())
+          .email(dataAccess.getCurrentUser().getEmail())
+          .dateOfBirth(dateOfBirth)
+          .country(country)
+          .language(language)
+          .timezone(timeZone)
+          .ethnicity(ethnicities.get(0))
+          .ethnicityOther(ethnicityOther)
+          .gender(gender)
+          .genderOther(genderOther)
+          .firstGen(firstGen)
+          .lowIncome(lowIncome)
+          .educationLevel(educationLevel)
+          .educationLevelOther(educationLevelOther)
+          .description(description)
+          .goal(goal)
+          .desiredMeetingFrequency(desiredMeetingFrequency)
+          .build());
+      System.out.println("Ayyy you built a mentee");
       response.sendRedirect(URLPatterns.FIND_MENTOR);
 
     } else {
-      ArrayList<Topic> focusList = getParameter(request, ParameterConstants.MENTOR_FOCUS_LIST);
-      dataAccess.saveUser(new Mentor());
+      ArrayList<Topic> focusList = new ArrayList<>();
+      Sting focusListString = getParameter(request, ParameterConstants.MENTOR_FOCUS_LIST);
+      for (String focus: focusListString.split(", ")) {
+        if (Focus.valueOf(focus) != null) {
+          focusList.add(Focus.valueOf(focus));
+        }
+      }
+
+      dataAccess.saveUser((new Mentor().Builder())
+          .name(name)
+          .userID(dataAccess.getCurrentUser().getUserId())
+          .email(dataAccess.getCurrentUser().getEmail())
+          .dateOfBirth(dateOfBirth)
+          .country(country)
+          .language(language)
+          .timezone(timeZone)
+          .ethnicity(ethnicity)
+          .ethnicityOther(ethnicityOther)
+          .gender(gender)
+          .genderOther(genderOther)
+          .firstGen(firstGen)
+          .lowIncome(lowIncome)
+          .educationLevel(educationLevel)
+          .educationLevelOther(educationLevelOther)
+          .description(description)
+          .mentorType(formType)
+          .visibility(true)
+          .focusList(focusList)
+          .build());
+      System.out.println("Ayyy you built a mentor");
       response.sendRedirect(URLPatterns.PROFILE);
     }
   }
