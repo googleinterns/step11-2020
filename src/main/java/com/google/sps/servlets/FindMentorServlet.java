@@ -64,7 +64,6 @@ public class FindMentorServlet extends HttpServlet {
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put(URLPatterns.URL, URLPatterns.FIND_MENTOR);
 
     try {
       String template =
@@ -85,7 +84,8 @@ public class FindMentorServlet extends HttpServlet {
       if (mentee != null) {
         response.setContentType("text/html;");
 
-        Map<String, Object> context = new HashMap<>();
+        Map<String, Object> context =
+            dataAccess.getDefaultRenderingContext(URLPatterns.FIND_MENTOR);
 
         Collection<Mentor> relatedMentors = dataAccess.getRelatedMentors(mentee);
         context.put("mentors", relatedMentors);

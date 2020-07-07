@@ -60,7 +60,6 @@ public class ConnectionRequestsServlet extends HttpServlet {
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put(URLPatterns.URL, URLPatterns.CONNECTION_REQUESTS);
 
     try {
       String template =
@@ -83,7 +82,8 @@ public class ConnectionRequestsServlet extends HttpServlet {
       return;
     }
 
-    Map<String, Object> context = new HashMap<>();
+    Map<String, Object> context =
+        dataAccess.getDefaultRenderingContext(URLPatterns.CONNECTION_REQUESTS);
     context.put("connectionRequests", dataAccess.getIncomingRequests(dataAccess.getUser("woah")));
     String renderTemplate = jinjava.render(connectionRequestTemplate, context);
     response.getWriter().println(renderTemplate);

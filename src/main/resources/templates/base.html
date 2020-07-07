@@ -15,7 +15,7 @@
 <body>
 	<header>
     {% block header %}
-      {% include "header.html" %}
+      {% raw %}{% include "header.html" %}{% endraw %}
     {% endblock %}
 	</header>
 	<div class="main-body">

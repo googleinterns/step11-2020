@@ -129,6 +129,15 @@ public class UserAccount {
         UserType.values()[toIntExact((long) entity.getProperty(ParameterConstants.USER_TYPE))];
   }
 
+  public static UserAccount fromEntity(Entity entity) {
+    return entity == null
+        ? null
+        : UserType.values()[toIntExact((long) (entity.getProperty(ParameterConstants.USER_TYPE)))]
+                == UserType.MENTEE
+            ? new Mentee(entity)
+            : new Mentor(entity);
+  }
+
   public Entity convertToEntity() {
     Key key = KeyFactory.createKey(ENTITY_TYPE, this.datastoreKey);
     Entity entity = new Entity(key);
