@@ -38,7 +38,7 @@
       {% endfor %}
     </select>
 
-    <label for="country">Preferred Language</label>
+    <label for="language">Preferred Language</label>
     <select id="language" name="language">
       {% for language in languages %}
       <option value="{{language}}"> {{language.longName}}</option>
@@ -54,6 +54,7 @@
       <input type="checkbox" name="{{ethnicity}}" value="{{ethnicity}}">
       <label for="{{ethnicity}}"> {{ethnicity.title}} </label><br>
       {% endfor %}
+      <div id="other-box"></div>
     </div> <br>
 
     <label for="gender">Gender</label>
@@ -64,59 +65,36 @@
     </select>
     <div id="other-box"></div>
 
-    <label for="education">Current/Highest Level of Education</label>
-    <select id="education" name="education">
+    <label for="educationLevel">Current/Highest Level of Education</label>
+    <select id="educationLevel" name="educationLevel"  onchange="checkForOther(this.value)">
       {% for education in educationLevels %}
       <option value="{{education}}"> {{education.title}}</option>
       {% endfor %}
     </select>
+    <div id="other-box"></div>
 
-    <div id="first-gen">
+    <div id="firstGen">
       <label> Do/did you consider yourself a first generation student</label>
-      <input type="radio" value="yes"> Yes </input>
-      <input type="radio" value="no"> No </input>
+      <input type="radio" value="true"> Yes </input>
+      <input type="radio" value="false"> No </input>
     </div>
-    <div id="low-income">
+    <div id="lowIncome">
       <label> Do/did you consider yourself a low income student</label>
-      <input type="radio" value="yes"> Yes </input>
-      <input type="radio" value="no"> No </input>
-    </div>
-
-    <div id = "disabilities">
-      <label> Do you identify as a person with disabilities </label>
-      <input type="radio" value="yes"> Yes </input>
-      <input type="radio" value="no"> No </input>
+      <input type="radio" value="true"> Yes </input>
+      <input type="radio" value="false"> No </input>
     </div>
 
     <h3> Step 3: Goals and Logistics </h3>
     <!-- Displayed to those who selected "Become a Mentor" -->
     {% raw %}{% if isMentor %} {% endraw %}
-    <div id="mentor-type">
-      <p> What type of Mentor would you like to be? (Choose all that apply). </p>
-      {% for mentorType in mentorTypes %}
-      <input type="checkbox" name="{{mentorType}}" value="{{mentorType}}">
-      <label for="{{mentorType}}"> {{mentorType.title}} </label><br>
-      {% endfor %}
-    </div>
-
-    <!-- Displayed to those who selected "Find a Mentor" -->
-    {% raw %} {% else %} {% endraw %}
-    <label for="goals"> What type of Mentor are you looking for </label>
-    <select id="goals" name="goals" required>
+    <label for="mentorType"> What type of Mentor would you like to be? </label>
+    <select id="mentorType" name="mentorType" required>
       {% for mentorType in mentorTypes %}
       <option value="{{mentorType}}"> {{mentorType.title}}</option>
       {% endfor %}
     </select> <br>
 
-    <label for="meeting-frequency">How often would you like to meet?</label>
-    <select id="meeting-frequency" name="meeting-frequency" required>
-      {% for meetingFrequency in meetingFrequencies %}
-      <option value="{{meetingFrequency}}"> {{meetingFrequency.title}}</option>
-      {% endfor %}
-    </select>
-    {% raw %} {% endif %} {% endraw %}
-
-    <div id="topic">
+    <div id="focusList">
       <p> What areas would you like to focus on (Choose all that apply). </p>
       {% for topic in topics %}
       <input type="checkbox" name="{{topic}}" value="{{topic}}">
@@ -124,14 +102,37 @@
       {% endfor %}
     </div>
 
+    <!-- Displayed to those who selected "Find a Mentor" -->
+    {% raw %} {% else %} {% endraw %}
+    <label for="mentorType"> What type of Mentor are you looking for? </label>
+    <select id="mentorType" name="mentorType" required>
+      {% for mentorType in mentorTypes %}
+      <option value="{{mentorType}}"> {{mentorType.title}}</option>
+      {% endfor %}
+    </select> <br>
+
+    <label for="desiredMeetingFrequency">How often would you like to meet?</label>
+    <select id="desiredMeetingFrequency" name="desiredMeetingFrequency" required>
+      {% for meetingFrequency in meetingFrequencies %}
+      <option value="{{meetingFrequency}}"> {{meetingFrequency.title}}</option>
+      {% endfor %}
+    </select>
+
+    <label for="goal">What subject would you like to focus on (if applicable)? </label>
+    <select id="meetingFrequency" name="meetingFrequency" required>
+      {% for topic in topics %}
+      <option value="{{topic}}"> {{topic.title}}</option>
+      {% endfor %}
+    {% raw %} {% endif %} {% endraw %}
+
 
     <h3> Step 4: Extra </h3>
 
     <label for="image-upload"> (Optional) Upload an image of yourself </label>
     <input type="file" id="image-upload" name="image-upload">
 
-    <label for="bio"> (Optional) Write a short bio about yourself</label>
-    <input type="text" name="bio" placeholder="For example, what are your hobbies...">
+    <label for="description"> (Optional) Write a short bio about yourself</label>
+    <input type="text" name="description" placeholder="For example, what are your hobbies...">
     <input type="submit" value="Submit">
   </form>
 </div>

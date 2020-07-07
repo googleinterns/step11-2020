@@ -27,6 +27,7 @@ import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -53,6 +54,7 @@ public class QuestionnaireServlet extends HttpServlet {
   private String questionnaireTemplate;
   private Jinjava jinjava;
   private String formType;
+  private DummyDataAccess dataAccess;
 
   @Override
   public void init() {
@@ -105,20 +107,31 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    getParameter(request, "name", "John Doe");
-    getParameter(request, "dob", "2000-01-01");
-    getParameter(request, "country", Country.US);
-    getParameter(request, "name");
-    getParameter(request, "name");
-    getParameter(request, "name");
-    getParameter(request, "name");
-    getParameter(request, "name");
-    getParameter(request, "name");
-    getParameter(request, "name");
+    String name = getParameter(request, ParameterConstants.NAME, "John Doe");
+    Date dateOfBirth = getParameter(request, ParameterConstants.DATE_OF_BIRTH, "2000-01-01");
+    Country country = getParameter(request, ParameterConstants.COUNTRY, Country.US);
+    TimeZone timeZone = getParameter(request, ParameterConstants.TIMEZONE, "est");
+    Language language = getParameter(request, ParameterConstants.LANGUAGE, Language.ENGLISH);
+    ArrayList<Ethnicity> ethnicities = getParameter(request, ParameterConstants.ETHNICITY, "");
+    String ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "")
+    Gender gender = getParameter(request, ParameterConstants.GENDER, "");
+    String genderOther = getParameter(request, ParameterConstants.GENDER_OTHER, "");
+    Education educationLevel = getParameter(request, ParameterConstants.EDUCATION_LEVEL, "");
+    String educationLevelOther = getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
+    boolean firstGen = getParameter(request, ParameterConstants.FIRST_GEN, "no");
+    boolean lowIncome = getParameter(request, ParameterConstants.LOW_INCOME, "no");
+    MentorType mentorType = getParameter(request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR);
+    String description = getParameter(request, ParameterConstants.DESCRIPTION, "");
 
     if (formType.equals(MENTEE)) {
+      MeetingFrequency desiredMeetingFrequency = getParameter(request, ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, MeetingFrequency.BIWEEKLY);
+      Topic goal = getParameter(request, ParameterConstants.MENTEE_GOAL, "");
+      dataAccess.saveUser(new Mentee());
       response.sendRedirect(URLPatterns.FIND_MENTOR);
+
     } else {
+      ArrayList<Topic> focusList = getParameter(request, ParameterConstants.MENTOR_FOCUS_LIST);
+      dataAccess.saveUser(new Mentor());
       response.sendRedirect(URLPatterns.PROFILE);
     }
   }
