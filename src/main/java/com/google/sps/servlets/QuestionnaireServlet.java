@@ -53,7 +53,6 @@ public class QuestionnaireServlet extends HttpServlet {
 
   private String questionnaireTemplate;
   private Jinjava jinjava;
-  private String formType;
   private DummyDataAccess dataAccess;
 
   @Override
@@ -93,7 +92,7 @@ public class QuestionnaireServlet extends HttpServlet {
       response.setStatus(500);
       return;
     }
-    formType = request.getParameter("formType");
+    String formType = request.getParameter("formType");
     if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
       Map<String, Object> context = new HashMap<>();
       context.put("isMentor", formType.equals(MENTOR));
@@ -109,9 +108,9 @@ public class QuestionnaireServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String name = getParameter(request, ParameterConstants.NAME, "John Doe");
     Date dateOfBirth = getParameter(request, ParameterConstants.DATE_OF_BIRTH, "2000-01-01");
-    Country country = getParameter(request, ParameterConstants.COUNTRY, Country.US);
+    Country country = Country.valueOf(getParameter(request, ParameterConstants.COUNTRY, Country.US));
     TimeZone timeZone = getParameter(request, ParameterConstants.TIMEZONE, "est");
-    Language language = getParameter(request, ParameterConstants.LANGUAGE, Language.ENGLISH);
+    Language language = Language.valueOf(getParameter(request, ParameterConstants.LANGUAGE, Language.ENGLISH));
     ArrayList<Ethnicity> ethnicities = getParameter(request, ParameterConstants.ETHNICITY, "");
     String ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "")
     Gender gender = getParameter(request, ParameterConstants.GENDER, "");
