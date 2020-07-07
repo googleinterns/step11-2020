@@ -106,7 +106,7 @@ public final class ProfileServlet extends HttpServlet {
     context.put("browsingUserProfileURL", "/profile?userID=" + userID);
     if ((long) (userEntity.getProperty("userType")) == 0) {
       context.put("mentor", new Mentor(userEntity));
-    } else {
+    } else if ((long) (userEntity.getProperty("userType")) == 1) {
       context.put("mentee", new Mentee(userEntity));
     }
 

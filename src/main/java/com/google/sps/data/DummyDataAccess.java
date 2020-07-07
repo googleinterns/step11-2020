@@ -27,7 +27,7 @@ public class DummyDataAccess implements DataAccess {
       User user = getCurrentUser();
       currentUser = getUser(user.getUserId());
       isMentor = currentUser.getUserType() == UserType.MENTOR;
-      isMentee = !isMentee && currentUser.getUserType() == UserType.MENTEE;
+      isMentee = !isMentor && currentUser.getUserType() == UserType.MENTEE;
     }
     context.put(ContextFields.CURRENT_USER, currentUser);
     context.put(ContextFields.IS_MENTOR, isMentor);

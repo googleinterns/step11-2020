@@ -94,7 +94,7 @@ public class QuestionnaireServlet extends HttpServlet {
     if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
       Map<String, Object> context =
           new DummyDataAccess().getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
-      context.put("mentorForm", formType.equals(MENTOR));
+      context.put("isMentorForm", formType.equals(MENTOR));
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
