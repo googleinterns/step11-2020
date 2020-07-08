@@ -204,7 +204,7 @@ public class QuestionnaireServlet extends HttpServlet {
           .visibility(true)
           .focusList(focusList)
           .build());
-      response.sendRedirect(URLPatterns.PROFILE);
+      response.sendRedirect(URLPatterns.DASHBOARD);
     }
   }
 
