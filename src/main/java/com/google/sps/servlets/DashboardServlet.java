@@ -18,7 +18,7 @@ import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.Connection;
-import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.util.ErrorMessages;
@@ -42,14 +42,14 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = URLPatterns.DASHBOARD)
 public class DashboardServlet extends HttpServlet {
 
-  private DummyDataAccess dataAccess;
+  private DatastoreAccess dataAccess;
   private Jinjava jinjava;
   private String dashboardMentorTemplate;
   private String dashboardMenteeTemplate;
 
   @Override
   public void init() {
-    dataAccess = new DummyDataAccess();
+    dataAccess = new DatastoreAccess();
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
     try {

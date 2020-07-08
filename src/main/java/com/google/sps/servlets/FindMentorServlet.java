@@ -17,7 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorshipRequest;
@@ -47,11 +47,11 @@ public class FindMentorServlet extends HttpServlet {
   private Jinjava jinjava;
   private String findMentorTemplate;
 
-  private DummyDataAccess dataAccess;
+  private DatastoreAccess dataAccess;
 
   @Override
   public void init() {
-    dataAccess = new DummyDataAccess();
+    dataAccess = new DatastoreAccess();
 
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);

@@ -57,7 +57,9 @@ public class SeedDatabaseServlet extends HttpServlet {
 
     for (JsonElement element : usersJson) {
       JsonObject user = element.getAsJsonObject();
-      if (user.get(ParameterConstants.USER_TYPE).getAsString().equals(DummyDataConstants.MENTOR_CAPS)) {
+      if (user.get(ParameterConstants.USER_TYPE)
+          .getAsString()
+          .equals(DummyDataConstants.MENTOR_CAPS)) {
         users.add(gson.fromJson(user, Mentor.class));
       } else {
         users.add(gson.fromJson(user, Mentee.class));

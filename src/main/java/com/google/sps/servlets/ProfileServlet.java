@@ -24,7 +24,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.UserAccount;
 import com.google.sps.data.UserType;
 import com.google.sps.util.ContextFields;
@@ -51,11 +51,11 @@ public final class ProfileServlet extends HttpServlet {
 
   private String profileTemplate;
   private Jinjava jinjava;
-  private DummyDataAccess dataAccess;
+  private DatastoreAccess dataAccess;
 
   @Override
   public void init() {
-    dataAccess = new DummyDataAccess();
+    dataAccess = new DatastoreAccess();
 
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);

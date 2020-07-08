@@ -17,7 +17,7 @@ package com.google.sps.servlets;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.Country;
-import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.EducationLevel;
 import com.google.sps.data.Ethnicity;
 import com.google.sps.data.Gender;
@@ -92,7 +92,7 @@ public class QuestionnaireServlet extends HttpServlet {
     String formType = request.getParameter("formType");
     if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
       Map<String, Object> context =
-          new DummyDataAccess().getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
+          new DatastoreAccess().getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
       context.put(ContextFields.FORM_TYPE, formType);
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);

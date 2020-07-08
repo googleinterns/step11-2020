@@ -16,7 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.DatastoreAccess;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -74,7 +74,7 @@ public class AuthorsServlet extends HttpServlet {
     }
 
     Map<String, Object> context =
-        new DummyDataAccess().getDefaultRenderingContext(URLPatterns.AUTHORS);
+        new DatastoreAccess().getDefaultRenderingContext(URLPatterns.AUTHORS);
 
     String rendered = jinjava.render(staticResponse, context);
 
