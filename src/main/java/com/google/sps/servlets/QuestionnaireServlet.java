@@ -128,13 +128,12 @@ public class QuestionnaireServlet extends HttpServlet {
 
     ArrayList<Ethnicity> ethnicities = new ArrayList<>();
     String ethnicityString = getParameter(request, ParameterConstants.ETHNICITY, "");
-    System.out.println("ethnicity string is:" + ethnicityString);
     try {
       for (String ethnicity: ethnicityString.split(", ")) {
         ethnicities.add(Ethnicity.valueOf(ethnicity));
       }
     } catch (IllegalArgumentException e) {
-      System.out.println("Could not find enum value");
+      System.err.println(ErrorMessages.INVALID_PARAMATERS);
     }
 
     String ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
@@ -150,15 +149,15 @@ public class QuestionnaireServlet extends HttpServlet {
     if (formType.equals(MENTEE)) {
       MeetingFrequency desiredMeetingFrequency = MeetingFrequency.valueOf(getParameter(request, ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, MeetingFrequency.WEEKLY.toString()));
       Topic goal = Topic.valueOf(getParameter(request, ParameterConstants.MENTEE_GOAL, ""));
-      dataAccess.saveUser((new Mentee.Builder())
+      dataAccess.createUser((new Mentee.Builder())
           .name(name)
-          .userID("ewfe")
-          .email("deads@gmail.com")
+          .userID(dataAccess.getCurrentUser().getUserId())
+          .email(dataAccess.getCurrentUser().getEmail())
           .dateOfBirth(dateOfBirth)
           .country(country)
           .language(language)
           .timezone(timeZone)
-          .ethnicity(ethnicities)
+          .ethnicityList(ethnicities)
           .ethnicityOther(ethnicityOther)
           .gender(gender)
           .genderOther(genderOther)
@@ -169,8 +168,8 @@ public class QuestionnaireServlet extends HttpServlet {
           .description(description)
           .goal(goal)
           .desiredMeetingFrequency(desiredMeetingFrequency)
+          .mentorType(mentorType)
           .build());
-      System.out.println("Ayyy you built a mentee");
       response.sendRedirect(URLPatterns.FIND_MENTOR);
 
     } else {
@@ -181,18 +180,18 @@ public class QuestionnaireServlet extends HttpServlet {
           focusList.add(Topic.valueOf(focus));
         }
       } catch (IllegalArgumentException e) {
-        System.out.println("Could not find enum value");
+        System.err.println(ErrorMessages.INVALID_PARAMATERS);
       }
 
-      dataAccess.saveUser((new Mentor.Builder())
+      dataAccess.createUser((new Mentor.Builder())
           .name(name)
-          .userID("ewfe")
-          .email("deads@gmail.com")
+          .userID(dataAccess.getCurrentUser().getUserId())
+          .email(dataAccess.getCurrentUser().getEmail())
           .dateOfBirth(dateOfBirth)
           .country(country)
           .language(language)
           .timezone(timeZone)
-          .ethnicity(ethnicities.get(0))
+          .ethnicityList(ethnicities)
           .ethnicityOther(ethnicityOther)
           .gender(gender)
           .genderOther(genderOther)
@@ -201,20 +200,20 @@ public class QuestionnaireServlet extends HttpServlet {
           .educationLevel(educationLevel)
           .educationLevelOther(educationLevelOther)
           .description(description)
-          .mentorType(MentorType.valueOf(formType))
+          .mentorType(mentorType)
           .visibility(true)
           .focusList(focusList)
           .build());
-      System.out.println("Ayyy you built a mentor");
       response.sendRedirect(URLPatterns.PROFILE);
     }
   }
 
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
-    if (value == null) {
+    if (value == null || value.equals("")) {
       value = defaultValue;
     }
+    System.out.println(name + ": " + value);
     return value;
   }
 

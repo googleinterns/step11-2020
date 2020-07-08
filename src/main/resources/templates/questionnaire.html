@@ -56,7 +56,6 @@
       <input type="checkbox" class="ethnicityCheckbox" name="{{ethnicity}}" value="{{ethnicity}}">
       <label for="{{ethnicity}}"> {{ethnicity.title}} </label><br>
       {% endfor %}
-      <div id="other-box"></div>
       <!-- Used to store ethnicity values -->
     <input type="hidden" name="ethnicity" id="ethnicity" value="" />
     </div> <br>
@@ -67,7 +66,7 @@
       <option value="{{gender}}"> {{gender.title}}</option>
       {% endfor %}
     </select>
-    <div id="other-box"></div>
+    <div id="other-box"></div><br>
 
     <label for="educationLevel">Current/Highest Level of Education</label>
     <select id="educationLevel" name="educationLevel"  onchange="checkForOther(this.value)">
@@ -93,36 +92,34 @@
     <!-- Displayed to those who selected "Become a Mentor" -->
     {% raw %}{% if formType == "mentor" %} {% endraw %}
     <label for="mentorType"> What type of Mentor would you like to be? </label>
+    {% raw %} {% else %} {% endraw %}
+    <label for="mentorType"> What type of Mentor are you looking for? </label>
+    {% raw %} {% endif %} {% endraw %}
     <select id="mentorType" name="mentorType" required>
       {% for mentorType in mentorTypes %}
       <option value="{{mentorType}}"> {{mentorType.title}}</option>
       {% endfor %}
     </select> <br>
 
-    <div id="focusList">
+    {% raw %}{% if formType == "mentor" %} {% endraw %}
+    <div id="focusList-div">
       <p> What areas would you like to focus on (Choose all that apply). </p>
       {% for topic in topics %}
       <input type="checkbox" class="focusListCheckbox" name="{{topic}}" value="{{topic}}">
       <label for="{{topic}}"> {{topic.title}} </label><br>
       {% endfor %}
     <input type="hidden" name="focusList" id="focusList" value="" />
-    </div>
+  </div> <br>
 
     <!-- Displayed to those who selected "Find a Mentor" -->
     {% raw %} {% else %} {% endraw %}
-    <label for="mentorType"> What type of Mentor are you looking for? </label>
-    <select id="mentorType" name="mentorType" required>
-      {% for mentorType in mentorTypes %}
-      <option value="{{mentorType}}"> {{mentorType.title}}</option>
-      {% endfor %}
-    </select> <br>
 
     <label for="desiredMeetingFrequency">How often would you like to meet?</label>
     <select id="desiredMeetingFrequency" name="desiredMeetingFrequency" required>
       {% for meetingFrequency in meetingFrequencies %}
       <option value="{{meetingFrequency}}"> {{meetingFrequency.title}}</option>
       {% endfor %}
-    </select>
+    </select> <br>
 
     <label for="goal">What subject would you like to focus on (if applicable)? </label>
     <select id="goal" name="goal" required>
