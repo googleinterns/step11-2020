@@ -18,11 +18,11 @@
   <form id="information-form" action="/questionnaire" method="POST">
     <h3> Step 1: Basic Personal Information </h3>
     <input type="hidden" name="formType" id="formType" value={{"{{"}}formType{{"}}"}} />
-    <label for="fname">Your Name</label>
+    <label for="name">Your Name</label>
     <input type="text" id="name" name="name" placeholder="Your name.." >
 
-    <label for="dob">Date of Birth:</label>
-    <input type="date" name="dob">
+    <label for="dateOfBirth">Date of Birth:</label>
+    <input type="date" name="dateOfBirth">
 
     <label for="country">Country</label>
     <select id="country" name="country" >
@@ -32,10 +32,10 @@
       {% endfor %}
     </select>
 
-    <label for="timeZone">Your Location's Timezone</label>
-    <select id="timeZone" name="timeZone" >
+    <label for="timezone">Your Location's Timezone</label>
+    <select id="timezone" name="timezone" >
       {% for timezone in timezones %}
-      <option value="{{timezone.id}}"> {{timezone.name}}: {{timezone.offset}} </option>
+      <option value="{{timezone.timezoneID}}"> {{timezone.name}}: {{timezone.offset}} </option>
       {% endfor %}
     </select>
 
@@ -61,20 +61,20 @@
     </div> <br>
 
     <label for="gender">Gender</label>
-    <select id="gender" name="gender" onchange="checkForOther(this.value)">
+    <select id="gender" name="gender" onchange="checkForOther(this.value, 'gender')">
       {% for gender in genders %}
       <option value="{{gender}}"> {{gender.title}}</option>
       {% endfor %}
     </select>
-    <div id="other-box"></div><br>
+    <div id="other-input-gender"></div><br>
 
     <label for="educationLevel">Current/Highest Level of Education</label>
-    <select id="educationLevel" name="educationLevel"  onchange="checkForOther(this.value)">
+    <select id="educationLevel" name="educationLevel"  onchange="checkForOther(this.value, 'educationLevel')">
       {% for education in educationLevels %}
       <option value="{{education}}"> {{education.title}}</option>
       {% endfor %}
     </select>
-    <div id="other-box"></div>
+    <div id="other-input-educationLevel"></div><br>
 
     <div id="firstGen">
       <label> Do/did you consider yourself a first generation student</label>

@@ -213,7 +213,6 @@ public class QuestionnaireServlet extends HttpServlet {
     if (value == null || value.equals("")) {
       value = defaultValue;
     }
-    System.out.println(name + ": " + value);
     return value;
   }
 

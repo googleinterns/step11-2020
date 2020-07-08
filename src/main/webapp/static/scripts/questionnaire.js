@@ -12,14 +12,14 @@ function getCheckboxValues(checkboxClass, valueLabel) {
       document.getElementById(valueLabel).value += checkboxes[i].value + ', ';
     }
     document.getElementById(valueLabel).value += checkboxes[checkboxes.length-1].value;
-    console.log(document.getElementById(valueLabel).value);
   }
 }
 
-function checkForOther(val){
+function checkForOther(val, label){
+  var otherID = 'other-input-' + label;
   if(val.toLowerCase()=='other') {
-    document.getElementById('other-box').innerHTML = 'Other: <input type ="text" name="genderOther" />';
+    document.getElementById(otherID).innerHTML = 'Other: <input type ="text" name="' + label + 'Other" id="' + label + 'Other"/>';
   } else {
-    document.getElementById('other-box').innerHTML = '';
+    document.getElementById(otherID).innerHTML = '';
   }
 }
