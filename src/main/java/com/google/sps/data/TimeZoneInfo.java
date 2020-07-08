@@ -9,15 +9,21 @@ public class TimeZoneInfo {
   private static final double MILLISECONDS_PER_HOURS = 3600000.0;
 
   String name;
+  String timezoneID;
   double offset;
 
   private TimeZoneInfo(TimeZone timeZone) {
     this.name = timeZone.getDisplayName();
+    this.timezoneID = timeZone.getID();
     this.offset = timeZone.getRawOffset() / MILLISECONDS_PER_HOURS;
   }
 
   public String getName() {
     return this.name;
+  }
+
+  public String getTimezoneID() {
+    return this.timezoneID;
   }
 
   public double getOffset() {
