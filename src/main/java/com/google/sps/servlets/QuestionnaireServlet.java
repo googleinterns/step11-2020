@@ -46,6 +46,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -63,6 +65,7 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void init() {
+    dataAccess = new DummyDataAccess();
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
     try {
@@ -112,41 +115,50 @@ public class QuestionnaireServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String formType = request.getParameter(ContextFields.FORM_TYPE);
     String name = getParameter(request, ParameterConstants.NAME, "John Doe");
-    Date dateOfBirth = getParameter(request, ParameterConstants.DATE_OF_BIRTH, "2000-01-01");
-    Country country = Country.valueOf(getParameter(request, ParameterConstants.COUNTRY, Country.US));
+    Date dateOfBirth;
+    try {
+      dateOfBirth = new SimpleDateFormat("yyyy-MM-dd").parse(getParameter(request, ParameterConstants.DATE_OF_BIRTH, "2000-01-01"));
+    } catch (ParseException e) {
+      dateOfBirth = new Date();
+      System.err.println(ErrorMessages.BAD_DATE_PARSE);
+    }
+    Country country = Country.valueOf(getParameter(request, ParameterConstants.COUNTRY, Country.US.toString()));
     TimeZone timeZone = TimeZone.getTimeZone(getParameter(request, ParameterConstants.TIMEZONE, "est"));
-    Language language = Language.valueOf(getParameter(request, ParameterConstants.LANGUAGE, Language.ENGLISH));
+    Language language = Language.valueOf(getParameter(request, ParameterConstants.LANGUAGE, Language.EN.toString()));
 
     ArrayList<Ethnicity> ethnicities = new ArrayList<>();
     String ethnicityString = getParameter(request, ParameterConstants.ETHNICITY, "");
-    for (String ethnicity: ethnicityString.split(", ")) {
-      if (Ethnicity.valueOf(ethnicity) != null) {
+    System.out.println("ethnicity string is:" + ethnicityString);
+    try {
+      for (String ethnicity: ethnicityString.split(", ")) {
         ethnicities.add(Ethnicity.valueOf(ethnicity));
       }
+    } catch (IllegalArgumentException e) {
+      System.out.println("Could not find enum value");
     }
 
     String ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
     Gender gender = Gender.valueOf(getParameter(request, ParameterConstants.GENDER, ""));
     String genderOther = getParameter(request, ParameterConstants.GENDER_OTHER, "");
-    EducationLevel educationLevel = Education.valueOf(getParameter(request, ParameterConstants.EDUCATION_LEVEL, ""));
+    EducationLevel educationLevel = EducationLevel.valueOf(getParameter(request, ParameterConstants.EDUCATION_LEVEL, ""));
     String educationLevelOther = getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
-    boolean firstGen = getParameter(request, ParameterConstants.FIRST_GEN, "no");
-    boolean lowIncome = getParameter(request, ParameterConstants.LOW_INCOME, "no");
-    MentorType mentorType = MentorType.valueOf(getParameter(request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR));
+    boolean firstGen = Boolean.parseBoolean(getParameter(request, ParameterConstants.FIRST_GEN, "false"));
+    boolean lowIncome = Boolean.parseBoolean(getParameter(request, ParameterConstants.LOW_INCOME, "false"));
+    MentorType mentorType = MentorType.valueOf(getParameter(request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR.toString()));
     String description = getParameter(request, ParameterConstants.DESCRIPTION, "");
 
     if (formType.equals(MENTEE)) {
-      MeetingFrequency desiredMeetingFrequency = MeetingFrequency.valueOf(getParameter(request, ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, MeetingFrequency.BIWEEKLY));
+      MeetingFrequency desiredMeetingFrequency = MeetingFrequency.valueOf(getParameter(request, ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, MeetingFrequency.WEEKLY.toString()));
       Topic goal = Topic.valueOf(getParameter(request, ParameterConstants.MENTEE_GOAL, ""));
-      dataAccess.saveUser((new Mentee().Builder())
+      dataAccess.saveUser((new Mentee.Builder())
           .name(name)
-          .userID(dataAccess.getCurrentUser().getUserId())
-          .email(dataAccess.getCurrentUser().getEmail())
+          .userID("ewfe")
+          .email("deads@gmail.com")
           .dateOfBirth(dateOfBirth)
           .country(country)
           .language(language)
           .timezone(timeZone)
-          .ethnicity(ethnicities.get(0))
+          .ethnicity(ethnicities)
           .ethnicityOther(ethnicityOther)
           .gender(gender)
           .genderOther(genderOther)
@@ -163,22 +175,24 @@ public class QuestionnaireServlet extends HttpServlet {
 
     } else {
       ArrayList<Topic> focusList = new ArrayList<>();
-      Sting focusListString = getParameter(request, ParameterConstants.MENTOR_FOCUS_LIST);
-      for (String focus: focusListString.split(", ")) {
-        if (Focus.valueOf(focus) != null) {
-          focusList.add(Focus.valueOf(focus));
+      String focusListString = getParameter(request, ParameterConstants.MENTOR_FOCUS_LIST, Topic.OTHER.toString());
+      try {
+        for (String focus: focusListString.split(", ")) {
+          focusList.add(Topic.valueOf(focus));
         }
+      } catch (IllegalArgumentException e) {
+        System.out.println("Could not find enum value");
       }
 
-      dataAccess.saveUser((new Mentor().Builder())
+      dataAccess.saveUser((new Mentor.Builder())
           .name(name)
-          .userID(dataAccess.getCurrentUser().getUserId())
-          .email(dataAccess.getCurrentUser().getEmail())
+          .userID("ewfe")
+          .email("deads@gmail.com")
           .dateOfBirth(dateOfBirth)
           .country(country)
           .language(language)
           .timezone(timeZone)
-          .ethnicity(ethnicity)
+          .ethnicity(ethnicities.get(0))
           .ethnicityOther(ethnicityOther)
           .gender(gender)
           .genderOther(genderOther)
@@ -187,7 +201,7 @@ public class QuestionnaireServlet extends HttpServlet {
           .educationLevel(educationLevel)
           .educationLevelOther(educationLevelOther)
           .description(description)
-          .mentorType(formType)
+          .mentorType(MentorType.valueOf(formType))
           .visibility(true)
           .focusList(focusList)
           .build());

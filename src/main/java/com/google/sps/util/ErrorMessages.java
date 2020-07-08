@@ -6,6 +6,7 @@ public final class ErrorMessages {
   public static final String TEMPLATE_FILE_NOT_FOUND = "The template was not found: ";
   public static final String INVALID_PARAMATERS = "insufficient or invalid parameters";
   public static final String BAD_REDIRECT = "Invalid encoded redirection pathname";
+  public static final String BAD_DATE_PARSE = "Invalid date format";
 
   public static String templateFileNotFound(String templateURL) {
     return TEMPLATE_FILE_NOT_FOUND + templateURL;

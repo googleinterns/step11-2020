@@ -15,8 +15,9 @@
 {% block main_content %}
 <h1> Form </h1>
 <div class = "form-container">
-  <form action="/questionnaire" method="POST">
+  <form id="information-form" action="/questionnaire" method="POST">
     <h3> Step 1: Basic Personal Information </h3>
+    <input type="hidden" name="formType" id="formType" value={{"{{"}}formType{{"}}"}} />
     <label for="fname">Your Name</label>
     <input type="text" id="name" name="name" placeholder="Your name.." >
 
@@ -56,9 +57,9 @@
       <label for="{{ethnicity}}"> {{ethnicity.title}} </label><br>
       {% endfor %}
       <div id="other-box"></div>
+      <!-- Used to store ethnicity values -->
     <input type="hidden" name="ethnicity" id="ethnicity" value="" />
     </div> <br>
-    <!-- Used to store ethnicity values -->
 
     <label for="gender">Gender</label>
     <select id="gender" name="gender" onchange="checkForOther(this.value)">
@@ -124,10 +125,11 @@
     </select>
 
     <label for="goal">What subject would you like to focus on (if applicable)? </label>
-    <select id="meetingFrequency" name="meetingFrequency" required>
+    <select id="goal" name="goal" required>
       {% for topic in topics %}
       <option value="{{topic}}"> {{topic.title}}</option>
       {% endfor %}
+    </select>
     {% raw %} {% endif %} {% endraw %}
 
 
