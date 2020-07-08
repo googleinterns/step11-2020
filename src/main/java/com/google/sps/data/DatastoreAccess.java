@@ -4,7 +4,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -13,117 +12,35 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ParameterConstants;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class DatastoreAccess implements DataAccess {
 
   private static boolean seeded = false;
-  private static Random rnd = new Random();
   private static DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
   private static UserService userService = UserServiceFactory.getUserService();
 
   public DatastoreAccess() {
     if (!DatastoreAccess.seeded) {
-      seed_db();
-      DatastoreAccess.seeded = true;
+      DatastoreAccess.seeded =
+          datastoreService
+                  .prepare(new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT))
+                  .countEntities()
+              != 0;
     }
   }
 
-  private static String randomNumber(int digCount) {
-    StringBuilder sb = new StringBuilder(digCount);
-    for (int i = 0; i < digCount; i++) sb.append((char) ('0' + rnd.nextInt(10)));
-    return sb.toString();
-  }
-
-  private static String randomLetters(int targetStringLength) {
-    int leftLimit = 97; // letter 'a'
-    int rightLimit = 122; // letter 'z'
-
-    String generatedString =
-        rnd.ints(leftLimit, rightLimit + 1)
-            .limit(targetStringLength)
-            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-            .toString();
-
-    return generatedString;
-  }
-
-  private static <T extends Enum<?>> T randomEnum(Class<T> enumClass) {
-    int x = rnd.nextInt(enumClass.getEnumConstants().length);
-    return enumClass.getEnumConstants()[x];
-  }
-
-  private void seed_db() {
-    Collection<Mentee> someMentees = new ArrayList<>(50);
-    Collection<Mentor> someMentors = new ArrayList<>(50);
-    for (int i = 0; i < 250; i++) {
-      Mentee mentee =
-          (new Mentee.Builder())
-              .name(randomLetters(10))
-              .userID(randomNumber(21))
-              .email(randomLetters(7) + "@gmail.com")
-              .dateOfBirth(new Date())
-              .country(randomEnum(Country.class))
-              .language(randomEnum(Language.class))
-              .timezone(TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)]))
-              .ethnicityList(Arrays.asList(randomEnum(Ethnicity.class)))
-              .ethnicityOther(randomLetters(10))
-              .gender(randomEnum(Gender.class))
-              .genderOther(randomLetters(10))
-              .firstGen(rnd.nextBoolean())
-              .lowIncome(rnd.nextBoolean())
-              .educationLevel(randomEnum(EducationLevel.class))
-              .educationLevelOther(randomLetters(10))
-              .description(randomLetters(30))
-              .userType(UserType.MENTEE)
-              .goal(randomEnum(Topic.class))
-              .desiredMeetingFrequency(randomEnum(MeetingFrequency.class))
-              .dislikedMentorKeys(Collections.emptySet())
-              .build();
-      saveUser(mentee);
-      if (i < 50) {
-        someMentees.add(mentee);
-      }
+  public boolean seed_db(Collection<Entity> entities) {
+    if (DatastoreAccess.seeded) {
+      return false;
     }
-    for (int i = 0; i < 250; i++) {
-      Mentor mentor =
-          (new Mentor.Builder())
-              .name(randomLetters(10))
-              .userID(randomNumber(21))
-              .email(randomLetters(7) + "@gmail.com")
-              .dateOfBirth(new Date())
-              .country(randomEnum(Country.class))
-              .language(randomEnum(Language.class))
-              .timezone(TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)]))
-              .ethnicityList(Arrays.asList(randomEnum(Ethnicity.class)))
-              .ethnicityOther(randomLetters(10))
-              .gender(randomEnum(Gender.class))
-              .genderOther(randomLetters(10))
-              .firstGen(rnd.nextBoolean())
-              .lowIncome(rnd.nextBoolean())
-              .educationLevel(randomEnum(EducationLevel.class))
-              .educationLevelOther(randomLetters(10))
-              .description(randomLetters(30))
-              .userType(UserType.MENTOR)
-              .visibility(rnd.nextBoolean())
-              .focusList(Arrays.asList())
-              .mentorType(randomEnum(MentorType.class))
-              .build();
-      saveUser(mentor);
-      if (i < 50) {
-        someMentors.add(mentor);
-      }
-    }
+    datastoreService.put(entities);
+    DatastoreAccess.seeded = true;
+    return true;
   }
 
   public Map<String, Object> getDefaultRenderingContext(String currentURL) {
@@ -163,7 +80,8 @@ public class DatastoreAccess implements DataAccess {
   public UserAccount getUser(long datastoreKey) {
     try {
       return UserAccount.fromEntity(
-          datastoreService.get(KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, datastoreKey)));
+          datastoreService.get(
+              KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, datastoreKey)));
     } catch (EntityNotFoundException e) {
       return null;
     }
@@ -210,8 +128,7 @@ public class DatastoreAccess implements DataAccess {
                     Query.FilterOperator.EQUAL,
                     UserType.MENTOR.ordinal()));
     PreparedQuery results = datastoreService.prepare(query);
-    return StreamSupport.stream(
-            results.asIterable(FetchOptions.Builder.withLimit(10)).spliterator(), false)
+    return StreamSupport.stream(results.asIterable().spliterator(), false)
         .map(Mentor::new)
         .collect(Collectors.toList());
   }
@@ -225,8 +142,7 @@ public class DatastoreAccess implements DataAccess {
                     Query.FilterOperator.EQUAL,
                     UserType.MENTEE.ordinal()));
     PreparedQuery results = datastoreService.prepare(query);
-    return StreamSupport.stream(
-            results.asIterable(FetchOptions.Builder.withLimit(10)).spliterator(), false)
+    return StreamSupport.stream(results.asIterable().spliterator(), false)
         .map(Mentee::new)
         .collect(Collectors.toList());
   }
@@ -288,7 +204,9 @@ public class DatastoreAccess implements DataAccess {
     return datastoreService
         .get(
             mentee.getDislikedMentorKeys().stream()
-                .map(longKey -> KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, longKey))
+                .map(
+                    longKey ->
+                        KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, longKey))
                 .collect(Collectors.toList()))
         .values()
         .stream()
@@ -311,7 +229,8 @@ public class DatastoreAccess implements DataAccess {
   public MentorshipRequest getMentorshipRequest(long requestKey) {
     try {
       return new MentorshipRequest(
-          datastoreService.get(KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, requestKey)));
+          datastoreService.get(
+              KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, requestKey)));
     } catch (EntityNotFoundException e) {
       return null;
     }
@@ -320,7 +239,8 @@ public class DatastoreAccess implements DataAccess {
   public boolean deleteRequest(MentorshipRequest request) {
     if (getMentorshipRequest(request.getDatastoreKey()) != null) {
       datastoreService.delete(
-          KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, request.getDatastoreKey()));
+          KeyFactory.createKey(
+              ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, request.getDatastoreKey()));
       return true;
     }
     return false;

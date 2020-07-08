@@ -12,4 +12,6 @@ public final class ResourceConstants {
   public static final String TEMPLATE_QUESTIONNAIRE = "/templates/questionnaire.html";
   public static final String TEMPLATE_MENTOR_DASHBOARD = "/templates/mentor-dashboard.html";
   public static final String TEMPLATE_MENTEE_DASHBOARD = "/templates/mentee-dashboard.html";
+
+  public static final String DUMMY_DATA_USERS = "/dummy_data/users.json";
 }

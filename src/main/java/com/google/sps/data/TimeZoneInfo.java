@@ -8,12 +8,18 @@ public class TimeZoneInfo {
 
   private static final double MILLISECONDS_PER_HOURS = 3600000.0;
 
+  String id;
   String name;
   double offset;
 
-  private TimeZoneInfo(TimeZone timeZone) {
+  public TimeZoneInfo(TimeZone timeZone) {
+    this.id = timeZone.getID();
     this.name = timeZone.getDisplayName();
     this.offset = timeZone.getRawOffset() / MILLISECONDS_PER_HOURS;
+  }
+
+  public String getID() {
+    return this.id;
   }
 
   public String getName() {
