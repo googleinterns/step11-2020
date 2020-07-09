@@ -9,6 +9,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.KeyRange;
 import com.google.sps.util.ParameterConstants;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
@@ -138,6 +139,12 @@ public class UserAccount {
                 == UserType.MENTEE
             ? new Mentee(entity)
             : new Mentor(entity);
+  }
+
+  protected void validate() {
+    if (this.ethnicityList == null) {
+      this.ethnicityList = new ArrayList<>();
+    }
   }
 
   public Entity convertToEntity() {

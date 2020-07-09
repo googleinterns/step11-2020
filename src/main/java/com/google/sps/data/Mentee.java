@@ -4,7 +4,10 @@ import static java.lang.Math.toIntExact;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.sps.util.ParameterConstants;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Mentee extends UserAccount {
 
@@ -19,6 +22,7 @@ public class Mentee extends UserAccount {
     this.desiredMeetingFrequency = builder.desiredMeetingFrequency;
     this.dislikedMentorKeys = builder.dislikedMentorKeys;
     this.desiredMentorType = builder.desiredMentorType;
+    this.validate();
   }
 
   public Mentee(Entity entity) {
@@ -30,9 +34,19 @@ public class Mentee extends UserAccount {
             toIntExact(
                 (long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY))];
     this.dislikedMentorKeys =
-        (Set<Long>) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS);
+        getDislikedSetFromProperty(
+            (Collection) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS));
     this.desiredMentorType =
         MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTOR_TYPE))];
+    this.validate();
+  }
+
+  @Override
+  protected void validate() {
+    super.validate();
+    if (this.dislikedMentorKeys == null) {
+      this.dislikedMentorKeys = new HashSet<>();
+    }
   }
 
   public Entity convertToEntity() {
@@ -43,6 +57,15 @@ public class Mentee extends UserAccount {
     entity.setProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS, this.dislikedMentorKeys);
     entity.setProperty(ParameterConstants.MENTOR_TYPE, desiredMentorType.ordinal());
     return entity;
+  }
+
+  private static Set<Long> getDislikedSetFromProperty(Collection<Object> dislikedMentorKeyList) {
+    return dislikedMentorKeyList == null
+        ? new HashSet<Long>()
+        : (Set<Long>)
+            dislikedMentorKeyList.stream()
+                .map(key -> new Long((long) key))
+                .collect(Collectors.toSet());
   }
 
   public boolean dislikeMentor(Mentor mentor) {

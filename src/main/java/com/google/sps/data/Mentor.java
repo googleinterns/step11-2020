@@ -21,6 +21,7 @@ public class Mentor extends UserAccount {
     this.visibility = builder.visibility;
     this.focusList = builder.focusList;
     this.mentorType = builder.mentorType;
+    this.validate();
   }
 
   public Mentor(Entity entity) {
@@ -31,6 +32,15 @@ public class Mentor extends UserAccount {
             (Collection) entity.getProperty(ParameterConstants.MENTOR_FOCUS_LIST));
     this.mentorType =
         MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTOR_TYPE))];
+    this.validate();
+  }
+
+  @Override
+  protected void validate() {
+    super.validate();
+    if (this.focusList == null) {
+      this.focusList = new ArrayList<>();
+    }
   }
 
   public Entity convertToEntity() {
