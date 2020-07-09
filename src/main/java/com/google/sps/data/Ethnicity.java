@@ -1,6 +1,7 @@
 package com.google.sps.data;
 
 public enum Ethnicity {
+  UNSPECIFIED(""),
   ASIAN("Asian"),
   BLACK_AFRICAN("Black African"),
   CAUCASIAN("Caucasian"),
