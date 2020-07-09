@@ -9,9 +9,6 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class Mentor extends UserAccount {
-
-  private static final String VISIBILITY = "visibility";
-
   private boolean visibility;
   private Collection<Topic> focusList;
   private MentorType mentorType;
@@ -26,7 +23,7 @@ public class Mentor extends UserAccount {
 
   public Mentor(Entity entity) {
     super(entity);
-    this.visibility = (boolean) entity.getProperty(VISIBILITY);
+    this.visibility = (boolean) entity.getProperty(ParameterConstants.MENTOR_VISIBILITY);
     this.focusList =
         getFocusListFromProperty(
             (Collection) entity.getProperty(ParameterConstants.MENTOR_FOCUS_LIST));
@@ -45,7 +42,7 @@ public class Mentor extends UserAccount {
 
   public Entity convertToEntity() {
     Entity entity = super.convertToEntity();
-    entity.setProperty(VISIBILITY, visibility);
+    entity.setProperty(ParameterConstants.MENTOR_VISIBILITY, visibility);
     entity.setProperty(
         ParameterConstants.MENTOR_FOCUS_LIST,
         focusList.stream().map(focus -> focus.ordinal()).collect(Collectors.toList()));

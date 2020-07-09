@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.sps.data.DataAccess;
 import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorshipRequest;
@@ -44,7 +45,7 @@ public class ConnectionRequestsServlet extends HttpServlet {
   private static final String ACCEPT = "accept";
   private static final String DENY = "deny";
 
-  private DatastoreAccess dataAccess;
+  private DataAccess dataAccess;
   private Jinjava jinjava;
   private String connectionRequestTemplate;
 

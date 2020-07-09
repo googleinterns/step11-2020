@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.Country;
+import com.google.sps.data.DataAccess;
 import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.EducationLevel;
 import com.google.sps.data.Ethnicity;
@@ -62,7 +63,7 @@ public class QuestionnaireServlet extends HttpServlet {
 
   private String questionnaireTemplate;
   private Jinjava jinjava;
-  private DatastoreAccess dataAccess;
+  private DataAccess dataAccess;
 
   @Override
   public void init() {

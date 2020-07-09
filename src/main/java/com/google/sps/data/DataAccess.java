@@ -4,7 +4,7 @@ import com.google.appengine.api.users.User;
 import java.util.Collection;
 import java.util.Map;
 
-interface DataAccess {
+public interface DataAccess {
 
   Map<String, Object> getDefaultRenderingContext(String currentURL);
 
