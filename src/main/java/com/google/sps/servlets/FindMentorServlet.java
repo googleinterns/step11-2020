@@ -40,6 +40,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** (for mentee users only) Provides mentees with a list of mentors they'd find relatable, so they can send a
+ *    connection requests
+ * @param URLPatterns.FIND_MENTOR this servlet serves requests at /find-mentor
+ */
 @WebServlet(urlPatterns = URLPatterns.FIND_MENTOR)
 public class FindMentorServlet extends HttpServlet {
   private static final String SEND = "sendRequest";

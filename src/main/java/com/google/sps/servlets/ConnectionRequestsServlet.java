@@ -38,6 +38,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** (for mentor users only) Provides a list of mentorship requests from various mentees
+ * @param URLPatterns.CONNECTION_REQUESTS this servlet serves requests at /connection-requests
+ */
 @WebServlet(urlPatterns = URLPatterns.CONNECTION_REQUESTS)
 public class ConnectionRequestsServlet extends HttpServlet {
   private static final String ACCEPT = "accept";

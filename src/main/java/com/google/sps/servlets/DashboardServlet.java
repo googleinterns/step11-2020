@@ -40,6 +40,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** Provides a list of connections a user has
+ * @param URLPatterns.DASHBOARD this servlet serves requests at /dashboard
+ */
 @WebServlet(urlPatterns = URLPatterns.DASHBOARD)
 public class DashboardServlet extends HttpServlet {
 
