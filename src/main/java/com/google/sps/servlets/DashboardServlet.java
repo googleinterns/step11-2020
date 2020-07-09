@@ -62,7 +62,6 @@ public class DashboardServlet extends HttpServlet {
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put(URLPatterns.URL, URLPatterns.DASHBOARD);
 
     try {
       String template =
@@ -92,7 +91,7 @@ public class DashboardServlet extends HttpServlet {
     User user = dataAccess.getCurrentUser();
     if (user != null) {
       response.setContentType("text/html;");
-      Map<String, Object> context = new HashMap<>();
+      Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.DASHBOARD);
 
       Mentor mentor = dataAccess.getMentor(user.getUserId());
       Mentee mentee = dataAccess.getMentee(user.getUserId());
