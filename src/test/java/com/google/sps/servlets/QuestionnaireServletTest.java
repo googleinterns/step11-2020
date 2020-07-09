@@ -53,7 +53,7 @@ public final class QuestionnaireServletTest {
   }
 
   @Test
-  private void useDefaultValueWhenNoneProvidedForString() throws Exception {
+  public void useDefaultValueWhenNoneProvidedForString() throws Exception {
     when(request.getParameter("name")).thenReturn("");
 
     StringWriter stringWriter = new StringWriter();
@@ -61,10 +61,10 @@ public final class QuestionnaireServletTest {
 
     when(response.getWriter()).thenReturn(writer);
 
-    servlet.doPost(request, response);
+    new QuestionnaireServlet().doPost(request, response);
 
     verify(request).getParameter("name");
     writer.flush();
-    assertTrue(stringWriter.toString().contains("John Doe"));
+    Assert.assertTrue(stringWriter.toString().contains("John Doe"));
   }
 }

@@ -163,7 +163,8 @@ public class DatastoreAccess implements DataAccess {
   public UserAccount getUser(long datastoreKey) {
     try {
       return UserAccount.fromEntity(
-          datastoreService.get(KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, datastoreKey)));
+          datastoreService.get(
+              KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, datastoreKey)));
     } catch (EntityNotFoundException e) {
       return null;
     }
@@ -288,7 +289,9 @@ public class DatastoreAccess implements DataAccess {
     return datastoreService
         .get(
             mentee.getDislikedMentorKeys().stream()
-                .map(longKey -> KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, longKey))
+                .map(
+                    longKey ->
+                        KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, longKey))
                 .collect(Collectors.toList()))
         .values()
         .stream()
@@ -311,7 +314,8 @@ public class DatastoreAccess implements DataAccess {
   public MentorshipRequest getMentorshipRequest(long requestKey) {
     try {
       return new MentorshipRequest(
-          datastoreService.get(KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, requestKey)));
+          datastoreService.get(
+              KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, requestKey)));
     } catch (EntityNotFoundException e) {
       return null;
     }
@@ -320,7 +324,8 @@ public class DatastoreAccess implements DataAccess {
   public boolean deleteRequest(MentorshipRequest request) {
     if (getMentorshipRequest(request.getDatastoreKey()) != null) {
       datastoreService.delete(
-          KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, request.getDatastoreKey()));
+          KeyFactory.createKey(
+              ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, request.getDatastoreKey()));
       return true;
     }
     return false;

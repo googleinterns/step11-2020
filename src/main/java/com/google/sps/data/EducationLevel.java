@@ -1,6 +1,7 @@
 package com.google.sps.data;
 
 public enum EducationLevel {
+  UNSPECIFIED(""),
   NONE("None"),
   HIGHSCHOOL("Highschool Diploma"),
   ASSOCIATES("Associate's Degree"),

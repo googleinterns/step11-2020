@@ -1,6 +1,7 @@
 package com.google.sps.data;
 
 public enum Gender {
+  UNSPECIFIED(""),
   AGENDER("Agender"),
   ANDROGYNOUS("Androgynous"),
   BIGENDER("Bigender"),
