@@ -1,5 +1,7 @@
 package com.google.sps.data;
 
+/** Represents a user's gender
+ */
 public enum Gender {
   UNSPECIFIED(""),
   AGENDER("Agender"),

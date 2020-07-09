@@ -1,5 +1,7 @@
 package com.google.sps.data;
 
+/** Represents a user's ethnicity
+ */
 public enum Ethnicity {
   UNSPECIFIED(""),
   ASIAN("Asian"),

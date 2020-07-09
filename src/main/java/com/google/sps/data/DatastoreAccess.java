@@ -25,6 +25,8 @@ import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/** Provides access to data from the datastore service provided by google appengine
+ */
 public class DatastoreAccess implements DataAccess {
 
   private static boolean seeded = false;

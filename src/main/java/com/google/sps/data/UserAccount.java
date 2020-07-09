@@ -14,6 +14,10 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
+/** Represents a generic user and all their related data
+ * can only be instantiated as a Mentee or Mentor
+ * supports conversion to and from a datastore entity object
+ */
 public class UserAccount {
   private long datastoreKey;
   private boolean keyInitialized;

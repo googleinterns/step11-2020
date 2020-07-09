@@ -1,5 +1,7 @@
 package com.google.sps.data;
 
+/** Represents a meeting frequency for mentors/mentees to schedule meetings by
+ */
 public enum MeetingFrequency {
   DAILY("Daily"),
   TWICE_WEEKLY("Twice a week"),

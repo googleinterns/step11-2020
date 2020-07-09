@@ -14,6 +14,9 @@
 
 package com.google.sps.data;
 
+/** Represents a user's current login state
+ * used by AuthenticateServlet
+ */
 public class LoginState {
   public String userProfileURL;
   public String toggleLoginURL;
