@@ -29,7 +29,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {URLPatterns.AUTHENTICATE})
+/** Provides a json packet summarizing the current login status of the user
+ * @param URLPatterns.AUTHENTICATE this servlet serves requests at /authenticate
+ */
+@WebServlet(urlPatterns = URLPatterns.AUTHENTICATE)
 public class AuthenticateServlet extends HttpServlet {
 
   @Override

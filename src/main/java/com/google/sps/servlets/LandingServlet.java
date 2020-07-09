@@ -34,6 +34,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** Provides non-logged in users with a brief introductory page to the mentor-matching platform
+ * @param URLPatterns.LANDING this servlet serves requests at /landing
+ */
 @WebServlet(urlPatterns = URLPatterns.LANDING)
 public class LandingServlet extends HttpServlet {
 
