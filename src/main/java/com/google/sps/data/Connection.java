@@ -9,8 +9,6 @@ import com.google.appengine.api.datastore.KeyRange;
 import com.google.sps.util.ParameterConstants;
 
 public class Connection {
-  public static final String ENTITY_TYPE = "Connection";
-
   private long datastoreKey;
   private long mentorKey;
   private long menteeKey;
@@ -19,7 +17,7 @@ public class Connection {
 
   public Connection(long mentorKey, long menteeKey) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    KeyRange keyRange = datastore.allocateIds(ENTITY_TYPE, 1);
+    KeyRange keyRange = datastore.allocateIds(ParameterConstants.ENTITY_TYPE_CONNECTION, 1);
     this.datastoreKey = keyRange.getStart().getId();
     this.mentorKey = mentorKey;
     this.menteeKey = menteeKey;
@@ -32,10 +30,10 @@ public class Connection {
   }
 
   public Entity convertToEntity() {
-    Key key = KeyFactory.createKey(ENTITY_TYPE, this.datastoreKey);
+    Key key = KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_CONNECTION, this.datastoreKey);
     Entity entity = new Entity(key);
-    entity.setProperty("mentorKey", mentorKey);
-    entity.setProperty("menteeKey", menteeKey);
+    entity.setProperty(ParameterConstants.MENTOR_KEY, mentorKey);
+    entity.setProperty(ParameterConstants.MENTOR_KEY, menteeKey);
     return entity;
   }
 
