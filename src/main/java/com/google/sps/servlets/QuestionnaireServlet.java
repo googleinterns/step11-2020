@@ -127,7 +127,7 @@ public class QuestionnaireServlet extends HttpServlet {
     Language language = Language.valueOf(getParameter(request, ParameterConstants.LANGUAGE, Language.EN.toString()));
 
     ArrayList<Ethnicity> ethnicities = new ArrayList<>();
-    String ethnicityString = getParameter(request, ParameterConstants.ETHNICITY, "");
+    String ethnicityString = getParameter(request, ParameterConstants.ETHNICITY, "UNSPECIFIED");
     try {
       for (String ethnicity: ethnicityString.split(", ")) {
         ethnicities.add(Ethnicity.valueOf(ethnicity));
@@ -137,9 +137,9 @@ public class QuestionnaireServlet extends HttpServlet {
     }
 
     String ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
-    Gender gender = Gender.valueOf(getParameter(request, ParameterConstants.GENDER, ""));
+    Gender gender = Gender.valueOf(getParameter(request, ParameterConstants.GENDER, "UNSPECIFIED"));
     String genderOther = getParameter(request, ParameterConstants.GENDER_OTHER, "");
-    EducationLevel educationLevel = EducationLevel.valueOf(getParameter(request, ParameterConstants.EDUCATION_LEVEL, ""));
+    EducationLevel educationLevel = EducationLevel.valueOf(getParameter(request, ParameterConstants.EDUCATION_LEVEL, "UNSPECIFIED"));
     String educationLevelOther = getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
     boolean firstGen = Boolean.parseBoolean(getParameter(request, ParameterConstants.FIRST_GEN, "false"));
     boolean lowIncome = Boolean.parseBoolean(getParameter(request, ParameterConstants.LOW_INCOME, "false"));
