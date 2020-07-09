@@ -114,7 +114,7 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String formType = request.getParameter(ContextFields.FORM_TYPE);
+    String formType = getParameter(request, ContextFields.FORM_TYPE, "mentee");
     String name = getParameter(request, ParameterConstants.NAME, "John Doe");
     Date dateOfBirth;
     try {
@@ -146,15 +146,9 @@ public class QuestionnaireServlet extends HttpServlet {
     String ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
     Gender gender = Gender.valueOf(getParameter(request, ParameterConstants.GENDER, "UNSPECIFIED"));
     String genderOther = getParameter(request, ParameterConstants.GENDER_OTHER, "");
-<<<<<<< HEAD
-    EducationLevel educationLevel = EducationLevel.valueOf(getParameter(request, ParameterConstants.EDUCATION_LEVEL, "UNSPECIFIED"));
-    String educationLevelOther = getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
-    boolean firstGen = Boolean.parseBoolean(getParameter(request, ParameterConstants.FIRST_GEN, "false"));
-    boolean lowIncome = Boolean.parseBoolean(getParameter(request, ParameterConstants.LOW_INCOME, "false"));
-    MentorType mentorType = MentorType.valueOf(getParameter(request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR.toString()));
-=======
     EducationLevel educationLevel =
-        EducationLevel.valueOf(getParameter(request, ParameterConstants.EDUCATION_LEVEL, ""));
+        EducationLevel.valueOf(
+            getParameter(request, ParameterConstants.EDUCATION_LEVEL, "UNSPECIFIED"));
     String educationLevelOther =
         getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
     boolean firstGen =
@@ -164,7 +158,6 @@ public class QuestionnaireServlet extends HttpServlet {
     MentorType mentorType =
         MentorType.valueOf(
             getParameter(request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR.toString()));
->>>>>>> master
     String description = getParameter(request, ParameterConstants.DESCRIPTION, "");
 
     if (formType.equals(MENTEE)) {
@@ -174,7 +167,7 @@ public class QuestionnaireServlet extends HttpServlet {
                   request,
                   ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY,
                   MeetingFrequency.WEEKLY.toString()));
-      Topic goal = Topic.valueOf(getParameter(request, ParameterConstants.MENTEE_GOAL, ""));
+      Topic goal = Topic.valueOf(getParameter(request, ParameterConstants.MENTEE_GOAL, "OTHER"));
       dataAccess.createUser(
           (new Mentee.Builder())
               .name(name)
