@@ -1,7 +1,8 @@
 package com.google.sps.util;
 
+/** List of file paths for resources
+ */
 public final class ResourceConstants {
-
   public static final String TEMPLATES = "/templates";
   public static final String TEMPLATE_ABOUT = "/templates/about.html";
   public static final String TEMPLATE_AUTHORS = "/templates/authors.html";
