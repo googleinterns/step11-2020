@@ -29,6 +29,8 @@ import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
+import com.google.sps.data.UserAccount;
+import com.google.sps.data.UserType;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ParameterConstants;
@@ -103,7 +105,7 @@ public class QuestionnaireServlet extends HttpServlet {
     if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
       Map<String, Object> context =
           dataAccess.getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
-      context.put(ContextFields.FORM_TYPE, formType);
+      context.put(ContextFields.FORM_TYPE, formType.toUpperCase());
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
@@ -114,7 +116,17 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String formType = request.getParameter(ContextFields.FORM_TYPE);
+    UserAccount user = constructNewUserFromRequest(request);
+    dataAccess.createUser(user);
+    if (user.getUserType().equals(UserType.MENTEE)) {
+      response.sendRedirect(URLPatterns.FIND_MENTOR);
+    } else {
+      response.sendRedirect(URLPatterns.PROFILE);
+    }
+  }
+
+  private UserAccount constructNewUserFromRequest(HttpServletRequest request) {
+    UserType userType = UserType.valueOf(getParameter(request, ContextFields.FORM_TYPE, "MENTEE"));
     String name = getParameter(request, ParameterConstants.NAME, "John Doe");
     Date dateOfBirth;
     try {
@@ -159,7 +171,7 @@ public class QuestionnaireServlet extends HttpServlet {
             getParameter(request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR.toString()));
     String description = getParameter(request, ParameterConstants.DESCRIPTION, "");
 
-    if (formType.equals(MENTEE)) {
+    if (userType.equals(UserType.MENTEE)) {
       MeetingFrequency desiredMeetingFrequency =
           MeetingFrequency.valueOf(
               getParameter(
@@ -167,29 +179,28 @@ public class QuestionnaireServlet extends HttpServlet {
                   ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY,
                   MeetingFrequency.WEEKLY.toString()));
       Topic goal = Topic.valueOf(getParameter(request, ParameterConstants.MENTEE_GOAL, ""));
-      dataAccess.createUser(
-          (new Mentee.Builder())
-              .name(name)
-              .userID(dataAccess.getCurrentUser().getUserId())
-              .email(dataAccess.getCurrentUser().getEmail())
-              .dateOfBirth(dateOfBirth)
-              .country(country)
-              .language(language)
-              .timezone(timeZone)
-              .ethnicityList(ethnicities)
-              .ethnicityOther(ethnicityOther)
-              .gender(gender)
-              .genderOther(genderOther)
-              .firstGen(firstGen)
-              .lowIncome(lowIncome)
-              .educationLevel(educationLevel)
-              .educationLevelOther(educationLevelOther)
-              .description(description)
-              .goal(goal)
-              .desiredMeetingFrequency(desiredMeetingFrequency)
-              .mentorType(mentorType)
-              .build());
-      response.sendRedirect(URLPatterns.FIND_MENTOR);
+      return (new Mentee.Builder())
+          .name(name)
+          .userID(dataAccess.getCurrentUser().getUserId())
+          .email(dataAccess.getCurrentUser().getEmail())
+          .userType(userType)
+          .dateOfBirth(dateOfBirth)
+          .country(country)
+          .language(language)
+          .timezone(timeZone)
+          .ethnicityList(ethnicities)
+          .ethnicityOther(ethnicityOther)
+          .gender(gender)
+          .genderOther(genderOther)
+          .firstGen(firstGen)
+          .lowIncome(lowIncome)
+          .educationLevel(educationLevel)
+          .educationLevelOther(educationLevelOther)
+          .description(description)
+          .goal(goal)
+          .desiredMeetingFrequency(desiredMeetingFrequency)
+          .mentorType(mentorType)
+          .build();
 
     } else {
       ArrayList<Topic> focusList = new ArrayList<>();
@@ -203,29 +214,28 @@ public class QuestionnaireServlet extends HttpServlet {
         System.err.println(ErrorMessages.INVALID_PARAMATERS);
       }
 
-      dataAccess.createUser(
-          (new Mentor.Builder())
-              .name(name)
-              .userID(dataAccess.getCurrentUser().getUserId())
-              .email(dataAccess.getCurrentUser().getEmail())
-              .dateOfBirth(dateOfBirth)
-              .country(country)
-              .language(language)
-              .timezone(timeZone)
-              .ethnicityList(ethnicities)
-              .ethnicityOther(ethnicityOther)
-              .gender(gender)
-              .genderOther(genderOther)
-              .firstGen(firstGen)
-              .lowIncome(lowIncome)
-              .educationLevel(educationLevel)
-              .educationLevelOther(educationLevelOther)
-              .description(description)
-              .mentorType(mentorType)
-              .visibility(true)
-              .focusList(focusList)
-              .build());
-      response.sendRedirect(URLPatterns.DASHBOARD);
+      return (new Mentor.Builder())
+          .name(name)
+          .userID(dataAccess.getCurrentUser().getUserId())
+          .email(dataAccess.getCurrentUser().getEmail())
+          .dateOfBirth(dateOfBirth)
+          .userType(userType)
+          .country(country)
+          .language(language)
+          .timezone(timeZone)
+          .ethnicityList(ethnicities)
+          .ethnicityOther(ethnicityOther)
+          .gender(gender)
+          .genderOther(genderOther)
+          .firstGen(firstGen)
+          .lowIncome(lowIncome)
+          .educationLevel(educationLevel)
+          .educationLevelOther(educationLevelOther)
+          .description(description)
+          .mentorType(mentorType)
+          .visibility(true)
+          .focusList(focusList)
+          .build();
     }
   }
 
