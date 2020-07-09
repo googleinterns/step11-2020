@@ -26,9 +26,12 @@ import com.google.sps.data.MeetingFrequency;
 import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
+import com.google.sps.data.Mentor;
+import com.google.sps.data.Mentee;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -38,9 +41,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -54,9 +61,11 @@ public class QuestionnaireServlet extends HttpServlet {
 
   private String questionnaireTemplate;
   private Jinjava jinjava;
+  private DummyDataAccess dataAccess;
 
   @Override
   public void init() {
+    dataAccess = new DummyDataAccess();
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
     try {
@@ -89,10 +98,10 @@ public class QuestionnaireServlet extends HttpServlet {
       response.setStatus(500);
       return;
     }
-    String formType = request.getParameter("formType");
+    String formType = request.getParameter(ContextFields.FORM_TYPE);
     if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
       Map<String, Object> context =
-          new DatastoreAccess().getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
+          dataAccess.getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
       context.put(ContextFields.FORM_TYPE, formType);
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
@@ -104,12 +113,107 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String formType = request.getParameter("formType");
-    if (formType.equals(MENTEE)) {
-      response.sendRedirect(URLPatterns.FIND_MENTOR);
-    } else {
-      response.sendRedirect(URLPatterns.PROFILE);
+    String formType = request.getParameter(ContextFields.FORM_TYPE);
+    String name = getParameter(request, ParameterConstants.NAME, "John Doe");
+    Date dateOfBirth;
+    try {
+      dateOfBirth = new SimpleDateFormat("yyyy-MM-dd").parse(getParameter(request, ParameterConstants.DATE_OF_BIRTH, "2000-01-01"));
+    } catch (ParseException e) {
+      dateOfBirth = new Date();
+      System.err.println(ErrorMessages.BAD_DATE_PARSE);
     }
+    Country country = Country.valueOf(getParameter(request, ParameterConstants.COUNTRY, Country.US.toString()));
+    TimeZone timeZone = TimeZone.getTimeZone(getParameter(request, ParameterConstants.TIMEZONE, "est"));
+    Language language = Language.valueOf(getParameter(request, ParameterConstants.LANGUAGE, Language.EN.toString()));
+
+    ArrayList<Ethnicity> ethnicities = new ArrayList<>();
+    String ethnicityString = getParameter(request, ParameterConstants.ETHNICITY, "");
+    try {
+      for (String ethnicity: ethnicityString.split(", ")) {
+        ethnicities.add(Ethnicity.valueOf(ethnicity));
+      }
+    } catch (IllegalArgumentException e) {
+      System.err.println(ErrorMessages.INVALID_PARAMATERS);
+    }
+
+    String ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
+    Gender gender = Gender.valueOf(getParameter(request, ParameterConstants.GENDER, ""));
+    String genderOther = getParameter(request, ParameterConstants.GENDER_OTHER, "");
+    EducationLevel educationLevel = EducationLevel.valueOf(getParameter(request, ParameterConstants.EDUCATION_LEVEL, ""));
+    String educationLevelOther = getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
+    boolean firstGen = Boolean.parseBoolean(getParameter(request, ParameterConstants.FIRST_GEN, "false"));
+    boolean lowIncome = Boolean.parseBoolean(getParameter(request, ParameterConstants.LOW_INCOME, "false"));
+    MentorType mentorType = MentorType.valueOf(getParameter(request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR.toString()));
+    String description = getParameter(request, ParameterConstants.DESCRIPTION, "");
+
+    if (formType.equals(MENTEE)) {
+      MeetingFrequency desiredMeetingFrequency = MeetingFrequency.valueOf(getParameter(request, ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, MeetingFrequency.WEEKLY.toString()));
+      Topic goal = Topic.valueOf(getParameter(request, ParameterConstants.MENTEE_GOAL, ""));
+      dataAccess.createUser((new Mentee.Builder())
+          .name(name)
+          .userID(dataAccess.getCurrentUser().getUserId())
+          .email(dataAccess.getCurrentUser().getEmail())
+          .dateOfBirth(dateOfBirth)
+          .country(country)
+          .language(language)
+          .timezone(timeZone)
+          .ethnicityList(ethnicities)
+          .ethnicityOther(ethnicityOther)
+          .gender(gender)
+          .genderOther(genderOther)
+          .firstGen(firstGen)
+          .lowIncome(lowIncome)
+          .educationLevel(educationLevel)
+          .educationLevelOther(educationLevelOther)
+          .description(description)
+          .goal(goal)
+          .desiredMeetingFrequency(desiredMeetingFrequency)
+          .mentorType(mentorType)
+          .build());
+      response.sendRedirect(URLPatterns.FIND_MENTOR);
+
+    } else {
+      ArrayList<Topic> focusList = new ArrayList<>();
+      String focusListString = getParameter(request, ParameterConstants.MENTOR_FOCUS_LIST, Topic.OTHER.toString());
+      try {
+        for (String focus: focusListString.split(", ")) {
+          focusList.add(Topic.valueOf(focus));
+        }
+      } catch (IllegalArgumentException e) {
+        System.err.println(ErrorMessages.INVALID_PARAMATERS);
+      }
+
+      dataAccess.createUser((new Mentor.Builder())
+          .name(name)
+          .userID(dataAccess.getCurrentUser().getUserId())
+          .email(dataAccess.getCurrentUser().getEmail())
+          .dateOfBirth(dateOfBirth)
+          .country(country)
+          .language(language)
+          .timezone(timeZone)
+          .ethnicityList(ethnicities)
+          .ethnicityOther(ethnicityOther)
+          .gender(gender)
+          .genderOther(genderOther)
+          .firstGen(firstGen)
+          .lowIncome(lowIncome)
+          .educationLevel(educationLevel)
+          .educationLevelOther(educationLevelOther)
+          .description(description)
+          .mentorType(mentorType)
+          .visibility(true)
+          .focusList(focusList)
+          .build());
+      response.sendRedirect(URLPatterns.DASHBOARD);
+    }
+  }
+
+  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+    String value = request.getParameter(name);
+    if (value == null || value.equals("")) {
+      value = defaultValue;
+    }
+    return value;
   }
 
   private Map<String, Object> selectionListsForFrontEnd() {

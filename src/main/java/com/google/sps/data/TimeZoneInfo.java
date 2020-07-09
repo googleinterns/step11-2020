@@ -10,11 +10,13 @@ public class TimeZoneInfo {
 
   String id;
   String name;
+  String timezoneID;
   double offset;
 
   public TimeZoneInfo(TimeZone timeZone) {
     this.id = timeZone.getID();
     this.name = timeZone.getDisplayName();
+    this.timezoneID = timeZone.getID();
     this.offset = timeZone.getRawOffset() / MILLISECONDS_PER_HOURS;
   }
 
@@ -24,6 +26,10 @@ public class TimeZoneInfo {
 
   public String getName() {
     return this.name;
+  }
+
+  public String getTimezoneID() {
+    return this.timezoneID;
   }
 
   public double getOffset() {
