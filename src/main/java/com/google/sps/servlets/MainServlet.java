@@ -21,7 +21,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Redirects users to the landing page
+/**
+ * This class redirects users to the landing page.
  * @param URLPatterns.BASE this servlet serves requests at /
  * @param URLPatterns.MAIN this servlet serves requests at /main
  */

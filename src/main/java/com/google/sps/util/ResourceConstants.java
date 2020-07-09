@@ -1,6 +1,7 @@
 package com.google.sps.util;
 
-/** List of file paths for resources
+/**
+ * This class stores a list of file paths for resources.
  */
 public final class ResourceConstants {
   public static final String TEMPLATES = "/templates";

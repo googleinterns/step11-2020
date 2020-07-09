@@ -8,8 +8,9 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.KeyRange;
 import com.google.sps.util.ParameterConstants;
 
-/** Represents a Connection between a mentor and mentee
- * supports conversion to and from a datastore entity object
+/**
+ * This class represents a Connection between a Mentor and Mentee.
+ * This class supports conversion to and from a datastore entity object.
  */
 public class Connection {
   private long datastoreKey;

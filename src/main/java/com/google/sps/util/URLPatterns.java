@@ -1,6 +1,7 @@
 package com.google.sps.util;
 
-/** List of url patterns
+/**
+ * This class stores a list of url patterns.
  */
 public final class URLPatterns {
   public static final String URL = "url";

@@ -34,7 +34,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Provides a brief summary of the mentor-matching platform
+/**
+ * This class provides a brief summary of the mentor-matching platform.
  * @param URLPatterns.ABOUT this servlet serves requests at /about
  */
 @WebServlet(urlPatterns = URLPatterns.ABOUT)

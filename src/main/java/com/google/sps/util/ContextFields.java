@@ -1,6 +1,7 @@
 package com.google.sps.util;
 
-/** List of possible fields for jinja rendering context
+/**
+ * This class stores a list of possible fields for jinja rendering context.
  */
 public class ContextFields {
   public static final String URL = "url";

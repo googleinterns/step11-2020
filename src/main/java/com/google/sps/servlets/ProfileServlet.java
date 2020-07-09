@@ -47,7 +47,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Provides a summary of a user's (not necessarily their own) data
+/**
+ * This class provides a summary of a user's (not necessarily their own) data.
  * @param URLPatterns.PROFILE this servlet serves requests at /profile
  */
 @WebServlet(urlPatterns = URLPatterns.PROFILE)

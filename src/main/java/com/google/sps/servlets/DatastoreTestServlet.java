@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Tests datastore connection  by adding a user and then querying the users table
+/** Tests datastore connection  by adding a user and then querying the users table.
  * @param URLPatterns.DATASTORE_TEST this servlet serves requests at /datastore-test
  */
 @WebServlet(URLPatterns.DATASTORE_TEST)

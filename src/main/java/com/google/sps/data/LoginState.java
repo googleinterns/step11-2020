@@ -14,7 +14,8 @@
 
 package com.google.sps.data;
 
-/** Represents a user's current login state
+/**
+ * This class represents a user's current login state.
  * used by AuthenticateServlet
  */
 public class LoginState {

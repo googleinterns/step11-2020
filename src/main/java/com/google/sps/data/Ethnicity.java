@@ -1,6 +1,7 @@
 package com.google.sps.data;
 
-/** Represents a user's ethnicity
+/**
+ * This class represents a user's ethnicity.
  */
 public enum Ethnicity {
   UNSPECIFIED(""),

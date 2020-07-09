@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TimeZone;
 
-/** Represents a summary of a user's current timezone
+/**
+ * This class represents a summary of a user's current timezone.
  */
 public class TimeZoneInfo {
 

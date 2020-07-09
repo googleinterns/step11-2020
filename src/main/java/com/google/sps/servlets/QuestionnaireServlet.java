@@ -55,7 +55,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Provides a form for users to input data about themselves to sign up for the platform
+/**
+ * This class provides a form for users to input data about themselves to sign up for the platform.
  * @param URLPatterns.QUESTIONNAIRE this servlet serves requests at /questionnaire
  */
 @WebServlet(urlPatterns = URLPatterns.QUESTIONNAIRE)

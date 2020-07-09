@@ -34,7 +34,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Provides a short blurb about each of the three authors for mentor-matching
+/**
+ * This class provides a short blurb about each of the three authors for mentor-matching.
  * @param URLPatterns.AUTHORS this servlet serves requests at /authors
  */
 @WebServlet(urlPatterns = URLPatterns.AUTHORS)

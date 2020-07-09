@@ -6,7 +6,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.sps.util.ParameterConstants;
 import java.util.Set;
 
-/** Represents a Mentee user and all their related data
+/**
+ * This class represents a Mentee user and all their related data.
  * supports conversion to and from a datastore entity object
  */
 public class Mentee extends UserAccount {

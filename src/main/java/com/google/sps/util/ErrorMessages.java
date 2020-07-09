@@ -1,6 +1,7 @@
 package com.google.sps.util;
 
-/** List of common error messages
+/**
+ * This class stores a list of common error messages.
  */
 public final class ErrorMessages {
   public static final String TEMPLATES_DIRECTORY_NOT_FOUND =

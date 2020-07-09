@@ -1,6 +1,7 @@
 package com.google.sps.util;
 
-/** List of various attribute names related to each object
+/**
+ * This class stores a list of various attribute names related to each object.
  */
 public final class ParameterConstants {
   public static final String ENTITY_TYPE_USER_ACCOUNT = "UserAccount";

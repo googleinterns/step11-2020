@@ -8,7 +8,8 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.KeyRange;
 import com.google.sps.util.ParameterConstants;
 
-/** Represents a request for mentorship between two users
+/**
+ * This class represents a request for mentorship between two users.
  * supports conversion to and from a datastore entity object
  */
 public class MentorshipRequest {

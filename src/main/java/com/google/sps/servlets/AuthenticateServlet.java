@@ -29,7 +29,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Provides a json packet summarizing the current login status of the user
+/**
+ * This class provides a json packet summarizing the current login status of the user.
  * @param URLPatterns.AUTHENTICATE this servlet serves requests at /authenticate
  */
 @WebServlet(urlPatterns = URLPatterns.AUTHENTICATE)

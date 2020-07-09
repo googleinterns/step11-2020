@@ -41,12 +41,12 @@
   display: none;
 }
 
-/* Change the color of links on hover */
+/* Change the color of links on hover .*/
 .nav-bar a:hover {
   background-color: var(--blue-lightened);
   color: black;
 }
-/* Add a color to the active/current link */
+/* Add a color to the active/current link .*/
 .nav-bar a.active {
   background-color: var(--dark-blue);
 }

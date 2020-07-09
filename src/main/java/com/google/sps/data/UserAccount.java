@@ -14,7 +14,8 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
-/** Represents a generic user and all their related data
+/**
+ * This class represents a generic user and all their related data.
  * can only be instantiated as a Mentee or Mentor
  * supports conversion to and from a datastore entity object
  */

@@ -12,7 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
-/** Provides access to hardcoded mock data meant for testing
+/**
+ * This class provides access to hardcoded mock data meant for testing.
  */
 public class DummyDataAccess implements DataAccess {
 

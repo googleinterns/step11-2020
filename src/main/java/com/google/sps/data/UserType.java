@@ -1,6 +1,7 @@
 package com.google.sps.data;
 
-/** Represents the possible types for a user to be
+/**
+ * This class represents the possible types for a user to be.
  */
 public enum UserType {
   MENTOR("Mentor"),

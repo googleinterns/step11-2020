@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-/** Represents a Mentor user and all their related data
+/**
+ * This class represents a Mentor user and all their related data.
  * supports conversion to and from a datastore entity object
  */
 public class Mentor extends UserAccount {
