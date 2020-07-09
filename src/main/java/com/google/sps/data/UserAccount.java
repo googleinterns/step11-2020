@@ -166,6 +166,19 @@ public class UserAccount {
     entity.setProperty(ParameterConstants.USER_TYPE, this.userType.ordinal());
     return entity;
   }
+  
+  /**
+   * converts the list retrieved from datastore to a list of usable Ethnicity objects
+   * @param  ethnicityEnumIndexList the list off objects from datastore
+   * @return                        the list of ethnicity objects
+   */
+  private static Collection<Ethnicity> getEthnicityListFromProperty(
+      Collection<Object> ethnicityEnumIndexList) {
+    return (Collection<Ethnicity>)
+        ethnicityEnumIndexList.stream()
+            .map(index -> Ethnicity.values()[toIntExact((long) index)])
+            .collect(Collectors.toList());
+  }
 
   public long getDatastoreKey() {
     return datastoreKey;
@@ -237,14 +250,6 @@ public class UserAccount {
 
   public UserType getUserType() {
     return userType;
-  }
-
-  private static Collection<Ethnicity> getEthnicityListFromProperty(
-      Collection<Object> ethnicityEnumIndexList) {
-    return (Collection<Ethnicity>)
-        ethnicityEnumIndexList.stream()
-            .map(index -> Ethnicity.values()[toIntExact((long) index)])
-            .collect(Collectors.toList());
   }
 
   protected abstract static class Builder<T extends Builder<T>> {

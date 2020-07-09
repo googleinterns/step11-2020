@@ -43,6 +43,11 @@ public class Mentor extends UserAccount {
     return entity;
   }
 
+  /**
+   * converts the list retrieved from datastore to a list of usable Topic objects
+   * @param  focusEnumIndexList the list off objects from datastore
+   * @return                    the list of topic objects
+   */
   private static Collection<Topic> getFocusListFromProperty(Collection<Object> focusEnumIndexList) {
     return focusEnumIndexList == null
         ? new ArrayList<Topic>()
