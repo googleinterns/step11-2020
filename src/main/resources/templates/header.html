@@ -1,6 +1,6 @@
 {% Set nav_items = [] %}
 {% if isLoggedIn %}
-  {% if isMentor %}
+  {% if isMentee %}
     {% set nav_items = [
         {
           "baseURL": "/find-mentor", "iconLabel": "search", "text": "Find Mentor",
@@ -8,7 +8,7 @@
         }
       ] %}
   {% else %}
-    {% if isMentee %}
+    {% if isMentor %}
       {% set nav_items = [
           {
             "baseURL": "/connection-requests", "iconLabel": "comment", "text": "Mentorship Requests",

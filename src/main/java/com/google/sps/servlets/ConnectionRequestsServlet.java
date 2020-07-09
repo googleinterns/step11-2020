@@ -18,8 +18,10 @@ import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DatastoreAccess;
-import com.google.sps.data.Mentee;
+import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorshipRequest;
+import com.google.sps.data.UserAccount;
+import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -75,18 +77,25 @@ public class ConnectionRequestsServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-
     if (connectionRequestTemplate == null) {
       response.setStatus(500);
       return;
     }
 
-    Map<String, Object> context =
-        dataAccess.getDefaultRenderingContext(URLPatterns.CONNECTION_REQUESTS);
-    context.put("connectionRequests", dataAccess.getIncomingRequests(dataAccess.getUser("woah")));
-    String renderTemplate = jinjava.render(connectionRequestTemplate, context);
-    response.getWriter().println(renderTemplate);
+    User user = dataAccess.getCurrentUser();
+    if (user != null) {
+      Mentor mentor = dataAccess.getMentor(user.getUserId());
+      if (mentor != null) {
+        response.setContentType("text/html;");
+        Map<String, Object> context =
+            dataAccess.getDefaultRenderingContext(URLPatterns.CONNECTION_REQUESTS);
+        context.put(ContextFields.CONNECTION_REQUESTS, dataAccess.getIncomingRequests(mentor));
+        String renderTemplate = jinjava.render(connectionRequestTemplate, context);
+        response.getWriter().println(renderTemplate);
+        return;
+      }
+    }
+    response.sendRedirect(URLPatterns.LANDING);
   }
 
   @Override
@@ -98,11 +107,12 @@ public class ConnectionRequestsServlet extends HttpServlet {
 
     User user = dataAccess.getCurrentUser();
     if (user != null) {
-      Mentee mentee = dataAccess.getMentee(user.getUserId());
-      if (mentee != null) {
+      UserAccount userAccount = dataAccess.getUser(user.getUserId());
+      if (userAccount != null) {
         MentorshipRequest mentorshipRequest =
             dataAccess.getMentorshipRequest(Long.parseLong(requestKey));
-        if (mentorshipRequest != null) {
+        if (mentorshipRequest != null
+            && mentorshipRequest.getToUserKey() == userAccount.getDatastoreKey()) {
           if (choice.equals(ACCEPT)) {
             dataAccess.approveRequest(mentorshipRequest);
             success = true;

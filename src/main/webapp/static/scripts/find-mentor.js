@@ -8,7 +8,10 @@ const getMiddleCard = () => {
   const mentorCards = mentorCardContainer.children;
   if (mentorCards.length > 1) {
     const boundingBox = mentorCardContainer.getBoundingClientRect();
-    const middleCard = document.elementFromPoint(window.innerWidth/2,boundingBox.top + boundingBox.height / 2);
+    let middleCard = document.elementFromPoint(window.innerWidth/2,boundingBox.top + boundingBox.height / 2);
+    while (middleCard.className != "mentor-card") {
+      middleCard = middleCard.parentElement;
+    }
     return middleCard;
   }
   return mentorCards[0];

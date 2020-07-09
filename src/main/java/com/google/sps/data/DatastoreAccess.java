@@ -90,22 +90,22 @@ public class DatastoreAccess implements DataAccess {
 
   public Mentee getMentee(String userID) {
     UserAccount user = getUser(userID);
-    return user.getUserType() == UserType.MENTOR ? null : (Mentee) user;
+    return user == null || user.getUserType() == UserType.MENTOR ? null : (Mentee) user;
   }
 
   public Mentee getMentee(long datastoreKey) {
     UserAccount user = getUser(datastoreKey);
-    return user.getUserType() == UserType.MENTOR ? null : (Mentee) user;
+    return user == null || user.getUserType() == UserType.MENTOR ? null : (Mentee) user;
   }
 
   public Mentor getMentor(String userID) {
     UserAccount user = getUser(userID);
-    return user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
+    return user == null || user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
   }
 
   public Mentor getMentor(long datastoreKey) {
     UserAccount user = getUser(datastoreKey);
-    return user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
+    return user == null || user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
   }
 
   public boolean createUser(UserAccount user) {
