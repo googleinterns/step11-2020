@@ -19,6 +19,7 @@ import com.google.common.io.Resources;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -68,7 +69,7 @@ public class AuthorsServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
+    response.setContentType(ServletUtils.CONTENT_HTML);
 
     if (staticResponse == null) {
       response.setStatus(500);

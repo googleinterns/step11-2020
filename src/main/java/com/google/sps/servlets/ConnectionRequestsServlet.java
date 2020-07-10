@@ -21,8 +21,11 @@ import com.google.sps.data.DataAccess;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.MentorshipRequest;
+import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
+import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -79,7 +82,7 @@ public class ConnectionRequestsServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
+    response.setContentType(ServletUtils.CONTENT_HTML);
 
     if (connectionRequestTemplate == null) {
       response.setStatus(500);
@@ -88,15 +91,17 @@ public class ConnectionRequestsServlet extends HttpServlet {
 
     Map<String, Object> context =
         dataAccess.getDefaultRenderingContext(URLPatterns.CONNECTION_REQUESTS);
-    context.put("connectionRequests", dataAccess.getIncomingRequests(dataAccess.getUser("woah")));
+    context.put(
+        ContextFields.CONNECTION_REQUESTS,
+        dataAccess.getIncomingRequests(dataAccess.getUser("woah")));
     String renderTemplate = jinjava.render(connectionRequestTemplate, context);
     response.getWriter().println(renderTemplate);
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    final String requestKey = request.getParameter("requestID");
-    final String choice = request.getParameter("choice");
+    final String requestKey = ServletUtils.getParameter(request, ParameterConstants.REQUEST_ID, "");
+    final String choice = ServletUtils.getParameter(request, ParameterConstants.CHOICE, "");
 
     boolean success = false;
 
@@ -118,7 +123,7 @@ public class ConnectionRequestsServlet extends HttpServlet {
       }
     }
 
-    response.setContentType("application/json;");
+    response.setContentType(ServletUtils.CONTENT_JSON);
     response.getWriter().println("{\"success\": " + success + "}");
   }
 }

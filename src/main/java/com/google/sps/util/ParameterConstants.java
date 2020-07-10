@@ -47,4 +47,10 @@ public final class ParameterConstants {
   public static final String ENTITY_TYPE_CONNECTION = "Connection";
   public static final String MENTOR_KEY = "mentorKey";
   public static final String MENTEE_KEY = "menteeKey";
+
+  public static final String CHOICE = "choice";
+  public static final String FORM_TYPE = "formType";
+  public static final String MENTOR_ID = "mentorID";
+  public static final String REQUEST_ID = "requestID";
+  public static final String REDIR = "redir";
 }

@@ -14,20 +14,18 @@
 
 package com.google.sps.util;
 
-public class ContextFields {
-  public static final String URL = "url";
-  public static final String IS_LOGGED_IN = "isLoggedIn";
-  public static final String IS_MENTOR = "isMentor";
-  public static final String IS_MENTEE = "isMentee";
-  public static final String CURRENT_USER = "currentUser";
+import javax.servlet.http.HttpServletRequest;
 
-  public static final String FORM_TYPE = "formType";
+public final class ServletUtils {
+  public static final String CONTENT_HTML = "text/html;";
+  public static final String CONTENT_JSON = "application/json;";
 
-  public static final String PROFILE_USER = "profileUser";
-
-  public static final String MENTORS = "mentors";
-
-  public static final String CONNECTION_REQUESTS = "connectionRequests";
-
-  public static final String CONNECTIONS = "connections";
+  public static String getParameter(
+      HttpServletRequest request, String parameterName, String defaultValue) {
+    String value = request.getParameter(parameterName);
+    if (value == null || value == "") {
+      return defaultValue;
+    }
+    return value;
+  }
 }

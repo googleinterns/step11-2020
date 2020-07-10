@@ -26,6 +26,6 @@ public class MainServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.sendRedirect("/landing");
+    response.sendRedirect(URLPatterns.LANDING);
   }
 }
