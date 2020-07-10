@@ -37,7 +37,7 @@ public class UserAccount {
   private Date dateOfBirth;
   private Country country;
   private Language language;
-  private TimeZone timezone;
+  private TimeZoneInfo timezone;
   private Collection<Ethnicity> ethnicityList;
   private String ethnicityOther;
   private Gender gender;
@@ -56,7 +56,7 @@ public class UserAccount {
       Date dateOfBirth,
       Country country,
       Language language,
-      TimeZone timezone,
+      TimeZoneInfo timezone,
       Collection<Ethnicity> ethnicityList,
       String ethnicityOther,
       Gender gender,
@@ -125,7 +125,9 @@ public class UserAccount {
         Country.values()[toIntExact((long) entity.getProperty(ParameterConstants.COUNTRY))];
     this.language =
         Language.values()[toIntExact((long) entity.getProperty(ParameterConstants.LANGUAGE))];
-    this.timezone = TimeZone.getTimeZone((String) entity.getProperty(ParameterConstants.TIMEZONE));
+    this.timezone =
+        new TimeZoneInfo(
+            TimeZone.getTimeZone((String) entity.getProperty(ParameterConstants.TIMEZONE)));
     this.ethnicityList =
         getEthnicityListFromProperty((Collection) entity.getProperty(ParameterConstants.ETHNICITY));
     this.ethnicityOther = (String) entity.getProperty(ParameterConstants.ETHNICITY_OTHER);
@@ -205,7 +207,7 @@ public class UserAccount {
     return language;
   }
 
-  public TimeZone getTimezone() {
+  public TimeZoneInfo getTimezone() {
     return timezone;
   }
 
@@ -266,7 +268,7 @@ public class UserAccount {
     private static Date dateOfBirth;
     private static Country country;
     private static Language language;
-    private static TimeZone timezone;
+    private static TimeZoneInfo timezone;
     private static Collection<Ethnicity> ethnicityList;
     private static String ethnicityOther;
     private static Gender gender;
@@ -316,7 +318,7 @@ public class UserAccount {
       return (T) this;
     }
 
-    public T timezone(TimeZone timezone) {
+    public T timezone(TimeZoneInfo timezone) {
       this.timezone = timezone;
       return (T) this;
     }

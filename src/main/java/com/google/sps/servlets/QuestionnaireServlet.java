@@ -175,7 +175,7 @@ public class QuestionnaireServlet extends HttpServlet {
               .dateOfBirth(dateOfBirth)
               .country(country)
               .language(language)
-              .timezone(timeZone)
+              .timezone(new TimeZoneInfo(timeZone))
               .ethnicityList(ethnicities)
               .ethnicityOther(ethnicityOther)
               .gender(gender)
@@ -187,7 +187,7 @@ public class QuestionnaireServlet extends HttpServlet {
               .description(description)
               .goal(goal)
               .desiredMeetingFrequency(desiredMeetingFrequency)
-              .mentorType(mentorType)
+              .desiredMentorType(mentorType)
               .build());
       response.sendRedirect(URLPatterns.FIND_MENTOR);
 
@@ -211,7 +211,7 @@ public class QuestionnaireServlet extends HttpServlet {
               .dateOfBirth(dateOfBirth)
               .country(country)
               .language(language)
-              .timezone(timeZone)
+              .timezone(new TimeZoneInfo(timeZone))
               .ethnicityList(ethnicities)
               .ethnicityOther(ethnicityOther)
               .gender(gender)
