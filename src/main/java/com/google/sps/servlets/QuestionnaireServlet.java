@@ -187,7 +187,7 @@ public class QuestionnaireServlet extends HttpServlet {
               .description(description)
               .goal(goal)
               .desiredMeetingFrequency(desiredMeetingFrequency)
-              .mentorType(mentorType)
+              .desiredMentorType(mentorType)
               .build());
       response.sendRedirect(URLPatterns.FIND_MENTOR);
 
