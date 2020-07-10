@@ -88,7 +88,7 @@ public class Mentee extends UserAccount {
       return this;
     }
 
-    public Builder mentorType(MentorType desiredMentorType) {
+    public Builder desiredMentorType(MentorType desiredMentorType) {
       this.desiredMentorType = desiredMentorType;
       return this;
     }
