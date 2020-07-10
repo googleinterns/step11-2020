@@ -75,7 +75,9 @@ public class DatastoreAccess implements DataAccess {
               .dateOfBirth(new Date())
               .country(randomEnum(Country.class))
               .language(randomEnum(Language.class))
-              .timezone(TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)]))
+              .timezone(
+                  new TimeZoneInfo(
+                      TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)])))
               .ethnicityList(Arrays.asList(randomEnum(Ethnicity.class)))
               .ethnicityOther(randomLetters(10))
               .gender(randomEnum(Gender.class))
@@ -104,7 +106,9 @@ public class DatastoreAccess implements DataAccess {
               .dateOfBirth(new Date())
               .country(randomEnum(Country.class))
               .language(randomEnum(Language.class))
-              .timezone(TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)]))
+              .timezone(
+                  new TimeZoneInfo(
+                      TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)])))
               .ethnicityList(Arrays.asList(randomEnum(Ethnicity.class)))
               .ethnicityOther(randomLetters(10))
               .gender(randomEnum(Gender.class))
