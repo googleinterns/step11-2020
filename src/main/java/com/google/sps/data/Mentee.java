@@ -20,7 +20,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.sps.util.ParameterConstants;
 import java.util.Set;
 
-public class Mentee extends UserAccount {
+public class Mentee extends UserAccount implements DatastoreEntity {
 
   private Topic goal;
   private MeetingFrequency desiredMeetingFrequency;
