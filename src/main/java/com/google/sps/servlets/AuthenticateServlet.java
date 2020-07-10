@@ -24,6 +24,7 @@ import com.google.sps.util.URLPatterns;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(urlPatterns = URLPatterns.AUTHENTICATE)
 public class AuthenticateServlet extends HttpServlet {
+  private static final Logger LOG = Logger.getLogger(AuthenticateServlet.class.getName());
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -45,7 +47,7 @@ public class AuthenticateServlet extends HttpServlet {
     if (!PublicAccessPage.publicAccessPage.contains(redirDest)) loginState.autoRedir = true;
     if (!userService.isUserLoggedIn()) {
       String redirUrlAfterLogin = redirDest;
-      System.out.println(redirUrlAfterLogin);
+      LOG.info(redirUrlAfterLogin);
       loginState.toggleLoginURL = userService.createLoginURL(redirUrlAfterLogin);
       loginState.isLoggedIn = false;
     } else {
@@ -66,7 +68,7 @@ public class AuthenticateServlet extends HttpServlet {
     try {
       pathname = URLDecoder.decode(encodedPathname, "UTF-8");
     } catch (UnsupportedEncodingException e) {
-      System.err.println(ErrorMessages.badRedirect(encodedPathname));
+      LOG.warning(ErrorMessages.badRedirect(encodedPathname));
       return URLPatterns.BASE;
     }
     return pathname;
