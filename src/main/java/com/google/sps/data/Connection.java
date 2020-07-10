@@ -23,7 +23,8 @@ import com.google.appengine.api.datastore.KeyRange;
 import com.google.sps.util.ParameterConstants;
 
 /**
- * This class represents a Connection between a Mentor and Mentee.
+ * Represents a Connection between a Mentor and Mentee
+ * For every Mentor/Mentee pair, there is a Connection object that stores the information related to the pair.
  * This class supports conversion to and from a datastore entity object.
  */
 public class Connection {
