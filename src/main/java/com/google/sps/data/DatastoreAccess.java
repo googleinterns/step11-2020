@@ -34,7 +34,7 @@ public class DatastoreAccess implements DataAccess {
 
   public DatastoreAccess() {
     if (!DatastoreAccess.seeded) {
-      seed_db();
+      seedDatabase();
       DatastoreAccess.seeded = true;
     }
   }
@@ -63,7 +63,7 @@ public class DatastoreAccess implements DataAccess {
     return enumClass.getEnumConstants()[x];
   }
 
-  private void seed_db() {
+  private void seedDatabase() {
     Collection<Mentee> someMentees = new ArrayList<>(50);
     Collection<Mentor> someMentors = new ArrayList<>(50);
     for (int i = 0; i < 250; i++) {
