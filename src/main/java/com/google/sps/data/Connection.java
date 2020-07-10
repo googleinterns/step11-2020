@@ -1,32 +1,39 @@
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.KeyRange;
 import com.google.sps.util.ParameterConstants;
 
-public class Connection {
+public class Connection implements DatastoreEntity {
   private long datastoreKey;
   private long mentorKey;
   private long menteeKey;
   private Mentor mentor;
   private Mentee mentee;
 
-  public Connection(long mentorKey, long menteeKey) {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    KeyRange keyRange = datastore.allocateIds(ParameterConstants.ENTITY_TYPE_CONNECTION, 1);
-    this.datastoreKey = keyRange.getStart().getId();
+  private Connection(long datastoreKey, long mentorKey, long menteeKey) {
+    this.datastoreKey = datastoreKey;
     this.mentorKey = mentorKey;
     this.menteeKey = menteeKey;
   }
 
+  public Connection(long mentorKey, long menteeKey) {
+    this(
+        DatastoreServiceFactory.getDatastoreService()
+            .allocateIds(ParameterConstants.ENTITY_TYPE_CONNECTION, 1)
+            .getStart()
+            .getId(),
+        mentorKey,
+        menteeKey);
+  }
+
   public Connection(Entity entity) {
-    this.datastoreKey = entity.getKey().getId();
-    this.mentorKey = (long) entity.getProperty(ParameterConstants.MENTOR_KEY);
-    this.menteeKey = (long) entity.getProperty(ParameterConstants.MENTEE_KEY);
+    this(
+        entity.getKey().getId(),
+        (long) entity.getProperty(ParameterConstants.MENTOR_KEY),
+        (long) entity.getProperty(ParameterConstants.MENTEE_KEY));
   }
 
   public Entity convertToEntity() {

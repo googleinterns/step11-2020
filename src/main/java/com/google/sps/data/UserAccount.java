@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
-public class UserAccount {
+public class UserAccount implements DatastoreEntity {
   private long datastoreKey;
   private boolean keyInitialized;
   private String userID;
@@ -103,6 +103,7 @@ public class UserAccount {
 
   public UserAccount(Entity entity) {
     this.datastoreKey = entity.getKey().getId();
+    this.keyInitialized = true;
     this.userID = (String) entity.getProperty(ParameterConstants.USER_ID);
     this.email = (String) entity.getProperty(ParameterConstants.EMAIL);
     this.name = (String) entity.getProperty(ParameterConstants.NAME);

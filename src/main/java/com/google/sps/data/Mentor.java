@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class Mentor extends UserAccount {
+public class Mentor extends UserAccount implements DatastoreEntity {
   private boolean visibility;
   private Collection<Topic> focusList;
   private MentorType mentorType;
