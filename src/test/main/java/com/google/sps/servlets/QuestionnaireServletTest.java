@@ -26,7 +26,7 @@ public final class QuestionnaireServletTest {
           .setEnvIsLoggedIn(true);
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     MockitoAnnotations.initMocks(this);
     helper.setUp();
   }
@@ -35,4 +35,23 @@ public final class QuestionnaireServletTest {
   public void tearDown() {
     helper.tearDown();
   }
+
+  @Test
+  public void correctNameInText() throws Exception {
+    when(request.getParameter("name")).thenReturn("jake");
+    UserService userService = UserServiceFactory.getUserService();
+    when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doPost(request, response);
+
+    verify(request).getParameter("name");
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("jake"));
+  }
+
 }
