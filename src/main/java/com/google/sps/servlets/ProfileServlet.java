@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.PROFILE)
 public final class ProfileServlet extends HttpServlet {
-  private static final Logger log = Logger.getLogger(ProfileServlet.class.getName());
+  private static final Logger LOG = Logger.getLogger(ProfileServlet.class.getName());
 
   private String profileTemplate;
   private Jinjava jinjava;
@@ -67,7 +67,7 @@ public final class ProfileServlet extends HttpServlet {
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      log.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
+      LOG.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = new HashMap<>();
@@ -78,7 +78,7 @@ public final class ProfileServlet extends HttpServlet {
               this.getClass().getResource(ResourceConstants.TEMPLATE_PROFILE), Charsets.UTF_8);
       profileTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      log.severe(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_PROFILE));
+      LOG.severe(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_PROFILE));
     }
   }
 

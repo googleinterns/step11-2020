@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.DASHBOARD)
 public class DashboardServlet extends HttpServlet {
-  private static final Logger log = Logger.getLogger(DashboardServlet.class.getName());
+  private static final Logger LOG = Logger.getLogger(DashboardServlet.class.getName());
 
   private DataAccess dataAccess;
   private Jinjava jinjava;
@@ -60,7 +60,7 @@ public class DashboardServlet extends HttpServlet {
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      log.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
+      LOG.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = new HashMap<>();
@@ -73,7 +73,7 @@ public class DashboardServlet extends HttpServlet {
               Charsets.UTF_8);
       dashboardMentorTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      log.severe(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_MENTOR_DASHBOARD));
+      LOG.severe(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_MENTOR_DASHBOARD));
     }
     try {
       String template =
@@ -82,7 +82,7 @@ public class DashboardServlet extends HttpServlet {
               Charsets.UTF_8);
       dashboardMenteeTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      log.severe(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_MENTOR_DASHBOARD));
+      LOG.severe(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_MENTOR_DASHBOARD));
     }
   }
 

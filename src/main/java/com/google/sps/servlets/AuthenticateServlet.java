@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {URLPatterns.AUTHENTICATE})
 public class AuthenticateServlet extends HttpServlet {
-  private static final Logger log = Logger.getLogger(AuthenticateServlet.class.getName());
+  private static final Logger LOG = Logger.getLogger(AuthenticateServlet.class.getName());
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -43,7 +43,7 @@ public class AuthenticateServlet extends HttpServlet {
     if (!PublicAccessPage.publicAccessPage.contains(redirDest)) loginState.autoRedir = true;
     if (!userService.isUserLoggedIn()) {
       String redirUrlAfterLogin = redirDest;
-      log.info(redirUrlAfterLogin);
+      LOG.info(redirUrlAfterLogin);
       loginState.toggleLoginURL = userService.createLoginURL(redirUrlAfterLogin);
       loginState.isLoggedIn = false;
     } else {
@@ -64,7 +64,7 @@ public class AuthenticateServlet extends HttpServlet {
     try {
       pathname = URLDecoder.decode(encodedPathname, "UTF-8");
     } catch (UnsupportedEncodingException e) {
-      log.warning(ErrorMessages.badRedirect(encodedPathname));
+      LOG.warning(ErrorMessages.badRedirect(encodedPathname));
       return URLPatterns.BASE;
     }
     return pathname;

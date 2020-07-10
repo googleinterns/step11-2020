@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.FIND_MENTOR)
 public class FindMentorServlet extends HttpServlet {
-  private static final Logger log = Logger.getLogger(FindMentorServlet.class.getName());
+  private static final Logger LOG = Logger.getLogger(FindMentorServlet.class.getName());
 
   private static final String SEND = "sendRequest";
   private static final String DISLIKE = "dislikeMentor";
@@ -64,7 +64,7 @@ public class FindMentorServlet extends HttpServlet {
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      log.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
+      LOG.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = new HashMap<>();
@@ -75,7 +75,7 @@ public class FindMentorServlet extends HttpServlet {
               this.getClass().getResource(ResourceConstants.TEMPLATE_FIND_MENTOR), Charsets.UTF_8);
       findMentorTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      log.severe(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_FIND_MENTOR));
+      LOG.severe(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_FIND_MENTOR));
     }
   }
 

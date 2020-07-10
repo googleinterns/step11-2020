@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.CONNECTION_REQUESTS)
 public class ConnectionRequestsServlet extends HttpServlet {
-  private static final Logger log = Logger.getLogger(ConnectionRequestsServlet.class.getName());
+  private static final Logger LOG = Logger.getLogger(ConnectionRequestsServlet.class.getName());
 
   private static final String ACCEPT = "accept";
   private static final String DENY = "deny";
@@ -60,7 +60,7 @@ public class ConnectionRequestsServlet extends HttpServlet {
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      log.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
+      LOG.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = new HashMap<>();
@@ -72,7 +72,7 @@ public class ConnectionRequestsServlet extends HttpServlet {
               Charsets.UTF_8);
       connectionRequestTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      log.severe(
+      LOG.severe(
           ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS));
     }
   }
