@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.AUTHORS)
 public class AuthorsServlet extends HttpServlet {
+  private static final Logger log = Logger.getLogger(AuthorsServlet.class.getName());
 
   private String staticResponse;
   private Jinjava jinjava;
@@ -49,7 +51,7 @@ public class AuthorsServlet extends HttpServlet {
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
+      log.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = new HashMap<>();
@@ -60,7 +62,7 @@ public class AuthorsServlet extends HttpServlet {
               this.getClass().getResource(ResourceConstants.TEMPLATE_AUTHORS), Charsets.UTF_8);
       staticResponse = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_AUTHORS));
+      log.severe(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_AUTHORS));
     }
   }
 
