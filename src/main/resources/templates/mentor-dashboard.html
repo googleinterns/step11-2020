@@ -23,10 +23,10 @@ limitations under the License. -->
 	<h1 class="page-title" id="title">Your Dashboard</h1>
 </div>
 <div class="content-block" id="mentor-cards-container">
-	{% raw %}{% for connection in connections %}
-	<div class="mentee" id="{{ connection.mentee.name }}">
-		<h3 class="mentee-name">{{ connection.mentee.name }}</h3>
-		<h5 class="mentee-data-label">Focus: {{ connection.mentee.goal.title }}</h5>
+	{% raw %}{% for mentorMenteeRelation in mentorMenteeRelations %}
+	<div class="mentee" id="{{ mentorMenteeRelation.mentee.name }}">
+		<h3 class="mentee-name">{{ mentorMenteeRelation.mentee.name }}</h3>
+		<h5 class="mentee-data-label">Focus: {{ mentorMenteeRelation.mentee.goal.title }}</h5>
 	</div>
 	{% endfor %}{% endraw %}
 </div>
