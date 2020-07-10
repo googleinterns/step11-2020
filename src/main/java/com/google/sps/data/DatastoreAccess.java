@@ -34,7 +34,7 @@ public class DatastoreAccess implements DataAccess {
 
   public DatastoreAccess() {
     if (!DatastoreAccess.seeded) {
-      seed_db();
+      seedDatabase();
       DatastoreAccess.seeded = true;
     }
   }
@@ -63,7 +63,7 @@ public class DatastoreAccess implements DataAccess {
     return enumClass.getEnumConstants()[x];
   }
 
-  private void seed_db() {
+  private void seedDatabase() {
     Collection<Mentee> someMentees = new ArrayList<>(50);
     Collection<Mentor> someMentors = new ArrayList<>(50);
     for (int i = 0; i < 250; i++) {
@@ -75,7 +75,9 @@ public class DatastoreAccess implements DataAccess {
               .dateOfBirth(new Date())
               .country(randomEnum(Country.class))
               .language(randomEnum(Language.class))
-              .timezone(TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)]))
+              .timezone(
+                  new TimeZoneInfo(
+                      TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)])))
               .ethnicityList(Arrays.asList(randomEnum(Ethnicity.class)))
               .ethnicityOther(randomLetters(10))
               .gender(randomEnum(Gender.class))
@@ -105,7 +107,9 @@ public class DatastoreAccess implements DataAccess {
               .dateOfBirth(new Date())
               .country(randomEnum(Country.class))
               .language(randomEnum(Language.class))
-              .timezone(TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)]))
+              .timezone(
+                  new TimeZoneInfo(
+                      TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)])))
               .ethnicityList(Arrays.asList(randomEnum(Ethnicity.class)))
               .ethnicityOther(randomLetters(10))
               .gender(randomEnum(Gender.class))
