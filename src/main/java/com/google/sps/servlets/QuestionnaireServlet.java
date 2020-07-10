@@ -49,6 +49,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -57,6 +58,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.QUESTIONNAIRE)
 public class QuestionnaireServlet extends HttpServlet {
+  private static final Logger LOG = Logger.getLogger(QuestionnaireServlet.class.getName());
+
   private static final String MENTOR = "mentor";
   private static final String MENTEE = "mentee";
 
@@ -74,7 +77,7 @@ public class QuestionnaireServlet extends HttpServlet {
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
+      LOG.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = selectionListsForFrontEnd();
@@ -86,8 +89,7 @@ public class QuestionnaireServlet extends HttpServlet {
               Charsets.UTF_8);
       questionnaireTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println(
-          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_QUESTIONNAIRE));
+      LOG.severe(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_QUESTIONNAIRE));
     }
   }
 
@@ -107,7 +109,7 @@ public class QuestionnaireServlet extends HttpServlet {
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
-      System.err.println(ErrorMessages.INVALID_PARAMATERS);
+      LOG.warning(ErrorMessages.INVALID_PARAMATERS);
       response.sendRedirect(URLPatterns.LANDING);
     }
   }
@@ -123,7 +125,7 @@ public class QuestionnaireServlet extends HttpServlet {
               .parse(getParameter(request, ParameterConstants.DATE_OF_BIRTH, "2000-01-01"));
     } catch (ParseException e) {
       dateOfBirth = new Date();
-      System.err.println(ErrorMessages.BAD_DATE_PARSE);
+      LOG.warning(ErrorMessages.BAD_DATE_PARSE);
     }
     Country country =
         Country.valueOf(getParameter(request, ParameterConstants.COUNTRY, Country.US.toString()));
@@ -140,7 +142,7 @@ public class QuestionnaireServlet extends HttpServlet {
         ethnicities.add(Ethnicity.valueOf(ethnicity));
       }
     } catch (IllegalArgumentException e) {
-      System.err.println(ErrorMessages.INVALID_PARAMATERS);
+      LOG.warning(ErrorMessages.INVALID_PARAMATERS);
     }
 
     String ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
@@ -200,7 +202,7 @@ public class QuestionnaireServlet extends HttpServlet {
           focusList.add(Topic.valueOf(focus));
         }
       } catch (IllegalArgumentException e) {
-        System.err.println(ErrorMessages.INVALID_PARAMATERS);
+        LOG.warning(ErrorMessages.INVALID_PARAMATERS);
       }
 
       dataAccess.createUser(
