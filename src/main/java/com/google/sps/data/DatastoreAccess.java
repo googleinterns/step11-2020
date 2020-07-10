@@ -91,6 +91,7 @@ public class DatastoreAccess implements DataAccess {
               .goal(randomEnum(Topic.class))
               .desiredMeetingFrequency(randomEnum(MeetingFrequency.class))
               .dislikedMentorKeys(Collections.emptySet())
+              .desiredMentorType(randomEnum(MentorType.class))
               .build();
       saveUser(mentee);
       if (i < 50) {
