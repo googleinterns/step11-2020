@@ -18,9 +18,6 @@ import java.util.Date;
 import java.util.Random;
 import java.util.TimeZone;
 
-/**
- *
- */
 public class RandomObjects {
   private static Random rnd = new Random();
 

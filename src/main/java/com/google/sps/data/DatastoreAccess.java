@@ -13,22 +13,17 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ParameterConstants;
+import com.google.sps.util.RandomObjects;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class DatastoreAccess implements DataAccess {
 
   private static boolean seeded = false;
-  private static Random rnd = new Random();
   private static DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
   private static UserService userService = UserServiceFactory.getUserService();
 
@@ -39,86 +34,18 @@ public class DatastoreAccess implements DataAccess {
     }
   }
 
-  private static String randomNumber(int digCount) {
-    StringBuilder sb = new StringBuilder(digCount);
-    for (int i = 0; i < digCount; i++) sb.append((char) ('0' + rnd.nextInt(10)));
-    return sb.toString();
-  }
-
-  private static String randomLetters(int targetStringLength) {
-    int leftLimit = 97; // letter 'a'
-    int rightLimit = 122; // letter 'z'
-
-    String generatedString =
-        rnd.ints(leftLimit, rightLimit + 1)
-            .limit(targetStringLength)
-            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-            .toString();
-
-    return generatedString;
-  }
-
-  private static <T extends Enum<?>> T randomEnum(Class<T> enumClass) {
-    int x = rnd.nextInt(enumClass.getEnumConstants().length);
-    return enumClass.getEnumConstants()[x];
-  }
-
   private void seed_db() {
     Collection<Mentee> someMentees = new ArrayList<>(50);
     Collection<Mentor> someMentors = new ArrayList<>(50);
     for (int i = 0; i < 250; i++) {
-      Mentee mentee =
-          (new Mentee.Builder())
-              .name(randomLetters(10))
-              .userID(randomNumber(21))
-              .email(randomLetters(7) + "@gmail.com")
-              .dateOfBirth(new Date())
-              .country(randomEnum(Country.class))
-              .language(randomEnum(Language.class))
-              .timezone(TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)]))
-              .ethnicityList(Arrays.asList(randomEnum(Ethnicity.class)))
-              .ethnicityOther(randomLetters(10))
-              .gender(randomEnum(Gender.class))
-              .genderOther(randomLetters(10))
-              .firstGen(rnd.nextBoolean())
-              .lowIncome(rnd.nextBoolean())
-              .educationLevel(randomEnum(EducationLevel.class))
-              .educationLevelOther(randomLetters(10))
-              .description(randomLetters(30))
-              .userType(UserType.MENTEE)
-              .goal(randomEnum(Topic.class))
-              .desiredMeetingFrequency(randomEnum(MeetingFrequency.class))
-              .dislikedMentorKeys(Collections.emptySet())
-              .build();
+      Mentee mentee = RandomObjects.randomMentee();
       saveUser(mentee);
       if (i < 50) {
         someMentees.add(mentee);
       }
     }
     for (int i = 0; i < 250; i++) {
-      Mentor mentor =
-          (new Mentor.Builder())
-              .name(randomLetters(10))
-              .userID(randomNumber(21))
-              .email(randomLetters(7) + "@gmail.com")
-              .dateOfBirth(new Date())
-              .country(randomEnum(Country.class))
-              .language(randomEnum(Language.class))
-              .timezone(TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)]))
-              .ethnicityList(Arrays.asList(randomEnum(Ethnicity.class)))
-              .ethnicityOther(randomLetters(10))
-              .gender(randomEnum(Gender.class))
-              .genderOther(randomLetters(10))
-              .firstGen(rnd.nextBoolean())
-              .lowIncome(rnd.nextBoolean())
-              .educationLevel(randomEnum(EducationLevel.class))
-              .educationLevelOther(randomLetters(10))
-              .description(randomLetters(30))
-              .userType(UserType.MENTOR)
-              .visibility(rnd.nextBoolean())
-              .focusList(Arrays.asList())
-              .mentorType(randomEnum(MentorType.class))
-              .build();
+      Mentor mentor = RandomObjects.randomMentor();
       saveUser(mentor);
       if (i < 50) {
         someMentors.add(mentor);
