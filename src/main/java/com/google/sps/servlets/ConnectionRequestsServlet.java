@@ -100,19 +100,26 @@ public class ConnectionRequestsServlet extends HttpServlet {
 
     boolean success = false;
 
-    User user = dataAccess.getCurrentUser();
-    if (user != null) {
-      Mentee mentee = dataAccess.getMentee(user.getUserId());
-      if (mentee != null) {
-        MentorshipRequest mentorshipRequest =
-            dataAccess.getMentorshipRequest(Long.parseLong(requestKey));
-        if (mentorshipRequest != null) {
-          if (choice.equals(ACCEPT)) {
-            dataAccess.approveRequest(mentorshipRequest);
-            success = true;
-          } else if (choice.equals(DENY)) {
-            dataAccess.denyRequest(mentorshipRequest);
-            success = true;
+    long requestDatastoreKey = -1;
+    try {
+      requestDatastoreKey = Long.parseLong(requestKey);
+    } catch (NumberFormatException e) {
+    }
+    if (requestDatastoreKey != -1 && (choice.equals(ACCEPT) || choice.equals(DENY))) {
+      User user = dataAccess.getCurrentUser();
+      if (user != null) {
+        Mentee mentee = dataAccess.getMentee(user.getUserId());
+        if (mentee != null) {
+          MentorshipRequest mentorshipRequest =
+              dataAccess.getMentorshipRequest(requestDatastoreKey);
+          if (mentorshipRequest != null) {
+            if (choice.equals(ACCEPT)) {
+              dataAccess.approveRequest(mentorshipRequest);
+              success = true;
+            } else if (choice.equals(DENY)) {
+              dataAccess.denyRequest(mentorshipRequest);
+              success = true;
+            }
           }
         }
       }

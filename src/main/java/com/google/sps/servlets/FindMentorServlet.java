@@ -109,19 +109,26 @@ public class FindMentorServlet extends HttpServlet {
 
     boolean success = false;
 
-    User user = dataAccess.getCurrentUser();
-    if (user != null) {
-      Mentee mentee = dataAccess.getMentee(user.getUserId());
-      Mentor mentor = dataAccess.getMentor(Long.parseLong(mentorKey));
-      if (mentee != null && mentor != null) {
-        if (choice.equals(SEND)) {
-          MentorshipRequest mentorshipRequest =
-              new MentorshipRequest(mentor.getDatastoreKey(), mentee.getDatastoreKey());
-          dataAccess.publishRequest(mentorshipRequest);
-          success = true;
-        } else if (choice.equals(DISLIKE)) {
-          dataAccess.dislikeMentor(mentee, mentor);
-          success = true;
+    long mentorDatastoreKey = -1;
+    try {
+      mentorDatastoreKey = Long.parseLong(mentorKey);
+    } catch (NumberFormatException e) {
+    }
+    if (mentorDatastoreKey != -1 && (choice.equals(SEND) || choice.equals(DISLIKE))) {
+      User user = dataAccess.getCurrentUser();
+      if (user != null) {
+        Mentee mentee = dataAccess.getMentee(user.getUserId());
+        Mentor mentor = dataAccess.getMentor(mentorDatastoreKey);
+        if (mentee != null && mentor != null) {
+          if (choice.equals(SEND)) {
+            MentorshipRequest mentorshipRequest =
+                new MentorshipRequest(mentor.getDatastoreKey(), mentee.getDatastoreKey());
+            dataAccess.publishRequest(mentorshipRequest);
+            success = true;
+          } else if (choice.equals(DISLIKE)) {
+            dataAccess.dislikeMentor(mentee, mentor);
+            success = true;
+          }
         }
       }
     }
