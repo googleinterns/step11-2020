@@ -15,7 +15,13 @@
 package com.google.sps.util;
 
 /**
- * This class stores a list of url patterns.
+ * Stores a list of url patterns
+ * The constants stored in this class are used by servlets to control what URLs they will serve and redirect to.
+ *
+ * @author guptamudit
+ * @author tquintanilla
+ * @author sylviaziyuz
+ * @version 1.0
  */
 public final class URLPatterns {
   public static final String URL = "url";
