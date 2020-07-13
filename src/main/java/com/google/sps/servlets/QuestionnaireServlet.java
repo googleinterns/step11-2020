@@ -275,8 +275,4 @@ public class QuestionnaireServlet extends HttpServlet {
     map.put("meetingFrequencies", MeetingFrequency.values());
     return map;
   }
-
-  public String getTemplate() {
-    return questionnaireTemplate;
-  }
 }
