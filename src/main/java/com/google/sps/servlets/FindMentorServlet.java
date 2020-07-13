@@ -109,12 +109,12 @@ public class FindMentorServlet extends HttpServlet {
 
     boolean success = false;
 
-    long mentorDatastoreKey = -1;
+    Long mentorDatastoreKey = null;
     try {
       mentorDatastoreKey = Long.parseLong(mentorKey);
     } catch (NumberFormatException e) {
     }
-    if (mentorDatastoreKey != -1 && (choice.equals(SEND) || choice.equals(DISLIKE))) {
+    if (mentorDatastoreKey != null && (choice.equals(SEND) || choice.equals(DISLIKE))) {
       User user = dataAccess.getCurrentUser();
       if (user != null) {
         Mentee mentee = dataAccess.getMentee(user.getUserId());

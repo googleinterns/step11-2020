@@ -100,12 +100,12 @@ public class ConnectionRequestsServlet extends HttpServlet {
 
     boolean success = false;
 
-    long requestDatastoreKey = -1;
+    Long requestDatastoreKey = null;
     try {
       requestDatastoreKey = Long.parseLong(requestKey);
     } catch (NumberFormatException e) {
     }
-    if (requestDatastoreKey != -1 && (choice.equals(ACCEPT) || choice.equals(DENY))) {
+    if (requestDatastoreKey != null && (choice.equals(ACCEPT) || choice.equals(DENY))) {
       User user = dataAccess.getCurrentUser();
       if (user != null) {
         Mentee mentee = dataAccess.getMentee(user.getUserId());
