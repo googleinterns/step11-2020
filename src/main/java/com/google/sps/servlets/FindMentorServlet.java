@@ -113,26 +113,41 @@ public class FindMentorServlet extends HttpServlet {
     try {
       mentorDatastoreKey = Long.parseLong(mentorKey);
     } catch (NumberFormatException e) {
+      writeJsonSuccessToResponse(response, false);
+      return;
     }
-    if (mentorDatastoreKey != null && (choice.equals(SEND) || choice.equals(DISLIKE))) {
-      User user = dataAccess.getCurrentUser();
-      if (user != null) {
-        Mentee mentee = dataAccess.getMentee(user.getUserId());
-        Mentor mentor = dataAccess.getMentor(mentorDatastoreKey);
-        if (mentee != null && mentor != null) {
-          if (choice.equals(SEND)) {
-            MentorshipRequest mentorshipRequest =
-                new MentorshipRequest(mentor.getDatastoreKey(), mentee.getDatastoreKey());
-            dataAccess.publishRequest(mentorshipRequest);
-            success = true;
-          } else if (choice.equals(DISLIKE)) {
-            dataAccess.dislikeMentor(mentee, mentor);
-            success = true;
-          }
-        }
-      }
+    if (mentorDatastoreKey == null || (!choice.equals(SEND) && !choice.equals(DISLIKE))) {
+      writeJsonSuccessToResponse(response, false);
+      return;
+    }
+    User user = dataAccess.getCurrentUser();
+    if (user == null) {
+      writeJsonSuccessToResponse(response, false);
+      return;
+    }
+    Mentee mentee = dataAccess.getMentee(user.getUserId());
+    if (mentee == null) {
+      writeJsonSuccessToResponse(response, false);
+      return;
+    }
+    Mentor mentor = dataAccess.getMentor(mentorDatastoreKey);
+    if (mentor == null) {
+      writeJsonSuccessToResponse(response, false);
+      return;
+    }
+    if (choice.equals(SEND)) {
+      MentorshipRequest mentorshipRequest =
+          new MentorshipRequest(mentor.getDatastoreKey(), mentee.getDatastoreKey());
+      dataAccess.publishRequest(mentorshipRequest);
+    } else if (choice.equals(DISLIKE)) {
+      dataAccess.dislikeMentor(mentee, mentor);
     }
 
+    writeJsonSuccessToResponse(response, true);
+  }
+
+  private void writeJsonSuccessToResponse(HttpServletResponse response, boolean success)
+      throws IOException {
     response.setContentType("application/json;");
     response.getWriter().println("{\"success\": " + success + "}");
   }
