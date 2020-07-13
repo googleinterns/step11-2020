@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.gson.Gson;
 import com.google.sps.data.Country;
 import com.google.sps.data.DataAccess;
 import com.google.sps.data.DummyDataAccess;
@@ -23,7 +24,6 @@ import com.google.sps.data.EducationLevel;
 import com.google.sps.data.Ethnicity;
 import com.google.sps.data.Gender;
 import com.google.sps.data.Language;
-import com.google.sps.data.UserType;
 import com.google.sps.data.MeetingFrequency;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
@@ -31,14 +31,12 @@ import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
 import com.google.sps.data.UserAccount;
-import com.google.sps.data.Mentor;
-import com.google.sps.data.Mentee;
+import com.google.sps.data.UserType;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
-import com.google.gson.Gson;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
@@ -186,7 +184,9 @@ public class QuestionnaireServlet extends HttpServlet {
                   request,
                   ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY,
                   MeetingFrequency.WEEKLY.toString()));
-      Topic goal = Topic.valueOf(getParameter(request, ParameterConstants.MENTEE_GOAL, Topic.OTHER.toString()));
+      Topic goal =
+          Topic.valueOf(
+              getParameter(request, ParameterConstants.MENTEE_GOAL, Topic.OTHER.toString()));
       return (new Mentee.Builder())
           .name(name)
           .userID(dataAccess.getCurrentUser().getUserId())
