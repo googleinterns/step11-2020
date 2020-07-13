@@ -1,6 +1,7 @@
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
@@ -24,7 +25,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.MockitoAnnotations;
+import com.google.sps.util.ParameterConstants;
+import com.google.sps.util.ContextFields;
 
 /**
  * TO RUN PROJECT WITHOUT TESTS RUN COMMAND: mvn package appengine:run -DskipTests
@@ -56,7 +60,7 @@ public final class QuestionnaireServletTest {
 
   @Test
   public void correctNameInText() throws Exception {
-    when(request.getParameter("name")).thenReturn("jake");
+    when(request.getParameter(ParameterConstants.NAME)).thenReturn("jake");
     UserService userService = UserServiceFactory.getUserService();
     when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
 
@@ -67,8 +71,60 @@ public final class QuestionnaireServletTest {
 
     servlet.doPost(request, response);
 
-    verify(request).getParameter("name");
+    verify(request).getParameter(ParameterConstants.NAME);
     writer.flush();
     Assert.assertTrue(stringWriter.toString().contains("jake"));
+  }
+
+  @Test
+  public void defaultNameInText() throws Exception {
+    when(request.getParameter(ParameterConstants.NAME)).thenReturn("");
+    UserService userService = UserServiceFactory.getUserService();
+    when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doPost(request, response);
+
+    verify(request).getParameter(ParameterConstants.NAME);
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("John Doe"));
+  }
+
+  @Test
+  public void mentorParamLoadsRespectiveTemplate() throws Exception {
+    servlet.init();
+    when(request.getParameter(ContextFields.FORM_TYPE)).thenReturn("mentor");
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doGet(request, response);
+
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("id=\"formType\" value=mentor"));
+  }
+
+  @Test
+  public void otherStringInputProperlyStored() {
+    when(request.getParameter(ParameterConstants.NAME)).thenReturn("");
+    UserService userService = UserServiceFactory.getUserService();
+    when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doPost(request, response);
+
+    verify(request).getParameter(ParameterConstants.NAME);
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("John Doe"));
   }
 }

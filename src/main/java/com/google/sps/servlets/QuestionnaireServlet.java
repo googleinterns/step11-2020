@@ -19,7 +19,7 @@ import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.sps.data.Country;
 import com.google.sps.data.DataAccess;
-import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.EducationLevel;
 import com.google.sps.data.Ethnicity;
 import com.google.sps.data.Gender;
@@ -70,9 +70,16 @@ public class QuestionnaireServlet extends HttpServlet {
   private Jinjava jinjava;
   private DataAccess dataAccess;
 
+  public QuestionnaireServlet() {
+    this(new DatastoreAccess());
+  }
+
+  public QuestionnaireServlet(DataAccess dataAccess) {
+    this.dataAccess = dataAccess;
+  }
+
   @Override
   public void init() {
-    dataAccess = new DummyDataAccess();
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
     try {
@@ -105,6 +112,7 @@ public class QuestionnaireServlet extends HttpServlet {
       return;
     }
     String formType = request.getParameter(ContextFields.FORM_TYPE);
+    System.out.println("form type is:" + formType);
     if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
       Map<String, Object> context =
           dataAccess.getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
