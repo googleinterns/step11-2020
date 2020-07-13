@@ -105,10 +105,11 @@ public class QuestionnaireServlet extends HttpServlet {
       return;
     }
     String formType = request.getParameter(ContextFields.FORM_TYPE);
-    if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
+    if (formType != null
+        && (formType.equalsIgnoreCase(MENTOR) || formType.equalsIgnoreCase(MENTEE))) {
       Map<String, Object> context =
           dataAccess.getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
-      context.put(ContextFields.FORM_TYPE, formType);
+      context.put(ContextFields.FORM_TYPE, formType.toLowerCase());
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
