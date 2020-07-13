@@ -23,23 +23,22 @@ import com.google.sps.data.EducationLevel;
 import com.google.sps.data.Ethnicity;
 import com.google.sps.data.Gender;
 import com.google.sps.data.Language;
+import com.google.sps.data.UserType;
 import com.google.sps.data.MeetingFrequency;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
-<<<<<<< HEAD
 import com.google.sps.data.UserAccount;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.Mentee;
-=======
->>>>>>> master
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
+import com.google.gson.Gson;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.loader.FileLocator;
@@ -124,6 +123,7 @@ public class QuestionnaireServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserAccount user = constructNewUserFromRequest(request);
     dataAccess.createUser(user);
+    response.getWriter().println(new Gson().toJson(user));
     if (user.getUserType().equals(UserType.MENTEE)) {
       response.sendRedirect(URLPatterns.FIND_MENTOR);
     } else {
@@ -145,14 +145,9 @@ public class QuestionnaireServlet extends HttpServlet {
     }
     Country country =
         Country.valueOf(getParameter(request, ParameterConstants.COUNTRY, Country.US.toString()));
-<<<<<<< HEAD
     TimeZoneInfo timeZone =
         new TimeZoneInfo(
             TimeZone.getTimeZone(getParameter(request, ParameterConstants.TIMEZONE, "est")));
-=======
-    TimeZone timeZone =
-        TimeZone.getTimeZone(getParameter(request, ParameterConstants.TIMEZONE, "est"));
->>>>>>> master
     Language language =
         Language.valueOf(
             getParameter(request, ParameterConstants.LANGUAGE, Language.EN.toString()));
@@ -171,12 +166,8 @@ public class QuestionnaireServlet extends HttpServlet {
     Gender gender = Gender.valueOf(getParameter(request, ParameterConstants.GENDER, "UNSPECIFIED"));
     String genderOther = getParameter(request, ParameterConstants.GENDER_OTHER, "");
     EducationLevel educationLevel =
-<<<<<<< HEAD
         EducationLevel.valueOf(
             getParameter(request, ParameterConstants.EDUCATION_LEVEL, "UNSPECIFIED"));
-=======
-        EducationLevel.valueOf(getParameter(request, ParameterConstants.EDUCATION_LEVEL, ""));
->>>>>>> master
     String educationLevelOther =
         getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
     boolean firstGen =
@@ -188,19 +179,14 @@ public class QuestionnaireServlet extends HttpServlet {
             getParameter(request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR.toString()));
     String description = getParameter(request, ParameterConstants.DESCRIPTION, "");
 
-<<<<<<< HEAD
     if (userType.equals(UserType.MENTEE)) {
-=======
-    if (formType.equals(MENTEE)) {
->>>>>>> master
       MeetingFrequency desiredMeetingFrequency =
           MeetingFrequency.valueOf(
               getParameter(
                   request,
                   ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY,
                   MeetingFrequency.WEEKLY.toString()));
-      Topic goal = Topic.valueOf(getParameter(request, ParameterConstants.MENTEE_GOAL, ""));
-<<<<<<< HEAD
+      Topic goal = Topic.valueOf(getParameter(request, ParameterConstants.MENTEE_GOAL, Topic.OTHER.toString()));
       return (new Mentee.Builder())
           .name(name)
           .userID(dataAccess.getCurrentUser().getUserId())
@@ -223,31 +209,6 @@ public class QuestionnaireServlet extends HttpServlet {
           .desiredMeetingFrequency(desiredMeetingFrequency)
           .desiredMentorType(mentorType)
           .build();
-=======
-      dataAccess.createUser(
-          (new Mentee.Builder())
-              .name(name)
-              .userID(dataAccess.getCurrentUser().getUserId())
-              .email(dataAccess.getCurrentUser().getEmail())
-              .dateOfBirth(dateOfBirth)
-              .country(country)
-              .language(language)
-              .timezone(new TimeZoneInfo(timeZone))
-              .ethnicityList(ethnicities)
-              .ethnicityOther(ethnicityOther)
-              .gender(gender)
-              .genderOther(genderOther)
-              .firstGen(firstGen)
-              .lowIncome(lowIncome)
-              .educationLevel(educationLevel)
-              .educationLevelOther(educationLevelOther)
-              .description(description)
-              .goal(goal)
-              .desiredMeetingFrequency(desiredMeetingFrequency)
-              .desiredMentorType(mentorType)
-              .build());
-      response.sendRedirect(URLPatterns.FIND_MENTOR);
->>>>>>> master
 
     } else {
       ArrayList<Topic> focusList = new ArrayList<>();
@@ -261,7 +222,6 @@ public class QuestionnaireServlet extends HttpServlet {
         LOG.warning(ErrorMessages.INVALID_PARAMATERS);
       }
 
-<<<<<<< HEAD
       return (new Mentor.Builder())
           .name(name)
           .userID(dataAccess.getCurrentUser().getUserId())
@@ -284,31 +244,6 @@ public class QuestionnaireServlet extends HttpServlet {
           .visibility(true)
           .focusList(focusList)
           .build();
-=======
-      dataAccess.createUser(
-          (new Mentor.Builder())
-              .name(name)
-              .userID(dataAccess.getCurrentUser().getUserId())
-              .email(dataAccess.getCurrentUser().getEmail())
-              .dateOfBirth(dateOfBirth)
-              .country(country)
-              .language(language)
-              .timezone(new TimeZoneInfo(timeZone))
-              .ethnicityList(ethnicities)
-              .ethnicityOther(ethnicityOther)
-              .gender(gender)
-              .genderOther(genderOther)
-              .firstGen(firstGen)
-              .lowIncome(lowIncome)
-              .educationLevel(educationLevel)
-              .educationLevelOther(educationLevelOther)
-              .description(description)
-              .mentorType(mentorType)
-              .visibility(true)
-              .focusList(focusList)
-              .build());
-      response.sendRedirect(URLPatterns.DASHBOARD);
->>>>>>> master
     }
   }
 
