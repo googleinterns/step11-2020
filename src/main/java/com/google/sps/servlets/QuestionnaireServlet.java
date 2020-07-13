@@ -51,6 +51,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -59,6 +60,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.QUESTIONNAIRE)
 public class QuestionnaireServlet extends HttpServlet {
+  private static final Logger LOG = Logger.getLogger(QuestionnaireServlet.class.getName());
+
   private static final String MENTOR = "mentor";
   private static final String MENTEE = "mentee";
 
@@ -76,7 +79,7 @@ public class QuestionnaireServlet extends HttpServlet {
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
+      LOG.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = selectionListsForFrontEnd();
@@ -88,8 +91,7 @@ public class QuestionnaireServlet extends HttpServlet {
               Charsets.UTF_8);
       questionnaireTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println(
-          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_QUESTIONNAIRE));
+      LOG.severe(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_QUESTIONNAIRE));
     }
   }
 
@@ -109,7 +111,7 @@ public class QuestionnaireServlet extends HttpServlet {
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
-      System.err.println(ErrorMessages.INVALID_PARAMATERS);
+      LOG.warning(ErrorMessages.INVALID_PARAMATERS);
       response.sendRedirect(URLPatterns.LANDING);
     }
   }
@@ -135,31 +137,33 @@ public class QuestionnaireServlet extends HttpServlet {
               .parse(getParameter(request, ParameterConstants.DATE_OF_BIRTH, "2000-01-01"));
     } catch (ParseException e) {
       dateOfBirth = new Date();
-      System.err.println(ErrorMessages.BAD_DATE_PARSE);
+      LOG.warning(ErrorMessages.BAD_DATE_PARSE);
     }
     Country country =
         Country.valueOf(getParameter(request, ParameterConstants.COUNTRY, Country.US.toString()));
-    TimeZone timeZone =
-        TimeZone.getTimeZone(getParameter(request, ParameterConstants.TIMEZONE, "est"));
+    TimeZoneInfo timeZone =
+        new TimeZoneInfo(
+            TimeZone.getTimeZone(getParameter(request, ParameterConstants.TIMEZONE, "est")));
     Language language =
         Language.valueOf(
             getParameter(request, ParameterConstants.LANGUAGE, Language.EN.toString()));
 
     ArrayList<Ethnicity> ethnicities = new ArrayList<>();
-    String ethnicityString = getParameter(request, ParameterConstants.ETHNICITY, "");
+    String ethnicityString = getParameter(request, ParameterConstants.ETHNICITY, "UNSPECIFIED");
     try {
       for (String ethnicity : ethnicityString.split(", ")) {
         ethnicities.add(Ethnicity.valueOf(ethnicity));
       }
     } catch (IllegalArgumentException e) {
-      System.err.println(ErrorMessages.INVALID_PARAMATERS);
+      LOG.warning(ErrorMessages.INVALID_PARAMATERS);
     }
 
     String ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
-    Gender gender = Gender.valueOf(getParameter(request, ParameterConstants.GENDER, ""));
+    Gender gender = Gender.valueOf(getParameter(request, ParameterConstants.GENDER, "UNSPECIFIED"));
     String genderOther = getParameter(request, ParameterConstants.GENDER_OTHER, "");
     EducationLevel educationLevel =
-        EducationLevel.valueOf(getParameter(request, ParameterConstants.EDUCATION_LEVEL, ""));
+        EducationLevel.valueOf(
+            getParameter(request, ParameterConstants.EDUCATION_LEVEL, "UNSPECIFIED"));
     String educationLevelOther =
         getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
     boolean firstGen =
@@ -199,7 +203,7 @@ public class QuestionnaireServlet extends HttpServlet {
           .description(description)
           .goal(goal)
           .desiredMeetingFrequency(desiredMeetingFrequency)
-          .mentorType(mentorType)
+          .desiredMentorType(mentorType)
           .build();
 
     } else {
@@ -211,7 +215,7 @@ public class QuestionnaireServlet extends HttpServlet {
           focusList.add(Topic.valueOf(focus));
         }
       } catch (IllegalArgumentException e) {
-        System.err.println(ErrorMessages.INVALID_PARAMATERS);
+        LOG.warning(ErrorMessages.INVALID_PARAMATERS);
       }
 
       return (new Mentor.Builder())
