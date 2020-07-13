@@ -58,13 +58,13 @@ public interface DataAccess {
 
   boolean deleteRequest(MentorshipRequest request);
 
-  // delete request object and create connection object
+  // delete request object and create mentorMenteeRelation object
   boolean approveRequest(MentorshipRequest request);
 
   // delete request object
   boolean denyRequest(MentorshipRequest request);
 
-  boolean makeConnection(long mentorKey, long menteeKey);
+  boolean makeMentorMenteeRelation(long mentorKey, long menteeKey);
 
-  Collection<Connection> getConnections(UserAccount user);
+  Collection<MentorMenteeRelation> getMentorMenteeRelations(UserAccount user);
 }

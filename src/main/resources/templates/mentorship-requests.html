@@ -20,10 +20,10 @@ limitations under the License. -->
 
 {% block main_content %}
 <div class="content-block" id="title-block">
-  <h1 class="page-title" id="title">Connection Requests</h1>
+  <h1 class="page-title" id="title">Mentorship Requests</h1>
 </div>
 <div class="content-block" id="mentee-card-container">
-  {% raw %}{% for request in connectionRequests %}
+  {% raw %}{% for request in mentorshipRequests %}
     {% set mentee = request.fromUser %}
     <div class="mentee-card" id="{{ mentee.name }}-card">
       <p class="request-id" hidden>{{ request.datastoreKey }}</p>
@@ -40,5 +40,5 @@ limitations under the License. -->
 
 {% block scripts %}
   {{ super() }}
-  <script charset="utf-8" type="text/javascript" src="static/scripts/connection-requests.js"></script>
+  <script charset="utf-8" type="text/javascript" src="static/scripts/mentorship-requests.js"></script>
 {% endblock %}
