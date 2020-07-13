@@ -14,12 +14,10 @@
 
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.KeyRange;
 import com.google.sps.util.ParameterConstants;
 
 /**
@@ -27,29 +25,40 @@ import com.google.sps.util.ParameterConstants;
  * For every Mentor/Mentee pair, there is a Connection object that stores the information related to the pair.
  * This class supports conversion to and from a datastore entity object.
  */
-public class Connection {
+public class MentorMenteeRelation implements DatastoreEntity {
   private long datastoreKey;
   private long mentorKey;
   private long menteeKey;
   private Mentor mentor;
   private Mentee mentee;
 
-  public Connection(long mentorKey, long menteeKey) {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    KeyRange keyRange = datastore.allocateIds(ParameterConstants.ENTITY_TYPE_CONNECTION, 1);
-    this.datastoreKey = keyRange.getStart().getId();
+  private MentorMenteeRelation(long datastoreKey, long mentorKey, long menteeKey) {
+    this.datastoreKey = datastoreKey;
     this.mentorKey = mentorKey;
     this.menteeKey = menteeKey;
   }
 
-  public Connection(Entity entity) {
-    this.datastoreKey = entity.getKey().getId();
-    this.mentorKey = (long) entity.getProperty(ParameterConstants.MENTOR_KEY);
-    this.menteeKey = (long) entity.getProperty(ParameterConstants.MENTEE_KEY);
+  public MentorMenteeRelation(long mentorKey, long menteeKey) {
+    this(
+        DatastoreServiceFactory.getDatastoreService()
+            .allocateIds(ParameterConstants.ENTITY_TYPE_MENTOR_MENTEE_RELATION, 1)
+            .getStart()
+            .getId(),
+        mentorKey,
+        menteeKey);
+  }
+
+  public MentorMenteeRelation(Entity entity) {
+    this(
+        entity.getKey().getId(),
+        (long) entity.getProperty(ParameterConstants.MENTOR_KEY),
+        (long) entity.getProperty(ParameterConstants.MENTEE_KEY));
   }
 
   public Entity convertToEntity() {
-    Key key = KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_CONNECTION, this.datastoreKey);
+    Key key =
+        KeyFactory.createKey(
+            ParameterConstants.ENTITY_TYPE_MENTOR_MENTEE_RELATION, this.datastoreKey);
     Entity entity = new Entity(key);
     entity.setProperty(ParameterConstants.MENTOR_KEY, mentorKey);
     entity.setProperty(ParameterConstants.MENTOR_KEY, menteeKey);

@@ -30,7 +30,7 @@ public final class URLPatterns {
   public static final String ABOUT = "/about";
   public static final String AUTHORS = "/authors";
   public static final String AUTHENTICATE = "/authenticate";
-  public static final String CONNECTION_REQUESTS = "/connection-requests";
+  public static final String MENTORSHIP_REQUESTS = "/mentorship-requests";
   public static final String DATASTORE_TEST = "/datastore-test";
   public static final String FIND_MENTOR = "/find-mentor";
   public static final String LANDING = "/landing";

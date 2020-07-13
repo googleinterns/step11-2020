@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * This class represents a Mentor user and all their related data.
  * supports conversion to and from a datastore entity object
  */
-public class Mentor extends UserAccount {
+public class Mentor extends UserAccount implements DatastoreEntity {
   private boolean visibility;
   private Collection<Topic> focusList;
   private MentorType mentorType;

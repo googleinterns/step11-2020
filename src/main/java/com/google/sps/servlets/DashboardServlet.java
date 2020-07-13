@@ -17,11 +17,11 @@ package com.google.sps.servlets;
 import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.sps.data.Connection;
 import com.google.sps.data.DataAccess;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
+import com.google.sps.data.MentorMenteeRelation;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
@@ -101,16 +101,18 @@ public class DashboardServlet extends HttpServlet {
       Mentor mentor = dataAccess.getMentor(user.getUserId());
       Mentee mentee = dataAccess.getMentee(user.getUserId());
       if (mentor != null) {
-        Collection<Connection> connectedMentees = dataAccess.getConnections(mentor);
-        context.put("connections", connectedMentees);
+        Collection<MentorMenteeRelation> connectedMentees =
+            dataAccess.getMentorMenteeRelations(mentor);
+        context.put("mentorMenteeRelations", connectedMentees);
 
         String renderedTemplate = jinjava.render(dashboardMentorTemplate, context);
 
         response.getWriter().println(renderedTemplate);
         return;
       } else if (mentee != null) {
-        Collection<Connection> connectedMentors = dataAccess.getConnections(mentee);
-        context.put("connections", connectedMentors);
+        Collection<MentorMenteeRelation> connectedMentors =
+            dataAccess.getMentorMenteeRelations(mentee);
+        context.put("mentorMenteeRelations", connectedMentors);
 
         String renderedTemplate = jinjava.render(dashboardMenteeTemplate, context);
 

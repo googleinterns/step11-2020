@@ -24,7 +24,7 @@ import java.util.Set;
  * This class represents a Mentee user and all their related data.
  * supports conversion to and from a datastore entity object
  */
-public class Mentee extends UserAccount {
+public class Mentee extends UserAccount implements DatastoreEntity {
 
   private Topic goal;
   private MeetingFrequency desiredMeetingFrequency;

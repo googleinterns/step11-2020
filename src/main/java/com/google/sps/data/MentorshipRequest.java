@@ -14,19 +14,17 @@
 
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.KeyRange;
 import com.google.sps.util.ParameterConstants;
 
 /**
  * This class represents a request for mentorship between two users.
  * supports conversion to and from a datastore entity object
  */
-public class MentorshipRequest {
+public class MentorshipRequest implements DatastoreEntity {
 
   private long datastoreKey;
   private long toUserKey;
@@ -34,18 +32,27 @@ public class MentorshipRequest {
   private UserAccount toUser;
   private UserAccount fromUser;
 
-  public MentorshipRequest(long toUserKey, long fromUserKey) {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    KeyRange keyRange = datastore.allocateIds(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, 1);
-    this.datastoreKey = keyRange.getStart().getId();
+  public MentorshipRequest(long datastoreKey, long toUserKey, long fromUserKey) {
+    this.datastoreKey = datastoreKey;
     this.toUserKey = toUserKey;
     this.fromUserKey = fromUserKey;
   }
 
+  public MentorshipRequest(long toUserKey, long fromUserKey) {
+    this(
+        DatastoreServiceFactory.getDatastoreService()
+            .allocateIds(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, 1)
+            .getStart()
+            .getId(),
+        toUserKey,
+        fromUserKey);
+  }
+
   public MentorshipRequest(Entity entity) {
-    this.datastoreKey = entity.getKey().getId();
-    this.toUserKey = (long) entity.getProperty(ParameterConstants.TO_USER_KEY);
-    this.fromUserKey = (long) entity.getProperty(ParameterConstants.FROM_USER_KEY);
+    this(
+        entity.getKey().getId(),
+        (long) entity.getProperty(ParameterConstants.TO_USER_KEY),
+        (long) entity.getProperty(ParameterConstants.FROM_USER_KEY));
   }
 
   public Entity convertToEntity() {

@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * can only be instantiated as a Mentee or Mentor
  * supports conversion to and from a datastore entity object
  */
-public class UserAccount {
+public class UserAccount implements DatastoreEntity {
   private long datastoreKey;
   private boolean keyInitialized;
   private String userID;
@@ -122,6 +122,7 @@ public class UserAccount {
 
   public UserAccount(Entity entity) {
     this.datastoreKey = entity.getKey().getId();
+    this.keyInitialized = true;
     this.userID = (String) entity.getProperty(ParameterConstants.USER_ID);
     this.email = (String) entity.getProperty(ParameterConstants.EMAIL);
     this.name = (String) entity.getProperty(ParameterConstants.NAME);
@@ -183,7 +184,7 @@ public class UserAccount {
     entity.setProperty(ParameterConstants.USER_TYPE, this.userType.ordinal());
     return entity;
   }
-  
+
   /**
    * converts the list retrieved from datastore to a list of usable Ethnicity objects
    * @param  ethnicityEnumIndexList the list off objects from datastore
