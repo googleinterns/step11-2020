@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.sps.data.DataAccess;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.MentorshipRequest;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,10 +41,12 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.CONNECTION_REQUESTS)
 public class ConnectionRequestsServlet extends HttpServlet {
+  private static final Logger LOG = Logger.getLogger(ConnectionRequestsServlet.class.getName());
+
   private static final String ACCEPT = "accept";
   private static final String DENY = "deny";
 
-  private DummyDataAccess dataAccess;
+  private DataAccess dataAccess;
   private Jinjava jinjava;
   private String connectionRequestTemplate;
 
@@ -56,7 +60,7 @@ public class ConnectionRequestsServlet extends HttpServlet {
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
+      LOG.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = new HashMap<>();
@@ -68,7 +72,7 @@ public class ConnectionRequestsServlet extends HttpServlet {
               Charsets.UTF_8);
       connectionRequestTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println(
+      LOG.severe(
           ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS));
     }
   }

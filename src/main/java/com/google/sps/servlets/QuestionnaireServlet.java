@@ -17,22 +17,28 @@ package com.google.sps.servlets;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.Country;
+import com.google.sps.data.DataAccess;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.EducationLevel;
 import com.google.sps.data.Ethnicity;
 import com.google.sps.data.Gender;
 import com.google.sps.data.Language;
 import com.google.sps.data.MeetingFrequency;
+import com.google.sps.data.Mentee;
+import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
+<<<<<<< HEAD
 import com.google.sps.data.UserAccount;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.Mentee;
+=======
+>>>>>>> master
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
-import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.ParameterConstants;
+import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -41,14 +47,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Arrays;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -57,12 +64,14 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.QUESTIONNAIRE)
 public class QuestionnaireServlet extends HttpServlet {
+  private static final Logger LOG = Logger.getLogger(QuestionnaireServlet.class.getName());
+
   private static final String MENTOR = "mentor";
   private static final String MENTEE = "mentee";
 
   private String questionnaireTemplate;
   private Jinjava jinjava;
-  private DummyDataAccess dataAccess;
+  private DataAccess dataAccess;
 
   @Override
   public void init() {
@@ -74,7 +83,7 @@ public class QuestionnaireServlet extends HttpServlet {
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
+      LOG.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = selectionListsForFrontEnd();
@@ -86,8 +95,7 @@ public class QuestionnaireServlet extends HttpServlet {
               Charsets.UTF_8);
       questionnaireTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println(
-          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_QUESTIONNAIRE));
+      LOG.severe(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_QUESTIONNAIRE));
     }
   }
 
@@ -107,7 +115,7 @@ public class QuestionnaireServlet extends HttpServlet {
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
-      System.err.println(ErrorMessages.INVALID_PARAMATERS);
+      LOG.warning(ErrorMessages.INVALID_PARAMATERS);
       response.sendRedirect(URLPatterns.LANDING);
     }
   }
@@ -137,9 +145,14 @@ public class QuestionnaireServlet extends HttpServlet {
     }
     Country country =
         Country.valueOf(getParameter(request, ParameterConstants.COUNTRY, Country.US.toString()));
+<<<<<<< HEAD
     TimeZoneInfo timeZone =
         new TimeZoneInfo(
             TimeZone.getTimeZone(getParameter(request, ParameterConstants.TIMEZONE, "est")));
+=======
+    TimeZone timeZone =
+        TimeZone.getTimeZone(getParameter(request, ParameterConstants.TIMEZONE, "est"));
+>>>>>>> master
     Language language =
         Language.valueOf(
             getParameter(request, ParameterConstants.LANGUAGE, Language.EN.toString()));
@@ -158,8 +171,12 @@ public class QuestionnaireServlet extends HttpServlet {
     Gender gender = Gender.valueOf(getParameter(request, ParameterConstants.GENDER, "UNSPECIFIED"));
     String genderOther = getParameter(request, ParameterConstants.GENDER_OTHER, "");
     EducationLevel educationLevel =
+<<<<<<< HEAD
         EducationLevel.valueOf(
             getParameter(request, ParameterConstants.EDUCATION_LEVEL, "UNSPECIFIED"));
+=======
+        EducationLevel.valueOf(getParameter(request, ParameterConstants.EDUCATION_LEVEL, ""));
+>>>>>>> master
     String educationLevelOther =
         getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
     boolean firstGen =
@@ -171,7 +188,11 @@ public class QuestionnaireServlet extends HttpServlet {
             getParameter(request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR.toString()));
     String description = getParameter(request, ParameterConstants.DESCRIPTION, "");
 
+<<<<<<< HEAD
     if (userType.equals(UserType.MENTEE)) {
+=======
+    if (formType.equals(MENTEE)) {
+>>>>>>> master
       MeetingFrequency desiredMeetingFrequency =
           MeetingFrequency.valueOf(
               getParameter(
@@ -179,6 +200,7 @@ public class QuestionnaireServlet extends HttpServlet {
                   ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY,
                   MeetingFrequency.WEEKLY.toString()));
       Topic goal = Topic.valueOf(getParameter(request, ParameterConstants.MENTEE_GOAL, ""));
+<<<<<<< HEAD
       return (new Mentee.Builder())
           .name(name)
           .userID(dataAccess.getCurrentUser().getUserId())
@@ -201,6 +223,31 @@ public class QuestionnaireServlet extends HttpServlet {
           .desiredMeetingFrequency(desiredMeetingFrequency)
           .desiredMentorType(mentorType)
           .build();
+=======
+      dataAccess.createUser(
+          (new Mentee.Builder())
+              .name(name)
+              .userID(dataAccess.getCurrentUser().getUserId())
+              .email(dataAccess.getCurrentUser().getEmail())
+              .dateOfBirth(dateOfBirth)
+              .country(country)
+              .language(language)
+              .timezone(new TimeZoneInfo(timeZone))
+              .ethnicityList(ethnicities)
+              .ethnicityOther(ethnicityOther)
+              .gender(gender)
+              .genderOther(genderOther)
+              .firstGen(firstGen)
+              .lowIncome(lowIncome)
+              .educationLevel(educationLevel)
+              .educationLevelOther(educationLevelOther)
+              .description(description)
+              .goal(goal)
+              .desiredMeetingFrequency(desiredMeetingFrequency)
+              .desiredMentorType(mentorType)
+              .build());
+      response.sendRedirect(URLPatterns.FIND_MENTOR);
+>>>>>>> master
 
     } else {
       ArrayList<Topic> focusList = new ArrayList<>();
@@ -214,6 +261,7 @@ public class QuestionnaireServlet extends HttpServlet {
         LOG.warning(ErrorMessages.INVALID_PARAMATERS);
       }
 
+<<<<<<< HEAD
       return (new Mentor.Builder())
           .name(name)
           .userID(dataAccess.getCurrentUser().getUserId())
@@ -236,6 +284,31 @@ public class QuestionnaireServlet extends HttpServlet {
           .visibility(true)
           .focusList(focusList)
           .build();
+=======
+      dataAccess.createUser(
+          (new Mentor.Builder())
+              .name(name)
+              .userID(dataAccess.getCurrentUser().getUserId())
+              .email(dataAccess.getCurrentUser().getEmail())
+              .dateOfBirth(dateOfBirth)
+              .country(country)
+              .language(language)
+              .timezone(new TimeZoneInfo(timeZone))
+              .ethnicityList(ethnicities)
+              .ethnicityOther(ethnicityOther)
+              .gender(gender)
+              .genderOther(genderOther)
+              .firstGen(firstGen)
+              .lowIncome(lowIncome)
+              .educationLevel(educationLevel)
+              .educationLevelOther(educationLevelOther)
+              .description(description)
+              .mentorType(mentorType)
+              .visibility(true)
+              .focusList(focusList)
+              .build());
+      response.sendRedirect(URLPatterns.DASHBOARD);
+>>>>>>> master
     }
   }
 

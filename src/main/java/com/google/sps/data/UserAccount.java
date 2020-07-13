@@ -1,3 +1,17 @@
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package com.google.sps.data;
 
 import static java.lang.Math.toIntExact;
@@ -14,7 +28,7 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
-public class UserAccount {
+public class UserAccount implements DatastoreEntity {
   private long datastoreKey;
   private boolean keyInitialized;
   private String userID;
@@ -23,7 +37,7 @@ public class UserAccount {
   private Date dateOfBirth;
   private Country country;
   private Language language;
-  private TimeZone timezone;
+  private TimeZoneInfo timezone;
   private Collection<Ethnicity> ethnicityList;
   private String ethnicityOther;
   private Gender gender;
@@ -42,7 +56,7 @@ public class UserAccount {
       Date dateOfBirth,
       Country country,
       Language language,
-      TimeZone timezone,
+      TimeZoneInfo timezone,
       Collection<Ethnicity> ethnicityList,
       String ethnicityOther,
       Gender gender,
@@ -103,6 +117,7 @@ public class UserAccount {
 
   public UserAccount(Entity entity) {
     this.datastoreKey = entity.getKey().getId();
+    this.keyInitialized = true;
     this.userID = (String) entity.getProperty(ParameterConstants.USER_ID);
     this.email = (String) entity.getProperty(ParameterConstants.EMAIL);
     this.name = (String) entity.getProperty(ParameterConstants.NAME);
@@ -111,7 +126,9 @@ public class UserAccount {
         Country.values()[toIntExact((long) entity.getProperty(ParameterConstants.COUNTRY))];
     this.language =
         Language.values()[toIntExact((long) entity.getProperty(ParameterConstants.LANGUAGE))];
-    this.timezone = TimeZone.getTimeZone((String) entity.getProperty(ParameterConstants.TIMEZONE));
+    this.timezone =
+        new TimeZoneInfo(
+            TimeZone.getTimeZone((String) entity.getProperty(ParameterConstants.TIMEZONE)));
     this.ethnicityList =
         getEthnicityListFromProperty((Collection) entity.getProperty(ParameterConstants.ETHNICITY));
     this.ethnicityOther = (String) entity.getProperty(ParameterConstants.ETHNICITY_OTHER);
@@ -191,7 +208,7 @@ public class UserAccount {
     return language;
   }
 
-  public TimeZone getTimezone() {
+  public TimeZoneInfo getTimezone() {
     return timezone;
   }
 
@@ -252,7 +269,7 @@ public class UserAccount {
     private static Date dateOfBirth;
     private static Country country;
     private static Language language;
-    private static TimeZone timezone;
+    private static TimeZoneInfo timezone;
     private static Collection<Ethnicity> ethnicityList;
     private static String ethnicityOther;
     private static Gender gender;
@@ -302,7 +319,7 @@ public class UserAccount {
       return (T) this;
     }
 
-    public T timezone(TimeZone timezone) {
+    public T timezone(TimeZoneInfo timezone) {
       this.timezone = timezone;
       return (T) this;
     }

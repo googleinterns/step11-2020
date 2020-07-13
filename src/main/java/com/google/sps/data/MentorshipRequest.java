@@ -1,14 +1,26 @@
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.KeyRange;
 import com.google.sps.util.ParameterConstants;
 
-public class MentorshipRequest {
+public class MentorshipRequest implements DatastoreEntity {
 
   private long datastoreKey;
   private long toUserKey;
@@ -16,18 +28,27 @@ public class MentorshipRequest {
   private UserAccount toUser;
   private UserAccount fromUser;
 
-  public MentorshipRequest(long toUserKey, long fromUserKey) {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    KeyRange keyRange = datastore.allocateIds(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, 1);
-    this.datastoreKey = keyRange.getStart().getId();
+  public MentorshipRequest(long datastoreKey, long toUserKey, long fromUserKey) {
+    this.datastoreKey = datastoreKey;
     this.toUserKey = toUserKey;
     this.fromUserKey = fromUserKey;
   }
 
+  public MentorshipRequest(long toUserKey, long fromUserKey) {
+    this(
+        DatastoreServiceFactory.getDatastoreService()
+            .allocateIds(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST, 1)
+            .getStart()
+            .getId(),
+        toUserKey,
+        fromUserKey);
+  }
+
   public MentorshipRequest(Entity entity) {
-    this.datastoreKey = entity.getKey().getId();
-    this.toUserKey = (long) entity.getProperty(ParameterConstants.TO_USER_KEY);
-    this.fromUserKey = (long) entity.getProperty(ParameterConstants.FROM_USER_KEY);
+    this(
+        entity.getKey().getId(),
+        (long) entity.getProperty(ParameterConstants.TO_USER_KEY),
+        (long) entity.getProperty(ParameterConstants.FROM_USER_KEY));
   }
 
   public Entity convertToEntity() {
