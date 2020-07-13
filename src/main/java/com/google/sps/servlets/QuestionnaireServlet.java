@@ -71,7 +71,7 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void init() {
-    dataAccess = new DummyDataAccess();
+    dataAccess = new DatastoreAccess();
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
     try {
@@ -103,7 +103,13 @@ public class QuestionnaireServlet extends HttpServlet {
       response.setStatus(500);
       return;
     }
+    Mentor mentor = getMentor(dataAccess.getCurrentUser().getId());
+    Mentee mentee = getMentee(dataAccess.getCurrentUser().getId());
+    if (mentor != null || mentee != null) {
+      String formType =
+    }
     String formType = request.getParameter(ContextFields.FORM_TYPE);
+
     if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
       Map<String, Object> context =
           dataAccess.getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
