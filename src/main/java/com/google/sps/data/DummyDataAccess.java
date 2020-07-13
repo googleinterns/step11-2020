@@ -431,7 +431,7 @@ public class DummyDataAccess implements DataAccess {
     return false;
   }
 
-  // delete request object and create connection object
+  // delete request object and create mentorMenteeRelation object
   public boolean approveRequest(MentorshipRequest request) {
     return false;
   }
@@ -441,17 +441,17 @@ public class DummyDataAccess implements DataAccess {
     return false;
   }
 
-  public boolean makeConnection(long mentorKey, long menteeKey) {
+  public boolean makeMentorMenteeRelation(long mentorKey, long menteeKey) {
     return false;
   }
 
-  public Collection<Connection> getConnections(UserAccount user) {
-    Collection<Connection> data = new ArrayList(5);
+  public Collection<MentorMenteeRelation> getMentorMenteeRelations(UserAccount user) {
+    Collection<MentorMenteeRelation> data = new ArrayList(5);
     for (int i = 0; i < 5; i++) {
-      Connection connection = new Connection(i + 1, i + 2);
+      MentorMenteeRelation mentorMenteeRelation = new MentorMenteeRelation(i + 1, i + 2);
       if (user.getUserType() == UserType.MENTOR) {
-        connection.setMentor((Mentor) user);
-        connection.setMentee(
+        mentorMenteeRelation.setMentor((Mentor) user);
+        mentorMenteeRelation.setMentee(
             (new Mentee.Builder())
                 .name("Stacy")
                 .userID("999999")
@@ -473,8 +473,8 @@ public class DummyDataAccess implements DataAccess {
                 .desiredMeetingFrequency(MeetingFrequency.WEEKLY)
                 .build());
       } else {
-        connection.setMentee((Mentee) user);
-        connection.setMentor(
+        mentorMenteeRelation.setMentee((Mentee) user);
+        mentorMenteeRelation.setMentor(
             (new Mentor.Builder())
                 .name("Sam")
                 .userID("539032")
@@ -497,7 +497,7 @@ public class DummyDataAccess implements DataAccess {
                 .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
                 .build());
       }
-      data.add(connection);
+      data.add(mentorMenteeRelation);
     }
     return data;
   }
