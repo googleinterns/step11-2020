@@ -27,7 +27,7 @@ public class ContextFields {
 
   public static final String MENTORS = "mentors";
 
-  public static final String CONNECTION_REQUESTS = "connectionRequests";
+  public static final String MENTORSHIP_REQUESTS = "mentorshipRequests";
 
-  public static final String CONNECTIONS = "connections";
+  public static final String MENTOR_MENTEE_RELATIONS = "mentorMenteeRelations";
 }

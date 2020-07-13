@@ -33,10 +33,10 @@ limitations under the License. -->
           <img class="photo" src="https://images.pexels.com/photos/1804796/pexels-photo-1804796.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"/>
           <div class="active"></div>
           <h4 class="name">
-            {{user.name}}
+            {{profileUser.name}}
           </h4>
           <p class="info">
-            {{user.emaail}}
+            {{profileUser.email}}
           </p>
         </div>
       </div>
@@ -44,7 +44,7 @@ limitations under the License. -->
       <div class="right col-lg-8">
 
         <div class="stats row">
-        {% if userType == "mentor" %}
+        {% if profileUser.userType.title == "Mentor" %}
           Mentor Information to display
         {% else %}
           Mentee Information to display
@@ -52,7 +52,9 @@ limitations under the License. -->
         </div>
         <p class="desc">About Me here</p>
       </div>
-      <button onclick="location.href='/questionnaire';">Edit My Profile</button>
+      {% if profileUser.userID == currentUser.userID %}
+        <button onclick="location.href='/questionnaire?formType={{currentUser.userType.title}}';">Edit My Profile</button>
+      {% endif %}
   </main>
 </div>
 {% endraw %}{% endblock %}

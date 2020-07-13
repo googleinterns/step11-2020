@@ -14,20 +14,12 @@
 
 package com.google.sps.servlets;
 
-import static java.lang.Math.toIntExact;
-
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DataAccess;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.UserAccount;
-import com.google.sps.data.UserType;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ParameterConstants;
@@ -92,33 +84,21 @@ public final class ProfileServlet extends HttpServlet {
     }
     String userID = user.getUserId();
 
-    UserAccount userAccount = dataAccess.getUser(userID);
-    if (userAccount == null) {
+    UserAccount currentUserAccount = dataAccess.getUser(userID);
+    if (currentUserAccount == null) {
       response.sendRedirect(URLPatterns.LANDING);
       return;
     }
 
     String requestedUserID = ServletUtils.getParameter(request, ParameterConstants.USER_ID, userID);
-    Query query =
-        new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT)
-            .setFilter(
-                new Query.FilterPredicate(
-                    ParameterConstants.USER_ID, Query.FilterOperator.EQUAL, requestedUserID));
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery result = datastore.prepare(query);
-    Entity userEntity = result.asSingleEntity();
-    if (userEntity == null) {
+    UserAccount requestedUserAccount =
+        requestedUserID.equals(userID) ? currentUserAccount : dataAccess.getUser(requestedUserID);
+    if (requestedUserAccount == null) {
       response.sendRedirect(URLPatterns.PROFILE);
       return;
     }
     Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.PROFILE);
-    context.put(
-        ParameterConstants.USER_TYPE,
-        UserType.values()[toIntExact((long) (userEntity.getProperty(ParameterConstants.USER_TYPE)))]
-                == UserType.MENTOR
-            ? "mentor"
-            : "mentee");
-    context.put(ContextFields.PROFILE_USER, UserAccount.fromEntity(userEntity));
+    context.put(ContextFields.PROFILE_USER, requestedUserAccount);
 
     String renderedTemplate = jinjava.render(profileTemplate, context);
     response.setContentType(ServletUtils.CONTENT_HTML);

@@ -42,16 +42,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = URLPatterns.CONNECTION_REQUESTS)
-public class ConnectionRequestsServlet extends HttpServlet {
-  private static final Logger LOG = Logger.getLogger(ConnectionRequestsServlet.class.getName());
+@WebServlet(urlPatterns = URLPatterns.MENTORSHIP_REQUESTS)
+public class MentorshipRequestsServlet extends HttpServlet {
+  private static final Logger LOG = Logger.getLogger(MentorshipRequestsServlet.class.getName());
 
   private static final String ACCEPT = "accept";
   private static final String DENY = "deny";
 
   private DataAccess dataAccess;
   private Jinjava jinjava;
-  private String connectionRequestTemplate;
+  private String mentorshipRequestTemplate;
 
   @Override
   public void init() {
@@ -71,12 +71,12 @@ public class ConnectionRequestsServlet extends HttpServlet {
     try {
       String template =
           Resources.toString(
-              this.getClass().getResource(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS),
+              this.getClass().getResource(ResourceConstants.TEMPLATE_MENTORSHIP_REQUESTS),
               Charsets.UTF_8);
-      connectionRequestTemplate = jinjava.render(template, context);
+      mentorshipRequestTemplate = jinjava.render(template, context);
     } catch (IOException e) {
       LOG.severe(
-          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS));
+          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_MENTORSHIP_REQUESTS));
     }
   }
 
@@ -84,17 +84,17 @@ public class ConnectionRequestsServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType(ServletUtils.CONTENT_HTML);
 
-    if (connectionRequestTemplate == null) {
+    if (mentorshipRequestTemplate == null) {
       response.setStatus(500);
       return;
     }
 
     Map<String, Object> context =
-        dataAccess.getDefaultRenderingContext(URLPatterns.CONNECTION_REQUESTS);
+        dataAccess.getDefaultRenderingContext(URLPatterns.MENTORSHIP_REQUESTS);
     context.put(
-        ContextFields.CONNECTION_REQUESTS,
+        ContextFields.MENTORSHIP_REQUESTS,
         dataAccess.getIncomingRequests(dataAccess.getUser("woah")));
-    String renderTemplate = jinjava.render(connectionRequestTemplate, context);
+    String renderTemplate = jinjava.render(mentorshipRequestTemplate, context);
     response.getWriter().println(renderTemplate);
   }
 

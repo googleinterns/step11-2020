@@ -44,7 +44,7 @@ public final class ParameterConstants {
   public static final String TO_USER_KEY = "toUserKey";
   public static final String FROM_USER_KEY = "fromUserKey";
 
-  public static final String ENTITY_TYPE_CONNECTION = "Connection";
+  public static final String ENTITY_TYPE_MENTOR_MENTEE_RELATION = "MentorMenteeRelation";
   public static final String MENTOR_KEY = "mentorKey";
   public static final String MENTEE_KEY = "menteeKey";
 
