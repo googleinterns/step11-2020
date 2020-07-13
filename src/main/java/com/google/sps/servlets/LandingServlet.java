@@ -36,7 +36,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This class provides non-logged in users with a brief introductory page to the mentor-matching platform.
+ * Serves a brief introductory page to the mentor-matching platform
+ * This page is the first point of interaction for non-logged-in users.
+ * This servlet supports HTTP GET and returns an static (except for the navbar) html page.
+ *
+ * @author guptamudit
+ * @version 1.0
+ *
  * @param URLPatterns.LANDING this servlet serves requests at /landing
  */
 @WebServlet(urlPatterns = URLPatterns.LANDING)

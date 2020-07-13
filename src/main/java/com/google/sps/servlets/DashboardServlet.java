@@ -42,7 +42,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This class provides a list of connections a user has.
+ * Serves a list of connections a user has
+ * This servlet supports HTTP GET and returns an html page with a information about each of the users that the
+ * currently logged in user is connected with.
+ *
+ * @author tquintanilla
+ * @author guptamudit
+ * @version 1.0
+ *
  * @param URLPatterns.DASHBOARD this servlet serves requests at /dashboard
  */
 @WebServlet(urlPatterns = URLPatterns.DASHBOARD)

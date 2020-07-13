@@ -41,7 +41,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This class provides a summary of a user's (not necessarily their own) data.
+ * Serves a summary of a user's (not necessarily of the currently logged in user) data
+ * This servlet supports HTTP GET and returns an html page with all the information about the currently logged in user.
+ * If a user is viewing their own profile, they may access the questionnaire page from here to edit their information.
+ *
+ * @author sylviaziyuz
+ * @author guptamudit
+ * @version 1.0
+ *
  * @param URLPatterns.PROFILE this servlet serves requests at /profile
  */
 @WebServlet(urlPatterns = URLPatterns.PROFILE)
