@@ -36,35 +36,35 @@ public final class QuestionnaireServletTest {
   // @Test
   // public void
 
-  @Test
-  public void correctNameInText() throws Exception {
-    when(request.getParameter("name")).thenReturn("jake");
-
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter writer = new PrintWriter(stringWriter);
-
-    when(response.getWriter()).thenReturn(writer);
-
-    new QuestionnaireServlet().doPost(request, response);
-
-    verify(request).getParameter("name");
-    writer.flush();
-    Assert.assertTrue(stringWriter.toString().contains("jake"));
-  }
-
-  @Test
-  private void useDefaultValueWhenNoneProvidedForString() throws Exception {
-    when(request.getParameter("name")).thenReturn("");
-
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter writer = new PrintWriter(stringWriter);
-
-    when(response.getWriter()).thenReturn(writer);
-
-    servlet.doPost(request, response);
-
-    verify(request).getParameter("name");
-    writer.flush();
-    assertTrue(stringWriter.toString().contains("John Doe"));
-  }
+  // @Test
+  // public void correctNameInText() throws Exception {
+  //   when(request.getParameter("name")).thenReturn("jake");
+  //
+  //   StringWriter stringWriter = new StringWriter();
+  //   PrintWriter writer = new PrintWriter(stringWriter);
+  //
+  //   when(response.getWriter()).thenReturn(writer);
+  //
+  //   new QuestionnaireServlet().doPost(request, response);
+  //
+  //   verify(request).getParameter("name");
+  //   writer.flush();
+  //   Assert.assertTrue(stringWriter.toString().contains("jake"));
+  // }
+  //
+  // @Test
+  // private void useDefaultValueWhenNoneProvidedForString() throws Exception {
+  //   when(request.getParameter("name")).thenReturn("");
+  //
+  //   StringWriter stringWriter = new StringWriter();
+  //   PrintWriter writer = new PrintWriter(stringWriter);
+  //
+  //   when(response.getWriter()).thenReturn(writer);
+  //
+  //   servlet.doPost(request, response);
+  //
+  //   verify(request).getParameter("name");
+  //   writer.flush();
+  //   assertTrue(stringWriter.toString().contains("John Doe"));
+  // }
 }
