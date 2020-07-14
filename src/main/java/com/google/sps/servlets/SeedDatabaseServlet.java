@@ -27,8 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Seeds the database with based on a large input dataset in JSON format. Upon calling HTTP GET, this servlet attempts
- * to seed the database and returns a JSON object representing the operations success.
+ * Seeds the database with based on a large input dataset in JSON format. Upon calling HTTP GET,
+ * this servlet attempts to seed the database and returns a JSON object representing the operations
+ * success.
  *
  * @author sylviaziyuz
  * @author guptamudit

@@ -165,9 +165,7 @@ public abstract class UserAccount implements DatastoreEntity {
             : new Mentor(entity);
   }
 
-  /**
-   * This method ensures that all class fields are properly initialized. If they aren't, fix it.
-   */
+  /** This method ensures that all class fields are properly initialized. If they aren't, fix it. */
   protected void sanitizeValues() {
     if (this.ethnicityList == null) {
       this.ethnicityList = new ArrayList<>();
