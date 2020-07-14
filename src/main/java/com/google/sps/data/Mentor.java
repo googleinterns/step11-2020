@@ -23,8 +23,13 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 /**
- * This class represents a Mentor user and all their related data.
- * supports conversion to and from a datastore entity object
+ * This class represents a Mentor user and their mentor-specific data. Other data is held within the
+ * super class, UserAccount.
+ *
+ * @author guptamudit
+ * @author sylviaziyuz
+ * @author tquintanilla
+ * @version 1.0
  */
 public class Mentor extends UserAccount implements DatastoreEntity {
   private boolean visibility;
@@ -70,8 +75,9 @@ public class Mentor extends UserAccount implements DatastoreEntity {
 
   /**
    * converts the list retrieved from datastore to a list of usable Topic objects
-   * @param  focusEnumIndexList the list off objects from datastore
-   * @return                    the list of topic objects
+   *
+   * @param focusEnumIndexList the list off objects from datastore
+   * @return the list of topic objects
    */
   private static Collection<Topic> getFocusListFromProperty(Collection<Object> focusEnumIndexList) {
     return focusEnumIndexList == null

@@ -30,9 +30,13 @@ import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 /**
- * This class represents a generic user and all their related data.
- * can only be instantiated as a Mentee or Mentor
- * supports conversion to and from a datastore entity object
+ * This class represents a generic user and all their related data. UserAccount can only be
+ * instantiated as a subclass (Mentee or Mentor).
+ *
+ * @author guptamudit
+ * @author tquintanilla
+ * @author sylviaziyuz
+ * @version 1.0
  */
 public abstract class UserAccount implements DatastoreEntity {
   private long datastoreKey;
@@ -194,8 +198,9 @@ public abstract class UserAccount implements DatastoreEntity {
 
   /**
    * converts the list retrieved from datastore to a list of usable Ethnicity objects
-   * @param  ethnicityEnumIndexList the list off objects from datastore
-   * @return                        the list of ethnicity objects
+   *
+   * @param ethnicityEnumIndexList the list off objects from datastore
+   * @return the list of ethnicity objects
    */
   private static Collection<Ethnicity> getEthnicityListFromProperty(
       Collection<Object> ethnicityEnumIndexList) {

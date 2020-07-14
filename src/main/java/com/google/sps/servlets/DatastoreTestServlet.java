@@ -31,13 +31,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Tests datastore connection by adding a user and then querying the users table
  * This servlet supports HTTP GET and returns a JSON list of current users stored in the database.
+ * The first call to this servlet will seed the database.
  *
  * @author sylviaziyuz
  * @author guptamudit
  * @version 1.0
- *
  * @param URLPatterns.DATASTORE_TEST this servlet serves requests at /datastore-test
  */
 @WebServlet(URLPatterns.DATASTORE_TEST)
