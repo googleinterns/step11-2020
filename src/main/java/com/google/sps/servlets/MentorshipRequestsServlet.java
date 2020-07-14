@@ -20,7 +20,6 @@ import com.google.common.io.Resources;
 import com.google.sps.data.DataAccess;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentee;
-import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorshipRequest;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
@@ -35,7 +34,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -45,32 +43,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Provides mentees with a list of mentors they'd find relatable, so they can send a mentorship request
- * This servlet supports HTTP GET and returns an html page with a information about each of the mentors that may be
- * similar to the currently logged in mentee.
- * This servlet supports HTTP POST for mentees to send requests to or dislike mentors.
+ * Provides mentors with a list of mentorship requests from various mentees
+ * This servlet supports HTTP GET and returns an html page with a information about each of the mentees that wants help.
+ * This servlet supports HTTP POST for mentors approving/denying mentorship requests.
  *
+ * @author tquintanilla
  * @author guptamudit
  * @version 1.0
  *
- * @param URLPatterns.FIND_MENTOR this servlet serves requests at /find-mentor
+ * @param URLPatterns.MENTORSHIP_REQUESTS this servlet serves requests at /mentorship-requests
  */
-@WebServlet(urlPatterns = URLPatterns.FIND_MENTOR)
-public class FindMentorServlet extends HttpServlet {
-  private static final Logger LOG = Logger.getLogger(FindMentorServlet.class.getName());
+@WebServlet(urlPatterns = URLPatterns.MENTORSHIP_REQUESTS)
+public class MentorshipRequestsServlet extends HttpServlet {
+  private static final Logger LOG = Logger.getLogger(MentorshipRequestsServlet.class.getName());
 
-  private static final String SEND = "sendRequest";
-  private static final String DISLIKE = "dislikeMentor";
-
-  private Jinjava jinjava;
-  private String findMentorTemplate;
+  private static final String ACCEPT = "accept";
+  private static final String DENY = "deny";
 
   private DataAccess dataAccess;
+  private Jinjava jinjava;
+  private String mentorshipRequestTemplate;
 
   @Override
   public void init() {
     dataAccess = new DummyDataAccess();
-
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
     try {
@@ -86,51 +82,46 @@ public class FindMentorServlet extends HttpServlet {
     try {
       String template =
           Resources.toString(
-              this.getClass().getResource(ResourceConstants.TEMPLATE_FIND_MENTOR), Charsets.UTF_8);
-      findMentorTemplate = jinjava.render(template, context);
+              this.getClass().getResource(ResourceConstants.TEMPLATE_MENTORSHIP_REQUESTS),
+              Charsets.UTF_8);
+      mentorshipRequestTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      LOG.severe(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_FIND_MENTOR));
+      LOG.severe(
+          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_MENTORSHIP_REQUESTS));
     }
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    User user = dataAccess.getCurrentUser();
-    if (user != null) {
-      Mentee mentee = dataAccess.getMentee(user.getUserId());
-      if (mentee != null) {
-        response.setContentType(ServletUtils.CONTENT_HTML);
+    response.setContentType(ServletUtils.CONTENT_HTML);
 
-        Map<String, Object> context =
-            dataAccess.getDefaultRenderingContext(URLPatterns.FIND_MENTOR);
-
-        Collection<Mentor> relatedMentors = dataAccess.getRelatedMentors(mentee);
-        context.put(ContextFields.MENTORS, relatedMentors);
-
-        String renderedTemplate = jinjava.render(findMentorTemplate, context);
-
-        response.getWriter().println(renderedTemplate);
-        return;
-      }
+    if (mentorshipRequestTemplate == null) {
+      response.setStatus(500);
+      return;
     }
-    response.sendRedirect(URLPatterns.LANDING);
+
+    Map<String, Object> context =
+        dataAccess.getDefaultRenderingContext(URLPatterns.MENTORSHIP_REQUESTS);
+    context.put(
+        ContextFields.MENTORSHIP_REQUESTS,
+        dataAccess.getIncomingRequests(dataAccess.getUser("woah")));
+    String renderTemplate = jinjava.render(mentorshipRequestTemplate, context);
+    response.getWriter().println(renderTemplate);
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    final String mentorKey = ServletUtils.getParameter(request, ParameterConstants.MENTOR_ID, "");
+    final String requestKey = ServletUtils.getParameter(request, ParameterConstants.REQUEST_ID, "");
     final String choice = ServletUtils.getParameter(request, ParameterConstants.CHOICE, "");
 
-    boolean success = false;
-
-    Long mentorDatastoreKey = null;
+    Long requestDatastoreKey = null;
     try {
-      mentorDatastoreKey = Long.parseLong(mentorKey);
+      requestDatastoreKey = Long.parseLong(requestKey);
     } catch (NumberFormatException e) {
       writeJsonSuccessToResponse(response, false);
       return;
     }
-    if (mentorDatastoreKey == null || (!choice.equals(SEND) && !choice.equals(DISLIKE))) {
+    if (requestDatastoreKey == null || (!choice.equals(ACCEPT) && !choice.equals(DENY))) {
       writeJsonSuccessToResponse(response, false);
       return;
     }
@@ -144,17 +135,15 @@ public class FindMentorServlet extends HttpServlet {
       writeJsonSuccessToResponse(response, false);
       return;
     }
-    Mentor mentor = dataAccess.getMentor(mentorDatastoreKey);
-    if (mentor == null) {
+    MentorshipRequest mentorshipRequest = dataAccess.getMentorshipRequest(requestDatastoreKey);
+    if (mentorshipRequest == null) {
       writeJsonSuccessToResponse(response, false);
       return;
     }
-    if (choice.equals(SEND)) {
-      MentorshipRequest mentorshipRequest =
-          new MentorshipRequest(mentor.getDatastoreKey(), mentee.getDatastoreKey());
-      dataAccess.publishRequest(mentorshipRequest);
-    } else if (choice.equals(DISLIKE)) {
-      dataAccess.dislikeMentor(mentee, mentor);
+    if (choice.equals(ACCEPT)) {
+      dataAccess.approveRequest(mentorshipRequest);
+    } else if (choice.equals(DENY)) {
+      dataAccess.denyRequest(mentorshipRequest);
     }
 
     writeJsonSuccessToResponse(response, true);

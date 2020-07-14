@@ -33,7 +33,7 @@ Array.prototype.forEach.call(document.querySelectorAll(".mentee-card"), (menteeC
 });
 
 const sendRequestDecision = async (requestID, choice) => {
-  let response = await fetch("/connection-requests", {
+  let response = await fetch("/mentorship-requests", {
       method: "POST",
       body: new URLSearchParams({requestID, choice})
     });

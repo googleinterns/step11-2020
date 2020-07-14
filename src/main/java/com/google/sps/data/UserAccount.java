@@ -28,6 +28,11 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
+/**
+ * This class represents a generic user and all their related data.
+ * can only be instantiated as a Mentee or Mentor
+ * supports conversion to and from a datastore entity object
+ */
 public class UserAccount implements DatastoreEntity {
   private long datastoreKey;
   private boolean keyInitialized;
@@ -180,6 +185,19 @@ public class UserAccount implements DatastoreEntity {
     return entity;
   }
 
+  /**
+   * converts the list retrieved from datastore to a list of usable Ethnicity objects
+   * @param  ethnicityEnumIndexList the list off objects from datastore
+   * @return                        the list of ethnicity objects
+   */
+  private static Collection<Ethnicity> getEthnicityListFromProperty(
+      Collection<Object> ethnicityEnumIndexList) {
+    return (Collection<Ethnicity>)
+        ethnicityEnumIndexList.stream()
+            .map(index -> Ethnicity.values()[toIntExact((long) index)])
+            .collect(Collectors.toList());
+  }
+
   public long getDatastoreKey() {
     return datastoreKey;
   }
@@ -250,14 +268,6 @@ public class UserAccount implements DatastoreEntity {
 
   public UserType getUserType() {
     return userType;
-  }
-
-  private static Collection<Ethnicity> getEthnicityListFromProperty(
-      Collection<Object> ethnicityEnumIndexList) {
-    return (Collection<Ethnicity>)
-        ethnicityEnumIndexList.stream()
-            .map(index -> Ethnicity.values()[toIntExact((long) index)])
-            .collect(Collectors.toList());
   }
 
   protected abstract static class Builder<T extends Builder<T>> {

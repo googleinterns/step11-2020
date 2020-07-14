@@ -14,6 +14,9 @@
 
 package com.google.sps.data;
 
+/**
+ * This class represents a potential topic of study for a mentee to want/mentor to provide help with.
+ */
 public enum Topic {
   COMPUTER_SCIENCE("Computer Science"),
   PHYSICS("Physics"),

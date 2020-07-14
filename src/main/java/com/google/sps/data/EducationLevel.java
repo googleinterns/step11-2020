@@ -14,6 +14,9 @@
 
 package com.google.sps.data;
 
+/**
+ * This class represents a user's education level.
+ */
 public enum EducationLevel {
   UNSPECIFIED(""),
   NONE("None"),
