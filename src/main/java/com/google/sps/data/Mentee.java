@@ -22,6 +22,11 @@ import java.util.Set;
 
 /**
  * This class represents a Mentee user and their mentee-specific data. Other data is held within the super class, UserAccount.
+ *
+ * @author guptamudit
+ * @author tquintanilla
+ * @author sylviaziyuz
+ * @version 1.0
  */
 public class Mentee extends UserAccount implements DatastoreEntity {
 

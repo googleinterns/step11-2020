@@ -20,6 +20,10 @@ import java.util.Map;
 
 /**
  * This class provides an interface for interacting with the database. This interface can be implemented in many ways to provide mock data or different types of database accessors.
+ *
+ * @author guptamudit
+ * @author tquintanilla
+ * @version 1.0
  */
 public interface DataAccess {
 

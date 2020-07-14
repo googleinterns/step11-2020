@@ -16,6 +16,9 @@ package com.google.sps.data;
 
 /**
  * This class represents a user's ethnicity. Every UserAccount object stores an instance of this enum.
+ *
+ * @author guptamudit
+ * @version 1.0
  */
 public enum Ethnicity {
   UNSPECIFIED(""),

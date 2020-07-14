@@ -24,6 +24,11 @@ import java.util.stream.Collectors;
 
 /**
  * This class represents a Mentor user and their mentor-specific data. Other data is held within the super class, UserAccount.
+ *
+ * @author guptamudit
+ * @author sylviaziyuz
+ * @author tquintanilla
+ * @version 1.0
  */
 public class Mentor extends UserAccount implements DatastoreEntity {
   private boolean visibility;
