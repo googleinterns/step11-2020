@@ -43,8 +43,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Provides mentors with a list of mentorship requests from various mentees
- * This servlet supports HTTP GET and returns an html page with a information about each of the mentees that wants help.
+ * This servlet supports HTTP GET and returns an html page with a information about each of the mentees that wants help
+ * from the currently logged in mentor. The mentor can then accept or deny these mentorship requests.
+ * Mentee users will be redirected to the /landing page.
  * This servlet supports HTTP POST for mentors approving/denying mentorship requests.
  *
  * @author tquintanilla

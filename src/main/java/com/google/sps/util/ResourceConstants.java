@@ -15,8 +15,8 @@
 package com.google.sps.util;
 
 /**
- * Stores a list of file paths for resources
- * These file locations are used by various java classes to access resource files. Storing constants helps avoid 
+ * This class stores a constant list of of file paths for resources.
+ * These file locations are used by various java classes to access resource files. Storing constants helps avoid
  * typo-induced errors when loading resources.
  * The template constants refer to the templates for the various html pages.
  *

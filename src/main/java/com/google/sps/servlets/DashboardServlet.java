@@ -44,7 +44,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Serves a list of connections a user has
  * This servlet supports HTTP GET and returns an html page with a information about each of the users that the
  * currently logged in user is connected with.
  *

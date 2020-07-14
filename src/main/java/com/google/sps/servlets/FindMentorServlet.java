@@ -45,9 +45,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Provides mentees with a list of mentors they'd find relatable, so they can send a mentorship request
  * This servlet supports HTTP GET and returns an html page with a information about each of the mentors that may be
- * similar to the currently logged in mentee.
+ * similar to the currently logged in mentee. If the mentor finds one of the mentors relatable, they can send them a mentorship request.
  * This servlet supports HTTP POST for mentees to send requests to or dislike mentors.
  *
  * @author guptamudit

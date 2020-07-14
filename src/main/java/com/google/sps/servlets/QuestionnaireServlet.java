@@ -61,8 +61,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Serves a form for users to input data about themselves to sign up for the platform
- * This servlet supports HTTP GET and returns an html page with a series of questions.
+ * This servlet supports HTTP GET and returns an html page with a series of questions about a user's demographics and goals for mentorship. This questionnaire is for people to sign up on the mentor-matching platform.
  * This servlet supports HTTP POST for users to submit the form and create/update their profiles on the platform.
  *
  * @author tquintanilla

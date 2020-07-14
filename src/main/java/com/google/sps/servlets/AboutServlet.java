@@ -37,8 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Serves a brief summary of the mentor-matching platform
- * This servlet supports HTTP GET and returns a static (except for the navbar) html page.
+ * This servlet supports HTTP GET and returns a static (except for the navbar) html page with a brief summary of the mentor-matching platform.
  *
  * @author tquintanilla
  * @author guptamudit

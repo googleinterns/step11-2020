@@ -15,7 +15,7 @@
 package com.google.sps.util;
 
 /**
- * Stores a list of common error messages
+ * This class stores a constant list of of common error messages.
  * The error messages here are useful for common occurences within the program. Having a single file store possible
  * errors helps with finding/fixing similar errors in different pieces of code.
  *

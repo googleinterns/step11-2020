@@ -22,8 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Serves redirects from the base url to the /landing page of the mentor-matching platform
- * This servlet supports HTTP GET by immediately redirecting to /landing.
+ * This servlet supports HTTP GET by immediately redirecting from the base url to the /landing page of the mentor-matching platform.
  *
  * @author guptamudit
  * @version 1.0
