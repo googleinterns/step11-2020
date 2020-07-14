@@ -16,7 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.DatastoreAccess;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.ServletUtils;
@@ -37,13 +37,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Serves a brief introductory page to the mentor-matching platform
- * This page is the first point of interaction for non-logged-in users.
- * This servlet supports HTTP GET and returns an static (except for the navbar) html page.
+ * This servlet supports HTTP GET and returns an static (except for the navbar) html page with a
+ * brief introductory page to the mentor-matching platform. This page is the first point of
+ * interaction for non-logged-in users.
  *
  * @author guptamudit
  * @version 1.0
- *
  * @param URLPatterns.LANDING this servlet serves requests at /landing
  */
 @WebServlet(urlPatterns = URLPatterns.LANDING)
@@ -87,7 +86,7 @@ public class LandingServlet extends HttpServlet {
     }
 
     Map<String, Object> context =
-        new DummyDataAccess().getDefaultRenderingContext(URLPatterns.LANDING);
+        new DatastoreAccess().getDefaultRenderingContext(URLPatterns.LANDING);
 
     String rendered = jinjava.render(staticResponse, context);
 

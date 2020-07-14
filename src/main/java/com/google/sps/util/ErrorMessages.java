@@ -15,9 +15,9 @@
 package com.google.sps.util;
 
 /**
- * Stores a list of common error messages
- * The error messages here are useful for common occurences within the program. Having a single file store possible
- * errors helps with finding/fixing similar errors in different pieces of code.
+ * This class stores a constant list of of common error messages. The error messages here are useful
+ * for common occurences within the program. Having a single file store possible errors helps with
+ * finding/fixing similar errors in different pieces of code.
  *
  * @author guptamudit
  * @author sylviaziyuz
@@ -29,7 +29,8 @@ public final class ErrorMessages {
       "The templates directory was not found";
   public static final String TEMPLATE_FILE_NOT_FOUND = "The template was not found: ";
   public static final String INVALID_PARAMATERS = "insufficient or invalid parameters";
-  public static final String BAD_REDIRECT = "Invalid encoded redirection pathname";
+  public static final String BAD_REDIRECT = "Invalid encoded redirection pathname: ";
+  public static final String SEEDING_FAILED = "Failed to load fake data";
   public static final String BAD_DATE_PARSE = "Invalid date format";
 
   public static String templateFileNotFound(String templateURL) {

@@ -18,7 +18,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -27,8 +26,6 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ParameterConstants;
-import com.google.sps.util.RandomObjects;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +34,9 @@ import java.util.stream.StreamSupport;
 
 /**
  * This class provides access to data from the datastore service provided by google appengine.
+ *
+ * @author guptamudit
+ * @version 1.0
  */
 public class DatastoreAccess implements DataAccess {
 
@@ -46,28 +46,21 @@ public class DatastoreAccess implements DataAccess {
 
   public DatastoreAccess() {
     if (!DatastoreAccess.seeded) {
-      seedDatabase();
-      DatastoreAccess.seeded = true;
+      DatastoreAccess.seeded =
+          datastoreService
+                  .prepare(new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT))
+                  .countEntities()
+              != 0;
     }
   }
 
-  private void seedDatabase() {
-    Collection<Mentee> someMentees = new ArrayList<>(50);
-    Collection<Mentor> someMentors = new ArrayList<>(50);
-    for (int i = 0; i < 250; i++) {
-      Mentee mentee = RandomObjects.randomMentee();
-      saveUser(mentee);
-      if (i < 50) {
-        someMentees.add(mentee);
-      }
+  public boolean seed_db(Collection<Entity> entities) {
+    if (DatastoreAccess.seeded) {
+      return false;
     }
-    for (int i = 0; i < 250; i++) {
-      Mentor mentor = RandomObjects.randomMentor();
-      saveUser(mentor);
-      if (i < 50) {
-        someMentors.add(mentor);
-      }
-    }
+    datastoreService.put(entities);
+    DatastoreAccess.seeded = true;
+    return true;
   }
 
   public Map<String, Object> getDefaultRenderingContext(String currentURL) {
@@ -80,8 +73,9 @@ public class DatastoreAccess implements DataAccess {
     if (loggedIn) {
       User user = getCurrentUser();
       currentUser = getUser(user.getUserId());
-      isMentor = currentUser.getUserType() == UserType.MENTOR;
-      isMentee = !isMentor && currentUser.getUserType() == UserType.MENTEE;
+      isMentor = currentUser == null ? false : currentUser.getUserType() == UserType.MENTOR;
+      isMentee =
+          currentUser == null ? false : !isMentor && currentUser.getUserType() == UserType.MENTEE;
     }
     context.put(ContextFields.CURRENT_USER, currentUser);
     context.put(ContextFields.IS_MENTOR, isMentor);
@@ -116,22 +110,22 @@ public class DatastoreAccess implements DataAccess {
 
   public Mentee getMentee(String userID) {
     UserAccount user = getUser(userID);
-    return user.getUserType() == UserType.MENTOR ? null : (Mentee) user;
+    return user == null || user.getUserType() == UserType.MENTOR ? null : (Mentee) user;
   }
 
   public Mentee getMentee(long datastoreKey) {
     UserAccount user = getUser(datastoreKey);
-    return user.getUserType() == UserType.MENTOR ? null : (Mentee) user;
+    return user == null || user.getUserType() == UserType.MENTOR ? null : (Mentee) user;
   }
 
   public Mentor getMentor(String userID) {
     UserAccount user = getUser(userID);
-    return user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
+    return user == null || user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
   }
 
   public Mentor getMentor(long datastoreKey) {
     UserAccount user = getUser(datastoreKey);
-    return user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
+    return user == null || user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
   }
 
   public boolean createUser(UserAccount user) {
@@ -155,8 +149,7 @@ public class DatastoreAccess implements DataAccess {
                     Query.FilterOperator.EQUAL,
                     UserType.MENTOR.ordinal()));
     PreparedQuery results = datastoreService.prepare(query);
-    return StreamSupport.stream(
-            results.asIterable(FetchOptions.Builder.withLimit(10)).spliterator(), false)
+    return StreamSupport.stream(results.asIterable().spliterator(), false)
         .map(Mentor::new)
         .collect(Collectors.toList());
   }
@@ -170,8 +163,7 @@ public class DatastoreAccess implements DataAccess {
                     Query.FilterOperator.EQUAL,
                     UserType.MENTEE.ordinal()));
     PreparedQuery results = datastoreService.prepare(query);
-    return StreamSupport.stream(
-            results.asIterable(FetchOptions.Builder.withLimit(10)).spliterator(), false)
+    return StreamSupport.stream(results.asIterable().spliterator(), false)
         .map(Mentee::new)
         .collect(Collectors.toList());
   }
