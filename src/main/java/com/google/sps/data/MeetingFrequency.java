@@ -15,7 +15,7 @@
 package com.google.sps.data;
 
 /**
- * This class represents a meeting frequency for mentors/mentees to schedule meetings by.
+ * This class represents a meeting frequency for mentors/mentees to schedule meetings by. Every Mentee object stores an instance of this enum to indicate how often they want help.
  */
 public enum MeetingFrequency {
   DAILY("Daily"),

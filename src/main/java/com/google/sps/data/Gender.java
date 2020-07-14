@@ -15,7 +15,7 @@
 package com.google.sps.data;
 
 /**
- * This class represents a user's gender.
+ * This class represents a user's gender. Every UserAccount object stores an instance of this enum.
  */
 public enum Gender {
   UNSPECIFIED(""),

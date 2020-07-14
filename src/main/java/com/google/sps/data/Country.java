@@ -15,7 +15,7 @@
 package com.google.sps.data;
 
 /**
- * This class represents a user's country of origin.
+ * This class represents a user's country of origin. Every UserAccount object stores an instance of this enum.
  */
 public enum Country {
   BD("Bangladesh"),

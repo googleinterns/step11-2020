@@ -1,4 +1,5 @@
 // Copyright 2019 Google LLC
+
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@
 package com.google.sps.data;
 
 /**
- * This class represents a potential topic of study for a mentee to want/mentor to provide help with.
+ * This enum represents a potential topic of study for a mentee to want/mentor to provide help with. Every Mentee object stores a single instance of this enum while Mentor objects store a collection of Topics.
  */
 public enum Topic {
   COMPUTER_SCIENCE("Computer Science"),

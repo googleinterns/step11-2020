@@ -15,7 +15,7 @@
 package com.google.sps.data;
 
 /**
- * This class represents the possible types for a user to be.
+ * This enum represents the possible types for a user to be. Every UserAccount object stores an instance of this enum.
  */
 public enum UserType {
   MENTOR("Mentor"),

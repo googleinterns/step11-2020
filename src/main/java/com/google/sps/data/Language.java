@@ -15,7 +15,7 @@
 package com.google.sps.data;
 
 /**
- * This class represents a user's language.
+ * This class represents a user's language. Every UserAccount object stores an instance of this enum.
  */
 public enum Language {
   AB("Abkhaz", "аҧсуа"),

@@ -15,7 +15,7 @@
 package com.google.sps.data;
 
 /**
- * This class represents a mentors's style of mentorship.
+ * This enum represents a mentors's style of mentorship. Every Mentor object stores an instance of this enum.
  */
 public enum MentorType {
   TUTOR("Tutor"),
