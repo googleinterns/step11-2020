@@ -13,7 +13,7 @@
 // limitations under the License.
 
 function loadAuthButton() {
-  const request = '/authenticate?redir=' + encodeURIComponent(window.location.pathname);
+  const request = '/authenticate?redir=' + encodeURIComponent(window.location.pathname) + (window.location.search);
   console.log(request);
   fetch(request).then(handleFetchErrors).then(response => response.json())
     .then(loginState => {
