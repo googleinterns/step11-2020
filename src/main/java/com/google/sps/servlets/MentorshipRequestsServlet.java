@@ -20,6 +20,7 @@ import com.google.common.io.Resources;
 import com.google.sps.data.DataAccess;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentee;
+import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorshipRequest;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
@@ -100,13 +101,20 @@ public class MentorshipRequestsServlet extends HttpServlet {
       return;
     }
 
-    Map<String, Object> context =
-        dataAccess.getDefaultRenderingContext(URLPatterns.MENTORSHIP_REQUESTS);
-    context.put(
-        ContextFields.MENTORSHIP_REQUESTS,
-        dataAccess.getIncomingRequests(dataAccess.getUser("woah")));
-    String renderTemplate = jinjava.render(mentorshipRequestTemplate, context);
-    response.getWriter().println(renderTemplate);
+    User user = dataAccess.getCurrentUser();
+    if (user != null) {
+      Mentor mentor = dataAccess.getMentor(user.getUserId());
+      if (mentor != null) {
+        response.setContentType(ServletUtils.CONTENT_HTML);
+        Map<String, Object> context =
+            dataAccess.getDefaultRenderingContext(URLPatterns.MENTORSHIP_REQUESTS);
+        context.put(ContextFields.MENTORSHIP_REQUESTS, dataAccess.getIncomingRequests(mentor));
+        String renderTemplate = jinjava.render(mentorshipRequestTemplate, context);
+        response.getWriter().println(renderTemplate);
+        return;
+      }
+    }
+    response.sendRedirect(URLPatterns.LANDING);
   }
 
   @Override
