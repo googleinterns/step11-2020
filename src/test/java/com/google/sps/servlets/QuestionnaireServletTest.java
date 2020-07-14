@@ -8,8 +8,6 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.sps.data.DatastoreAccess;
 import com.google.sps.servlets.QuestionnaireServlet;
-import com.google.sps.util.ContextFields;
-import com.google.sps.util.ParameterConstants;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
