@@ -152,7 +152,9 @@ public class QuestionnaireServlet extends HttpServlet {
 
   private UserAccount constructNewUserFromRequest(HttpServletRequest request) {
     UserType userType =
-        UserType.valueOf(ServletUtils.getParameter(request, ParameterConstants.FORM_TYPE, "MENTEE").toUpperCase());
+        UserType.valueOf(
+            ServletUtils.getParameter(request, ParameterConstants.FORM_TYPE, "MENTEE")
+                .toUpperCase());
     String name = ServletUtils.getParameter(request, ParameterConstants.NAME, "John Doe");
     Date dateOfBirth;
     try {

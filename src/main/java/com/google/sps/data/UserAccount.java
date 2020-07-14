@@ -205,10 +205,12 @@ public abstract class UserAccount implements DatastoreEntity {
    */
   private static Collection<Ethnicity> getEthnicityListFromProperty(
       Collection<Object> ethnicityEnumIndexList) {
-    return (Collection<Ethnicity>)
-        ethnicityEnumIndexList.stream()
-            .map(index -> Ethnicity.values()[toIntExact((long) index)])
-            .collect(Collectors.toList());
+    return ethnicityEnumIndexList == null
+        ? new ArrayList<Ethnicity>()
+        : (Collection<Ethnicity>)
+            ethnicityEnumIndexList.stream()
+                .map(index -> Ethnicity.values()[toIntExact((long) index)])
+                .collect(Collectors.toList());
   }
 
   public long getDatastoreKey() {
