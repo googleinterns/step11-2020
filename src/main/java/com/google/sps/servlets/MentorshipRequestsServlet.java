@@ -138,8 +138,8 @@ public class MentorshipRequestsServlet extends HttpServlet {
       writeJsonSuccessToResponse(response, false);
       return;
     }
-    Mentee mentee = dataAccess.getMentee(user.getUserId());
-    if (mentee == null) {
+    Mentor mentor = dataAccess.getMentor(user.getUserId());
+    if (mentor == null) {
       writeJsonSuccessToResponse(response, false);
       return;
     }
