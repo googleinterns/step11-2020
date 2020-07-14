@@ -44,14 +44,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Provides mentors with a list of mentorship requests from various mentees
- * This servlet supports HTTP GET and returns an html page with a information about each of the mentees that wants help.
- * This servlet supports HTTP POST for mentors approving/denying mentorship requests.
+ * This servlet supports HTTP GET and returns an html page with a information about each of the
+ * mentees that wants help from the currently logged in mentor. The mentor can then accept or deny
+ * these mentorship requests. Mentee users will be redirected to the /landing page. This servlet
+ * supports HTTP POST for mentors approving/denying mentorship requests.
  *
  * @author tquintanilla
  * @author guptamudit
  * @version 1.0
- *
  * @param URLPatterns.MENTORSHIP_REQUESTS this servlet serves requests at /mentorship-requests
  */
 @WebServlet(urlPatterns = URLPatterns.MENTORSHIP_REQUESTS)
@@ -105,7 +105,7 @@ public class MentorshipRequestsServlet extends HttpServlet {
     if (user != null) {
       Mentor mentor = dataAccess.getMentor(user.getUserId());
       if (mentor != null) {
-        response.setContentType("text/html;");
+        response.setContentType(ServletUtils.CONTENT_HTML);
         Map<String, Object> context =
             dataAccess.getDefaultRenderingContext(URLPatterns.MENTORSHIP_REQUESTS);
         context.put(ContextFields.MENTORSHIP_REQUESTS, dataAccess.getIncomingRequests(mentor));

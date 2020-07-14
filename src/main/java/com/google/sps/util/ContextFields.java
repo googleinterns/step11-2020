@@ -15,9 +15,10 @@
 package com.google.sps.util;
 
 /**
- * Stores a list of possible fields for jinja rendering contexts
- * These constants are used when passing parameters into the context for rendering templates with Jinja.
- * The use of these constants helps avoid typos when passing variables to the jinja renderer from different files.
+ * This class stores a constant list of of possible fields for jinja rendering contexts. These
+ * constants are used when passing parameters into the context for rendering templates with Jinja.
+ * The use of these constants helps avoid typos when passing variables to the jinja renderer from
+ * different files.
  *
  * @author guptamudit
  * @version 1.0

@@ -36,6 +36,9 @@ import java.util.stream.StreamSupport;
 
 /**
  * This class provides access to data from the datastore service provided by google appengine.
+ *
+ * @author guptamudit
+ * @version 1.0
  */
 public class DatastoreAccess implements DataAccess {
 

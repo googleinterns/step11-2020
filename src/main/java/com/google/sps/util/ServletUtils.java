@@ -16,6 +16,12 @@ package com.google.sps.util;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * This class provides common functionality to all servlets to reduce code redundancy.
+ *
+ * @author guptamudit
+ * @version 1.0
+ */
 public final class ServletUtils {
   public static final String CONTENT_HTML = "text/html;";
   public static final String CONTENT_JSON = "application/json;";

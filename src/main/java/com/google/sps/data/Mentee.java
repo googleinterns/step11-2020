@@ -24,8 +24,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * This class represents a Mentee user and all their related data.
- * supports conversion to and from a datastore entity object
+ * This class represents a Mentee user and their mentee-specific data. Other data is held within the
+ * super class, UserAccount.
+ *
+ * @author guptamudit
+ * @author tquintanilla
+ * @author sylviaziyuz
+ * @version 1.0
  */
 public class Mentee extends UserAccount implements DatastoreEntity {
 
@@ -40,7 +45,7 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     this.desiredMeetingFrequency = builder.desiredMeetingFrequency;
     this.dislikedMentorKeys = builder.dislikedMentorKeys;
     this.desiredMentorType = builder.desiredMentorType;
-    this.validate();
+    this.sanitizeValues();
   }
 
   public Mentee(Entity entity) {
@@ -56,12 +61,12 @@ public class Mentee extends UserAccount implements DatastoreEntity {
             (Collection) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS));
     this.desiredMentorType =
         MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTOR_TYPE))];
-    this.validate();
+    this.sanitizeValues();
   }
 
   @Override
-  protected void validate() {
-    super.validate();
+  protected void sanitizeValues() {
+    super.sanitizeValues();
     if (this.dislikedMentorKeys == null) {
       this.dislikedMentorKeys = new HashSet<>();
     }
@@ -79,22 +84,22 @@ public class Mentee extends UserAccount implements DatastoreEntity {
 
   /**
    * converts the list retrieved from datastore to a list of usable long values
-   * @param  dislikedMentorKeyList the list of objects from datastore
-   * @return                       the list of long values
+   *
+   * @param dislikedMentorKeyList the list of objects from datastore
+   * @return the list of long values
    */
   private static Set<Long> getDislikedSetFromProperty(Collection<Object> dislikedMentorKeyList) {
     return dislikedMentorKeyList == null
         ? new HashSet<Long>()
         : (Set<Long>)
-            dislikedMentorKeyList.stream()
-                .map(key -> new Long((long) key))
-                .collect(Collectors.toSet());
+            dislikedMentorKeyList.stream().map(key -> (long) key).collect(Collectors.toSet());
   }
 
   /**
    * adds a mentor's key to the list of keys for mentors that the mentee does not want to work with
-   * @param  mentor the mentor that the mentee doesn't want to work with
-   * @return        boolean of whether or not the mentor was added (false if already disliked)
+   *
+   * @param mentor the mentor that the mentee doesn't want to work with
+   * @return boolean of whether or not the mentor was added (false if already disliked)
    */
   public boolean dislikeMentor(Mentor mentor) {
     return dislikedMentorKeys.add(mentor.getDatastoreKey());

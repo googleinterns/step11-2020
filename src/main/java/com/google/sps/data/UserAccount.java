@@ -30,11 +30,15 @@ import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 /**
- * This class represents a generic user and all their related data.
- * can only be instantiated as a Mentee or Mentor
- * supports conversion to and from a datastore entity object
+ * This class represents a generic user and all their related data. UserAccount can only be
+ * instantiated as a subclass (Mentee or Mentor).
+ *
+ * @author guptamudit
+ * @author tquintanilla
+ * @author sylviaziyuz
+ * @version 1.0
  */
-public class UserAccount implements DatastoreEntity {
+public abstract class UserAccount implements DatastoreEntity {
   private long datastoreKey;
   private boolean keyInitialized;
   private String userID;
@@ -161,7 +165,10 @@ public class UserAccount implements DatastoreEntity {
             : new Mentor(entity);
   }
 
-  protected void validate() {
+  /**
+   * This method ensures that all class fields are properly initialized. If they aren't, fix it.
+   */
+  protected void sanitizeValues() {
     if (this.ethnicityList == null) {
       this.ethnicityList = new ArrayList<>();
     }
@@ -194,8 +201,9 @@ public class UserAccount implements DatastoreEntity {
 
   /**
    * converts the list retrieved from datastore to a list of usable Ethnicity objects
-   * @param  ethnicityEnumIndexList the list off objects from datastore
-   * @return                        the list of ethnicity objects
+   *
+   * @param ethnicityEnumIndexList the list off objects from datastore
+   * @return the list of ethnicity objects
    */
   private static Collection<Ethnicity> getEthnicityListFromProperty(
       Collection<Object> ethnicityEnumIndexList) {
@@ -389,10 +397,6 @@ public class UserAccount implements DatastoreEntity {
     public T userType(UserType userType) {
       this.userType = userType;
       return (T) this;
-    }
-
-    public UserAccount build() {
-      return new UserAccount(this);
     }
   }
 }
