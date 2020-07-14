@@ -41,6 +41,7 @@ public class Mentor extends UserAccount implements DatastoreEntity {
     this.visibility = builder.visibility;
     this.focusList = builder.focusList;
     this.mentorType = builder.mentorType;
+    this.sanitizeValues();
   }
 
   public Mentor(Entity entity) {
@@ -51,6 +52,15 @@ public class Mentor extends UserAccount implements DatastoreEntity {
             (Collection) entity.getProperty(ParameterConstants.MENTOR_FOCUS_LIST));
     this.mentorType =
         MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTOR_TYPE))];
+    this.sanitizeValues();
+  }
+
+  @Override
+  protected void sanitizeValues() {
+    super.sanitizeValues();
+    if (this.focusList == null) {
+      this.focusList = new ArrayList<>();
+    }
   }
 
   public Entity convertToEntity() {

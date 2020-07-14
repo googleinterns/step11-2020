@@ -23,6 +23,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.KeyRange;
 import com.google.sps.util.ParameterConstants;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
  * @author sylviaziyuz
  * @version 1.0
  */
-public class UserAccount implements DatastoreEntity {
+public abstract class UserAccount implements DatastoreEntity {
   private long datastoreKey;
   private boolean keyInitialized;
   private String userID;
@@ -162,6 +163,15 @@ public class UserAccount implements DatastoreEntity {
                 == UserType.MENTEE
             ? new Mentee(entity)
             : new Mentor(entity);
+  }
+
+  /**
+   * This method ensures that all class fields are properly initialized. If they aren't, fix it.
+   */
+  protected void sanitizeValues() {
+    if (this.ethnicityList == null) {
+      this.ethnicityList = new ArrayList<>();
+    }
   }
 
   public Entity convertToEntity() {
@@ -387,10 +397,6 @@ public class UserAccount implements DatastoreEntity {
     public T userType(UserType userType) {
       this.userType = userType;
       return (T) this;
-    }
-
-    public UserAccount build() {
-      return new UserAccount(this);
     }
   }
 }
