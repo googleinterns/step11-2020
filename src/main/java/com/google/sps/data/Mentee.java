@@ -21,8 +21,7 @@ import com.google.sps.util.ParameterConstants;
 import java.util.Set;
 
 /**
- * This class represents a Mentee user and all their related data.
- * supports conversion to and from a datastore entity object
+ * This class represents a Mentee user and their mentee-specific data. Other data is held within the super class, UserAccount.
  */
 public class Mentee extends UserAccount implements DatastoreEntity {
 

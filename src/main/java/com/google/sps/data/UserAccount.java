@@ -30,8 +30,7 @@ import java.util.stream.Collectors;
 
 /**
  * This class represents a generic user and all their related data.
- * can only be instantiated as a Mentee or Mentor
- * supports conversion to and from a datastore entity object
+ * UserAccount can only be instantiated as a subclass (Mentee or Mentor).
  */
 public class UserAccount implements DatastoreEntity {
   private long datastoreKey;
