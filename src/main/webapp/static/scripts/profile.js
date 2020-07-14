@@ -73,7 +73,7 @@ function createListElement(text) {
   return liElement;
 }
 
-/* TODO: make sure this syntax actually works
+/* TODO.: make sure this syntax actually works
 function useFieldToString(userAccount, memberKey) {
   const stringTypeFieldList
 }

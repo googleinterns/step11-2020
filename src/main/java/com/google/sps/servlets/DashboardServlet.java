@@ -22,8 +22,10 @@ import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorMenteeRelation;
+import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -41,6 +43,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Serves a list of connections a user has
+ * This servlet supports HTTP GET and returns an html page with a information about each of the users that the
+ * currently logged in user is connected with.
+ *
+ * @author tquintanilla
+ * @author guptamudit
+ * @version 1.0
+ *
+ * @param URLPatterns.DASHBOARD this servlet serves requests at /dashboard
+ */
 @WebServlet(urlPatterns = URLPatterns.DASHBOARD)
 public class DashboardServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(DashboardServlet.class.getName());
@@ -90,15 +103,15 @@ public class DashboardServlet extends HttpServlet {
 
     User user = dataAccess.getCurrentUser();
     if (user != null) {
-      response.setContentType("text/html;");
-      Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.DASHBOARD);
+      response.setContentType(ServletUtils.CONTENT_HTML);
+      Map<String, Object> context = new HashMap<>();
 
       Mentor mentor = dataAccess.getMentor(user.getUserId());
       Mentee mentee = dataAccess.getMentee(user.getUserId());
       if (mentor != null) {
         Collection<MentorMenteeRelation> connectedMentees =
             dataAccess.getMentorMenteeRelations(mentor);
-        context.put("mentorMenteeRelations", connectedMentees);
+        context.put(ContextFields.MENTOR_MENTEE_RELATIONS, connectedMentees);
 
         String renderedTemplate = jinjava.render(dashboardMentorTemplate, context);
 
@@ -107,7 +120,7 @@ public class DashboardServlet extends HttpServlet {
       } else if (mentee != null) {
         Collection<MentorMenteeRelation> connectedMentors =
             dataAccess.getMentorMenteeRelations(mentee);
-        context.put("mentorMenteeRelations", connectedMentors);
+        context.put(ContextFields.MENTOR_MENTEE_RELATIONS, connectedMentors);
 
         String renderedTemplate = jinjava.render(dashboardMenteeTemplate, context);
 

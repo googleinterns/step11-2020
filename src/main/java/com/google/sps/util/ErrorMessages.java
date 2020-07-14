@@ -14,6 +14,16 @@
 
 package com.google.sps.util;
 
+/**
+ * Stores a list of common error messages
+ * The error messages here are useful for common occurences within the program. Having a single file store possible
+ * errors helps with finding/fixing similar errors in different pieces of code.
+ *
+ * @author guptamudit
+ * @author sylviaziyuz
+ * @author tquintanilla
+ * @version 1.0
+ */
 public final class ErrorMessages {
   public static final String TEMPLATES_DIRECTORY_NOT_FOUND =
       "The templates directory was not found";

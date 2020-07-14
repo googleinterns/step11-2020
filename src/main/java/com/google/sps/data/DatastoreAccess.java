@@ -26,12 +26,17 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ParameterConstants;
+import com.google.sps.util.RandomObjects;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * This class provides access to data from the datastore service provided by google appengine.
+ */
 public class DatastoreAccess implements DataAccess {
 
   private static boolean seeded = false;

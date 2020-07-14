@@ -24,6 +24,7 @@ import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -40,6 +41,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Serves a summary of a user's (not necessarily of the currently logged in user) data
+ * This servlet supports HTTP GET and returns an html page with all the information about the currently logged in user.
+ * If a user is viewing their own profile, they may access the questionnaire page from here to edit their information.
+ *
+ * @author sylviaziyuz
+ * @author guptamudit
+ * @version 1.0
+ *
+ * @param URLPatterns.PROFILE this servlet serves requests at /profile
+ */
 @WebServlet(urlPatterns = URLPatterns.PROFILE)
 public final class ProfileServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(ProfileServlet.class.getName());
@@ -89,7 +101,7 @@ public final class ProfileServlet extends HttpServlet {
       return;
     }
 
-    String requestedUserID = getParameter(request, ParameterConstants.USER_ID, userID);
+    String requestedUserID = ServletUtils.getParameter(request, ParameterConstants.USER_ID, userID);
     UserAccount requestedUserAccount =
         requestedUserID.equals(userID) ? currentUserAccount : dataAccess.getUser(requestedUserID);
     if (requestedUserAccount == null) {
@@ -100,15 +112,7 @@ public final class ProfileServlet extends HttpServlet {
     context.put(ContextFields.PROFILE_USER, requestedUserAccount);
 
     String renderedTemplate = jinjava.render(profileTemplate, context);
-    response.setContentType("text/html;");
+    response.setContentType(ServletUtils.CONTENT_HTML);
     response.getWriter().println(renderedTemplate);
-  }
-
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
-    String value = request.getParameter(name);
-    if (value == null || value == "") {
-      return defaultValue;
-    }
-    return value;
   }
 }

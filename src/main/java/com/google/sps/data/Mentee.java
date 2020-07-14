@@ -23,6 +23,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * This class represents a Mentee user and all their related data.
+ * supports conversion to and from a datastore entity object
+ */
 public class Mentee extends UserAccount implements DatastoreEntity {
 
   private Topic goal;
@@ -73,6 +77,11 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     return entity;
   }
 
+  /**
+   * converts the list retrieved from datastore to a list of usable long values
+   * @param  dislikedMentorKeyList the list of objects from datastore
+   * @return                       the list of long values
+   */
   private static Set<Long> getDislikedSetFromProperty(Collection<Object> dislikedMentorKeyList) {
     return dislikedMentorKeyList == null
         ? new HashSet<Long>()
@@ -82,6 +91,11 @@ public class Mentee extends UserAccount implements DatastoreEntity {
                 .collect(Collectors.toSet());
   }
 
+  /**
+   * adds a mentor's key to the list of keys for mentors that the mentee does not want to work with
+   * @param  mentor the mentor that the mentee doesn't want to work with
+   * @return        boolean of whether or not the mentor was added (false if already disliked)
+   */
   public boolean dislikeMentor(Mentor mentor) {
     return dislikedMentorKeys.add(mentor.getDatastoreKey());
   }

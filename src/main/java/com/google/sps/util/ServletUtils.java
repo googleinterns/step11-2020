@@ -12,26 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.data;
+package com.google.sps.util;
 
-/**
- * This class represents a meeting frequency for mentors/mentees to schedule meetings by.
- */
-public enum MeetingFrequency {
-  DAILY("Daily"),
-  TWICE_WEEKLY("Twice a week"),
-  WEEKLY("Weekly"),
-  TWICE_MONTHLY("Twice a month"),
-  MONTHLY("Monthly"),
-  WHEN_NEEDED("When needed");
+import javax.servlet.http.HttpServletRequest;
 
-  private String title;
+public final class ServletUtils {
+  public static final String CONTENT_HTML = "text/html;";
+  public static final String CONTENT_JSON = "application/json;";
 
-  private MeetingFrequency(String title) {
-    this.title = title;
-  }
-
-  public String getTitle() {
-    return title;
+  public static String getParameter(
+      HttpServletRequest request, String parameterName, String defaultValue) {
+    String value = request.getParameter(parameterName);
+    if (value == null || value == "") {
+      return defaultValue;
+    }
+    return value;
   }
 }

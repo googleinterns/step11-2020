@@ -19,6 +19,7 @@ import com.google.common.io.Resources;
 import com.google.sps.data.DatastoreAccess;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -35,6 +36,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Serves a brief introductory page to the mentor-matching platform
+ * This page is the first point of interaction for non-logged-in users.
+ * This servlet supports HTTP GET and returns an static (except for the navbar) html page.
+ *
+ * @author guptamudit
+ * @version 1.0
+ *
+ * @param URLPatterns.LANDING this servlet serves requests at /landing
+ */
 @WebServlet(urlPatterns = URLPatterns.LANDING)
 public class LandingServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(LandingServlet.class.getName());
@@ -68,7 +79,7 @@ public class LandingServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
+    response.setContentType(ServletUtils.CONTENT_HTML);
 
     if (staticResponse == null) {
       response.setStatus(500);
