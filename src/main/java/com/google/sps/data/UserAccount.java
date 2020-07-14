@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * can only be instantiated as a Mentee or Mentor
  * supports conversion to and from a datastore entity object
  */
-public class UserAccount implements DatastoreEntity {
+public abstract class UserAccount implements DatastoreEntity {
   private long datastoreKey;
   private boolean keyInitialized;
   private String userID;
@@ -389,10 +389,6 @@ public class UserAccount implements DatastoreEntity {
     public T userType(UserType userType) {
       this.userType = userType;
       return (T) this;
-    }
-
-    public UserAccount build() {
-      return new UserAccount(this);
     }
   }
 }
