@@ -34,14 +34,13 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * This servlet supports HTTP GET and returns a real time summary of the login status of the caller.
- * The response is served in JSON format.
- * This servlet is used by the function in autheticate.js to determine if the user viewing the site should be allowed
- * to continue or redirected to a public page.
+ * The response is served in JSON format. This servlet is used by the function in autheticate.js to
+ * determine if the user viewing the site should be allowed to continue or redirected to a public
+ * page.
  *
  * @author sylviaziyuz
  * @author guptamudit
  * @version 1.0
- *
  * @param URLPatterns.AUTHENTICATE this servlet serves requests at /authenticate
  */
 @WebServlet(urlPatterns = URLPatterns.AUTHENTICATE)

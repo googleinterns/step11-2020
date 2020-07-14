@@ -42,13 +42,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This servlet supports HTTP GET and returns an html page with a summary of a user's (not necessarily of the currently logged in user) data.
- * If a user is viewing their own profile, they may access the questionnaire page from here to edit their information.
+ * This servlet supports HTTP GET and returns an html page with a summary of a user's (not
+ * necessarily of the currently logged in user) data. If a user is viewing their own profile, they
+ * may access the questionnaire page from here to edit their information.
  *
  * @author sylviaziyuz
  * @author guptamudit
  * @version 1.0
- *
  * @param URLPatterns.PROFILE this servlet serves requests at /profile
  */
 @WebServlet(urlPatterns = URLPatterns.PROFILE)

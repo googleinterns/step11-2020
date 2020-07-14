@@ -19,8 +19,8 @@ import java.util.Collection;
 import java.util.TimeZone;
 
 /**
- * This class represents a summary of a java.util.TimeZone object. It's useful for minimizing the stored data in the fake data file.
- * Every UserAccount stores an instance of this class.
+ * This class represents a summary of a java.util.TimeZone object. It's useful for minimizing the
+ * stored data in the fake data file. Every UserAccount stores an instance of this class.
  *
  * @author tquintanilla
  * @version 1.0

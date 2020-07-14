@@ -22,11 +22,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This servlet supports HTTP GET by immediately redirecting from the base url to the /landing page of the mentor-matching platform.
+ * This servlet supports HTTP GET by immediately redirecting from the base url to the /landing page
+ * of the mentor-matching platform.
  *
  * @author guptamudit
  * @version 1.0
- *
  * @param URLPatterns.BASE this servlet serves requests at /
  * @param URLPatterns.MAIN this servlet serves requests at /main
  */

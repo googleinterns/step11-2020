@@ -16,7 +16,9 @@
 package com.google.sps.data;
 
 /**
- * This enum represents a potential topic of study for a mentee to want/mentor to provide help with. Every Mentee object stores a single instance of this enum while Mentor objects store a collection of Topics.
+ * This enum represents a potential topic of study for a mentee to want/mentor to provide help with.
+ * Every Mentee object stores a single instance of this enum while Mentor objects store a collection
+ * of Topics.
  *
  * @author tquintanilla
  * @version 1.0

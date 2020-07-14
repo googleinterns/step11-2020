@@ -44,13 +44,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This servlet supports HTTP GET and returns an html page with a information about each of the users that the
- * currently logged in user is connected with.
+ * This servlet supports HTTP GET and returns an html page with a information about each of the
+ * users that the currently logged in user is connected with.
  *
  * @author tquintanilla
  * @author guptamudit
  * @version 1.0
- *
  * @param URLPatterns.DASHBOARD this servlet serves requests at /dashboard
  */
 @WebServlet(urlPatterns = URLPatterns.DASHBOARD)

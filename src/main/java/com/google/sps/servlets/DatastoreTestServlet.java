@@ -37,7 +37,6 @@ import javax.servlet.http.HttpServletResponse;
  * @author sylviaziyuz
  * @author guptamudit
  * @version 1.0
- *
  * @param URLPatterns.DATASTORE_TEST this servlet serves requests at /datastore-test
  */
 @WebServlet(URLPatterns.DATASTORE_TEST)

@@ -37,11 +37,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This servlet supports HTTP GET and returns a static (except for the navbar) html page with a short blurb about each of the three authors for the mentor-matching platform.
+ * This servlet supports HTTP GET and returns a static (except for the navbar) html page with a
+ * short blurb about each of the three authors for the mentor-matching platform.
  *
  * @author guptamudit
  * @version 1.0
- *
  * @param URLPatterns.AUTHORS this servlet serves requests at /authors
  */
 @WebServlet(urlPatterns = URLPatterns.AUTHORS)
