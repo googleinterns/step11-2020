@@ -22,8 +22,11 @@ import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorshipRequest;
+import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
+import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -85,13 +88,13 @@ public class FindMentorServlet extends HttpServlet {
     if (user != null) {
       Mentee mentee = dataAccess.getMentee(user.getUserId());
       if (mentee != null) {
-        response.setContentType("text/html;");
+        response.setContentType(ServletUtils.CONTENT_HTML);
 
         Map<String, Object> context =
             dataAccess.getDefaultRenderingContext(URLPatterns.FIND_MENTOR);
 
         Collection<Mentor> relatedMentors = dataAccess.getRelatedMentors(mentee);
-        context.put("mentors", relatedMentors);
+        context.put(ContextFields.MENTORS, relatedMentors);
 
         String renderedTemplate = jinjava.render(findMentorTemplate, context);
 
@@ -104,8 +107,8 @@ public class FindMentorServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    final String mentorKey = request.getParameter("mentorID");
-    final String choice = request.getParameter("choice");
+    final String mentorKey = ServletUtils.getParameter(request, ParameterConstants.MENTOR_ID, "");
+    final String choice = ServletUtils.getParameter(request, ParameterConstants.CHOICE, "");
 
     boolean success = false;
 
@@ -148,7 +151,7 @@ public class FindMentorServlet extends HttpServlet {
 
   private void writeJsonSuccessToResponse(HttpServletResponse response, boolean success)
       throws IOException {
-    response.setContentType("application/json;");
+    response.setContentType(ServletUtils.CONTENT_JSON);
     response.getWriter().println("{\"success\": " + success + "}");
   }
 }

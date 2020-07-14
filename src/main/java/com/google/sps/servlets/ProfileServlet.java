@@ -24,6 +24,7 @@ import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -89,7 +90,7 @@ public final class ProfileServlet extends HttpServlet {
       return;
     }
 
-    String requestedUserID = getParameter(request, ParameterConstants.USER_ID, userID);
+    String requestedUserID = ServletUtils.getParameter(request, ParameterConstants.USER_ID, userID);
     UserAccount requestedUserAccount =
         requestedUserID.equals(userID) ? currentUserAccount : dataAccess.getUser(requestedUserID);
     if (requestedUserAccount == null) {
@@ -100,15 +101,7 @@ public final class ProfileServlet extends HttpServlet {
     context.put(ContextFields.PROFILE_USER, requestedUserAccount);
 
     String renderedTemplate = jinjava.render(profileTemplate, context);
-    response.setContentType("text/html;");
+    response.setContentType(ServletUtils.CONTENT_HTML);
     response.getWriter().println(renderedTemplate);
-  }
-
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
-    String value = request.getParameter(name);
-    if (value == null || value == "") {
-      return defaultValue;
-    }
-    return value;
   }
 }

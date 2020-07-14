@@ -21,6 +21,7 @@ import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import java.io.IOException;
 import java.util.Collection;
@@ -37,7 +38,7 @@ public class DatastoreTestServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     DatastoreAccess dataAccess = new DatastoreAccess();
     dataAccess.saveUser((new DummyDataAccess()).getMentor(dataAccess.getCurrentUser().getUserId()));
-    response.setContentType("application/json;");
+    response.setContentType(ServletUtils.CONTENT_JSON);
     Collection<Mentor> mentors = dataAccess.getRelatedMentors(null);
     Collection<Mentee> mentees = dataAccess.getRelatedMentees(null);
     Gson gson = new Gson();

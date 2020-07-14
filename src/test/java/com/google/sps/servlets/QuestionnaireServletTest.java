@@ -1,25 +1,21 @@
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
 
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.appengine.api.users.User;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.sps.data.DatastoreAccess;
 import com.google.sps.servlets.QuestionnaireServlet;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpServlet;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.InjectMocks;
@@ -27,9 +23,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 /**
- * TO RUN PROJECT WITHOUT TESTS RUN COMMAND: mvn package appengine:run -DskipTests
- * Basic structure of servlet tests using LocalServiceTestHelper for intiailizing services
- * (dodges no api in thread error), for more help with unit testing visit:
+ * TO RUN PROJECT WITHOUT TESTS RUN COMMAND: mvn package appengine:run -DskipTests Basic structure
+ * of servlet tests using LocalServiceTestHelper for intiailizing services (dodges no api in thread
+ * error), for more help with unit testing visit:
  * https://cloud.google.com/appengine/docs/standard/java/tools/localunittesting
  */
 @RunWith(JUnit4.class)

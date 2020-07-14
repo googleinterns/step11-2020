@@ -22,8 +22,10 @@ import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorMenteeRelation;
+import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -91,7 +93,7 @@ public class DashboardServlet extends HttpServlet {
 
     User user = dataAccess.getCurrentUser();
     if (user != null) {
-      response.setContentType("text/html;");
+      response.setContentType(ServletUtils.CONTENT_HTML);
       Map<String, Object> context = new HashMap<>();
 
       Mentor mentor = dataAccess.getMentor(user.getUserId());
@@ -99,7 +101,7 @@ public class DashboardServlet extends HttpServlet {
       if (mentor != null) {
         Collection<MentorMenteeRelation> connectedMentees =
             dataAccess.getMentorMenteeRelations(mentor);
-        context.put("mentorMenteeRelations", connectedMentees);
+        context.put(ContextFields.MENTOR_MENTEE_RELATIONS, connectedMentees);
 
         String renderedTemplate = jinjava.render(dashboardMentorTemplate, context);
 
@@ -108,7 +110,7 @@ public class DashboardServlet extends HttpServlet {
       } else if (mentee != null) {
         Collection<MentorMenteeRelation> connectedMentors =
             dataAccess.getMentorMenteeRelations(mentee);
-        context.put("mentorMenteeRelations", connectedMentors);
+        context.put(ContextFields.MENTOR_MENTEE_RELATIONS, connectedMentors);
 
         String renderedTemplate = jinjava.render(dashboardMenteeTemplate, context);
 
