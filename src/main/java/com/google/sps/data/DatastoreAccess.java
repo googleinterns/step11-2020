@@ -80,8 +80,9 @@ public class DatastoreAccess implements DataAccess {
     if (loggedIn) {
       User user = getCurrentUser();
       currentUser = getUser(user.getUserId());
-      isMentor = currentUser.getUserType() == UserType.MENTOR;
-      isMentee = !isMentor && currentUser.getUserType() == UserType.MENTEE;
+      isMentor = currentUser == null ? false : currentUser.getUserType() == UserType.MENTOR;
+      isMentee =
+          currentUser == null ? false : !isMentor && currentUser.getUserType() == UserType.MENTEE;
     }
     context.put(ContextFields.CURRENT_USER, currentUser);
     context.put(ContextFields.IS_MENTOR, isMentor);

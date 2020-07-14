@@ -19,7 +19,7 @@ import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.sps.data.Country;
 import com.google.sps.data.DataAccess;
-import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.EducationLevel;
 import com.google.sps.data.Ethnicity;
 import com.google.sps.data.Gender;
@@ -116,11 +116,11 @@ public class QuestionnaireServlet extends HttpServlet {
       response.setStatus(500);
       return;
     }
-    String formType =
-        ServletUtils.getParameter(request, ParameterConstants.FORM_TYPE, "").toLowerCase();
+
+    Map<String, Object> context =
+        dataAccess.getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
+    String formType = existingUser == null ? ServletUtils.getParameter(request, ParameterConstants.FORM_TYPE, "").toLowerCase(); : existingUser.getUserType().getTitle().toLowerCase();
     if (formType.equals(MENTOR) || formType.equals(MENTEE)) {
-      Map<String, Object> context =
-          dataAccess.getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
       context.put(ContextFields.FORM_TYPE, formType.toUpperCase());
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
@@ -128,6 +128,7 @@ public class QuestionnaireServlet extends HttpServlet {
       LOG.warning(ErrorMessages.INVALID_PARAMATERS);
       response.sendRedirect(URLPatterns.LANDING);
     }
+
   }
 
   @Override
@@ -278,7 +279,8 @@ public class QuestionnaireServlet extends HttpServlet {
   private Map<String, Object> selectionListsForFrontEnd() {
     Map<String, Object> map = new HashMap<>();
     map.put("countries", Country.values());
-    map.put("ethnicities", Ethnicity.values());
+    map.put("ethnicities", Arrays.stream(Ethnicity.values())
+      .filter(o -> !o.equals(Ethnicity.UNSPECIFIED)));
     map.put("genders", Gender.values());
     map.put("languages", Language.values());
     map.put("mentorTypes", MentorType.values());
