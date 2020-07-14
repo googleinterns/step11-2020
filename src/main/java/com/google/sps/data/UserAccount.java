@@ -165,7 +165,7 @@ public abstract class UserAccount implements DatastoreEntity {
             : new Mentor(entity);
   }
 
-  protected void validate() {
+  protected void sanitizeValues() {
     if (this.ethnicityList == null) {
       this.ethnicityList = new ArrayList<>();
     }

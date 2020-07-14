@@ -45,7 +45,7 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     this.desiredMeetingFrequency = builder.desiredMeetingFrequency;
     this.dislikedMentorKeys = builder.dislikedMentorKeys;
     this.desiredMentorType = builder.desiredMentorType;
-    this.validate();
+    this.sanitizeValues();
   }
 
   public Mentee(Entity entity) {
@@ -61,12 +61,12 @@ public class Mentee extends UserAccount implements DatastoreEntity {
             (Collection) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS));
     this.desiredMentorType =
         MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTOR_TYPE))];
-    this.validate();
+    this.sanitizeValues();
   }
 
   @Override
-  protected void validate() {
-    super.validate();
+  protected void sanitizeValues() {
+    super.sanitizeValues();
     if (this.dislikedMentorKeys == null) {
       this.dislikedMentorKeys = new HashSet<>();
     }
@@ -84,8 +84,9 @@ public class Mentee extends UserAccount implements DatastoreEntity {
 
   /**
    * converts the list retrieved from datastore to a list of usable long values
-   * @param  dislikedMentorKeyList the list of objects from datastore
-   * @return                       the list of long values
+   *
+   * @param dislikedMentorKeyList the list of objects from datastore
+   * @return the list of long values
    */
   private static Set<Long> getDislikedSetFromProperty(Collection<Object> dislikedMentorKeyList) {
     return dislikedMentorKeyList == null
