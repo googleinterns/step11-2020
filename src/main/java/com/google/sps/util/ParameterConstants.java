@@ -36,6 +36,10 @@ public final class ParameterConstants {
   public static final String MENTEE_GOAL = "goal";
   public static final String MENTEE_DESIRED_MEETING_FREQUENCY = "desiredMeetingFrequency";
   public static final String MENTEE_DISLIKED_MENTOR_KEYS = "dislikedMentorKeys";
+  public static final String MENTEE_LAST_DISLIKED_MENTOR_KEY = "lastDislikedMentorKey";
+  public static final String MENTEE_LAST_REQUESTED_MENTOR_KEY = "lastRequestedMentorKey";
+  public static final String MENTEE_REQUESTED_MENTOR_KEYS = "requestedMentorKeys";
+  public static final String MENTEE_SERVED_MENTOR_KEYS = "servedMentorKeys";
   public static final String MENTOR_VISIBILITY = "visibility";
   public static final String MENTOR_FOCUS_LIST = "focusList";
   public static final String MENTOR_TYPE = "mentorType";

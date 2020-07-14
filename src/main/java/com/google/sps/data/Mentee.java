@@ -18,6 +18,7 @@ import static java.lang.Math.toIntExact;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.sps.util.ParameterConstants;
+import java.util.ArrayList;
 import java.util.Set;
 
 public class Mentee extends UserAccount implements DatastoreEntity {
@@ -25,6 +26,11 @@ public class Mentee extends UserAccount implements DatastoreEntity {
   private Topic goal;
   private MeetingFrequency desiredMeetingFrequency;
   private Set<Long> dislikedMentorKeys;
+  private Set<Long> requestedMentorKeys;
+  private ArrayList<Long> servedMentorKeys;
+  private Long lastRequestedMentorKey;
+  private Long lastDislikedMentorKey;
+
   private MentorType desiredMentorType;
 
   private Mentee(Builder builder) {
@@ -33,6 +39,11 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     this.desiredMeetingFrequency = builder.desiredMeetingFrequency;
     this.dislikedMentorKeys = builder.dislikedMentorKeys;
     this.desiredMentorType = builder.desiredMentorType;
+
+    this.requestedMentorKeys = builder.requestedMentorKeys;
+    this.servedMentorKeys = builder.servedMentorKeys;
+    this.lastRequestedMentorKey = builder.lastRequestedMentorKey;
+    this.lastDislikedMentorKey = builder.lastDislikedMentorKey;
   }
 
   public Mentee(Entity entity) {
@@ -47,6 +58,14 @@ public class Mentee extends UserAccount implements DatastoreEntity {
         (Set<Long>) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS);
     this.desiredMentorType =
         MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTOR_TYPE))];
+    this.requestedMentorKeys =
+        (Set<Long>) entity.getProperty(ParameterConstants.MENTEE_REQUESTED_MENTOR_KEYS);
+    this.servedMentorKeys =
+        (ArrayList<Long>) entity.getProperty(ParameterConstants.MENTEE_SERVED_MENTOR_KEYS);
+    this.lastRequestedMentorKey =
+        (long) entity.getProperty(ParameterConstants.MENTEE_LAST_REQUESTED_MENTOR_KEY);
+    this.lastDislikedMentorKey =
+        (long) entity.getProperty(ParameterConstants.MENTEE_LAST_DISLIKED_MENTOR_KEY);
   }
 
   public Entity convertToEntity() {
@@ -56,6 +75,12 @@ public class Mentee extends UserAccount implements DatastoreEntity {
         ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, desiredMeetingFrequency.ordinal());
     entity.setProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS, this.dislikedMentorKeys);
     entity.setProperty(ParameterConstants.MENTOR_TYPE, desiredMentorType.ordinal());
+    entity.setProperty(ParameterConstants.MENTEE_REQUESTED_MENTOR_KEYS, this.requestedMentorKeys);
+    entity.setProperty(ParameterConstants.MENTEE_SERVED_MENTOR_KEYS, this.servedMentorKeys);
+    entity.setProperty(
+        ParameterConstants.MENTEE_LAST_DISLIKED_MENTOR_KEY, this.lastDislikedMentorKey);
+    entity.setProperty(
+        ParameterConstants.MENTEE_LAST_REQUESTED_MENTOR_KEY, this.lastRequestedMentorKey);
     return entity;
   }
 
@@ -84,6 +109,10 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     private MeetingFrequency desiredMeetingFrequency;
     private Set<Long> dislikedMentorKeys;
     private MentorType desiredMentorType;
+    private Set<Long> requestedMentorKeys;
+    private ArrayList<Long> servedMentorKeys;
+    private Long lastDislikedMentorKey;
+    private Long lastRequestedMentorKey;
 
     public Builder() {}
 
@@ -104,6 +133,26 @@ public class Mentee extends UserAccount implements DatastoreEntity {
 
     public Builder desiredMentorType(MentorType desiredMentorType) {
       this.desiredMentorType = desiredMentorType;
+      return this;
+    }
+
+    public Builder requestedMentorKeys(Set<Long> requestedMentorKeys) {
+      this.requestedMentorKeys = requestedMentorKeys;
+      return this;
+    }
+
+    public Builder servedMentorKeys(ArrayList<Long> servedMentorKeys) {
+      this.servedMentorKeys = servedMentorKeys;
+      return this;
+    }
+
+    public Builder lastRequestedMentorKey(Long lastRequestedMentorKey) {
+      this.lastRequestedMentorKey = lastRequestedMentorKey;
+      return this;
+    }
+
+    public Builder lastDislikedMentorKey(Long lastDislikedMentorKey) {
+      this.lastDislikedMentorKey = lastDislikedMentorKey;
       return this;
     }
 

@@ -147,10 +147,15 @@ public class DatastoreAccess implements DataAccess {
     Query query =
         new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT)
             .setFilter(
-                new Query.FilterPredicate(
-                    ParameterConstants.USER_TYPE,
-                    Query.FilterOperator.EQUAL,
-                    UserType.MENTOR.ordinal()));
+                Query.CompositeFilterOperator.and(
+                    new Query.FilterPredicate(
+                        ParameterConstants.USER_TYPE,
+                        Query.FilterOperator.EQUAL,
+                        UserType.MENTOR.ordinal()),
+                    new Query.FilterPredicate(
+                        ParameterConstants.MENTOR_TYPE,
+                        Query.FilterOperator.EQUAL,
+                        mentee.getDesiredMentorType().ordinal())));
     PreparedQuery results = datastoreService.prepare(query);
     return StreamSupport.stream(
             results.asIterable(FetchOptions.Builder.withLimit(10)).spliterator(), false)
