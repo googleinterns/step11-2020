@@ -102,7 +102,7 @@ public class DashboardServlet extends HttpServlet {
     User user = dataAccess.getCurrentUser();
     if (user != null) {
       response.setContentType(ServletUtils.CONTENT_HTML);
-      Map<String, Object> context = new HashMap<>();
+      Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.DASHBOARD);
 
       Mentor mentor = dataAccess.getMentor(user.getUserId());
       Mentee mentee = dataAccess.getMentee(user.getUserId());
