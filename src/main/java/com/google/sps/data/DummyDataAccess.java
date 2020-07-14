@@ -1,3 +1,17 @@
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package com.google.sps.data;
 
 import com.google.appengine.api.users.User;
@@ -12,6 +26,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
+/**
+ * This class provides access to hardcoded mock data meant for testing.
+ *
+ * @author guptamudit
+ * @author sylviaziyuz
+ * @author tquintanilla
+ * @version 1.0
+ */
 public class DummyDataAccess implements DataAccess {
 
   private static final UserService userService = UserServiceFactory.getUserService();
@@ -47,7 +69,7 @@ public class DummyDataAccess implements DataAccess {
         .dateOfBirth(new Date())
         .country(Country.AU)
         .language(Language.ES)
-        .timezone(TimeZone.getDefault())
+        .timezone(new TimeZoneInfo(TimeZone.getDefault()))
         .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
         .ethnicityOther("")
         .gender(Gender.WOMAN)
@@ -72,7 +94,7 @@ public class DummyDataAccess implements DataAccess {
         .dateOfBirth(new Date())
         .country(Country.AU)
         .language(Language.ES)
-        .timezone(TimeZone.getDefault())
+        .timezone(new TimeZoneInfo(TimeZone.getDefault()))
         .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
         .ethnicityOther("")
         .gender(Gender.WOMAN)
@@ -96,7 +118,7 @@ public class DummyDataAccess implements DataAccess {
         .dateOfBirth(new Date())
         .country(Country.AU)
         .language(Language.ES)
-        .timezone(TimeZone.getDefault())
+        .timezone(new TimeZoneInfo(TimeZone.getDefault()))
         .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
         .ethnicityOther("")
         .gender(Gender.WOMAN)
@@ -119,7 +141,7 @@ public class DummyDataAccess implements DataAccess {
         .dateOfBirth(new Date())
         .country(Country.AU)
         .language(Language.ES)
-        .timezone(TimeZone.getDefault())
+        .timezone(new TimeZoneInfo(TimeZone.getDefault()))
         .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
         .ethnicityOther("")
         .gender(Gender.WOMAN)
@@ -162,7 +184,7 @@ public class DummyDataAccess implements DataAccess {
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(TimeZone.getDefault())
+            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
             .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
             .ethnicityOther("")
             .gender(Gender.WOMAN)
@@ -184,7 +206,7 @@ public class DummyDataAccess implements DataAccess {
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(TimeZone.getDefault())
+            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
             .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
             .ethnicityOther("")
             .gender(Gender.MAN)
@@ -206,7 +228,7 @@ public class DummyDataAccess implements DataAccess {
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(TimeZone.getDefault())
+            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
             .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
             .ethnicityOther("")
             .gender(Gender.NONBINARY)
@@ -233,7 +255,7 @@ public class DummyDataAccess implements DataAccess {
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(TimeZone.getDefault())
+            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
             .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
             .ethnicityOther("")
             .gender(Gender.MAN)
@@ -254,7 +276,7 @@ public class DummyDataAccess implements DataAccess {
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(TimeZone.getDefault())
+            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
             .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
             .ethnicityOther("")
             .gender(Gender.MAN)
@@ -275,7 +297,7 @@ public class DummyDataAccess implements DataAccess {
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(TimeZone.getDefault())
+            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
             .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
             .ethnicityOther("")
             .gender(Gender.WOMAN)
@@ -304,7 +326,7 @@ public class DummyDataAccess implements DataAccess {
               .dateOfBirth(new Date())
               .country(Country.AU)
               .language(Language.ES)
-              .timezone(TimeZone.getDefault())
+              .timezone(new TimeZoneInfo(TimeZone.getDefault()))
               .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
               .ethnicityOther("")
               .gender(Gender.WOMAN)
@@ -344,7 +366,7 @@ public class DummyDataAccess implements DataAccess {
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(TimeZone.getDefault())
+            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
             .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
             .ethnicityOther("")
             .gender(Gender.WOMAN)
@@ -366,7 +388,7 @@ public class DummyDataAccess implements DataAccess {
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(TimeZone.getDefault())
+            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
             .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
             .ethnicityOther("")
             .gender(Gender.MAN)
@@ -388,7 +410,7 @@ public class DummyDataAccess implements DataAccess {
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(TimeZone.getDefault())
+            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
             .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
             .ethnicityOther("")
             .gender(Gender.NONBINARY)
@@ -417,7 +439,7 @@ public class DummyDataAccess implements DataAccess {
     return false;
   }
 
-  // delete request object and create connection object
+  // delete request object and create mentorMenteeRelation object
   public boolean approveRequest(MentorshipRequest request) {
     return false;
   }
@@ -427,17 +449,17 @@ public class DummyDataAccess implements DataAccess {
     return false;
   }
 
-  public boolean makeConnection(long mentorKey, long menteeKey) {
+  public boolean makeMentorMenteeRelation(long mentorKey, long menteeKey) {
     return false;
   }
 
-  public Collection<Connection> getConnections(UserAccount user) {
-    Collection<Connection> data = new ArrayList(5);
+  public Collection<MentorMenteeRelation> getMentorMenteeRelations(UserAccount user) {
+    Collection<MentorMenteeRelation> data = new ArrayList(5);
     for (int i = 0; i < 5; i++) {
-      Connection connection = new Connection(i + 1, i + 2);
+      MentorMenteeRelation mentorMenteeRelation = new MentorMenteeRelation(i + 1, i + 2);
       if (user.getUserType() == UserType.MENTOR) {
-        connection.setMentor((Mentor) user);
-        connection.setMentee(
+        mentorMenteeRelation.setMentor((Mentor) user);
+        mentorMenteeRelation.setMentee(
             (new Mentee.Builder())
                 .name("Stacy")
                 .userID("999999")
@@ -445,7 +467,7 @@ public class DummyDataAccess implements DataAccess {
                 .dateOfBirth(new Date())
                 .country(Country.AU)
                 .language(Language.ES)
-                .timezone(TimeZone.getDefault())
+                .timezone(new TimeZoneInfo(TimeZone.getDefault()))
                 .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
                 .ethnicityOther("")
                 .gender(Gender.WOMAN)
@@ -459,8 +481,8 @@ public class DummyDataAccess implements DataAccess {
                 .desiredMeetingFrequency(MeetingFrequency.WEEKLY)
                 .build());
       } else {
-        connection.setMentee((Mentee) user);
-        connection.setMentor(
+        mentorMenteeRelation.setMentee((Mentee) user);
+        mentorMenteeRelation.setMentor(
             (new Mentor.Builder())
                 .name("Sam")
                 .userID("539032")
@@ -468,7 +490,7 @@ public class DummyDataAccess implements DataAccess {
                 .dateOfBirth(new Date())
                 .country(Country.AU)
                 .language(Language.ES)
-                .timezone(TimeZone.getDefault())
+                .timezone(new TimeZoneInfo(TimeZone.getDefault()))
                 .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
                 .ethnicityOther("")
                 .gender(Gender.NONBINARY)
@@ -483,7 +505,7 @@ public class DummyDataAccess implements DataAccess {
                 .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
                 .build());
       }
-      data.add(connection);
+      data.add(mentorMenteeRelation);
     }
     return data;
   }

@@ -1,10 +1,23 @@
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -13,117 +26,41 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ParameterConstants;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * This class provides access to data from the datastore service provided by google appengine.
+ *
+ * @author guptamudit
+ * @version 1.0
+ */
 public class DatastoreAccess implements DataAccess {
 
   private static boolean seeded = false;
-  private static Random rnd = new Random();
   private static DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
   private static UserService userService = UserServiceFactory.getUserService();
 
   public DatastoreAccess() {
     if (!DatastoreAccess.seeded) {
-      seed_db();
-      DatastoreAccess.seeded = true;
+      DatastoreAccess.seeded =
+          datastoreService
+                  .prepare(new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT))
+                  .countEntities()
+              != 0;
     }
   }
 
-  private static String randomNumber(int digCount) {
-    StringBuilder sb = new StringBuilder(digCount);
-    for (int i = 0; i < digCount; i++) sb.append((char) ('0' + rnd.nextInt(10)));
-    return sb.toString();
-  }
-
-  private static String randomLetters(int targetStringLength) {
-    int leftLimit = 97; // letter 'a'
-    int rightLimit = 122; // letter 'z'
-
-    String generatedString =
-        rnd.ints(leftLimit, rightLimit + 1)
-            .limit(targetStringLength)
-            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-            .toString();
-
-    return generatedString;
-  }
-
-  private static <T extends Enum<?>> T randomEnum(Class<T> enumClass) {
-    int x = rnd.nextInt(enumClass.getEnumConstants().length);
-    return enumClass.getEnumConstants()[x];
-  }
-
-  private void seed_db() {
-    Collection<Mentee> someMentees = new ArrayList<>(50);
-    Collection<Mentor> someMentors = new ArrayList<>(50);
-    for (int i = 0; i < 250; i++) {
-      Mentee mentee =
-          (new Mentee.Builder())
-              .name(randomLetters(10))
-              .userID(randomNumber(21))
-              .email(randomLetters(7) + "@gmail.com")
-              .dateOfBirth(new Date())
-              .country(randomEnum(Country.class))
-              .language(randomEnum(Language.class))
-              .timezone(TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)]))
-              .ethnicityList(Arrays.asList(randomEnum(Ethnicity.class)))
-              .ethnicityOther(randomLetters(10))
-              .gender(randomEnum(Gender.class))
-              .genderOther(randomLetters(10))
-              .firstGen(rnd.nextBoolean())
-              .lowIncome(rnd.nextBoolean())
-              .educationLevel(randomEnum(EducationLevel.class))
-              .educationLevelOther(randomLetters(10))
-              .description(randomLetters(30))
-              .userType(UserType.MENTEE)
-              .goal(randomEnum(Topic.class))
-              .desiredMeetingFrequency(randomEnum(MeetingFrequency.class))
-              .dislikedMentorKeys(Collections.emptySet())
-              .build();
-      saveUser(mentee);
-      if (i < 50) {
-        someMentees.add(mentee);
-      }
+  public boolean seed_db(Collection<Entity> entities) {
+    if (DatastoreAccess.seeded) {
+      return false;
     }
-    for (int i = 0; i < 250; i++) {
-      Mentor mentor =
-          (new Mentor.Builder())
-              .name(randomLetters(10))
-              .userID(randomNumber(21))
-              .email(randomLetters(7) + "@gmail.com")
-              .dateOfBirth(new Date())
-              .country(randomEnum(Country.class))
-              .language(randomEnum(Language.class))
-              .timezone(TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)]))
-              .ethnicityList(Arrays.asList(randomEnum(Ethnicity.class)))
-              .ethnicityOther(randomLetters(10))
-              .gender(randomEnum(Gender.class))
-              .genderOther(randomLetters(10))
-              .firstGen(rnd.nextBoolean())
-              .lowIncome(rnd.nextBoolean())
-              .educationLevel(randomEnum(EducationLevel.class))
-              .educationLevelOther(randomLetters(10))
-              .description(randomLetters(30))
-              .userType(UserType.MENTOR)
-              .visibility(rnd.nextBoolean())
-              .focusList(Arrays.asList())
-              .mentorType(randomEnum(MentorType.class))
-              .build();
-      saveUser(mentor);
-      if (i < 50) {
-        someMentors.add(mentor);
-      }
-    }
+    datastoreService.put(entities);
+    DatastoreAccess.seeded = true;
+    return true;
   }
 
   public Map<String, Object> getDefaultRenderingContext(String currentURL) {
@@ -136,8 +73,9 @@ public class DatastoreAccess implements DataAccess {
     if (loggedIn) {
       User user = getCurrentUser();
       currentUser = getUser(user.getUserId());
-      isMentor = currentUser.getUserType() == UserType.MENTOR;
-      isMentee = !isMentor && currentUser.getUserType() == UserType.MENTEE;
+      isMentor = currentUser == null ? false : currentUser.getUserType() == UserType.MENTOR;
+      isMentee =
+          currentUser == null ? false : !isMentor && currentUser.getUserType() == UserType.MENTEE;
     }
     context.put(ContextFields.CURRENT_USER, currentUser);
     context.put(ContextFields.IS_MENTOR, isMentor);
@@ -172,22 +110,22 @@ public class DatastoreAccess implements DataAccess {
 
   public Mentee getMentee(String userID) {
     UserAccount user = getUser(userID);
-    return user.getUserType() == UserType.MENTOR ? null : (Mentee) user;
+    return user == null || user.getUserType() == UserType.MENTOR ? null : (Mentee) user;
   }
 
   public Mentee getMentee(long datastoreKey) {
     UserAccount user = getUser(datastoreKey);
-    return user.getUserType() == UserType.MENTOR ? null : (Mentee) user;
+    return user == null || user.getUserType() == UserType.MENTOR ? null : (Mentee) user;
   }
 
   public Mentor getMentor(String userID) {
     UserAccount user = getUser(userID);
-    return user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
+    return user == null || user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
   }
 
   public Mentor getMentor(long datastoreKey) {
     UserAccount user = getUser(datastoreKey);
-    return user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
+    return user == null || user.getUserType() == UserType.MENTEE ? null : (Mentor) user;
   }
 
   public boolean createUser(UserAccount user) {
@@ -211,8 +149,7 @@ public class DatastoreAccess implements DataAccess {
                     Query.FilterOperator.EQUAL,
                     UserType.MENTOR.ordinal()));
     PreparedQuery results = datastoreService.prepare(query);
-    return StreamSupport.stream(
-            results.asIterable(FetchOptions.Builder.withLimit(10)).spliterator(), false)
+    return StreamSupport.stream(results.asIterable().spliterator(), false)
         .map(Mentor::new)
         .collect(Collectors.toList());
   }
@@ -226,8 +163,7 @@ public class DatastoreAccess implements DataAccess {
                     Query.FilterOperator.EQUAL,
                     UserType.MENTEE.ordinal()));
     PreparedQuery results = datastoreService.prepare(query);
-    return StreamSupport.stream(
-            results.asIterable(FetchOptions.Builder.withLimit(10)).spliterator(), false)
+    return StreamSupport.stream(results.asIterable().spliterator(), false)
         .map(Mentee::new)
         .collect(Collectors.toList());
   }
@@ -331,7 +267,7 @@ public class DatastoreAccess implements DataAccess {
     return false;
   }
 
-  // delete request object and create connection object
+  // delete request object and create mentorMenteeRelation object
   public boolean approveRequest(MentorshipRequest request) {
     if (deleteRequest(request)) {
       UserAccount toUser = request.getToUser();
@@ -344,7 +280,7 @@ public class DatastoreAccess implements DataAccess {
       }
       UserAccount mentor = toUser.getUserType() == UserType.MENTOR ? toUser : fromUser;
       UserAccount mentee = toUser.getUserType() == UserType.MENTEE ? toUser : fromUser;
-      return makeConnection(mentor.getDatastoreKey(), mentee.getDatastoreKey());
+      return makeMentorMenteeRelation(mentor.getDatastoreKey(), mentee.getDatastoreKey());
     }
     return false;
   }
@@ -354,17 +290,17 @@ public class DatastoreAccess implements DataAccess {
     return deleteRequest(request);
   }
 
-  public boolean makeConnection(long mentorKey, long menteeKey) {
+  public boolean makeMentorMenteeRelation(long mentorKey, long menteeKey) {
     if (getMentor(mentorKey) != null && getMentee(menteeKey) != null) {
-      Connection connection = new Connection(mentorKey, menteeKey);
-      datastoreService.put(connection.convertToEntity());
+      MentorMenteeRelation mentorMenteeRelation = new MentorMenteeRelation(mentorKey, menteeKey);
+      datastoreService.put(mentorMenteeRelation.convertToEntity());
     }
     return false;
   }
 
-  public Collection<Connection> getConnections(UserAccount user) {
+  public Collection<MentorMenteeRelation> getMentorMenteeRelations(UserAccount user) {
     Query query =
-        new Query(ParameterConstants.ENTITY_TYPE_CONNECTION)
+        new Query(ParameterConstants.ENTITY_TYPE_MENTOR_MENTEE_RELATION)
             .setFilter(
                 Query.CompositeFilterOperator.or(
                     new Query.FilterPredicate(
@@ -376,20 +312,20 @@ public class DatastoreAccess implements DataAccess {
                         Query.FilterOperator.EQUAL,
                         user.getDatastoreKey())));
     PreparedQuery results = datastoreService.prepare(query);
-    Collection<Connection> connections =
+    Collection<MentorMenteeRelation> mentorMenteeRelations =
         StreamSupport.stream(results.asIterable().spliterator(), false)
-            .map(Connection::new)
+            .map(MentorMenteeRelation::new)
             .collect(Collectors.toList());
-    connections.forEach(
-        connection -> {
+    mentorMenteeRelations.forEach(
+        mentorMenteeRelation -> {
           if (user.getUserType() == UserType.MENTOR) {
-            connection.setMentor((Mentor) user);
-            connection.setMentee(getMentee(connection.getMenteeKey()));
+            mentorMenteeRelation.setMentor((Mentor) user);
+            mentorMenteeRelation.setMentee(getMentee(mentorMenteeRelation.getMenteeKey()));
           } else if (user.getUserType() == UserType.MENTEE) {
-            connection.setMentee((Mentee) user);
-            connection.setMentor(getMentor(connection.getMentorKey()));
+            mentorMenteeRelation.setMentee((Mentee) user);
+            mentorMenteeRelation.setMentor(getMentor(mentorMenteeRelation.getMentorKey()));
           }
         });
-    return connections;
+    return mentorMenteeRelations;
   }
 }

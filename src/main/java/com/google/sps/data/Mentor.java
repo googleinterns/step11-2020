@@ -1,3 +1,17 @@
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package com.google.sps.data;
 
 import static java.lang.Math.toIntExact;
@@ -8,7 +22,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class Mentor extends UserAccount {
+/**
+ * This class represents a Mentor user and their mentor-specific data. Other data is held within the
+ * super class, UserAccount.
+ *
+ * @author guptamudit
+ * @author sylviaziyuz
+ * @author tquintanilla
+ * @version 1.0
+ */
+public class Mentor extends UserAccount implements DatastoreEntity {
   private boolean visibility;
   private Collection<Topic> focusList;
   private MentorType mentorType;
@@ -18,6 +41,7 @@ public class Mentor extends UserAccount {
     this.visibility = builder.visibility;
     this.focusList = builder.focusList;
     this.mentorType = builder.mentorType;
+    this.sanitizeValues();
   }
 
   public Mentor(Entity entity) {
@@ -28,6 +52,15 @@ public class Mentor extends UserAccount {
             (Collection) entity.getProperty(ParameterConstants.MENTOR_FOCUS_LIST));
     this.mentorType =
         MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTOR_TYPE))];
+    this.sanitizeValues();
+  }
+
+  @Override
+  protected void sanitizeValues() {
+    super.sanitizeValues();
+    if (this.focusList == null) {
+      this.focusList = new ArrayList<>();
+    }
   }
 
   public Entity convertToEntity() {
@@ -40,6 +73,12 @@ public class Mentor extends UserAccount {
     return entity;
   }
 
+  /**
+   * converts the list retrieved from datastore to a list of usable Topic objects
+   *
+   * @param focusEnumIndexList the list off objects from datastore
+   * @return the list of topic objects
+   */
   private static Collection<Topic> getFocusListFromProperty(Collection<Object> focusEnumIndexList) {
     return focusEnumIndexList == null
         ? new ArrayList<Topic>()
