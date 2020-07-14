@@ -65,7 +65,7 @@ public class MentorMenteeRelation implements DatastoreEntity {
             ParameterConstants.ENTITY_TYPE_MENTOR_MENTEE_RELATION, this.datastoreKey);
     Entity entity = new Entity(key);
     entity.setProperty(ParameterConstants.MENTOR_KEY, mentorKey);
-    entity.setProperty(ParameterConstants.MENTOR_KEY, menteeKey);
+    entity.setProperty(ParameterConstants.MENTEE_KEY, menteeKey);
     return entity;
   }
 
