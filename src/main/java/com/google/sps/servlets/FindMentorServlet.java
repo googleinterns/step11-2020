@@ -35,6 +35,7 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +43,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.FIND_MENTOR)
 public class FindMentorServlet extends HttpServlet {
+  private static final Logger LOG = Logger.getLogger(FindMentorServlet.class.getName());
+
   private static final String SEND = "sendRequest";
   private static final String DISLIKE = "dislikeMentor";
 
@@ -61,7 +64,7 @@ public class FindMentorServlet extends HttpServlet {
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
+      LOG.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = new HashMap<>();
@@ -72,8 +75,7 @@ public class FindMentorServlet extends HttpServlet {
               this.getClass().getResource(ResourceConstants.TEMPLATE_FIND_MENTOR), Charsets.UTF_8);
       findMentorTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println(
-          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_FIND_MENTOR));
+      LOG.severe(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_FIND_MENTOR));
     }
   }
 
@@ -107,23 +109,45 @@ public class FindMentorServlet extends HttpServlet {
 
     boolean success = false;
 
+    Long mentorDatastoreKey = null;
+    try {
+      mentorDatastoreKey = Long.parseLong(mentorKey);
+    } catch (NumberFormatException e) {
+      writeJsonSuccessToResponse(response, false);
+      return;
+    }
+    if (mentorDatastoreKey == null || (!choice.equals(SEND) && !choice.equals(DISLIKE))) {
+      writeJsonSuccessToResponse(response, false);
+      return;
+    }
     User user = dataAccess.getCurrentUser();
-    if (user != null) {
-      Mentee mentee = dataAccess.getMentee(user.getUserId());
-      Mentor mentor = dataAccess.getMentor(Long.parseLong(mentorKey));
-      if (mentee != null && mentor != null) {
-        if (choice.equals(SEND)) {
-          MentorshipRequest mentorshipRequest =
-              new MentorshipRequest(mentor.getDatastoreKey(), mentee.getDatastoreKey());
-          dataAccess.publishRequest(mentorshipRequest);
-          success = true;
-        } else if (choice.equals(DISLIKE)) {
-          dataAccess.dislikeMentor(mentee, mentor);
-          success = true;
-        }
-      }
+    if (user == null) {
+      writeJsonSuccessToResponse(response, false);
+      return;
+    }
+    Mentee mentee = dataAccess.getMentee(user.getUserId());
+    if (mentee == null) {
+      writeJsonSuccessToResponse(response, false);
+      return;
+    }
+    Mentor mentor = dataAccess.getMentor(mentorDatastoreKey);
+    if (mentor == null) {
+      writeJsonSuccessToResponse(response, false);
+      return;
+    }
+    if (choice.equals(SEND)) {
+      MentorshipRequest mentorshipRequest =
+          new MentorshipRequest(mentor.getDatastoreKey(), mentee.getDatastoreKey());
+      dataAccess.publishRequest(mentorshipRequest);
+    } else if (choice.equals(DISLIKE)) {
+      dataAccess.dislikeMentor(mentee, mentor);
     }
 
+    writeJsonSuccessToResponse(response, true);
+  }
+
+  private void writeJsonSuccessToResponse(HttpServletResponse response, boolean success)
+      throws IOException {
     response.setContentType("application/json;");
     response.getWriter().println("{\"success\": " + success + "}");
   }

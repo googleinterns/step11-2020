@@ -19,9 +19,9 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DataAccess;
 import com.google.sps.data.DatastoreAccess;
+import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorshipRequest;
-import com.google.sps.data.UserAccount;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
@@ -35,19 +35,22 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = URLPatterns.CONNECTION_REQUESTS)
-public class ConnectionRequestsServlet extends HttpServlet {
+@WebServlet(urlPatterns = URLPatterns.MENTORSHIP_REQUESTS)
+public class MentorshipRequestsServlet extends HttpServlet {
+  private static final Logger LOG = Logger.getLogger(MentorshipRequestsServlet.class.getName());
+
   private static final String ACCEPT = "accept";
   private static final String DENY = "deny";
 
   private DataAccess dataAccess;
   private Jinjava jinjava;
-  private String connectionRequestTemplate;
+  private String mentorshipRequestTemplate;
 
   @Override
   public void init() {
@@ -59,7 +62,7 @@ public class ConnectionRequestsServlet extends HttpServlet {
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
+      LOG.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = new HashMap<>();
@@ -67,18 +70,20 @@ public class ConnectionRequestsServlet extends HttpServlet {
     try {
       String template =
           Resources.toString(
-              this.getClass().getResource(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS),
+              this.getClass().getResource(ResourceConstants.TEMPLATE_MENTORSHIP_REQUESTS),
               Charsets.UTF_8);
-      connectionRequestTemplate = jinjava.render(template, context);
+      mentorshipRequestTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println(
-          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_CONNECTION_REQUESTS));
+      LOG.severe(
+          ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_MENTORSHIP_REQUESTS));
     }
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    if (connectionRequestTemplate == null) {
+    response.setContentType("text/html;");
+
+    if (mentorshipRequestTemplate == null) {
       response.setStatus(500);
       return;
     }
@@ -89,9 +94,9 @@ public class ConnectionRequestsServlet extends HttpServlet {
       if (mentor != null) {
         response.setContentType("text/html;");
         Map<String, Object> context =
-            dataAccess.getDefaultRenderingContext(URLPatterns.CONNECTION_REQUESTS);
-        context.put(ContextFields.CONNECTION_REQUESTS, dataAccess.getIncomingRequests(mentor));
-        String renderTemplate = jinjava.render(connectionRequestTemplate, context);
+            dataAccess.getDefaultRenderingContext(URLPatterns.MENTORSHIP_REQUESTS);
+        context.put(ContextFields.MENTORSHIP_REQUESTS, dataAccess.getIncomingRequests(mentor));
+        String renderTemplate = jinjava.render(mentorshipRequestTemplate, context);
         response.getWriter().println(renderTemplate);
         return;
       }
@@ -104,27 +109,43 @@ public class ConnectionRequestsServlet extends HttpServlet {
     final String requestKey = request.getParameter("requestID");
     final String choice = request.getParameter("choice");
 
-    boolean success = false;
-
+    Long requestDatastoreKey = null;
+    try {
+      requestDatastoreKey = Long.parseLong(requestKey);
+    } catch (NumberFormatException e) {
+      writeJsonSuccessToResponse(response, false);
+      return;
+    }
+    if (requestDatastoreKey == null || (!choice.equals(ACCEPT) && !choice.equals(DENY))) {
+      writeJsonSuccessToResponse(response, false);
+      return;
+    }
     User user = dataAccess.getCurrentUser();
-    if (user != null) {
-      UserAccount userAccount = dataAccess.getUser(user.getUserId());
-      if (userAccount != null) {
-        MentorshipRequest mentorshipRequest =
-            dataAccess.getMentorshipRequest(Long.parseLong(requestKey));
-        if (mentorshipRequest != null
-            && mentorshipRequest.getToUserKey() == userAccount.getDatastoreKey()) {
-          if (choice.equals(ACCEPT)) {
-            dataAccess.approveRequest(mentorshipRequest);
-            success = true;
-          } else if (choice.equals(DENY)) {
-            dataAccess.denyRequest(mentorshipRequest);
-            success = true;
-          }
-        }
-      }
+    if (user == null) {
+      writeJsonSuccessToResponse(response, false);
+      return;
+    }
+    Mentee mentee = dataAccess.getMentee(user.getUserId());
+    if (mentee == null) {
+      writeJsonSuccessToResponse(response, false);
+      return;
+    }
+    MentorshipRequest mentorshipRequest = dataAccess.getMentorshipRequest(requestDatastoreKey);
+    if (mentorshipRequest == null) {
+      writeJsonSuccessToResponse(response, false);
+      return;
+    }
+    if (choice.equals(ACCEPT)) {
+      dataAccess.approveRequest(mentorshipRequest);
+    } else if (choice.equals(DENY)) {
+      dataAccess.denyRequest(mentorshipRequest);
     }
 
+    writeJsonSuccessToResponse(response, true);
+  }
+
+  private void writeJsonSuccessToResponse(HttpServletResponse response, boolean success)
+      throws IOException {
     response.setContentType("application/json;");
     response.getWriter().println("{\"success\": " + success + "}");
   }

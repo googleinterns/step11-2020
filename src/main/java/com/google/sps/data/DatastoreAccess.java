@@ -1,3 +1,17 @@
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -247,7 +261,7 @@ public class DatastoreAccess implements DataAccess {
     return false;
   }
 
-  // delete request object and create connection object
+  // delete request object and create mentorMenteeRelation object
   public boolean approveRequest(MentorshipRequest request) {
     if (deleteRequest(request)) {
       UserAccount toUser = request.getToUser();
@@ -260,7 +274,7 @@ public class DatastoreAccess implements DataAccess {
       }
       UserAccount mentor = toUser.getUserType() == UserType.MENTOR ? toUser : fromUser;
       UserAccount mentee = toUser.getUserType() == UserType.MENTEE ? toUser : fromUser;
-      return makeConnection(mentor.getDatastoreKey(), mentee.getDatastoreKey());
+      return makeMentorMenteeRelation(mentor.getDatastoreKey(), mentee.getDatastoreKey());
     }
     return false;
   }
@@ -270,17 +284,17 @@ public class DatastoreAccess implements DataAccess {
     return deleteRequest(request);
   }
 
-  public boolean makeConnection(long mentorKey, long menteeKey) {
+  public boolean makeMentorMenteeRelation(long mentorKey, long menteeKey) {
     if (getMentor(mentorKey) != null && getMentee(menteeKey) != null) {
-      Connection connection = new Connection(mentorKey, menteeKey);
-      datastoreService.put(connection.convertToEntity());
+      MentorMenteeRelation mentorMenteeRelation = new MentorMenteeRelation(mentorKey, menteeKey);
+      datastoreService.put(mentorMenteeRelation.convertToEntity());
     }
     return false;
   }
 
-  public Collection<Connection> getConnections(UserAccount user) {
+  public Collection<MentorMenteeRelation> getMentorMenteeRelations(UserAccount user) {
     Query query =
-        new Query(ParameterConstants.ENTITY_TYPE_CONNECTION)
+        new Query(ParameterConstants.ENTITY_TYPE_MENTOR_MENTEE_RELATION)
             .setFilter(
                 Query.CompositeFilterOperator.or(
                     new Query.FilterPredicate(
@@ -292,20 +306,20 @@ public class DatastoreAccess implements DataAccess {
                         Query.FilterOperator.EQUAL,
                         user.getDatastoreKey())));
     PreparedQuery results = datastoreService.prepare(query);
-    Collection<Connection> connections =
+    Collection<MentorMenteeRelation> mentorMenteeRelations =
         StreamSupport.stream(results.asIterable().spliterator(), false)
-            .map(Connection::new)
+            .map(MentorMenteeRelation::new)
             .collect(Collectors.toList());
-    connections.forEach(
-        connection -> {
+    mentorMenteeRelations.forEach(
+        mentorMenteeRelation -> {
           if (user.getUserType() == UserType.MENTOR) {
-            connection.setMentor((Mentor) user);
-            connection.setMentee(getMentee(connection.getMenteeKey()));
+            mentorMenteeRelation.setMentor((Mentor) user);
+            mentorMenteeRelation.setMentee(getMentee(mentorMenteeRelation.getMenteeKey()));
           } else if (user.getUserType() == UserType.MENTEE) {
-            connection.setMentee((Mentee) user);
-            connection.setMentor(getMentor(connection.getMentorKey()));
+            mentorMenteeRelation.setMentee((Mentee) user);
+            mentorMenteeRelation.setMentor(getMentor(mentorMenteeRelation.getMentorKey()));
           }
         });
-    return connections;
+    return mentorMenteeRelations;
   }
 }

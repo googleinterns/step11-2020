@@ -21,7 +21,7 @@ import java.util.TimeZone;
 public class RandomObjects {
   private static Random rnd = new Random();
 
-  public static String randomNumber(int digCount) {
+  public static String randomNumberAsString(int digCount) {
     StringBuilder sb = new StringBuilder(digCount);
     for (int i = 0; i < digCount; i++) sb.append((char) ('0' + rnd.nextInt(10)));
     return sb.toString();
@@ -48,7 +48,7 @@ public class RandomObjects {
   public static Mentee randomMentee() {
     return (new Mentee.Builder())
         .name(randomLetters(10))
-        .userID(randomNumber(21))
+        .userID(randomNumberAsString(21))
         .email(randomLetters(7) + "@gmail.com")
         .dateOfBirth(new Date())
         .country(randomEnum(Country.class))
@@ -75,7 +75,7 @@ public class RandomObjects {
   public static Mentor randomMentor() {
     return (new Mentor.Builder())
         .name(randomLetters(10))
-        .userID(randomNumber(21))
+        .userID(randomNumberAsString(21))
         .email(randomLetters(7) + "@gmail.com")
         .dateOfBirth(new Date())
         .country(randomEnum(Country.class))

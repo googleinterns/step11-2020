@@ -14,20 +14,12 @@
 
 package com.google.sps.servlets;
 
-import static java.lang.Math.toIntExact;
-
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DataAccess;
 import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.UserAccount;
-import com.google.sps.data.UserType;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ParameterConstants;
@@ -42,6 +34,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = URLPatterns.PROFILE)
 public final class ProfileServlet extends HttpServlet {
+  private static final Logger LOG = Logger.getLogger(ProfileServlet.class.getName());
 
   private String profileTemplate;
   private Jinjava jinjava;
@@ -65,7 +59,7 @@ public final class ProfileServlet extends HttpServlet {
           new FileLocator(
               new File(this.getClass().getResource(ResourceConstants.TEMPLATES).toURI())));
     } catch (URISyntaxException | FileNotFoundException e) {
-      System.err.println(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
+      LOG.severe(ErrorMessages.TEMPLATES_DIRECTORY_NOT_FOUND);
     }
 
     Map<String, Object> context = new HashMap<>();
@@ -76,7 +70,7 @@ public final class ProfileServlet extends HttpServlet {
               this.getClass().getResource(ResourceConstants.TEMPLATE_PROFILE), Charsets.UTF_8);
       profileTemplate = jinjava.render(template, context);
     } catch (IOException e) {
-      System.err.println(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_PROFILE));
+      LOG.severe(ErrorMessages.templateFileNotFound(ResourceConstants.TEMPLATE_PROFILE));
     }
   }
 
@@ -89,33 +83,21 @@ public final class ProfileServlet extends HttpServlet {
     }
     String userID = user.getUserId();
 
-    UserAccount userAccount = dataAccess.getUser(userID);
-    if (userAccount == null) {
+    UserAccount currentUserAccount = dataAccess.getUser(userID);
+    if (currentUserAccount == null) {
       response.sendRedirect(URLPatterns.LANDING);
       return;
     }
 
     String requestedUserID = getParameter(request, ParameterConstants.USER_ID, userID);
-    Query query =
-        new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT)
-            .setFilter(
-                new Query.FilterPredicate(
-                    ParameterConstants.USER_ID, Query.FilterOperator.EQUAL, requestedUserID));
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery result = datastore.prepare(query);
-    Entity userEntity = result.asSingleEntity();
-    if (userEntity == null) {
+    UserAccount requestedUserAccount =
+        requestedUserID.equals(userID) ? currentUserAccount : dataAccess.getUser(requestedUserID);
+    if (requestedUserAccount == null) {
       response.sendRedirect(URLPatterns.PROFILE);
       return;
     }
     Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.PROFILE);
-    context.put(
-        ParameterConstants.USER_TYPE,
-        UserType.values()[toIntExact((long) (userEntity.getProperty(ParameterConstants.USER_TYPE)))]
-                == UserType.MENTOR
-            ? "mentor"
-            : "mentee");
-    context.put(ContextFields.PROFILE_USER, UserAccount.fromEntity(userEntity));
+    context.put(ContextFields.PROFILE_USER, requestedUserAccount);
 
     String renderedTemplate = jinjava.render(profileTemplate, context);
     response.setContentType("text/html;");
