@@ -18,7 +18,7 @@ import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DataAccess;
-import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.UserAccount;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
@@ -42,14 +42,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Serves a summary of a user's (not necessarily of the currently logged in user) data
- * This servlet supports HTTP GET and returns an html page with all the information about the currently logged in user.
- * If a user is viewing their own profile, they may access the questionnaire page from here to edit their information.
+ * This servlet supports HTTP GET and returns an html page with a summary of a user's (not
+ * necessarily of the currently logged in user) data. If a user is viewing their own profile, they
+ * may access the questionnaire page from here to edit their information.
  *
  * @author sylviaziyuz
  * @author guptamudit
  * @version 1.0
- *
  * @param URLPatterns.PROFILE this servlet serves requests at /profile
  */
 @WebServlet(urlPatterns = URLPatterns.PROFILE)
@@ -62,7 +61,7 @@ public final class ProfileServlet extends HttpServlet {
 
   @Override
   public void init() {
-    dataAccess = new DummyDataAccess();
+    dataAccess = new DatastoreAccess();
 
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);

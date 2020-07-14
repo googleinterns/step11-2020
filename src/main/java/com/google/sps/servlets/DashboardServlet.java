@@ -18,7 +18,7 @@ import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DataAccess;
-import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorMenteeRelation;
@@ -44,14 +44,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Serves a list of connections a user has
- * This servlet supports HTTP GET and returns an html page with a information about each of the users that the
- * currently logged in user is connected with.
+ * This servlet supports HTTP GET and returns an html page with a information about each of the
+ * users that the currently logged in user is connected with.
  *
  * @author tquintanilla
  * @author guptamudit
  * @version 1.0
- *
  * @param URLPatterns.DASHBOARD this servlet serves requests at /dashboard
  */
 @WebServlet(urlPatterns = URLPatterns.DASHBOARD)
@@ -65,7 +63,7 @@ public class DashboardServlet extends HttpServlet {
 
   @Override
   public void init() {
-    dataAccess = new DummyDataAccess();
+    dataAccess = new DatastoreAccess();
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
     try {
@@ -77,7 +75,6 @@ public class DashboardServlet extends HttpServlet {
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put(URLPatterns.URL, URLPatterns.DASHBOARD);
 
     try {
       String template =
@@ -105,7 +102,7 @@ public class DashboardServlet extends HttpServlet {
     User user = dataAccess.getCurrentUser();
     if (user != null) {
       response.setContentType(ServletUtils.CONTENT_HTML);
-      Map<String, Object> context = new HashMap<>();
+      Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.DASHBOARD);
 
       Mentor mentor = dataAccess.getMentor(user.getUserId());
       Mentee mentee = dataAccess.getMentee(user.getUserId());

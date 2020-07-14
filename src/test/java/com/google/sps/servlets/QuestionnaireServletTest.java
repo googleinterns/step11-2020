@@ -67,4 +67,111 @@ public final class QuestionnaireServletTest {
     writer.flush();
     Assert.assertTrue(stringWriter.toString().contains("jake"));
   }
+
+  @Test
+  public void defaultNameInText() throws Exception {
+    when(request.getParameter("name")).thenReturn("");
+    UserService userService = UserServiceFactory.getUserService();
+    when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doPost(request, response);
+
+    verify(request).getParameter("name");
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("John Doe"));
+  }
+
+  @Test
+  public void mentorParamLoadsRespectiveTemplate() throws Exception {
+    servlet.init();
+    when(request.getParameter("formType")).thenReturn("mentor");
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doGet(request, response);
+
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("id=\"formType\" value=mentor"));
+  }
+
+  @Test
+  public void otherEthnicityStringInputProperlyStored() throws Exception {
+    when(request.getParameter("ethnicity")).thenReturn("OTHER");
+    when(request.getParameter("ethnicityOther")).thenReturn("Tunisian");
+    UserService userService = UserServiceFactory.getUserService();
+    when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doPost(request, response);
+
+    verify(request).getParameter("ethnicityOther");
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("Tunisian"));
+  }
+
+  @Test
+  public void otherGenderStringInputProperlyStored() throws Exception {
+    when(request.getParameter("gender")).thenReturn("OTHER");
+    when(request.getParameter("genderOther")).thenReturn("omeganonbinary");
+    UserService userService = UserServiceFactory.getUserService();
+    when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doPost(request, response);
+
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("omeganonbinary"));
+  }
+
+  @Test
+  public void otherEthnicityStringIsBlank() throws Exception {
+    when(request.getParameter("ethnicity")).thenReturn("CAUCASIAN");
+    when(request.getParameter("ethnicityOther")).thenReturn("Tunisian");
+    UserService userService = UserServiceFactory.getUserService();
+    when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doPost(request, response);
+
+    writer.flush();
+    Assert.assertFalse(stringWriter.toString().contains("Tunisian"));
+  }
+
+  @Test
+  public void otherGenderStringIsBlank() throws Exception {
+    when(request.getParameter("gender")).thenReturn("NONBINARY");
+    when(request.getParameter("genderOther")).thenReturn("omeganonbinary");
+    UserService userService = UserServiceFactory.getUserService();
+    when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doPost(request, response);
+
+    writer.flush();
+    Assert.assertFalse(stringWriter.toString().contains("omeganonbinary"));
+  }
 }

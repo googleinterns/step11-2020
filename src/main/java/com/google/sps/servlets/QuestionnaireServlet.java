@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.logging.Logger;
@@ -61,14 +62,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Serves a form for users to input data about themselves to sign up for the platform
- * This servlet supports HTTP GET and returns an html page with a series of questions.
- * This servlet supports HTTP POST for users to submit the form and create/update their profiles on the platform.
+ * This servlet supports HTTP GET and returns an html page with a series of questions about a user's
+ * demographics and goals for mentorship. This questionnaire is for people to sign up on the
+ * mentor-matching platform. This servlet supports HTTP POST for users to submit the form and
+ * create/update their profiles on the platform.
  *
  * @author tquintanilla
  * @author guptamudit
  * @version 1.0
- *
  * @param URLPatterns.QUESTIONNAIRE this servlet serves requests at /questionnaire
  */
 @WebServlet(urlPatterns = URLPatterns.QUESTIONNAIRE)
@@ -82,9 +83,16 @@ public class QuestionnaireServlet extends HttpServlet {
   private Jinjava jinjava;
   private DataAccess dataAccess;
 
+  public QuestionnaireServlet() {
+    this(new DatastoreAccess());
+  }
+
+  public QuestionnaireServlet(DataAccess dataAccess) {
+    this.dataAccess = dataAccess;
+  }
+
   @Override
   public void init() {
-    dataAccess = new DatastoreAccess();
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
     try {
@@ -170,7 +178,7 @@ public class QuestionnaireServlet extends HttpServlet {
             ServletUtils.getParameter(
                 request, ParameterConstants.LANGUAGE, Language.EN.toString()));
 
-    ArrayList<Ethnicity> ethnicities = new ArrayList<>();
+    List<Ethnicity> ethnicities = new ArrayList<>();
     String ethnicityString =
         ServletUtils.getParameter(request, ParameterConstants.ETHNICITY, "UNSPECIFIED");
     try {
@@ -182,16 +190,25 @@ public class QuestionnaireServlet extends HttpServlet {
     }
 
     String ethnicityOther =
-        ServletUtils.getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
+        ethnicities.contains(Ethnicity.OTHER)
+            ? ServletUtils.getParameter(request, ParameterConstants.ETHNICITY_OTHER, "")
+            : "";
+
     Gender gender =
         Gender.valueOf(
             ServletUtils.getParameter(request, ParameterConstants.GENDER, "UNSPECIFIED"));
-    String genderOther = ServletUtils.getParameter(request, ParameterConstants.GENDER_OTHER, "");
+    String genderOther =
+        getOtherStringValue(gender, Gender.class, request, ParameterConstants.GENDER_OTHER);
+
     EducationLevel educationLevel =
         EducationLevel.valueOf(
             ServletUtils.getParameter(request, ParameterConstants.EDUCATION_LEVEL, "UNSPECIFIED"));
     String educationLevelOther =
-        ServletUtils.getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
+        getOtherStringValue(
+            educationLevel,
+            EducationLevel.class,
+            request,
+            ParameterConstants.EDUCATION_LEVEL_OTHER);
     boolean firstGen =
         Boolean.parseBoolean(
             ServletUtils.getParameter(request, ParameterConstants.FIRST_GEN, "false"));
@@ -274,6 +291,14 @@ public class QuestionnaireServlet extends HttpServlet {
           .focusList(focusList)
           .build();
     }
+  }
+
+  // credit to guptamudit
+  private <C extends Enum<C>> String getOtherStringValue(
+      C value, Class<C> enumClass, HttpServletRequest request, String otherParamTitle) {
+    return value == Enum.valueOf(enumClass, "OTHER")
+        ? ServletUtils.getParameter(request, otherParamTitle, "")
+        : "";
   }
 
   private Map<String, Object> selectionListsForFrontEnd() {

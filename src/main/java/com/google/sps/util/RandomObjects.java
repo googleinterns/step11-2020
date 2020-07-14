@@ -19,8 +19,8 @@ import java.util.Random;
 import java.util.TimeZone;
 
 /**
- * Provides static methods for creating random user objects
- * These functions are useful for generating large amounts of fake data.
+ * This class provides static methods for creating random user objects. These functions are useful
+ * for generating large amounts of fake data.
  *
  * @author guptamudit
  * @version 1.0

@@ -15,9 +15,9 @@
 package com.google.sps.util;
 
 /**
- * Stores a list of various attribute names related to each object
- * These constants are used for keyword maintenance for datastore entity properties, HttpRequest parameter names,
- * and datastore queries.
+ * This class stores a constant list of of various attribute names related to each object. These
+ * constants are used for keyword maintenance for datastore entity properties, HttpRequest parameter
+ * names, and datastore queries.
  *
  * @author tquintanilla
  * @author sylviaziyuz

@@ -16,7 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.DatastoreAccess;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.ServletUtils;
@@ -37,12 +37,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Serves a short blurb about each of the three authors for the mentor-matching platform
- * This servlet supports HTTP GET and returns a static (except for the navbar) html page.
+ * This servlet supports HTTP GET and returns a static (except for the navbar) html page with a
+ * short blurb about each of the three authors for the mentor-matching platform.
  *
  * @author guptamudit
  * @version 1.0
- *
  * @param URLPatterns.AUTHORS this servlet serves requests at /authors
  */
 @WebServlet(urlPatterns = URLPatterns.AUTHORS)
@@ -86,7 +85,7 @@ public class AuthorsServlet extends HttpServlet {
     }
 
     Map<String, Object> context =
-        new DummyDataAccess().getDefaultRenderingContext(URLPatterns.AUTHORS);
+        new DatastoreAccess().getDefaultRenderingContext(URLPatterns.AUTHORS);
 
     String rendered = jinjava.render(staticResponse, context);
 

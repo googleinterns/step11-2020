@@ -14,7 +14,7 @@ limitations under the License. -->
 
 {% Set nav_items = [] %}
 {% if isLoggedIn %}
-  {% if isMentor %}
+  {% if isMentee %}
     {% set nav_items = [
         {
           "baseURL": "/find-mentor", "iconLabel": "search", "text": "Find Mentor",
@@ -22,7 +22,7 @@ limitations under the License. -->
         }
       ] %}
   {% else %}
-    {% if isMentee %}
+    {% if isMentor %}
       {% set nav_items = [
           {
             "baseURL": "/mentorship-requests", "iconLabel": "comment", "text": "Mentorship Requests",

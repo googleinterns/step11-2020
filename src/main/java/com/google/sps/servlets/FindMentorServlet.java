@@ -18,7 +18,7 @@ import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DataAccess;
-import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorshipRequest;
@@ -45,14 +45,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Provides mentees with a list of mentors they'd find relatable, so they can send a mentorship request
- * This servlet supports HTTP GET and returns an html page with a information about each of the mentors that may be
- * similar to the currently logged in mentee.
- * This servlet supports HTTP POST for mentees to send requests to or dislike mentors.
+ * This servlet supports HTTP GET and returns an html page with a information about each of the
+ * mentors that may be similar to the currently logged in mentee. If the mentor finds one of the
+ * mentors relatable, they can send them a mentorship request. This servlet supports HTTP POST for
+ * mentees to send requests to or dislike mentors.
  *
  * @author guptamudit
  * @version 1.0
- *
  * @param URLPatterns.FIND_MENTOR this servlet serves requests at /find-mentor
  */
 @WebServlet(urlPatterns = URLPatterns.FIND_MENTOR)
@@ -69,7 +68,7 @@ public class FindMentorServlet extends HttpServlet {
 
   @Override
   public void init() {
-    dataAccess = new DummyDataAccess();
+    dataAccess = new DatastoreAccess();
 
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
