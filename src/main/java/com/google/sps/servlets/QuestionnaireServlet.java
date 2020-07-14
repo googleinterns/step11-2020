@@ -167,15 +167,22 @@ public class QuestionnaireServlet extends HttpServlet {
     } catch (IllegalArgumentException e) {
       LOG.warning(ErrorMessages.INVALID_PARAMATERS);
     }
-
-    String ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
+    String ethnicityOther = "";
+    if (ethnicities.size() > 0 && ethnicities.contains(Ethnicity.OTHER)) {
+      ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
+    }
     Gender gender = Gender.valueOf(getParameter(request, ParameterConstants.GENDER, "UNSPECIFIED"));
-    String genderOther = getParameter(request, ParameterConstants.GENDER_OTHER, "");
+    String genderOther = "";
+    if (gender == Gender.OTHER) {
+      genderOther = getParameter(request, ParameterConstants.GENDER_OTHER, "");
+    }
     EducationLevel educationLevel =
         EducationLevel.valueOf(
             getParameter(request, ParameterConstants.EDUCATION_LEVEL, "UNSPECIFIED"));
-    String educationLevelOther =
-        getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
+    String educationLevelOther = "";
+    if (educationLevel == EducationLevel.OTHER) {
+      educationLevelOther = getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
+    }
     boolean firstGen =
         Boolean.parseBoolean(getParameter(request, ParameterConstants.FIRST_GEN, "false"));
     boolean lowIncome =
