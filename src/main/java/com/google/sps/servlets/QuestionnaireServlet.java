@@ -60,6 +60,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Serves a form for users to input data about themselves to sign up for the platform
+ * This servlet supports HTTP GET and returns an html page with a series of questions.
+ * This servlet supports HTTP POST for users to submit the form and create/update their profiles on the platform.
+ *
+ * @author tquintanilla
+ * @author guptamudit
+ * @version 1.0
+ *
+ * @param URLPatterns.QUESTIONNAIRE this servlet serves requests at /questionnaire
+ */
 @WebServlet(urlPatterns = URLPatterns.QUESTIONNAIRE)
 public class QuestionnaireServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(QuestionnaireServlet.class.getName());

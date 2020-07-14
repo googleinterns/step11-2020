@@ -36,6 +36,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Serves a short blurb about each of the three authors for the mentor-matching platform
+ * This servlet supports HTTP GET and returns a static (except for the navbar) html page.
+ *
+ * @author guptamudit
+ * @version 1.0
+ *
+ * @param URLPatterns.AUTHORS this servlet serves requests at /authors
+ */
 @WebServlet(urlPatterns = URLPatterns.AUTHORS)
 public class AuthorsServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(AuthorsServlet.class.getName());

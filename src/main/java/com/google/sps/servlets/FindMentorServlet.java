@@ -44,6 +44,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Provides mentees with a list of mentors they'd find relatable, so they can send a mentorship request
+ * This servlet supports HTTP GET and returns an html page with a information about each of the mentors that may be
+ * similar to the currently logged in mentee.
+ * This servlet supports HTTP POST for mentees to send requests to or dislike mentors.
+ *
+ * @author guptamudit
+ * @version 1.0
+ *
+ * @param URLPatterns.FIND_MENTOR this servlet serves requests at /find-mentor
+ */
 @WebServlet(urlPatterns = URLPatterns.FIND_MENTOR)
 public class FindMentorServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(FindMentorServlet.class.getName());

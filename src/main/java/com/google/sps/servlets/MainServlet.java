@@ -21,6 +21,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Serves redirects from the base url to the /landing page of the mentor-matching platform
+ * This servlet supports HTTP GET by immediately redirecting to /landing.
+ *
+ * @author guptamudit
+ * @version 1.0
+ *
+ * @param URLPatterns.BASE this servlet serves requests at /
+ * @param URLPatterns.MAIN this servlet serves requests at /main
+ */
 @WebServlet(urlPatterns = {URLPatterns.BASE, URLPatterns.MAIN})
 public class MainServlet extends HttpServlet {
 

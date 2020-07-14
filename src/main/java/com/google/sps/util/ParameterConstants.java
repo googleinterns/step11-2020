@@ -14,6 +14,16 @@
 
 package com.google.sps.util;
 
+/**
+ * Stores a list of various attribute names related to each object
+ * These constants are used for keyword maintenance for datastore entity properties, HttpRequest parameter names,
+ * and datastore queries.
+ *
+ * @author tquintanilla
+ * @author sylviaziyuz
+ * @author guptamudit
+ * @version 1.0
+ */
 public final class ParameterConstants {
   public static final String ENTITY_TYPE_USER_ACCOUNT = "UserAccount";
   public static final String USER_ID = "userID";

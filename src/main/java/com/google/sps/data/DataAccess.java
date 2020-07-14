@@ -18,6 +18,9 @@ import com.google.appengine.api.users.User;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * This class provides an interface for interacting with data.
+ */
 public interface DataAccess {
 
   Map<String, Object> getDefaultRenderingContext(String currentURL);

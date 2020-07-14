@@ -20,6 +20,10 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.sps.util.ParameterConstants;
 
+/**
+ * This class represents a request for mentorship between two users.
+ * supports conversion to and from a datastore entity object
+ */
 public class MentorshipRequest implements DatastoreEntity {
 
   private long datastoreKey;

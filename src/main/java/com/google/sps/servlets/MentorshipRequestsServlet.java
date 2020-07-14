@@ -42,6 +42,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Provides mentors with a list of mentorship requests from various mentees
+ * This servlet supports HTTP GET and returns an html page with a information about each of the mentees that wants help.
+ * This servlet supports HTTP POST for mentors approving/denying mentorship requests.
+ *
+ * @author tquintanilla
+ * @author guptamudit
+ * @version 1.0
+ *
+ * @param URLPatterns.MENTORSHIP_REQUESTS this servlet serves requests at /mentorship-requests
+ */
 @WebServlet(urlPatterns = URLPatterns.MENTORSHIP_REQUESTS)
 public class MentorshipRequestsServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(MentorshipRequestsServlet.class.getName());

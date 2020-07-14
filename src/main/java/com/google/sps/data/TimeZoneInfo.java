@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TimeZone;
 
+/**
+ * This class represents a summary of a user's current timezone.
+ */
 public class TimeZoneInfo {
 
   private static final double MILLISECONDS_PER_HOURS = 3600000.0;

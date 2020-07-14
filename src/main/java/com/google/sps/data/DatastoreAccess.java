@@ -35,6 +35,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * This class provides access to data from the datastore service provided by google appengine.
+ */
 public class DatastoreAccess implements DataAccess {
 
   private static boolean seeded = false;

@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
+/**
+ * This class provides access to hardcoded mock data meant for testing.
+ */
 public class DummyDataAccess implements DataAccess {
 
   private static final UserService userService = UserServiceFactory.getUserService();
