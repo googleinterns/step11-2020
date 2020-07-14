@@ -18,7 +18,10 @@ import static java.lang.Math.toIntExact;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.sps.util.ParameterConstants;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This class represents a Mentee user and all their related data.
@@ -37,6 +40,7 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     this.desiredMeetingFrequency = builder.desiredMeetingFrequency;
     this.dislikedMentorKeys = builder.dislikedMentorKeys;
     this.desiredMentorType = builder.desiredMentorType;
+    this.validate();
   }
 
   public Mentee(Entity entity) {
@@ -48,9 +52,19 @@ public class Mentee extends UserAccount implements DatastoreEntity {
             toIntExact(
                 (long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY))];
     this.dislikedMentorKeys =
-        (Set<Long>) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS);
+        getDislikedSetFromProperty(
+            (Collection) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS));
     this.desiredMentorType =
         MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTOR_TYPE))];
+    this.validate();
+  }
+
+  @Override
+  protected void validate() {
+    super.validate();
+    if (this.dislikedMentorKeys == null) {
+      this.dislikedMentorKeys = new HashSet<>();
+    }
   }
 
   public Entity convertToEntity() {
@@ -61,6 +75,20 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     entity.setProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS, this.dislikedMentorKeys);
     entity.setProperty(ParameterConstants.MENTOR_TYPE, desiredMentorType.ordinal());
     return entity;
+  }
+
+  /**
+   * converts the list retrieved from datastore to a list of usable long values
+   * @param  dislikedMentorKeyList the list of objects from datastore
+   * @return                       the list of long values
+   */
+  private static Set<Long> getDislikedSetFromProperty(Collection<Object> dislikedMentorKeyList) {
+    return dislikedMentorKeyList == null
+        ? new HashSet<Long>()
+        : (Set<Long>)
+            dislikedMentorKeyList.stream()
+                .map(key -> new Long((long) key))
+                .collect(Collectors.toSet());
   }
 
   /**
