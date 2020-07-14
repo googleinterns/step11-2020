@@ -116,20 +116,9 @@ public class QuestionnaireServlet extends HttpServlet {
       response.setStatus(500);
       return;
     }
-<<<<<<< HEAD
-    Mentor mentor = getMentor(dataAccess.getCurrentUser().getId());
-    Mentee mentee = getMentee(dataAccess.getCurrentUser().getId());
-    if (mentor != null || mentee != null) {
-      String formType =
-    }
-    String formType = request.getParameter(ContextFields.FORM_TYPE);
-
-    if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
-=======
     String formType =
         ServletUtils.getParameter(request, ParameterConstants.FORM_TYPE, "").toLowerCase();
     if (formType.equals(MENTOR) || formType.equals(MENTEE)) {
->>>>>>> master
       Map<String, Object> context =
           dataAccess.getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
       context.put(ContextFields.FORM_TYPE, formType.toUpperCase());
@@ -145,10 +134,7 @@ public class QuestionnaireServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserAccount user = constructNewUserFromRequest(request);
     dataAccess.createUser(user);
-<<<<<<< HEAD
-=======
     response.getWriter().println(new Gson().toJson(user));
->>>>>>> master
     if (user.getUserType().equals(UserType.MENTEE)) {
       response.sendRedirect(URLPatterns.FIND_MENTOR);
     } else {
@@ -157,14 +143,9 @@ public class QuestionnaireServlet extends HttpServlet {
   }
 
   private UserAccount constructNewUserFromRequest(HttpServletRequest request) {
-<<<<<<< HEAD
-    UserType userType = UserType.valueOf(getParameter(request, ContextFields.FORM_TYPE, "MENTEE"));
-    String name = getParameter(request, ParameterConstants.NAME, "John Doe");
-=======
     UserType userType =
         UserType.valueOf(ServletUtils.getParameter(request, ContextFields.FORM_TYPE, "MENTEE"));
     String name = ServletUtils.getParameter(request, ParameterConstants.NAME, "John Doe");
->>>>>>> master
     Date dateOfBirth;
     try {
       dateOfBirth =
@@ -177,31 +158,20 @@ public class QuestionnaireServlet extends HttpServlet {
       LOG.warning(ErrorMessages.BAD_DATE_PARSE);
     }
     Country country =
-<<<<<<< HEAD
-        Country.valueOf(getParameter(request, ParameterConstants.COUNTRY, Country.US.toString()));
-    TimeZoneInfo timeZone =
-        new TimeZoneInfo(
-            TimeZone.getTimeZone(getParameter(request, ParameterConstants.TIMEZONE, "est")));
-=======
         Country.valueOf(
             ServletUtils.getParameter(request, ParameterConstants.COUNTRY, Country.US.toString()));
     TimeZoneInfo timeZone =
         new TimeZoneInfo(
             TimeZone.getTimeZone(
                 ServletUtils.getParameter(request, ParameterConstants.TIMEZONE, "est")));
->>>>>>> master
     Language language =
         Language.valueOf(
             ServletUtils.getParameter(
                 request, ParameterConstants.LANGUAGE, Language.EN.toString()));
 
     ArrayList<Ethnicity> ethnicities = new ArrayList<>();
-<<<<<<< HEAD
-    String ethnicityString = getParameter(request, ParameterConstants.ETHNICITY, "UNSPECIFIED");
-=======
     String ethnicityString =
         ServletUtils.getParameter(request, ParameterConstants.ETHNICITY, "UNSPECIFIED");
->>>>>>> master
     try {
       for (String ethnicity : ethnicityString.split(", ")) {
         ethnicities.add(Ethnicity.valueOf(ethnicity));
@@ -210,14 +180,6 @@ public class QuestionnaireServlet extends HttpServlet {
       LOG.warning(ErrorMessages.INVALID_PARAMATERS);
     }
 
-<<<<<<< HEAD
-    String ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
-    Gender gender = Gender.valueOf(getParameter(request, ParameterConstants.GENDER, "UNSPECIFIED"));
-    String genderOther = getParameter(request, ParameterConstants.GENDER_OTHER, "");
-    EducationLevel educationLevel =
-        EducationLevel.valueOf(
-            getParameter(request, ParameterConstants.EDUCATION_LEVEL, "UNSPECIFIED"));
-=======
     String ethnicityOther =
         ServletUtils.getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
     Gender gender =
@@ -227,7 +189,6 @@ public class QuestionnaireServlet extends HttpServlet {
     EducationLevel educationLevel =
         EducationLevel.valueOf(
             ServletUtils.getParameter(request, ParameterConstants.EDUCATION_LEVEL, "UNSPECIFIED"));
->>>>>>> master
     String educationLevelOther =
         ServletUtils.getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
     boolean firstGen =
@@ -249,14 +210,10 @@ public class QuestionnaireServlet extends HttpServlet {
                   request,
                   ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY,
                   MeetingFrequency.WEEKLY.toString()));
-<<<<<<< HEAD
-      Topic goal = Topic.valueOf(getParameter(request, ParameterConstants.MENTEE_GOAL, ""));
-=======
       Topic goal =
           Topic.valueOf(
               ServletUtils.getParameter(
                   request, ParameterConstants.MENTEE_GOAL, Topic.OTHER.toString()));
->>>>>>> master
       return (new Mentee.Builder())
           .name(name)
           .userID(dataAccess.getCurrentUser().getUserId())
@@ -315,16 +272,6 @@ public class QuestionnaireServlet extends HttpServlet {
           .visibility(true)
           .focusList(focusList)
           .build();
-<<<<<<< HEAD
-    }
-  }
-
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
-    String value = request.getParameter(name);
-    if (value == null || value.equals("")) {
-      value = defaultValue;
-=======
->>>>>>> master
     }
   }
 
