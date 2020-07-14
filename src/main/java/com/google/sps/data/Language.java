@@ -14,6 +14,9 @@
 
 package com.google.sps.data;
 
+/**
+ * This class represents a user's language.
+ */
 public enum Language {
   AB("Abkhaz", "аҧсуа"),
   AA("Afar", "Afaraf"),

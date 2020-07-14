@@ -14,24 +14,17 @@
 
 package com.google.sps.servlets;
 
-import static java.lang.Math.toIntExact;
-
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DataAccess;
 import com.google.sps.data.DummyDataAccess;
 import com.google.sps.data.UserAccount;
-import com.google.sps.data.UserType;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -48,6 +41,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Serves a summary of a user's (not necessarily of the currently logged in user) data
+ * This servlet supports HTTP GET and returns an html page with all the information about the currently logged in user.
+ * If a user is viewing their own profile, they may access the questionnaire page from here to edit their information.
+ *
+ * @author sylviaziyuz
+ * @author guptamudit
+ * @version 1.0
+ *
+ * @param URLPatterns.PROFILE this servlet serves requests at /profile
+ */
 @WebServlet(urlPatterns = URLPatterns.PROFILE)
 public final class ProfileServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(ProfileServlet.class.getName());
@@ -91,44 +95,24 @@ public final class ProfileServlet extends HttpServlet {
     }
     String userID = user.getUserId();
 
-    UserAccount userAccount = dataAccess.getUser(userID);
-    if (userAccount == null) {
+    UserAccount currentUserAccount = dataAccess.getUser(userID);
+    if (currentUserAccount == null) {
       response.sendRedirect(URLPatterns.LANDING);
       return;
     }
 
-    String requestedUserID = getParameter(request, ParameterConstants.USER_ID, userID);
-    Query query =
-        new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT)
-            .setFilter(
-                new Query.FilterPredicate(
-                    ParameterConstants.USER_ID, Query.FilterOperator.EQUAL, requestedUserID));
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery result = datastore.prepare(query);
-    Entity userEntity = result.asSingleEntity();
-    if (userEntity == null) {
+    String requestedUserID = ServletUtils.getParameter(request, ParameterConstants.USER_ID, userID);
+    UserAccount requestedUserAccount =
+        requestedUserID.equals(userID) ? currentUserAccount : dataAccess.getUser(requestedUserID);
+    if (requestedUserAccount == null) {
       response.sendRedirect(URLPatterns.PROFILE);
       return;
     }
     Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.PROFILE);
-    context.put(
-        ParameterConstants.USER_TYPE,
-        UserType.values()[toIntExact((long) (userEntity.getProperty(ParameterConstants.USER_TYPE)))]
-                == UserType.MENTOR
-            ? "mentor"
-            : "mentee");
-    context.put(ContextFields.PROFILE_USER, UserAccount.fromEntity(userEntity));
+    context.put(ContextFields.PROFILE_USER, requestedUserAccount);
 
     String renderedTemplate = jinjava.render(profileTemplate, context);
-    response.setContentType("text/html;");
+    response.setContentType(ServletUtils.CONTENT_HTML);
     response.getWriter().println(renderedTemplate);
-  }
-
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
-    String value = request.getParameter(name);
-    if (value == null || value == "") {
-      return defaultValue;
-    }
-    return value;
   }
 }

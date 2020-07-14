@@ -18,6 +18,9 @@ import com.google.appengine.api.users.User;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * This class provides an interface for interacting with data.
+ */
 public interface DataAccess {
 
   Map<String, Object> getDefaultRenderingContext(String currentURL);
@@ -58,13 +61,13 @@ public interface DataAccess {
 
   boolean deleteRequest(MentorshipRequest request);
 
-  // delete request object and create connection object
+  // delete request object and create mentorMenteeRelation object
   boolean approveRequest(MentorshipRequest request);
 
   // delete request object
   boolean denyRequest(MentorshipRequest request);
 
-  boolean makeConnection(long mentorKey, long menteeKey);
+  boolean makeMentorMenteeRelation(long mentorKey, long menteeKey);
 
-  Collection<Connection> getConnections(UserAccount user);
+  Collection<MentorMenteeRelation> getMentorMenteeRelations(UserAccount user);
 }

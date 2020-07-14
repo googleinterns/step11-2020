@@ -20,30 +20,35 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.sps.util.ParameterConstants;
 
-public class Connection implements DatastoreEntity {
+/**
+ * Represents a Connection between a Mentor and Mentee
+ * For every Mentor/Mentee pair, there is a Connection object that stores the information related to the pair.
+ * This class supports conversion to and from a datastore entity object.
+ */
+public class MentorMenteeRelation implements DatastoreEntity {
   private long datastoreKey;
   private long mentorKey;
   private long menteeKey;
   private Mentor mentor;
   private Mentee mentee;
 
-  private Connection(long datastoreKey, long mentorKey, long menteeKey) {
+  private MentorMenteeRelation(long datastoreKey, long mentorKey, long menteeKey) {
     this.datastoreKey = datastoreKey;
     this.mentorKey = mentorKey;
     this.menteeKey = menteeKey;
   }
 
-  public Connection(long mentorKey, long menteeKey) {
+  public MentorMenteeRelation(long mentorKey, long menteeKey) {
     this(
         DatastoreServiceFactory.getDatastoreService()
-            .allocateIds(ParameterConstants.ENTITY_TYPE_CONNECTION, 1)
+            .allocateIds(ParameterConstants.ENTITY_TYPE_MENTOR_MENTEE_RELATION, 1)
             .getStart()
             .getId(),
         mentorKey,
         menteeKey);
   }
 
-  public Connection(Entity entity) {
+  public MentorMenteeRelation(Entity entity) {
     this(
         entity.getKey().getId(),
         (long) entity.getProperty(ParameterConstants.MENTOR_KEY),
@@ -51,7 +56,9 @@ public class Connection implements DatastoreEntity {
   }
 
   public Entity convertToEntity() {
-    Key key = KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_CONNECTION, this.datastoreKey);
+    Key key =
+        KeyFactory.createKey(
+            ParameterConstants.ENTITY_TYPE_MENTOR_MENTEE_RELATION, this.datastoreKey);
     Entity entity = new Entity(key);
     entity.setProperty(ParameterConstants.MENTOR_KEY, mentorKey);
     entity.setProperty(ParameterConstants.MENTOR_KEY, menteeKey);

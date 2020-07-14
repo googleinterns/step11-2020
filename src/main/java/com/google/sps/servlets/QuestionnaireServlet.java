@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.gson.Gson;
 import com.google.sps.data.Country;
 import com.google.sps.data.DataAccess;
 import com.google.sps.data.DummyDataAccess;
@@ -35,6 +36,7 @@ import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -58,6 +60,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Serves a form for users to input data about themselves to sign up for the platform
+ * This servlet supports HTTP GET and returns an html page with a series of questions.
+ * This servlet supports HTTP POST for users to submit the form and create/update their profiles on the platform.
+ *
+ * @author tquintanilla
+ * @author guptamudit
+ * @version 1.0
+ *
+ * @param URLPatterns.QUESTIONNAIRE this servlet serves requests at /questionnaire
+ */
 @WebServlet(urlPatterns = URLPatterns.QUESTIONNAIRE)
 public class QuestionnaireServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(QuestionnaireServlet.class.getName());
@@ -97,12 +110,13 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
+    response.setContentType(ServletUtils.CONTENT_HTML);
 
     if (questionnaireTemplate == null) {
       response.setStatus(500);
       return;
     }
+<<<<<<< HEAD
     Mentor mentor = getMentor(dataAccess.getCurrentUser().getId());
     Mentee mentee = getMentee(dataAccess.getCurrentUser().getId());
     if (mentor != null || mentee != null) {
@@ -111,6 +125,11 @@ public class QuestionnaireServlet extends HttpServlet {
     String formType = request.getParameter(ContextFields.FORM_TYPE);
 
     if (formType != null && (formType.equals(MENTOR) || formType.equals(MENTEE))) {
+=======
+    String formType =
+        ServletUtils.getParameter(request, ParameterConstants.FORM_TYPE, "").toLowerCase();
+    if (formType.equals(MENTOR) || formType.equals(MENTEE)) {
+>>>>>>> master
       Map<String, Object> context =
           dataAccess.getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
       context.put(ContextFields.FORM_TYPE, formType.toUpperCase());
@@ -126,6 +145,10 @@ public class QuestionnaireServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserAccount user = constructNewUserFromRequest(request);
     dataAccess.createUser(user);
+<<<<<<< HEAD
+=======
+    response.getWriter().println(new Gson().toJson(user));
+>>>>>>> master
     if (user.getUserType().equals(UserType.MENTEE)) {
       response.sendRedirect(URLPatterns.FIND_MENTOR);
     } else {
@@ -134,28 +157,51 @@ public class QuestionnaireServlet extends HttpServlet {
   }
 
   private UserAccount constructNewUserFromRequest(HttpServletRequest request) {
+<<<<<<< HEAD
     UserType userType = UserType.valueOf(getParameter(request, ContextFields.FORM_TYPE, "MENTEE"));
     String name = getParameter(request, ParameterConstants.NAME, "John Doe");
+=======
+    UserType userType =
+        UserType.valueOf(ServletUtils.getParameter(request, ContextFields.FORM_TYPE, "MENTEE"));
+    String name = ServletUtils.getParameter(request, ParameterConstants.NAME, "John Doe");
+>>>>>>> master
     Date dateOfBirth;
     try {
       dateOfBirth =
           new SimpleDateFormat("yyyy-MM-dd")
-              .parse(getParameter(request, ParameterConstants.DATE_OF_BIRTH, "2000-01-01"));
+              .parse(
+                  ServletUtils.getParameter(
+                      request, ParameterConstants.DATE_OF_BIRTH, "2000-01-01"));
     } catch (ParseException e) {
       dateOfBirth = new Date();
       LOG.warning(ErrorMessages.BAD_DATE_PARSE);
     }
     Country country =
+<<<<<<< HEAD
         Country.valueOf(getParameter(request, ParameterConstants.COUNTRY, Country.US.toString()));
     TimeZoneInfo timeZone =
         new TimeZoneInfo(
             TimeZone.getTimeZone(getParameter(request, ParameterConstants.TIMEZONE, "est")));
+=======
+        Country.valueOf(
+            ServletUtils.getParameter(request, ParameterConstants.COUNTRY, Country.US.toString()));
+    TimeZoneInfo timeZone =
+        new TimeZoneInfo(
+            TimeZone.getTimeZone(
+                ServletUtils.getParameter(request, ParameterConstants.TIMEZONE, "est")));
+>>>>>>> master
     Language language =
         Language.valueOf(
-            getParameter(request, ParameterConstants.LANGUAGE, Language.EN.toString()));
+            ServletUtils.getParameter(
+                request, ParameterConstants.LANGUAGE, Language.EN.toString()));
 
     ArrayList<Ethnicity> ethnicities = new ArrayList<>();
+<<<<<<< HEAD
     String ethnicityString = getParameter(request, ParameterConstants.ETHNICITY, "UNSPECIFIED");
+=======
+    String ethnicityString =
+        ServletUtils.getParameter(request, ParameterConstants.ETHNICITY, "UNSPECIFIED");
+>>>>>>> master
     try {
       for (String ethnicity : ethnicityString.split(", ")) {
         ethnicities.add(Ethnicity.valueOf(ethnicity));
@@ -164,31 +210,53 @@ public class QuestionnaireServlet extends HttpServlet {
       LOG.warning(ErrorMessages.INVALID_PARAMATERS);
     }
 
+<<<<<<< HEAD
     String ethnicityOther = getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
     Gender gender = Gender.valueOf(getParameter(request, ParameterConstants.GENDER, "UNSPECIFIED"));
     String genderOther = getParameter(request, ParameterConstants.GENDER_OTHER, "");
     EducationLevel educationLevel =
         EducationLevel.valueOf(
             getParameter(request, ParameterConstants.EDUCATION_LEVEL, "UNSPECIFIED"));
+=======
+    String ethnicityOther =
+        ServletUtils.getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
+    Gender gender =
+        Gender.valueOf(
+            ServletUtils.getParameter(request, ParameterConstants.GENDER, "UNSPECIFIED"));
+    String genderOther = ServletUtils.getParameter(request, ParameterConstants.GENDER_OTHER, "");
+    EducationLevel educationLevel =
+        EducationLevel.valueOf(
+            ServletUtils.getParameter(request, ParameterConstants.EDUCATION_LEVEL, "UNSPECIFIED"));
+>>>>>>> master
     String educationLevelOther =
-        getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
+        ServletUtils.getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
     boolean firstGen =
-        Boolean.parseBoolean(getParameter(request, ParameterConstants.FIRST_GEN, "false"));
+        Boolean.parseBoolean(
+            ServletUtils.getParameter(request, ParameterConstants.FIRST_GEN, "false"));
     boolean lowIncome =
-        Boolean.parseBoolean(getParameter(request, ParameterConstants.LOW_INCOME, "false"));
+        Boolean.parseBoolean(
+            ServletUtils.getParameter(request, ParameterConstants.LOW_INCOME, "false"));
     MentorType mentorType =
         MentorType.valueOf(
-            getParameter(request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR.toString()));
-    String description = getParameter(request, ParameterConstants.DESCRIPTION, "");
+            ServletUtils.getParameter(
+                request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR.toString()));
+    String description = ServletUtils.getParameter(request, ParameterConstants.DESCRIPTION, "");
 
     if (userType.equals(UserType.MENTEE)) {
       MeetingFrequency desiredMeetingFrequency =
           MeetingFrequency.valueOf(
-              getParameter(
+              ServletUtils.getParameter(
                   request,
                   ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY,
                   MeetingFrequency.WEEKLY.toString()));
+<<<<<<< HEAD
       Topic goal = Topic.valueOf(getParameter(request, ParameterConstants.MENTEE_GOAL, ""));
+=======
+      Topic goal =
+          Topic.valueOf(
+              ServletUtils.getParameter(
+                  request, ParameterConstants.MENTEE_GOAL, Topic.OTHER.toString()));
+>>>>>>> master
       return (new Mentee.Builder())
           .name(name)
           .userID(dataAccess.getCurrentUser().getUserId())
@@ -215,7 +283,8 @@ public class QuestionnaireServlet extends HttpServlet {
     } else {
       ArrayList<Topic> focusList = new ArrayList<>();
       String focusListString =
-          getParameter(request, ParameterConstants.MENTOR_FOCUS_LIST, Topic.OTHER.toString());
+          ServletUtils.getParameter(
+              request, ParameterConstants.MENTOR_FOCUS_LIST, Topic.OTHER.toString());
       try {
         for (String focus : focusListString.split(", ")) {
           focusList.add(Topic.valueOf(focus));
@@ -246,6 +315,7 @@ public class QuestionnaireServlet extends HttpServlet {
           .visibility(true)
           .focusList(focusList)
           .build();
+<<<<<<< HEAD
     }
   }
 
@@ -253,8 +323,9 @@ public class QuestionnaireServlet extends HttpServlet {
     String value = request.getParameter(name);
     if (value == null || value.equals("")) {
       value = defaultValue;
+=======
+>>>>>>> master
     }
-    return value;
   }
 
   private Map<String, Object> selectionListsForFrontEnd() {

@@ -20,6 +20,10 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.sps.util.ParameterConstants;
 import java.util.Set;
 
+/**
+ * This class represents a Mentee user and all their related data.
+ * supports conversion to and from a datastore entity object
+ */
 public class Mentee extends UserAccount implements DatastoreEntity {
 
   private Topic goal;
@@ -59,6 +63,11 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     return entity;
   }
 
+  /**
+   * adds a mentor's key to the list of keys for mentors that the mentee does not want to work with
+   * @param  mentor the mentor that the mentee doesn't want to work with
+   * @return        boolean of whether or not the mentor was added (false if already disliked)
+   */
   public boolean dislikeMentor(Mentor mentor) {
     return dislikedMentorKeys.add(mentor.getDatastoreKey());
   }
