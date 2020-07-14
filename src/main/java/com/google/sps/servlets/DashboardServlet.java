@@ -19,9 +19,8 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DataAccess;
 import com.google.sps.data.DatastoreAccess;
-import com.google.sps.data.Mentee;
-import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorMenteeRelation;
+import com.google.sps.data.UserAccount;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
@@ -106,10 +105,13 @@ public class DashboardServlet extends HttpServlet {
     Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.DASHBOARD);
 
     Collection<MentorMenteeRelation> connectedUsers =
-        dataAccess.getMentorMenteeRelations(context.get(ContextFields.CURRENT_USER));
+        dataAccess.getMentorMenteeRelations((UserAccount) context.get(ContextFields.CURRENT_USER));
     context.put(ContextFields.MENTOR_MENTEE_RELATIONS, connectedUsers);
 
-    String template = context.get(ContextFields.IS_MENTOR) ? dashboardMentorTemplate : dashboardMenteeTemplate;
+    String template =
+        (boolean) context.get(ContextFields.IS_MENTOR)
+            ? dashboardMentorTemplate
+            : dashboardMenteeTemplate;
 
     String renderedTemplate = jinjava.render(template, context);
 
