@@ -48,6 +48,7 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -176,7 +177,7 @@ public class QuestionnaireServlet extends HttpServlet {
             ServletUtils.getParameter(
                 request, ParameterConstants.LANGUAGE, Language.EN.toString()));
 
-    ArrayList<Ethnicity> ethnicities = new ArrayList<>();
+    List<Ethnicity> ethnicities = new ArrayList<>();
     String ethnicityString =
         ServletUtils.getParameter(request, ParameterConstants.ETHNICITY, "UNSPECIFIED");
     try {
@@ -186,22 +187,16 @@ public class QuestionnaireServlet extends HttpServlet {
     } catch (IllegalArgumentException e) {
       LOG.warning(ErrorMessages.INVALID_PARAMATERS);
     }
-    String ethnicityOther = "";
-    if (ethnicities.size() > 0 && ethnicities.contains(Ethnicity.OTHER)) {
-      ethnicityOther = ServletUtils.getParameter(request, ParameterConstants.ETHNICITY_OTHER, "");
-    }
+
+    String ethnicityOther = ethnicities.contains(Ethnicity.OTHER) ? ServletUtils.getParameter(request, ParameterConstants.ETHNICITY_OTHER, "") : "";
+
     Gender gender = Gender.valueOf(ServletUtils.getParameter(request, ParameterConstants.GENDER, "UNSPECIFIED"));
-    String genderOther = "";
-    if (gender == Gender.OTHER) {
-      genderOther = ServletUtils.getParameter(request, ParameterConstants.GENDER_OTHER, "");
-    }
+    String genderOther = getOtherStringValue(gender, Gender.class, request, ParameterConstants.GENDER_OTHER);
+
     EducationLevel educationLevel =
         EducationLevel.valueOf(
             ServletUtils.getParameter(request, ParameterConstants.EDUCATION_LEVEL, "UNSPECIFIED"));
-    String educationLevelOther = "";
-    if (educationLevel == EducationLevel.OTHER) {
-      educationLevelOther = ServletUtils.getParameter(request, ParameterConstants.EDUCATION_LEVEL_OTHER, "");
-    }
+    String educationLevelOther = getOtherStringValue(gender, Gender.class, request, ParameterConstants.GENDER_OTHER);
     boolean firstGen =
         Boolean.parseBoolean(
             ServletUtils.getParameter(request, ParameterConstants.FIRST_GEN, "false"));
@@ -284,6 +279,11 @@ public class QuestionnaireServlet extends HttpServlet {
           .focusList(focusList)
           .build();
     }
+  }
+
+  //credit to guptamudit
+  private <C extends Enum<C>> String getOtherStringValue(C value, Class<C> enumClass, HttpServletRequest request, String otherParamTitle) {
+    return value == Enum.valueOf(enumClass, "OTHER") ? ServletUtils.getParameter(request, otherParamTitle, ""): "";
   }
 
   private Map<String, Object> selectionListsForFrontEnd() {
