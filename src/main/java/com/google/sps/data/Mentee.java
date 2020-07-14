@@ -92,9 +92,7 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     return dislikedMentorKeyList == null
         ? new HashSet<Long>()
         : (Set<Long>)
-            dislikedMentorKeyList.stream()
-                .map(key -> new Long((long) key))
-                .collect(Collectors.toSet());
+            dislikedMentorKeyList.stream().map(key -> (long) key).collect(Collectors.toSet());
   }
 
   /**
