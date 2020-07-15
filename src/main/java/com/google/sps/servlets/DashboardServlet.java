@@ -14,7 +14,6 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DataAccess;
@@ -97,15 +96,21 @@ public class DashboardServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-    User user = dataAccess.getCurrentUser();
-    if (user == null) {
-      response.sendRedirect(URLPatterns.LANDING);
-    }
     Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.DASHBOARD);
 
+    if ((boolean) context.get(ContextFields.IS_LOGGED_IN)) {
+      response.sendRedirect(URLPatterns.LANDING);
+      return;
+    }
+
+    UserAccount currentUser = (UserAccount) context.get(ContextFields.CURRENT_USER);
+    if (currentUser == null) {
+      response.sendRedirect(URLPatterns.LANDING);
+      return;
+    }
+
     Collection<MentorMenteeRelation> connectedUsers =
-        dataAccess.getMentorMenteeRelations((UserAccount) context.get(ContextFields.CURRENT_USER));
+        dataAccess.getMentorMenteeRelations(currentUser);
     context.put(ContextFields.MENTOR_MENTEE_RELATIONS, connectedUsers);
 
     String template =
