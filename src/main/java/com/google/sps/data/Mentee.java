@@ -60,7 +60,7 @@ public class Mentee extends UserAccount implements DatastoreEntity {
         getDislikedSetFromProperty(
             (Collection) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS));
     this.desiredMentorType =
-        MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTOR_TYPE))];
+        MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE))];
     this.sanitizeValues();
   }
 
@@ -78,7 +78,7 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     entity.setProperty(
         ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, desiredMeetingFrequency.ordinal());
     entity.setProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS, this.dislikedMentorKeys);
-    entity.setProperty(ParameterConstants.MENTOR_TYPE, desiredMentorType.ordinal());
+    entity.setProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE, desiredMentorType.ordinal());
     return entity;
   }
 
