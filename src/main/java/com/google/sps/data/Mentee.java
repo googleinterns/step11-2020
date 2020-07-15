@@ -80,6 +80,7 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     this.lastDislikedMentorKey =
         (long) entity.getProperty(ParameterConstants.MENTEE_LAST_DISLIKED_MENTOR_KEY);
         */
+        MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE))];
     this.sanitizeValues();
   }
 
@@ -104,6 +105,7 @@ public class Mentee extends UserAccount implements DatastoreEntity {
         ParameterConstants.MENTEE_LAST_DISLIKED_MENTOR_KEY, this.lastDislikedMentorKey);
     entity.setProperty(
         ParameterConstants.MENTEE_LAST_REQUESTED_MENTOR_KEY, this.lastRequestedMentorKey);
+    entity.setProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE, desiredMentorType.ordinal());
     return entity;
   }
 

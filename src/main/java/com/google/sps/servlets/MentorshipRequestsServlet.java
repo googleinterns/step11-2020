@@ -19,7 +19,6 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DataAccess;
 import com.google.sps.data.DatastoreAccess;
-import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorshipRequest;
 import com.google.sps.util.ContextFields;
@@ -138,8 +137,8 @@ public class MentorshipRequestsServlet extends HttpServlet {
       writeJsonSuccessToResponse(response, false);
       return;
     }
-    Mentee mentee = dataAccess.getMentee(user.getUserId());
-    if (mentee == null) {
+    Mentor mentor = dataAccess.getMentor(user.getUserId());
+    if (mentor == null) {
       writeJsonSuccessToResponse(response, false);
       return;
     }
