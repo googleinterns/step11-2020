@@ -40,26 +40,11 @@ import java.util.stream.StreamSupport;
  */
 public class DatastoreAccess implements DataAccess {
 
-  private static boolean seeded = false;
   private static DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
   private static UserService userService = UserServiceFactory.getUserService();
 
-  public DatastoreAccess() {
-    if (!DatastoreAccess.seeded) {
-      DatastoreAccess.seeded =
-          datastoreService
-                  .prepare(new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT))
-                  .countEntities()
-              != 0;
-    }
-  }
-
   public boolean seed_db(Collection<Entity> entities) {
-    if (DatastoreAccess.seeded) {
-      return false;
-    }
     datastoreService.put(entities);
-    DatastoreAccess.seeded = true;
     return true;
   }
 
