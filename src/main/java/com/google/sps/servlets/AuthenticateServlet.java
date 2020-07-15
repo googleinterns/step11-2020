@@ -20,6 +20,8 @@ import com.google.gson.Gson;
 import com.google.sps.data.LoginState;
 import com.google.sps.data.PublicAccessPage;
 import com.google.sps.util.ErrorMessages;
+import com.google.sps.util.ParameterConstants;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -30,7 +32,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {URLPatterns.AUTHENTICATE})
+/**
+ * This servlet supports HTTP GET and returns a real time summary of the login status of the caller.
+ * The response is served in JSON format. This servlet is used by the function in autheticate.js to
+ * determine if the user viewing the site should be allowed to continue or redirected to a public
+ * page.
+ *
+ * @author sylviaziyuz
+ * @author guptamudit
+ * @version 1.0
+ * @param URLPatterns.AUTHENTICATE this servlet serves requests at /authenticate
+ */
+@WebServlet(urlPatterns = URLPatterns.AUTHENTICATE)
 public class AuthenticateServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(AuthenticateServlet.class.getName());
 
@@ -50,16 +63,20 @@ public class AuthenticateServlet extends HttpServlet {
       String redirUrlAfterLogout = URLPatterns.BASE;
       loginState.toggleLoginURL = userService.createLogoutURL(redirUrlAfterLogout);
       loginState.userProfileURL =
-          URLPatterns.PROFILE + "?userID=" + userService.getCurrentUser().getUserId();
+          URLPatterns.PROFILE
+              + "?"
+              + ParameterConstants.USER_ID
+              + "="
+              + userService.getCurrentUser().getUserId();
       loginState.isLoggedIn = true;
     }
-    response.setContentType("application/json");
+    response.setContentType(ServletUtils.CONTENT_JSON);
     response.getWriter().println(new Gson().toJson(loginState));
   }
 
   private String getRedirPathname(HttpServletRequest request) {
-    String encodedPathname = request.getParameter("redir");
-    if (encodedPathname == null) return URLPatterns.BASE;
+    String encodedPathname = ServletUtils.getParameter(request, ParameterConstants.REDIR, null);
+    if (encodedPathname.equals("")) return URLPatterns.BASE;
     String pathname;
     try {
       pathname = URLDecoder.decode(encodedPathname, "UTF-8");

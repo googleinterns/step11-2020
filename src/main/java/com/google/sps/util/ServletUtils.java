@@ -12,26 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.data;
+package com.google.sps.util;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * This enum represents the possible types for a user to be. Every UserAccount object stores an
- * instance of this enum.
+ * This class provides common functionality to all servlets to reduce code redundancy.
  *
  * @author guptamudit
  * @version 1.0
  */
-public enum UserType {
-  MENTOR("Mentor"),
-  MENTEE("Mentee");
+public final class ServletUtils {
+  public static final String CONTENT_HTML = "text/html;";
+  public static final String CONTENT_JSON = "application/json;";
+  public static final Long REC_BATCH_SIZE = 20;
 
-  private String title;
-
-  private UserType(String title) {
-    this.title = title;
-  }
-
-  public String getTitle() {
-    return title;
+  public static String getParameter(
+      HttpServletRequest request, String parameterName, String defaultValue) {
+    String value = request.getParameter(parameterName);
+    if (value == null || value == "") {
+      return defaultValue;
+    }
+    return value;
   }
 }

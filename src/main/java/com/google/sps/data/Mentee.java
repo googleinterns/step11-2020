@@ -19,8 +19,20 @@ import static java.lang.Math.toIntExact;
 import com.google.appengine.api.datastore.Entity;
 import com.google.sps.util.ParameterConstants;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+/**
+ * This class represents a Mentee user and their mentee-specific data. Other data is held within the
+ * super class, UserAccount.
+ *
+ * @author guptamudit
+ * @author tquintanilla
+ * @author sylviaziyuz
+ * @version 1.0
+ */
 public class Mentee extends UserAccount implements DatastoreEntity {
 
   private Topic goal;
@@ -39,11 +51,11 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     this.desiredMeetingFrequency = builder.desiredMeetingFrequency;
     this.dislikedMentorKeys = builder.dislikedMentorKeys;
     this.desiredMentorType = builder.desiredMentorType;
-
     this.requestedMentorKeys = builder.requestedMentorKeys;
     this.servedMentorKeys = builder.servedMentorKeys;
     this.lastRequestedMentorKey = builder.lastRequestedMentorKey;
     this.lastDislikedMentorKey = builder.lastDislikedMentorKey;
+    this.sanitizeValues();
   }
 
   public Mentee(Entity entity) {
@@ -55,17 +67,28 @@ public class Mentee extends UserAccount implements DatastoreEntity {
             toIntExact(
                 (long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY))];
     this.dislikedMentorKeys =
-        (Set<Long>) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS);
+        getDislikedSetFromProperty(
+            (Collection) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS));
     this.desiredMentorType =
         MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTOR_TYPE))];
     this.requestedMentorKeys =
         (Set<Long>) entity.getProperty(ParameterConstants.MENTEE_REQUESTED_MENTOR_KEYS);
     this.servedMentorKeys =
         (ArrayList<Long>) entity.getProperty(ParameterConstants.MENTEE_SERVED_MENTOR_KEYS);
-    this.lastRequestedMentorKey =
+    /*this.lastRequestedMentorKey =
         (long) entity.getProperty(ParameterConstants.MENTEE_LAST_REQUESTED_MENTOR_KEY);
     this.lastDislikedMentorKey =
         (long) entity.getProperty(ParameterConstants.MENTEE_LAST_DISLIKED_MENTOR_KEY);
+        */
+    this.sanitizeValues();
+  }
+
+  @Override
+  protected void sanitizeValues() {
+    super.sanitizeValues();
+    if (this.dislikedMentorKeys == null) {
+      this.dislikedMentorKeys = new HashSet<>();
+    }
   }
 
   public Entity convertToEntity() {
@@ -84,6 +107,25 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     return entity;
   }
 
+  /**
+   * converts the list retrieved from datastore to a list of usable long values
+   *
+   * @param dislikedMentorKeyList the list of objects from datastore
+   * @return the list of long values
+   */
+  private static Set<Long> getDislikedSetFromProperty(Collection<Object> dislikedMentorKeyList) {
+    return dislikedMentorKeyList == null
+        ? new HashSet<Long>()
+        : (Set<Long>)
+            dislikedMentorKeyList.stream().map(key -> (long) key).collect(Collectors.toSet());
+  }
+
+  /**
+   * adds a mentor's key to the list of keys for mentors that the mentee does not want to work with
+   *
+   * @param mentor the mentor that the mentee doesn't want to work with
+   * @return boolean of whether or not the mentor was added (false if already disliked)
+   */
   public boolean dislikeMentor(Mentor mentor) {
     return dislikedMentorKeys.add(mentor.getDatastoreKey());
   }

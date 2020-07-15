@@ -18,26 +18,33 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TimeZone;
 
+/**
+ * This class represents a summary of a java.util.TimeZone object. It's useful for minimizing the
+ * stored data in the fake data file. Every UserAccount stores an instance of this class.
+ *
+ * @author tquintanilla
+ * @version 1.0
+ */
 public class TimeZoneInfo {
 
   private static final double MILLISECONDS_PER_HOURS = 3600000.0;
 
-  String name;
   String id;
+  String name;
   double offset;
 
   public TimeZoneInfo(TimeZone timeZone) {
-    this.name = timeZone.getDisplayName();
     this.id = timeZone.getID();
+    this.name = timeZone.getDisplayName();
     this.offset = timeZone.getRawOffset() / MILLISECONDS_PER_HOURS;
-  }
-
-  public String getName() {
-    return this.name;
   }
 
   public String getID() {
     return this.id;
+  }
+
+  public String getName() {
+    return this.name;
   }
 
   public double getOffset() {

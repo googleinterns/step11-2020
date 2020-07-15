@@ -23,12 +23,22 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.KeyRange;
 import com.google.sps.util.ParameterConstants;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
-public class UserAccount implements DatastoreEntity {
+/**
+ * This class represents a generic user and all their related data. UserAccount can only be
+ * instantiated as a subclass (Mentee or Mentor).
+ *
+ * @author guptamudit
+ * @author tquintanilla
+ * @author sylviaziyuz
+ * @version 1.0
+ */
+public abstract class UserAccount implements DatastoreEntity {
   private long datastoreKey;
   private boolean keyInitialized;
   private String userID;
@@ -155,6 +165,13 @@ public class UserAccount implements DatastoreEntity {
             : new Mentor(entity);
   }
 
+  /** This method ensures that all class fields are properly initialized. If they aren't, fix it. */
+  protected void sanitizeValues() {
+    if (this.ethnicityList == null) {
+      this.ethnicityList = new ArrayList<>();
+    }
+  }
+
   public Entity convertToEntity() {
     Key key = KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, this.datastoreKey);
     Entity entity = new Entity(key);
@@ -178,6 +195,20 @@ public class UserAccount implements DatastoreEntity {
     entity.setProperty(ParameterConstants.DESCRIPTION, this.description);
     entity.setProperty(ParameterConstants.USER_TYPE, this.userType.ordinal());
     return entity;
+  }
+
+  /**
+   * converts the list retrieved from datastore to a list of usable Ethnicity objects
+   *
+   * @param ethnicityEnumIndexList the list off objects from datastore
+   * @return the list of ethnicity objects
+   */
+  private static Collection<Ethnicity> getEthnicityListFromProperty(
+      Collection<Object> ethnicityEnumIndexList) {
+    return (Collection<Ethnicity>)
+        ethnicityEnumIndexList.stream()
+            .map(index -> Ethnicity.values()[toIntExact((long) index)])
+            .collect(Collectors.toList());
   }
 
   public long getDatastoreKey() {
@@ -250,14 +281,6 @@ public class UserAccount implements DatastoreEntity {
 
   public UserType getUserType() {
     return userType;
-  }
-
-  private static Collection<Ethnicity> getEthnicityListFromProperty(
-      Collection<Object> ethnicityEnumIndexList) {
-    return (Collection<Ethnicity>)
-        ethnicityEnumIndexList.stream()
-            .map(index -> Ethnicity.values()[toIntExact((long) index)])
-            .collect(Collectors.toList());
   }
 
   protected abstract static class Builder<T extends Builder<T>> {
@@ -372,10 +395,6 @@ public class UserAccount implements DatastoreEntity {
     public T userType(UserType userType) {
       this.userType = userType;
       return (T) this;
-    }
-
-    public UserAccount build() {
-      return new UserAccount(this);
     }
   }
 }

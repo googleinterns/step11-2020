@@ -16,9 +16,10 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.DatastoreAccess;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -35,6 +36,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * This servlet supports HTTP GET and returns a static (except for the navbar) html page with a
+ * short blurb about each of the three authors for the mentor-matching platform.
+ *
+ * @author guptamudit
+ * @version 1.0
+ * @param URLPatterns.AUTHORS this servlet serves requests at /authors
+ */
 @WebServlet(urlPatterns = URLPatterns.AUTHORS)
 public class AuthorsServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(AuthorsServlet.class.getName());
@@ -68,7 +77,7 @@ public class AuthorsServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
+    response.setContentType(ServletUtils.CONTENT_HTML);
 
     if (staticResponse == null) {
       response.setStatus(500);
@@ -76,7 +85,7 @@ public class AuthorsServlet extends HttpServlet {
     }
 
     Map<String, Object> context =
-        new DummyDataAccess().getDefaultRenderingContext(URLPatterns.AUTHORS);
+        new DatastoreAccess().getDefaultRenderingContext(URLPatterns.AUTHORS);
 
     String rendered = jinjava.render(staticResponse, context);
 

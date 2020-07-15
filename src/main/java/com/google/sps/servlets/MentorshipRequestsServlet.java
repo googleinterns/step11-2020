@@ -18,11 +18,15 @@ import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DataAccess;
-import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.Mentee;
+import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorshipRequest;
+import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
+import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -39,6 +43,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * This servlet supports HTTP GET and returns an html page with a information about each of the
+ * mentees that wants help from the currently logged in mentor. The mentor can then accept or deny
+ * these mentorship requests. Mentee users will be redirected to the /landing page. This servlet
+ * supports HTTP POST for mentors approving/denying mentorship requests.
+ *
+ * @author tquintanilla
+ * @author guptamudit
+ * @version 1.0
+ * @param URLPatterns.MENTORSHIP_REQUESTS this servlet serves requests at /mentorship-requests
+ */
 @WebServlet(urlPatterns = URLPatterns.MENTORSHIP_REQUESTS)
 public class MentorshipRequestsServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(MentorshipRequestsServlet.class.getName());
@@ -52,7 +67,7 @@ public class MentorshipRequestsServlet extends HttpServlet {
 
   @Override
   public void init() {
-    dataAccess = new DummyDataAccess();
+    dataAccess = new DatastoreAccess();
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
     try {
@@ -79,24 +94,33 @@ public class MentorshipRequestsServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
+    response.setContentType(ServletUtils.CONTENT_HTML);
 
     if (mentorshipRequestTemplate == null) {
       response.setStatus(500);
       return;
     }
 
-    Map<String, Object> context =
-        dataAccess.getDefaultRenderingContext(URLPatterns.MENTORSHIP_REQUESTS);
-    context.put("mentorshipRequests", dataAccess.getIncomingRequests(dataAccess.getUser("woah")));
-    String renderTemplate = jinjava.render(mentorshipRequestTemplate, context);
-    response.getWriter().println(renderTemplate);
+    User user = dataAccess.getCurrentUser();
+    if (user != null) {
+      Mentor mentor = dataAccess.getMentor(user.getUserId());
+      if (mentor != null) {
+        response.setContentType(ServletUtils.CONTENT_HTML);
+        Map<String, Object> context =
+            dataAccess.getDefaultRenderingContext(URLPatterns.MENTORSHIP_REQUESTS);
+        context.put(ContextFields.MENTORSHIP_REQUESTS, dataAccess.getIncomingRequests(mentor));
+        String renderTemplate = jinjava.render(mentorshipRequestTemplate, context);
+        response.getWriter().println(renderTemplate);
+        return;
+      }
+    }
+    response.sendRedirect(URLPatterns.LANDING);
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    final String requestKey = request.getParameter("requestID");
-    final String choice = request.getParameter("choice");
+    final String requestKey = ServletUtils.getParameter(request, ParameterConstants.REQUEST_ID, "");
+    final String choice = ServletUtils.getParameter(request, ParameterConstants.CHOICE, "");
 
     Long requestDatastoreKey = null;
     try {
@@ -135,7 +159,7 @@ public class MentorshipRequestsServlet extends HttpServlet {
 
   private void writeJsonSuccessToResponse(HttpServletResponse response, boolean success)
       throws IOException {
-    response.setContentType("application/json;");
+    response.setContentType(ServletUtils.CONTENT_JSON);
     response.getWriter().println("{\"success\": " + success + "}");
   }
 }

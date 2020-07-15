@@ -14,6 +14,13 @@
 
 package com.google.sps.data;
 
+/**
+ * This class represents a user's education level. Every UserAccount object stores an instance of
+ * this enum.
+ *
+ * @author tquintanilla
+ * @version 1.0
+ */
 public enum EducationLevel {
   UNSPECIFIED(""),
   NONE("None"),

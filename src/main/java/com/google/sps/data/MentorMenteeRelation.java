@@ -20,6 +20,15 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.sps.util.ParameterConstants;
 
+/**
+ * For every Mentor/Mentee pair, there is a MentorMenteeRelation object that stores the information
+ * related to the pair. Rather than storing collections of these on each involved Mentor/Mentee,
+ * these objects instead hold references to the connected Mentor and Mentee.
+ *
+ * @author guptamudit
+ * @author tquintanilla
+ * @version 1.0
+ */
 public class MentorMenteeRelation implements DatastoreEntity {
   private long datastoreKey;
   private long mentorKey;

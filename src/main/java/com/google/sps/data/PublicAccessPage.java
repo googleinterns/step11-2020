@@ -18,6 +18,12 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * This class stores a constant list of pages that are available to non-logged-in users.
+ *
+ * @author sylviaziyuz
+ * @version 1.0
+ */
 public class PublicAccessPage {
 
   public static final Set<String> publicAccessPage =

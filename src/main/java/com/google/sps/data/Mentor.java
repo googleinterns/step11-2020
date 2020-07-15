@@ -22,6 +22,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * This class represents a Mentor user and their mentor-specific data. Other data is held within the
+ * super class, UserAccount.
+ *
+ * @author guptamudit
+ * @author sylviaziyuz
+ * @author tquintanilla
+ * @version 1.0
+ */
 public class Mentor extends UserAccount implements DatastoreEntity {
   private boolean visibility;
   private Collection<Topic> focusList;
@@ -32,6 +41,7 @@ public class Mentor extends UserAccount implements DatastoreEntity {
     this.visibility = builder.visibility;
     this.focusList = builder.focusList;
     this.mentorType = builder.mentorType;
+    this.sanitizeValues();
   }
 
   public Mentor(Entity entity) {
@@ -42,6 +52,15 @@ public class Mentor extends UserAccount implements DatastoreEntity {
             (Collection) entity.getProperty(ParameterConstants.MENTOR_FOCUS_LIST));
     this.mentorType =
         MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTOR_TYPE))];
+    this.sanitizeValues();
+  }
+
+  @Override
+  protected void sanitizeValues() {
+    super.sanitizeValues();
+    if (this.focusList == null) {
+      this.focusList = new ArrayList<>();
+    }
   }
 
   public Entity convertToEntity() {
@@ -54,6 +73,12 @@ public class Mentor extends UserAccount implements DatastoreEntity {
     return entity;
   }
 
+  /**
+   * converts the list retrieved from datastore to a list of usable Topic objects
+   *
+   * @param focusEnumIndexList the list off objects from datastore
+   * @return the list of topic objects
+   */
   private static Collection<Topic> getFocusListFromProperty(Collection<Object> focusEnumIndexList) {
     return focusEnumIndexList == null
         ? new ArrayList<Topic>()

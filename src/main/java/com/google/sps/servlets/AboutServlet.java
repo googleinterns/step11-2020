@@ -16,9 +16,10 @@ package com.google.sps.servlets;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.sps.data.DummyDataAccess;
+import com.google.sps.data.DatastoreAccess;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -35,6 +36,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * This servlet supports HTTP GET and returns a static (except for the navbar) html page with a
+ * brief summary of the mentor-matching platform.
+ *
+ * @author tquintanilla
+ * @author guptamudit
+ * @version 1.1
+ * @param URLPatterns.ABOUT this servlet serves requests at /about
+ */
 @WebServlet(urlPatterns = URLPatterns.ABOUT)
 public class AboutServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(AboutServlet.class.getName());
@@ -68,7 +78,7 @@ public class AboutServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
+    response.setContentType(ServletUtils.CONTENT_HTML);
 
     if (staticResponse == null) {
       response.setStatus(500);
@@ -76,7 +86,7 @@ public class AboutServlet extends HttpServlet {
     }
 
     Map<String, Object> context =
-        new DummyDataAccess().getDefaultRenderingContext(URLPatterns.ABOUT);
+        new DatastoreAccess().getDefaultRenderingContext(URLPatterns.ABOUT);
 
     String rendered = jinjava.render(staticResponse, context);
 
