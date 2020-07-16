@@ -4,10 +4,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
@@ -16,7 +18,6 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.sps.data.Country;
-import com.google.sps.data.DataAccess;
 import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.EducationLevel;
 import com.google.sps.data.Ethnicity;
@@ -35,8 +36,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 import org.junit.After;
@@ -69,9 +70,6 @@ public final class DatastoreAccessTest {
 
   private void setUpDefaultEntities() {
     Entity defaultUserAccountEntity = new Entity("UserAccount");
-    defaultUserAccountEntity.setProperty("userID", "101");
-    defaultUserAccountEntity.setProperty("email", "mudito@example.com");
-    defaultUserAccountEntity.setProperty("name", "Mudito Gupta");
     defaultUserAccountEntity.setProperty("dateOfBirth", new Date(984787200000L));
     defaultUserAccountEntity.setProperty("country", Country.US.ordinal());
     defaultUserAccountEntity.setProperty("language", Language.EN.ordinal());
@@ -88,6 +86,9 @@ public final class DatastoreAccessTest {
 
     defaultMenteeEntity = new Entity("UserAccount");
     defaultMenteeEntity.setPropertiesFrom(defaultUserAccountEntity);
+    defaultMenteeEntity.setProperty("userID", "101");
+    defaultMenteeEntity.setProperty("email", "mudito.mentee@example.com");
+    defaultMenteeEntity.setProperty("name", "Mudito Mentee");
     defaultMenteeEntity.setProperty("userType", UserType.MENTEE.ordinal());
     defaultMenteeEntity.setProperty("goal", Topic.COMPUTER_SCIENCE.ordinal());
     defaultMenteeEntity.setProperty("desiredMeetingFrequency", MeetingFrequency.WEEKLY.ordinal());
@@ -96,6 +97,9 @@ public final class DatastoreAccessTest {
 
     defaultMentorEntity = new Entity("UserAccount");
     defaultMentorEntity.setPropertiesFrom(defaultUserAccountEntity);
+    defaultMentorEntity.setProperty("userID", "102");
+    defaultMentorEntity.setProperty("email", "mudito.mentor@example.com");
+    defaultMentorEntity.setProperty("name", "Mudito Mentor");
     defaultMentorEntity.setProperty("userType", UserType.MENTOR.ordinal());
     defaultMentorEntity.setProperty("visibility", true);
     defaultMentorEntity.setProperty("focusList", Arrays.asList(Topic.COMPUTER_SCIENCE.ordinal()));
@@ -103,52 +107,54 @@ public final class DatastoreAccessTest {
   }
 
   private void setUpDefaultObjects() {
-    defaultMentee = (new Mentee.Builder())
-        .name("Mudito Gupta")
-        .userID("101")
-        .email("mudito@example.com")
-        .dateOfBirth(new Date(984787200000L))
-        .country(Country.US)
-        .language(Language.EN)
-        .timezone(new TimeZoneInfo(TimeZone.getTimeZone("GMT")))
-        .ethnicityList((Arrays.asList(Ethnicity.INDIAN)))
-        .ethnicityOther("")
-        .gender(Gender.MAN)
-        .genderOther("")
-        .firstGen(false)
-        .lowIncome(false)
-        .educationLevel(EducationLevel.HIGHSCHOOL)
-        .educationLevelOther("")
-        .description("I am very cool.")
-        .userType(UserType.MENTEE)
-        .goal(Topic.COMPUTER_SCIENCE)
-        .desiredMeetingFrequency(MeetingFrequency.WEEKLY)
-        .dislikedMentorKeys(Collections.emptySet())
-        .desiredMentorType(MentorType.CAREER)
-        .build();
+    defaultMentee =
+        (new Mentee.Builder())
+            .name("Mudito Mentee")
+            .userID("101")
+            .email("mudito.mentee@example.com")
+            .dateOfBirth(new Date(984787200000L))
+            .country(Country.US)
+            .language(Language.EN)
+            .timezone(new TimeZoneInfo(TimeZone.getTimeZone("GMT")))
+            .ethnicityList((Arrays.asList(Ethnicity.INDIAN)))
+            .ethnicityOther("")
+            .gender(Gender.MAN)
+            .genderOther("")
+            .firstGen(false)
+            .lowIncome(false)
+            .educationLevel(EducationLevel.HIGHSCHOOL)
+            .educationLevelOther("")
+            .description("I am very cool.")
+            .userType(UserType.MENTEE)
+            .goal(Topic.COMPUTER_SCIENCE)
+            .desiredMeetingFrequency(MeetingFrequency.WEEKLY)
+            .dislikedMentorKeys(Collections.emptySet())
+            .desiredMentorType(MentorType.CAREER)
+            .build();
 
-    defaultMentor = (new Mentor.Builder())
-        .name("Mudito Gupta")
-        .userID("101")
-        .email("mudito@example.com")
-        .dateOfBirth(new Date(984787200000L))
-        .country(Country.US)
-        .language(Language.EN)
-        .timezone(new TimeZoneInfo(TimeZone.getTimeZone("GMT")))
-        .ethnicityList((Arrays.asList(Ethnicity.INDIAN)))
-        .ethnicityOther("")
-        .gender(Gender.MAN)
-        .genderOther("")
-        .firstGen(false)
-        .lowIncome(false)
-        .educationLevel(EducationLevel.HIGHSCHOOL)
-        .educationLevelOther("")
-        .description("I am very cool.")
-        .mentorType(MentorType.TUTOR)
-        .visibility(true)
-        .userType(UserType.MENTOR)
-        .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
-        .build();
+    defaultMentor =
+        (new Mentor.Builder())
+            .name("Mudito Mentor")
+            .userID("102")
+            .email("mudito.mentor@example.com")
+            .dateOfBirth(new Date(984787200000L))
+            .country(Country.US)
+            .language(Language.EN)
+            .timezone(new TimeZoneInfo(TimeZone.getTimeZone("GMT")))
+            .ethnicityList((Arrays.asList(Ethnicity.INDIAN)))
+            .ethnicityOther("")
+            .gender(Gender.MAN)
+            .genderOther("")
+            .firstGen(false)
+            .lowIncome(false)
+            .educationLevel(EducationLevel.HIGHSCHOOL)
+            .educationLevelOther("")
+            .description("I am very cool.")
+            .mentorType(MentorType.TUTOR)
+            .visibility(true)
+            .userType(UserType.MENTOR)
+            .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
+            .build();
   }
 
   @Before
@@ -167,47 +173,67 @@ public final class DatastoreAccessTest {
     helper.tearDown();
   }
 
-
   private void assertUserEqualsEntity(UserAccount user, Entity entity) {
     assertEquals(user.getDatastoreKey(), entity.getKey().getId());
     assertEquals(user.getUserID(), entity.getProperty("userID"));
     assertEquals(user.getEmail(), entity.getProperty("email"));
     assertEquals(user.getName(), entity.getProperty("name"));
     assertEquals(user.getDateOfBirth(), entity.getProperty("dateOfBirth"));
-    assertEquals(user.getCountry().ordinal(), entity.getProperty("country"));
-    assertEquals(user.getLanguage().ordinal(), entity.getProperty("language"));
-    assertEquals(user.getTimezone(), entity.getProperty("timezone"));
-    assertEquals(user.getEthnicityList().stream().map(ethnicity -> ethnicity.ordinal()).collect(Collectors.toList()), entity.getProperty("ethnicity"));
+    assertEquals((long) user.getCountry().ordinal(), entity.getProperty("country"));
+    assertEquals((long) user.getLanguage().ordinal(), entity.getProperty("language"));
+    assertEquals(user.getTimezone().getID(), entity.getProperty("timezone"));
+    assertEquals(
+        user.getEthnicityList().stream()
+            .map(ethnicity -> ethnicity.ordinal())
+            .collect(Collectors.toList())
+            .toString(),
+        (entity.getProperty("ethnicity") == null
+                ? new ArrayList()
+                : entity.getProperty("ethnicity"))
+            .toString());
     assertEquals(user.getEthnicityOther(), entity.getProperty("ethnicityOther"));
-    assertEquals(user.getGender().ordinal(), entity.getProperty("gender"));
+    assertEquals((long) user.getGender().ordinal(), entity.getProperty("gender"));
     assertEquals(user.getGenderOther(), entity.getProperty("genderOther"));
     assertEquals(user.isFirstGen(), entity.getProperty("firstGen"));
     assertEquals(user.isLowIncome(), entity.getProperty("lowIncome"));
-    assertEquals(user.getEducationLevel().ordinal(), entity.getProperty("educationLevel"));
+    assertEquals((long) user.getEducationLevel().ordinal(), entity.getProperty("educationLevel"));
     assertEquals(user.getEducationLevelOther(), entity.getProperty("educationLevelOther"));
     assertEquals(user.getDescription(), entity.getProperty("description"));
   }
 
   private void assertMenteeEqualsEntity(Mentee mentee, Entity entity) {
     assertUserEqualsEntity(mentee, entity);
-    assertEquals(mentee.getUserType().ordinal(), entity.getProperty("userType"));
-    assertEquals(mentee.getGoal().ordinal(), entity.getProperty("goal"));
-    assertEquals(mentee.getDesiredMeetingFrequency().ordinal(), entity.getProperty("desiredMeetingFrequency"));
-    assertEquals(mentee.getDislikedMentorKeys(), new HashSet((Collection) entity.getProperty("dislikedMentorKeys")));
-    assertEquals(mentee.getDesiredMentorType().ordinal(), entity.getProperty("mentorType"));
+    assertEquals((long) mentee.getUserType().ordinal(), entity.getProperty("userType"));
+    assertEquals((long) mentee.getGoal().ordinal(), entity.getProperty("goal"));
+    assertEquals(
+        (long) mentee.getDesiredMeetingFrequency().ordinal(),
+        entity.getProperty("desiredMeetingFrequency"));
+    assertEquals(
+        mentee.getDislikedMentorKeys(),
+        entity.getProperty("dislikedMentorKeys") == null
+            ? new HashSet()
+            : new HashSet((Collection) entity.getProperty("dislikedMentorKeys")));
+    assertEquals((long) mentee.getDesiredMentorType().ordinal(), entity.getProperty("mentorType"));
   }
 
   private void assertMentorEqualsEntity(Mentor mentor, Entity entity) {
     assertUserEqualsEntity(mentor, entity);
-    assertEquals(mentor.getUserType().ordinal(), entity.getProperty("userType"));
+    assertEquals((long) mentor.getUserType().ordinal(), entity.getProperty("userType"));
     assertEquals(mentor.getVisibility(), entity.getProperty("visibility"));
-    assertEquals(mentor.getFocusList().stream().map(topic -> topic.ordinal()).collect(Collectors.toList()), entity.getProperty("focusList"));
-    assertEquals(mentor.getMentorType().ordinal(), entity.getProperty("mentorType"));
+    assertEquals(
+        mentor.getFocusList().stream()
+            .map(topic -> topic.ordinal())
+            .collect(Collectors.toList())
+            .toString(),
+        (entity.getProperty("focusList") == null
+                ? new ArrayList()
+                : entity.getProperty("focusList"))
+            .toString());
+    assertEquals((long) mentor.getMentorType().ordinal(), entity.getProperty("mentorType"));
   }
 
-
   @Test
-  public void singleSeedingTest() throws Exception {
+  public void singleSeedingTest() {
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
     assertEquals(0, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
     Collection<Entity> entities = Arrays.asList(defaultMenteeEntity, defaultMentorEntity);
@@ -217,22 +243,19 @@ public final class DatastoreAccessTest {
         entities.size(), ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
   }
 
-
-
   @Test
   public void getCurrentUserTest() {
     User user = dataAccess.getCurrentUser();
     assertEquals(user.getEmail(), "mudito@example.com");
     assertEquals(user.getUserId(), "101");
   }
+
   @Test
   public void getCurrentUserLoggedOutTest() {
     helper.setEnvIsLoggedIn(false);
     User user = dataAccess.getCurrentUser();
     assertNull(user);
   }
-
-
 
   @Test
   public void getUserByUserIdTest() {
@@ -245,6 +268,7 @@ public final class DatastoreAccessTest {
     assertNotNull(user);
     assertEquals(user.getUserID(), testUserID);
   }
+
   @Test
   public void getUserByUserIdNonexistentTest() {
     final String testUserID = "1234";
@@ -263,14 +287,13 @@ public final class DatastoreAccessTest {
     assertNotNull(user);
     assertEquals(user.getDatastoreKey(), testKeyId);
   }
+
   @Test
   public void getUserByDatastoreKeyNonexistentTest() {
     final long testKeyId = 1234;
     UserAccount user = dataAccess.getUser(testKeyId);
     assertNull(user);
   }
-
-
 
   @Test
   public void getMenteeByUserIdTest() {
@@ -283,12 +306,14 @@ public final class DatastoreAccessTest {
     assertNotNull(mentee);
     assertEquals(mentee.getUserID(), testUserID);
   }
+
   @Test
   public void getMenteeByUserIdNonexistentTest() {
     final String testUserID = "1234";
     Mentee mentee = dataAccess.getMentee(testUserID);
     assertNull(mentee);
   }
+
   @Test
   public void getMenteeByUserIdButItsAMentorTest() {
     Entity entity = new Entity("UserAccount");
@@ -311,12 +336,14 @@ public final class DatastoreAccessTest {
     assertNotNull(mentee);
     assertEquals(mentee.getDatastoreKey(), testKeyId);
   }
+
   @Test
   public void getMenteeByDatastoreKeyNonexistentTest() {
     final long testKeyId = 1234;
     Mentee mentee = dataAccess.getMentee(testKeyId);
     assertNull(mentee);
   }
+
   @Test
   public void getMenteeByDatastoreKeyButItsAMentorTest() {
     final long testKeyId = 1234;
@@ -327,8 +354,6 @@ public final class DatastoreAccessTest {
     Mentee mentee = dataAccess.getMentee(testKeyId);
     assertNull(mentee);
   }
-
-
 
   @Test
   public void getMentorByUserIdTest() {
@@ -341,12 +366,14 @@ public final class DatastoreAccessTest {
     assertNotNull(mentor);
     assertEquals(mentor.getUserID(), testUserID);
   }
+
   @Test
   public void getMentorByUserIdNonexistentTest() {
     final String testUserID = "1234";
     Mentor mentor = dataAccess.getMentor(testUserID);
     assertNull(mentor);
   }
+
   @Test
   public void getMentorByUserIdButItsAMenteeTest() {
     Entity entity = new Entity("UserAccount");
@@ -369,12 +396,14 @@ public final class DatastoreAccessTest {
     assertNotNull(mentor);
     assertEquals(mentor.getDatastoreKey(), testKeyId);
   }
+
   @Test
   public void getMentorByDatastoreKeyNonexistentTest() {
     final long testKeyId = 1234;
     Mentor mentor = dataAccess.getMentor(testKeyId);
     assertNull(mentor);
   }
+
   @Test
   public void getMentorByDatastoreKeyButItsAMenteeTest() {
     final long testKeyId = 1234;
@@ -386,8 +415,6 @@ public final class DatastoreAccessTest {
     assertNull(mentor);
   }
 
-
-
   @Test
   public void createUserEmptyDatabaseTest() {
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
@@ -397,33 +424,73 @@ public final class DatastoreAccessTest {
     Entity createdUserEntity = ds.prepare(new Query("UserAccount")).asSingleEntity();
     assertMenteeEqualsEntity(defaultMentee, createdUserEntity);
   }
+
   @Test
   public void createUserAlreadyInDatabaseTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    assertEquals(0, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
     assertTrue(dataAccess.createUser(defaultMentee));
+    assertEquals(1, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    Entity createdUserEntity = ds.prepare(new Query("UserAccount")).asSingleEntity();
+    assertMenteeEqualsEntity(defaultMentee, createdUserEntity);
     assertFalse(dataAccess.createUser(defaultMentee));
+    assertEquals(1, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    createdUserEntity = ds.prepare(new Query("UserAccount")).asSingleEntity();
+    assertMenteeEqualsEntity(defaultMentee, createdUserEntity);
   }
+
   @Test
-  public void createUserMultipleTest() {
+  public void createUserMultipleTest() throws EntityNotFoundException {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    assertEquals(0, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
     assertTrue(dataAccess.createUser(defaultMentee));
+    assertEquals(1, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    Entity createdMenteeEntity = ds.prepare(new Query("UserAccount")).asSingleEntity();
+    assertMenteeEqualsEntity(defaultMentee, createdMenteeEntity);
     assertTrue(dataAccess.createUser(defaultMentor));
+    assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    Entity createdMentorEntity =
+        ds.get(KeyFactory.createKey("UserAccount", defaultMentor.getDatastoreKey()));
+    assertMentorEqualsEntity(defaultMentor, createdMentorEntity);
   }
-
-
 
   @Test
   public void updateUserEmptyDatabaseTest() {
-    assertTrue(dataAccess.updateUser(defaultMentee));
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    assertEquals(0, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    assertFalse(dataAccess.updateUser(defaultMentee));
+    assertEquals(0, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
   }
+
   @Test
-  public void updateUserAlreadyInDatabaseTest() {
-    final long menteeey = defaultMentee.getDatastoreKey();
+  public void updateUserInDatabaseTest() throws EntityNotFoundException {
+    final long menteeKey = defaultMentee.getDatastoreKey();
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    try {
+      Entity entity = ds.get(KeyFactory.createKey("UserAccount", menteeKey));
+      fail(
+          "Datastore should not include user with key:"
+              + menteeKey
+              + " but "
+              + entity
+              + " was found");
+    } catch (EntityNotFoundException expectedException) {
+    }
     assertTrue(dataAccess.createUser(defaultMentee));
+    assertEquals(1, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
     defaultMentee.setName("Thomas");
     assertTrue(dataAccess.updateUser(defaultMentee));
+    assertEquals(1, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    assertNotNull(ds.get(KeyFactory.createKey("UserAccount", menteeKey)));
   }
+
   @Test
-  public void updateUserMultipleTest() {
+  public void updateNonexistentUserWhileOthersPresentTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    assertEquals(0, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
     assertTrue(dataAccess.createUser(defaultMentee));
-    assertTrue(dataAccess.createUser(defaultMentor));
+    assertEquals(1, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    assertFalse(dataAccess.updateUser(defaultMentor));
+    assertEquals(1, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
   }
 }
