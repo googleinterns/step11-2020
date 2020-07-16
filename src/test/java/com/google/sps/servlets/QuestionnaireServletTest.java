@@ -28,6 +28,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.TimeZone;
+import java.util.Date;
 import com.google.sps.data.Country;
 import com.google.sps.data.DataAccess;
 import com.google.sps.data.DatastoreAccess;
@@ -140,26 +142,25 @@ public final class QuestionnaireServletTest {
 
   @Test
   public void checkExistingValueIsSelected() throws Exception {
-    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
     servlet.init();
 
-    when(dataAccess.getUser(ArgumentMatchers.anyString()).thenReturn(new Mentor.Builder())
-        .name("Alice")
-        .userID(userID)
-        .email("alice@gmail.com")
-        .dateOfBirth(new Date())
-        .country(Country.AU)
-        .language(Language.ES)
-        .timezoneInfo(new TimeZoneInfo(TimeZone.getDefault()))
-        .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
+    when(dataAccess.getUser(ArgumentMatchers.anyLong())).thenReturn((new Mentor.Builder())
+        .name("Mudito Mentor")
+        .userID("102")
+        .email("mudito.mentor@example.com")
+        .dateOfBirth(new Date(984787200000L))
+        .country(Country.US)
+        .language(Language.EN)
+        .timezone(new TimeZoneInfo(TimeZone.getTimeZone("GMT")))
+        .ethnicityList((Arrays.asList(Ethnicity.INDIAN)))
         .ethnicityOther("")
-        .gender(Gender.WOMAN)
+        .gender(Gender.MAN)
         .genderOther("")
-        .firstGen(true)
-        .lowIncome(true)
-        .educationLevel(EducationLevel.BACHELORS)
+        .firstGen(false)
+        .lowIncome(false)
+        .educationLevel(EducationLevel.HIGHSCHOOL)
         .educationLevelOther("")
-        .description("hi im alice")
+        .description("I am very cool.")
         .mentorType(MentorType.TUTOR)
         .visibility(true)
         .userType(UserType.MENTOR)
@@ -174,7 +175,7 @@ public final class QuestionnaireServletTest {
     servlet.doGet(request, response);
 
     writer.flush();
-    Assert.assertTrue(stringWriter.toString().contains("<input type=\"checkbox\" class=\"ethnicityCheckbox\" name=\"CAUCASIAN\" value=\"CAUCASIAN\" checked>"));
+    Assert.assertTrue(stringWriter.toString().contains("<input type=\"checkbox\" class=\"ethnicityCheckbox\" name=\"INDIAN\" value=\"INDIAN\" checked>"));
   }
 
   @Test
@@ -248,5 +249,22 @@ public final class QuestionnaireServletTest {
 
     writer.flush();
     Assert.assertFalse(stringWriter.toString().contains("omeganonbinary"));
+  }
+
+  public Map<String, Object> getTestRenderingContext(String currentURL) {
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put(ContextFields.URL, currentURL);
+    context.put(ContextFields.IS_LOGGED_IN, true);
+    UserAccount currentUser = null;
+    boolean isMentor = false, isMentee = false;
+      User user = getCurrentUser();
+    currentUser = getUser(user.getUserId());
+    isMentor = currentUser == null ? false : currentUser.getUserType() == UserType.MENTOR;
+    isMentee =
+        currentUser == null ? false : !isMentor && currentUser.getUserType() == UserType.MENTEE;
+    context.put(ContextFields.CURRENT_USER, currentUser);
+    context.put(ContextFields.IS_MENTOR, isMentor);
+    context.put(ContextFields.IS_MENTEE, isMentee);
+    return context;
   }
 }
