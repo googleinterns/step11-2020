@@ -30,24 +30,36 @@ limitations under the License. -->
 <h1> Form </h1>
 <div class = "form-container">
   <form id="information-form" action="/questionnaire" method="POST">
+    {%raw %}{{currentUser.ethnicityList|tojson}}{%endraw%}
     <h3> Step 1: Basic Personal Information </h3>
     <input type="hidden" name="formType" id="formType" value={{"{{"}}formType{{"}}"}} />
     <label for="name">Your Name</label>
-    <input type="text" id="name" name="name" placeholder="Your name.." >
+    <input type="text" id="name" name="name" placeholder="Your name.." {% raw %}{% if currentUser and currentUser.name %} value="{{currentUser.name}}"
+    {% endif %}{% endraw %}>
 
     <label for="dateOfBirth">Date of Birth:</label>
-    <input type="date" name="dateOfBirth">
+    <input type="date" name="dateOfBirth" {% raw %}{% if currentUser and currentUser.description != '' %} value={{currentUser.dateOfBirth}}
+    {% endif %}{% endraw %}>
 
     <label for="country">Country</label>
-    <select id="country" name="country" >
-      <option value="none" selected disabled hidden> select an option </option>
+    <select id="country" name="country" required>
+      {% raw %} {% if currentUser and currentUser.country %}
+      <option value="{{ currentUser.country }}" selected hidden> {{currentUser.country.longName}} </option>
+      {% else %}
+      <option value="" selected hidden> select an option </option>
+      {% endif %} {% endraw %}
       {% for country in countries %}
       <option value="{{country}}">{{country.longName}}</option>
       {% endfor %}
     </select>
 
     <label for="timezone">Your Location's Timezone</label>
-    <select id="timezone" name="timezone" >
+    <select id="timezone" name="timezone" required >
+      {% raw %}{% if currentUser and currentUser.timezone %}
+      <option value="{{ currentUser.timezone.timezoneID }}" selected hidden> {{currentUser.timezone.name}} {{timezone.offset}} </option>
+      {% else %}
+      <option value="" selected disabled hidden> select an option </option>
+      {% endif %}{% endraw %}
       {% for timezone in timezones %}
       <option value="{{timezone.timezoneID}}"> {{timezone.name}}: {{timezone.offset}} </option>
       {% endfor %}
@@ -55,6 +67,11 @@ limitations under the License. -->
 
     <label for="language">Preferred Language</label>
     <select id="language" name="language">
+      {% raw %}{% if currentUser and currentUser.language %}
+      <option value="{{ currentUser.language }}" selected hidden> {{currentUser.language.longName}}</option>
+      {% else %}
+      <option value="" selected disabled hidden> select an option </option>
+      {% endif %}{% endraw %}
       {% for language in languages %}
       <option value="{{language}}"> {{language.longName}}</option>
       {% endfor %}
@@ -66,16 +83,23 @@ limitations under the License. -->
        Feel free to fill in with whatever you're comfortable sharing: everything in this step is optional </p>
     <div id="ethnicity-div">
       <p> Check off whatever best applies to you </p>
-      {% for ethnicity in ethnicities %}
-      <input type="checkbox" class="ethnicityCheckbox" name="{{ethnicity}}" value="{{ethnicity}}">
+      {% raw %}{% for ethnicity in ethnicities %}
+      <input type="checkbox" class="ethnicityCheckbox" name="{{ethnicity}}" value="{{ethnicity}}"
+      {% if currentUser and ethnicity in currentUser.ethnicityList %} checked
+      {% endif %}>
       <label for="{{ethnicity}}"> {{ethnicity.title}} </label><br>
-      {% endfor %}
-      <!-- Used to store ethnicity values -->
+      {% endfor %}{% endraw %}
+      <!-- Used to store ethnicity values  -->
     <input type="hidden" name="ethnicity" id="ethnicity" value="" />
     </div> <br>
 
     <label for="gender">Gender</label>
     <select id="gender" name="gender" onchange="checkForOther(this.value, 'gender')">
+      {% raw %}{% if currentUser and currentUser.gender %}
+      <option value="{{ currentUser.gender }}" selected hidden> {{currentUser.gender.title}}</option>
+      {% else %}
+      <option value="" selected disabled hidden> select an option </option>
+      {% endif %}{% endraw %}
       {% for gender in genders %}
       <option value="{{gender}}"> {{gender.title}}</option>
       {% endfor %}
@@ -84,21 +108,30 @@ limitations under the License. -->
 
     <label for="educationLevel">Current/Highest Level of Education</label>
     <select id="educationLevel" name="educationLevel"  onchange="checkForOther(this.value, 'educationLevel')">
-      {% for education in educationLevels %}
-      <option value="{{education}}"> {{education.title}}</option>
+      {% raw %}{% if currentUser and currentUser.educationLevel %}
+      <option value="{{ currentUser.educationLevel }}" selected hidden> {{currentUser.educationLevel.title}}</option>
+      {% else %}
+      <option value="" selected disabled hidden> select an option </option>
+      {% endif %}{% endraw %}
+      {% for educationLevel in educationLevels %}
+      <option value="{{educationLevel}}"> {{educationLevel.title}}</option>
       {% endfor %}
     </select>
     <div id="other-input-educationLevel"></div><br>
 
     <div id="firstGen">
       <label> Do/did you consider yourself a first generation student</label>
-      <input type="radio" value="true"> Yes </input>
-      <input type="radio" value="false"> No </input>
+      <input type="radio" name="firstGen" value="true" {% raw %}{% if currentUser and currentUser.firstGen %} checked
+      {% endif %}{% endraw %}> Yes </input>
+      <input type="radio" name="firstGen" value="false" {% raw %}{% if currentUser and not currentUser.firstGen %} checked
+      {% endif %}{% endraw %}> No </input>
     </div>
     <div id="lowIncome">
       <label> Do/did you consider yourself a low income student</label>
-      <input type="radio" value="true"> Yes </input>
-      <input type="radio" value="false"> No </input>
+      <input type="radio" name="lowIncome" value="true" {% raw %}{% if currentUser and currentUser.lowIncome %} checked
+      {% endif %}{% endraw %}> Yes </input>
+      <input type="radio" name="lowIncome" value="false" {% raw %}{% if currentUser and not currentUser.lowIncome %} checked
+      {% endif %}{% endraw %}> No </input>
     </div>
 
 
@@ -106,30 +139,48 @@ limitations under the License. -->
     <!-- Displayed to those who selected "Become a Mentor" -->
     {% raw %}{% if formType == "mentor" %} {% endraw %}
     <label for="mentorType"> What type of Mentor would you like to be? </label>
-    {% raw %} {% else %} {% endraw %}
-    <label for="mentorType"> What type of Mentor are you looking for? </label>
-    {% raw %} {% endif %} {% endraw %}
     <select id="mentorType" name="mentorType" required>
+      {% raw %} {% if currentUser and currentUser.mentorType %}
+      <option value="{{ currentUser.mentorType }}" selected hidden> {{currentUser.mentorType.title}} </option>
+      {% else %}
+      <option value="" selected hidden> select an option </option>
+      {% endif %} {% endraw %}
       {% for mentorType in mentorTypes %}
       <option value="{{mentorType}}"> {{mentorType.title}}</option>
       {% endfor %}
     </select> <br>
 
-    {% raw %}{% if formType == "mentor" %} {% endraw %}
     <div id="focusList-div">
       <p> What areas would you like to focus on (Choose all that apply). </p>
-      {% for topic in topics %}
-      <input type="checkbox" class="focusListCheckbox" name="{{topic}}" value="{{topic}}">
+      {% raw %}{% for topic in topics %}
+      <input type="checkbox" class="focusListCheckbox" name="{{topic}}" value="{{topic}}" {% if currentUser and topic in currentUser.focusList %} checked
+      {% endif %}>
       <label for="{{topic}}"> {{topic.title}} </label><br>
-      {% endfor %}
+      {% endfor %} {% endraw %}
     <input type="hidden" name="focusList" id="focusList" value="" />
   </div> <br>
 
     <!-- Displayed to those who selected "Find a Mentor" -->
     {% raw %} {% else %} {% endraw %}
+    <label for="mentorType"> What type of Mentor are you looking for? </label>
+    <select id="mentorType" name="mentorType" required>
+      {% raw %} {% if currentUser and currentUser.desiredMentorType %}
+      <option value="{{ currentUser.desiredMentorType }}" selected hidden> {{currentUser.desiredMentorType.title}} </option>
+      {% else %}
+      <option value="" selected hidden> select an option </option>
+      {% endif %} {% endraw %}
+      {% for mentorType in mentorTypes %}
+      <option value="{{mentorType}}"> {{mentorType.title}}</option>
+      {% endfor %}
+    </select> <br>
 
     <label for="desiredMeetingFrequency">How often would you like to meet?</label>
     <select id="desiredMeetingFrequency" name="desiredMeetingFrequency" required>
+      {% raw %} {% if currentUser  and currentUser.desiredMeetingFrequency %}
+      <option value="{{ currentUser.desiredMeetingFrequency }}" selected hidden> {{currentUser.desiredMeetingFrequency.title}} </option>
+      {% else %}
+      <option value="" selected hidden> select an option </option>
+      {% endif %} {% endraw %}
       {% for meetingFrequency in meetingFrequencies %}
       <option value="{{meetingFrequency}}"> {{meetingFrequency.title}}</option>
       {% endfor %}
@@ -137,9 +188,14 @@ limitations under the License. -->
 
     <label for="goal">What subject would you like to focus on (if applicable)? </label>
     <select id="goal" name="goal" required>
+      {% raw %} {% if currentUser and currentUser.goal %}
+      <option value="{{ currentUser.goal }}" selected hidden> {{currentUser.goal.title}} </option>
+      {% else %}
+      <option value="" selected hidden> select an option </option>
+      {% endif %}
       {% for topic in topics %}
       <option value="{{topic}}"> {{topic.title}}</option>
-      {% endfor %}
+      {% endfor %}{% endraw %}
     </select>
     {% raw %} {% endif %} {% endraw %}
 
@@ -150,7 +206,8 @@ limitations under the License. -->
     <input type="file" id="image-upload" name="image-upload">
 
     <label for="description"> (Optional) Write a short bio about yourself</label>
-    <input type="text" name="description" placeholder="For example, what are your hobbies...">
+    <input type="text" name="description" placeholder="For example, what are your hobbies... " {% raw %}{% if currentUser and currentUser.description %} value={{currentUser.description}}
+    {% endif %}{% endraw %}>
     <input type="submit" value="Submit">
   </form>
 </div>
