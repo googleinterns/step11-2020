@@ -33,6 +33,7 @@ public final class ParameterConstants {
   public static final String COUNTRY = "country";
   public static final String LANGUAGE = "language";
   public static final String TIMEZONE = "timezone";
+  public static final String ENCODED_CURSOR = "encodedCursor";
   public static final String ETHNICITY = "ethnicity";
   public static final String ETHNICITY_OTHER = "ethnicityOther";
   public static final String GENDER = "gender";

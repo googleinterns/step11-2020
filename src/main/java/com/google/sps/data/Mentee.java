@@ -18,10 +18,11 @@ import static java.lang.Math.toIntExact;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.sps.util.ParameterConstants;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
@@ -39,7 +40,8 @@ public class Mentee extends UserAccount implements DatastoreEntity {
   private MeetingFrequency desiredMeetingFrequency;
   private Set<Long> dislikedMentorKeys;
   private Set<Long> requestedMentorKeys;
-  private ArrayList<Long> servedMentorKeys;
+  private SortedSet<Long> servedMentorKeys;
+  public String encodedCursor;
   private Long lastRequestedMentorKey;
   private Long lastDislikedMentorKey;
 
@@ -55,6 +57,7 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     this.servedMentorKeys = builder.servedMentorKeys;
     this.lastRequestedMentorKey = builder.lastRequestedMentorKey;
     this.lastDislikedMentorKey = builder.lastDislikedMentorKey;
+    this.encodedCursor = encodedCursor;
     this.sanitizeValues();
   }
 
@@ -70,17 +73,22 @@ public class Mentee extends UserAccount implements DatastoreEntity {
         getDislikedSetFromProperty(
             (Collection) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS));
     this.desiredMentorType =
-        MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTOR_TYPE))];
+        MentorType.values()[
+            toIntExact((long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE))];
     this.requestedMentorKeys =
-        (Set<Long>) entity.getProperty(ParameterConstants.MENTEE_REQUESTED_MENTOR_KEYS);
+        getRequestedSetFromProperty(
+            (Collection) entity.getProperty(ParameterConstants.MENTEE_REQUESTED_MENTOR_KEYS));
     this.servedMentorKeys =
-        (ArrayList<Long>) entity.getProperty(ParameterConstants.MENTEE_SERVED_MENTOR_KEYS);
-    /*this.lastRequestedMentorKey =
-        (long) entity.getProperty(ParameterConstants.MENTEE_LAST_REQUESTED_MENTOR_KEY);
+        getServedSetFromProperty(
+            (Collection) entity.getProperty(ParameterConstants.MENTEE_SERVED_MENTOR_KEYS));
+    this.lastRequestedMentorKey =
+        getLongFromProperty(
+            entity.getProperty(ParameterConstants.MENTEE_LAST_REQUESTED_MENTOR_KEY));
     this.lastDislikedMentorKey =
-        (long) entity.getProperty(ParameterConstants.MENTEE_LAST_DISLIKED_MENTOR_KEY);
-        */
-        MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE))];
+        getLongFromProperty(entity.getProperty(ParameterConstants.MENTEE_LAST_DISLIKED_MENTOR_KEY));
+
+    this.encodedCursor =
+        getStringFromProperty(entity.getProperty(ParameterConstants.ENCODED_CURSOR));
     this.sanitizeValues();
   }
 
@@ -106,6 +114,7 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     entity.setProperty(
         ParameterConstants.MENTEE_LAST_REQUESTED_MENTOR_KEY, this.lastRequestedMentorKey);
     entity.setProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE, desiredMentorType.ordinal());
+    entity.setProperty(ParameterConstants.ENCODED_CURSOR, this.encodedCursor);
     return entity;
   }
 
@@ -122,6 +131,47 @@ public class Mentee extends UserAccount implements DatastoreEntity {
             dislikedMentorKeyList.stream().map(key -> (long) key).collect(Collectors.toSet());
   }
 
+  /**
+   * @param requestedMentorKeyList the list of requested mentor key objects from datastore
+   * @return the list of long values
+   */
+  private static Set<Long> getRequestedSetFromProperty(Collection<Object> requestedMentorKeyList) {
+    return requestedMentorKeyList == null
+        ? new HashSet<Long>()
+        : (Set<Long>)
+            requestedMentorKeyList.stream().map(key -> (long) key).collect(Collectors.toSet());
+  }
+
+  /**
+   * @param servedMentorKeyList the list of served mentor key objects from datastore
+   * @return the sorted set of long values
+   */
+  private static SortedSet<Long> getServedSetFromProperty(Collection<Object> servedMentorKeyList) {
+    return servedMentorKeyList == null
+        ? new TreeSet<Long>()
+        : (SortedSet<Long>)
+            servedMentorKeyList.stream().map(key -> (long) key).collect(Collectors.toSet());
+  }
+
+  /**
+   * Safe wrapper for getting long value from an entity
+   *
+   * @param longProperty the datastore object for the long value
+   * @return the numeric value in Long
+   */
+  private static Long getLongFromProperty(Object longProperty) {
+    return longProperty == null ? 0 : (Long) longProperty;
+  }
+
+  /**
+   * Safe wrapper for getting string value from an entity
+   *
+   * @param stringProperty the datastore object for the string
+   * @return string literal
+   */
+  private static String getStringFromProperty(Object stringProperty) {
+    return stringProperty == null ? "" : (String) stringProperty;
+  }
   /**
    * adds a mentor's key to the list of keys for mentors that the mentee does not want to work with
    *
@@ -154,9 +204,10 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     private Set<Long> dislikedMentorKeys;
     private MentorType desiredMentorType;
     private Set<Long> requestedMentorKeys;
-    private ArrayList<Long> servedMentorKeys;
+    private SortedSet<Long> servedMentorKeys;
     private Long lastDislikedMentorKey;
     private Long lastRequestedMentorKey;
+    public String encodedCursor;
 
     public Builder() {}
 
@@ -185,7 +236,7 @@ public class Mentee extends UserAccount implements DatastoreEntity {
       return this;
     }
 
-    public Builder servedMentorKeys(ArrayList<Long> servedMentorKeys) {
+    public Builder servedMentorKeys(SortedSet<Long> servedMentorKeys) {
       this.servedMentorKeys = servedMentorKeys;
       return this;
     }
@@ -197,6 +248,11 @@ public class Mentee extends UserAccount implements DatastoreEntity {
 
     public Builder lastDislikedMentorKey(Long lastDislikedMentorKey) {
       this.lastDislikedMentorKey = lastDislikedMentorKey;
+      return this;
+    }
+
+    public Builder encodedCursor(String encodedCursor) {
+      this.encodedCursor = encodedCursor;
       return this;
     }
 

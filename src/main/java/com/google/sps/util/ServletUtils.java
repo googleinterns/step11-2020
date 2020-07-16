@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 public final class ServletUtils {
   public static final String CONTENT_HTML = "text/html;";
   public static final String CONTENT_JSON = "application/json;";
-  public static final Long REC_BATCH_SIZE = 20;
+  public static final int REC_BATCH_SIZE = 20;
 
   public static String getParameter(
       HttpServletRequest request, String parameterName, String defaultValue) {

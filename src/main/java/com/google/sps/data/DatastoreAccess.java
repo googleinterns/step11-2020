@@ -158,7 +158,10 @@ public class DatastoreAccess implements DataAccess {
     PreparedQuery results = datastoreService.prepare(query);
     System.out.println("Prepared query\n");
     return StreamSupport.stream(
-            results.asIterable(FetchOptions.Builder.withLimit(ServletUtils.REC_BATCH_SIZE)).spliterator(), false)
+            results
+                .asIterable(FetchOptions.Builder.withLimit(ServletUtils.REC_BATCH_SIZE))
+                .spliterator(),
+            false)
         .map(Mentor::new)
         .collect(Collectors.toList());
   }
