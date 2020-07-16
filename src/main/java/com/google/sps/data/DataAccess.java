@@ -46,7 +46,7 @@ public interface DataAccess {
 
   boolean createUser(UserAccount user);
 
-  boolean saveUser(UserAccount user);
+  boolean updateUser(UserAccount user);
 
   Collection<Mentor> getRelatedMentors(Mentee mentee);
 

@@ -170,7 +170,7 @@ public class DummyDataAccess implements DataAccess {
     return false;
   }
 
-  public boolean saveUser(UserAccount user) {
+  public boolean updateUser(UserAccount user) {
     return false;
   }
 

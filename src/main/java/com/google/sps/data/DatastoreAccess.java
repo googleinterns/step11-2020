@@ -115,14 +115,21 @@ public class DatastoreAccess implements DataAccess {
 
   public boolean createUser(UserAccount user) {
     if (getUser(user.getDatastoreKey()) == null) {
-      return saveUser(user);
+      datastoreService.put(user.convertToEntity());
+      return true;
     }
     return false;
   }
 
-  public boolean saveUser(UserAccount user) {
-    datastoreService.put(user.convertToEntity());
-    return true;
+  public boolean updateUser(UserAccount user) {
+    UserAccount oldUser =
+        user.isKeyInitialized() ? getUser(user.getDatastoreKey()) : getUser(user.getUserID());
+    if (oldUser != null) {
+      user.updates(oldUser);
+      datastoreService.put(user.convertToEntity());
+      return true;
+    }
+    return false;
   }
 
   public Collection<Mentor> getRelatedMentors(Mentee mentee) {
@@ -199,7 +206,7 @@ public class DatastoreAccess implements DataAccess {
     if (getMentee(mentee.getDatastoreKey()) != null
         && getMentor(mentor.getDatastoreKey()) != null) {
       if (mentee.dislikeMentor(mentor)) {
-        saveUser(mentee);
+        updateUser(mentee);
         return true;
       }
     }

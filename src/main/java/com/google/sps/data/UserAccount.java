@@ -213,8 +213,17 @@ public abstract class UserAccount implements DatastoreEntity {
                 .collect(Collectors.toList());
   }
 
+  public void updates(UserAccount oldUser) {
+    this.datastoreKey = oldUser.datastoreKey;
+    this.keyInitialized = true;
+  }
+
   public long getDatastoreKey() {
     return datastoreKey;
+  }
+
+  public boolean isKeyInitialized() {
+    return keyInitialized;
   }
 
   public String getUserID() {
@@ -227,6 +236,10 @@ public abstract class UserAccount implements DatastoreEntity {
 
   public String getName() {
     return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public Date getDateOfBirth() {
