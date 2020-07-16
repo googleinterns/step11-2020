@@ -233,6 +233,17 @@ public class DatastoreAccess implements DataAccess {
     return false;
   }
 
+  public boolean requestMentor(Mentee mentee, Mentor mentor) {
+    if (getMentee(mentee.getDatastoreKey()) != null
+        && getMentor(mentor.getDatastoreKey()) != null) {
+      if (mentee.requestMentor(mentor)) {
+        saveUser(mentee);
+        return true;
+      }
+    }
+    return false;
+  }
+
   public Collection<Mentor> getDislikedMentors(Mentee mentee) {
     return datastoreService
         .get(

@@ -58,6 +58,8 @@ public interface DataAccess {
 
   boolean dislikeMentor(Mentee mentee, Mentor mentor);
 
+  boolean requestMentor(Mentee mentee, Mentor mentor);
+
   Collection<Mentor> getDislikedMentors(Mentee mentee);
 
   boolean publishRequest(MentorshipRequest request);

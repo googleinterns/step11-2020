@@ -356,6 +356,10 @@ public class DummyDataAccess implements DataAccess {
     return false;
   }
 
+  public boolean requestMentor(Mentee mentee, Mentor mentor) {
+    return false;
+  }
+
   public Collection<Mentor> getDislikedMentors(Mentee mentee) {
     Collection<Mentor> mentors = new ArrayList<>(5);
     mentors.add(

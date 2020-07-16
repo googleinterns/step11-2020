@@ -174,12 +174,26 @@ public class Mentee extends UserAccount implements DatastoreEntity {
   }
   /**
    * adds a mentor's key to the list of keys for mentors that the mentee does not want to work with
+   * updates lastDislikedMentorKey for recommendation ranking
    *
    * @param mentor the mentor that the mentee doesn't want to work with
    * @return boolean of whether or not the mentor was added (false if already disliked)
    */
   public boolean dislikeMentor(Mentor mentor) {
+    lastDislikedMentorKey = mentor.getDatastoreKey();
     return dislikedMentorKeys.add(mentor.getDatastoreKey());
+  }
+
+  /**
+   * adds a mentor's key to the requestedMentorKeys to avoid recommending mentors already requested
+   * updates lastRequestedMentorKey for recommendation ranking
+   *
+   * @param mentor the mentor that the mentee requested
+   * @return boolean of whether or not the mentor was added
+   */
+  public boolean requestMentor(Mentor mentor) {
+    lastRequestedMentorKey = mentor.getDatastoreKey();
+    return requestedMentorKeys.add(mentor.getDatastoreKey());
   }
 
   public Topic getGoal() {

@@ -153,6 +153,7 @@ public class FindMentorServlet extends HttpServlet {
       MentorshipRequest mentorshipRequest =
           new MentorshipRequest(mentor.getDatastoreKey(), mentee.getDatastoreKey());
       dataAccess.publishRequest(mentorshipRequest);
+      dataAccess.requestMentor(mentee, mentor);
     } else if (choice.equals(DISLIKE)) {
       dataAccess.dislikeMentor(mentee, mentor);
     }
