@@ -6,6 +6,9 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.sps.data.DatastoreAccess;
 import com.google.sps.servlets.QuestionnaireServlet;
 import java.io.PrintWriter;
@@ -18,9 +21,34 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import com.google.sps.data.Country;
+import com.google.sps.data.DataAccess;
+import com.google.sps.data.DatastoreAccess;
+import com.google.sps.data.EducationLevel;
+import com.google.sps.data.Ethnicity;
+import com.google.sps.data.Gender;
+import com.google.sps.data.Language;
+import com.google.sps.data.MeetingFrequency;
+import com.google.sps.data.Mentee;
+import com.google.sps.data.Mentor;
+import com.google.sps.data.MentorType;
+import com.google.sps.data.TimeZoneInfo;
+import com.google.sps.data.Topic;
+import com.google.sps.data.UserAccount;
+import com.google.sps.data.UserType;
+import com.google.sps.util.ContextFields;
+import com.google.sps.util.ErrorMessages;
+import com.google.sps.util.ParameterConstants;
+import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ServletUtils;
+import com.google.sps.util.URLPatterns;
 
 /**
  * TO RUN PROJECT WITHOUT TESTS RUN COMMAND: mvn package appengine:run -DskipTests Basic structure
@@ -34,9 +62,17 @@ public final class QuestionnaireServletTest {
   @Mock private HttpServletResponse response;
   @Mock private DatastoreAccess dataAccess;
   @InjectMocks private QuestionnaireServlet servlet;
+  // private final LocalServiceTestHelper helper =
+  //     new LocalServiceTestHelper(
+  //             new
+  // LocalUserServiceTestConfig().setOAuthUserId("foo").setOAuthEmail("foo@gmail.com"))
+  //         .setEnvIsLoggedIn(true);
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
-              new LocalUserServiceTestConfig().setOAuthUserId("foo").setOAuthEmail("foo@gmail.com"))
+              new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig())
+          .setEnvAttributes(Map.of("com.google.appengine.api.users.UserService.user_id_key", "101"))
+          .setEnvEmail("mudito@example.com")
+          .setEnvAuthDomain("gmail.com")
           .setEnvIsLoggedIn(true);
 
   @Before
@@ -100,6 +136,45 @@ public final class QuestionnaireServletTest {
 
     writer.flush();
     Assert.assertTrue(stringWriter.toString().contains("id=\"formType\" value=mentor"));
+  }
+
+  @Test
+  public void checkExistingValueIsSelected() throws Exception {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    servlet.init();
+
+    when(dataAccess.getUser(ArgumentMatchers.anyString()).thenReturn(new Mentor.Builder())
+        .name("Alice")
+        .userID(userID)
+        .email("alice@gmail.com")
+        .dateOfBirth(new Date())
+        .country(Country.AU)
+        .language(Language.ES)
+        .timezoneInfo(new TimeZoneInfo(TimeZone.getDefault()))
+        .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
+        .ethnicityOther("")
+        .gender(Gender.WOMAN)
+        .genderOther("")
+        .firstGen(true)
+        .lowIncome(true)
+        .educationLevel(EducationLevel.BACHELORS)
+        .educationLevelOther("")
+        .description("hi im alice")
+        .mentorType(MentorType.TUTOR)
+        .visibility(true)
+        .userType(UserType.MENTOR)
+        .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
+        .build());
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doGet(request, response);
+
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("<input type=\"checkbox\" class=\"ethnicityCheckbox\" name=\"CAUCASIAN\" value=\"CAUCASIAN\" checked>"));
   }
 
   @Test
