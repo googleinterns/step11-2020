@@ -293,14 +293,38 @@ public class DatastoreAccess implements DataAccess {
   }
 
   public boolean makeMentorMenteeRelation(long mentorKey, long menteeKey) {
-    if (getMentor(mentorKey) != null && getMentee(menteeKey) != null) {
+    if (getMentor(mentorKey) != null
+        && getMentee(menteeKey) != null
+        && !areConnected(mentorKey, menteeKey)) {
       MentorMenteeRelation mentorMenteeRelation = new MentorMenteeRelation(mentorKey, menteeKey);
       datastoreService.put(mentorMenteeRelation.convertToEntity());
+      return true;
     }
     return false;
   }
 
+  private boolean areConnected(long mentorKey, long menteeKey) {
+    return datastoreService
+            .prepare(
+                new Query(ParameterConstants.ENTITY_TYPE_MENTOR_MENTEE_RELATION)
+                    .setFilter(
+                        Query.CompositeFilterOperator.and(
+                            new Query.FilterPredicate(
+                                ParameterConstants.MENTOR_KEY,
+                                Query.FilterOperator.EQUAL,
+                                mentorKey),
+                            new Query.FilterPredicate(
+                                ParameterConstants.MENTEE_KEY,
+                                Query.FilterOperator.EQUAL,
+                                menteeKey))))
+            .asSingleEntity()
+        != null;
+  }
+
   public Collection<MentorMenteeRelation> getMentorMenteeRelations(UserAccount user) {
+    if (getUser(user.getDatastoreKey()) == null) {
+      return new ArrayList<MentorMenteeRelation>();
+    }
     Query query =
         new Query(ParameterConstants.ENTITY_TYPE_MENTOR_MENTEE_RELATION)
             .setFilter(
