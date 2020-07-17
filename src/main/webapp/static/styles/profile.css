@@ -13,12 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-html, body {
-  background: #efefef;
-  font-family: "Arial";
-}
-
-.container {
+#profile-container {
   margin: 30px auto 30px;
   width: 90%;
   background-color: #fff;
@@ -26,14 +21,14 @@ html, body {
   3px 6px rgba(0, 0, 0, 0.1);
 }
 
-header {
+#profile-container > header {
   background: #eee;
   background-position: center;
   background-size: cover;
   height: 250px;
 }
 
-header i {
+#profile-container > header i {
   position: relative;
   cursor: pointer;
   right: -96%;
@@ -43,35 +38,35 @@ header i {
 }
 
 @media {
-  header {
+  #profile-container > header {
     height: 150px;
   }
 
-  header i {
+  #profile-container > header i {
     right: -90%;
   }
 }
 
-main {
+#profile-container > main {
   padding: 20px 20px 0px 20px;
 }
 
-left {
+#profile-container > main .row .left {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
 
-.photo {
+#profile-container .photo {
   width: 200px;
   height: 200px;
-  margin-top: -120px;
+  transform: translateY(-50%);
   border-radius: 100px;
   border: 4px solid #fff;
 }
 
-.active {
+#profile-container .active {
   width: 20px;
   height: 20px;
   border-radius: 20px;
@@ -83,13 +78,13 @@ left {
 }
 
 @media (max-width:990px) {
-  .active {
+  #profile-container .active {
     right: calc(50% - 60px);
     top: 50px;
   }
 }
 
-.name {
+#profile-container.name {
   margin-top: 20px;
   font-family: "Open Sans";
   font-weight: 600;
@@ -97,7 +92,7 @@ left {
   color: #777;
 }
 
-.info {
+#profile-container.info {
   margin-top: -5px;
   margin-bottom: 5px;
   font-family: 'Montserrat', sans-serif;
@@ -105,7 +100,7 @@ left {
   color: #aaa;
 }
 
-.stats {
+#profile-container .stats {
   margin-top: 25px;
   text-align: center;
   padding-bottom: 20px;
@@ -115,7 +110,7 @@ left {
 }
 
 
-.number-stat {
+#profile-container .number-stat {
   padding: 0px;
   font-size: 14pt;
   font-weight: bold;
@@ -123,13 +118,13 @@ left {
   color: #aaa;
 }
 
-.desc-stat {
+#profile-container .desc-stat {
   margin-top: -15px;
   font-size: 10pt;
   color: #bbb;
 }
 
-.desc {
+#profile-container .desc {
   text-align: center;
   margin-top: 25px;
   margin: 25px 40px;
@@ -141,10 +136,10 @@ left {
 }
 
 
-.right {
+#profile-container .right {
   padding: 0 25px 0 25px !important;
 }
-
+/*
 .nav {
   display: inline-flex;
 }
@@ -191,4 +186,4 @@ left {
     position: unset;
     text-align: center;
   }
-}
+} */
