@@ -213,18 +213,6 @@ public abstract class UserAccount implements DatastoreEntity {
                 .collect(Collectors.toList());
   }
 
-  /**
-   * Marks this UserAccount as updating oldUser. This reassigns the datastoreKey to ensure that
-   * database updates affect the same entity.
-   *
-   * @param oldUser the user that is being updated (It's datastoreKey is copied to this
-   *     UserAccount.)
-   */
-  public void updates(UserAccount oldUser) {
-    this.datastoreKey = oldUser.datastoreKey;
-    this.keyInitialized = true;
-  }
-
   public boolean looselyEquals(UserAccount other) {
     return this.userID.equals(other.userID)
         && this.email.equals(other.email)

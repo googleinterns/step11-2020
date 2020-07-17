@@ -60,7 +60,8 @@ public class Mentee extends UserAccount implements DatastoreEntity {
         getDislikedSetFromProperty(
             (Collection) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS));
     this.desiredMentorType =
-        MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE))];
+        MentorType.values()[
+            toIntExact((long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE))];
     this.sanitizeValues();
   }
 

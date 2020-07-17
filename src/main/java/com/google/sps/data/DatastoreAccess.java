@@ -126,16 +126,20 @@ public class DatastoreAccess implements DataAccess {
     UserAccount oldUser =
         user.isKeyInitialized() ? getUser(user.getDatastoreKey()) : getUser(user.getUserID());
     if (oldUser != null) {
-      user.updates(oldUser);
-      datastoreService.put(user.convertToEntity());
+      if (user.isKeyInitialized()) {
+        datastoreService.put(user.convertToEntity());
+      } else {
+        Entity newUserEntity = new Entity(KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, oldUser.getDatastoreKey()));
+        newUserEntity.setPropertiesFrom(user.convertToEntity());
+        datastoreService.put(newUserEntity);
+      }
       return true;
     }
     return false;
   }
 
   public Collection<Mentor> getRelatedMentors(Mentee mentee) {
-    if (mentee == null
-        || (getMentee(mentee.getDatastoreKey()) == null && getMentee(mentee.getUserID()) == null)) {
+    if (getMentee(mentee.getDatastoreKey()) == null && getMentee(mentee.getUserID()) == null) {
       return new ArrayList<Mentor>();
     }
     Query query =
@@ -152,8 +156,7 @@ public class DatastoreAccess implements DataAccess {
   }
 
   public Collection<MentorshipRequest> getIncomingRequests(UserAccount user) {
-    if (user == null
-        || (getUser(user.getDatastoreKey()) == null && getUser(user.getUserID()) == null)) {
+    if (getUser(user.getDatastoreKey()) == null && getUser(user.getUserID()) == null) {
       return new ArrayList<MentorshipRequest>();
     }
     Query query =
@@ -177,8 +180,7 @@ public class DatastoreAccess implements DataAccess {
   }
 
   public Collection<MentorshipRequest> getOutgoingRequests(UserAccount user) {
-    if (user == null
-        || (getUser(user.getDatastoreKey()) == null && getUser(user.getUserID()) == null)) {
+    if (getUser(user.getDatastoreKey()) == null && getUser(user.getUserID()) == null) {
       return new ArrayList<MentorshipRequest>();
     }
     Query query =
@@ -213,6 +215,9 @@ public class DatastoreAccess implements DataAccess {
   }
 
   public Collection<Mentor> getDislikedMentors(Mentee mentee) {
+    if (getMentee(mentee.getDatastoreKey()) == null && getMentee(mentee.getUserID()) == null) {
+      return new ArrayList<Mentor>();
+    }
     return datastoreService
         .get(
             mentee.getDislikedMentorKeys().stream()
