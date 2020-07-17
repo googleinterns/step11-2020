@@ -28,6 +28,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ServletUtils;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -157,13 +158,37 @@ public class DatastoreAccess implements DataAccess {
                         mentee.getDesiredMentorType().ordinal())));
     PreparedQuery results = datastoreService.prepare(query);
     System.out.println("Prepared query\n");
-    return StreamSupport.stream(
-            results
-                .asIterable(FetchOptions.Builder.withLimit(ServletUtils.REC_BATCH_SIZE))
-                .spliterator(),
-            false)
-        .map(Mentor::new)
-        .collect(Collectors.toList());
+    ArrayList<Mentor> filteredMentors =
+        new ArrayList<Mentor>(
+            StreamSupport.stream(
+                    results
+                        .asIterable(FetchOptions.Builder.withLimit(ServletUtils.REC_BATCH_SIZE))
+                        .spliterator(),
+                    false)
+                .map(Mentor::new)
+                .collect(Collectors.toList()));
+    Mentor lastRequestedMentor =
+        mentee.getLastRequestedMentorKey() == 0
+            ? null
+            : getMentor(mentee.getLastRequestedMentorKey());
+    Mentor lastDislikedMentor =
+        mentee.getLastDislikedMentorKey() == 0
+            ? null
+            : getMentor(mentee.getLastDislikedMentorKey());
+    filteredMentors.sort(
+        (Mentor mentorA, Mentor mentorB) -> {
+          int result = 0;
+          if (lastRequestedMentor != null)
+            result +=
+                mentorA.similarity(lastRequestedMentor) - mentorB.similarity(lastRequestedMentor);
+          if (lastDislikedMentor != null)
+            result -=
+                mentorA.similarity(lastDislikedMentor) - mentorB.similarity(lastDislikedMentor);
+          if (lastRequestedMentor == null && lastDislikedMentor == null)
+            result = mentee.similarityWithMentor(mentorA) - mentee.similarityWithMentor(mentorB);
+          return result;
+        });
+    return filteredMentors;
   }
 
   public Collection<Mentee> getRelatedMentees(Mentor mentor) {

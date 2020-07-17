@@ -26,6 +26,8 @@ public final class ServletUtils {
   public static final String CONTENT_HTML = "text/html;";
   public static final String CONTENT_JSON = "application/json;";
   public static final int REC_BATCH_SIZE = 20;
+  public static final int SIMILARITY_SCORE_LOW = 5;
+  public static final int SIMILARITY_SCORE_HIGH = 8;
 
   public static String getParameter(
       HttpServletRequest request, String parameterName, String defaultValue) {
