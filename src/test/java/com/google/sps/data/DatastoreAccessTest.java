@@ -548,30 +548,6 @@ public final class DatastoreAccessTest {
   }
 
   @Test
-  public void getRelatedMentorsForNullMenteeTest() {
-    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-    Entity mentorEntity1 = new Entity("UserAccount");
-    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
-    mentorEntity1.setProperty("userID", "201");
-    Entity mentorEntity2 = new Entity("UserAccount");
-    mentorEntity2.setPropertiesFrom(defaultMentorEntity);
-    mentorEntity2.setProperty("userID", "202");
-    Entity mentorEntity3 = new Entity("UserAccount");
-    mentorEntity3.setPropertiesFrom(defaultMentorEntity);
-    mentorEntity3.setProperty("userID", "203");
-    Entity mentorEntity4 = new Entity("UserAccount");
-    mentorEntity4.setPropertiesFrom(defaultMentorEntity);
-    mentorEntity4.setProperty("userID", "204");
-    Entity mentorEntity5 = new Entity("UserAccount");
-    mentorEntity5.setPropertiesFrom(defaultMentorEntity);
-    mentorEntity5.setProperty("userID", "205");
-    ds.put(
-        Arrays.asList(mentorEntity1, mentorEntity2, mentorEntity3, mentorEntity4, mentorEntity5));
-    Collection<Mentor> mentors = dataAccess.getRelatedMentors(null);
-    assertTrue(mentors.isEmpty());
-  }
-
-  @Test
   public void getRelatedMentorsForNonexistentMenteeTest() {
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
     Entity mentorEntity1 = new Entity("UserAccount");
@@ -621,25 +597,6 @@ public final class DatastoreAccessTest {
     assertEquals(
         new HashSet<String>(Arrays.asList("201", "202", "203", "204", "205")),
         mentors.stream().map(mentor -> mentor.getUserID()).collect(Collectors.toSet()));
-  }
-
-  @Test
-  public void getIncomingRequestsForNullUserTest() {
-    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-    Entity mentorEntity1 = new Entity("UserAccount");
-    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
-    mentorEntity1.setProperty("userID", "201");
-    Entity menteeEntity1 = new Entity("UserAccount");
-    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
-    menteeEntity1.setProperty("userID", "301");
-    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
-    Entity requestEntity = new Entity("MentorshipRequest");
-    requestEntity.setProperty("toUserKey", mentorEntity1.getKey().getId());
-    requestEntity.setProperty("fromUserKey", menteeEntity1.getKey().getId());
-    ds.put(requestEntity);
-    assertEquals(1, ds.prepare(new Query("MentorshipRequest")).countEntities(withLimit(10)));
-    Collection<MentorshipRequest> requests = dataAccess.getIncomingRequests(null);
-    assertTrue(requests.isEmpty());
   }
 
   @Test
@@ -708,25 +665,6 @@ public final class DatastoreAccessTest {
   }
 
   @Test
-  public void getOutgoingRequestsForNullUserTest() {
-    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-    Entity mentorEntity1 = new Entity("UserAccount");
-    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
-    mentorEntity1.setProperty("userID", "201");
-    Entity menteeEntity1 = new Entity("UserAccount");
-    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
-    menteeEntity1.setProperty("userID", "301");
-    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
-    Entity requestEntity = new Entity("MentorshipRequest");
-    requestEntity.setProperty("toUserKey", mentorEntity1.getKey().getId());
-    requestEntity.setProperty("fromUserKey", menteeEntity1.getKey().getId());
-    ds.put(requestEntity);
-    assertEquals(1, ds.prepare(new Query("MentorshipRequest")).countEntities(withLimit(10)));
-    Collection<MentorshipRequest> requests = dataAccess.getOutgoingRequests(null);
-    assertTrue(requests.isEmpty());
-  }
-
-  @Test
   public void getOutgoingRequestsForNonexistentUserTest() {
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
     Entity mentorEntity1 = new Entity("UserAccount");
@@ -792,21 +730,6 @@ public final class DatastoreAccessTest {
   }
 
   @Test
-  public void dislikeMentorNullUsersTest() {
-    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-    Entity mentorEntity1 = new Entity("UserAccount");
-    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
-    mentorEntity1.setProperty("userID", "201");
-    Entity menteeEntity1 = new Entity("UserAccount");
-    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
-    menteeEntity1.setProperty("userID", "301");
-    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
-    Mentee mentee = new Mentee(menteeEntity1);
-    Mentor mentor = new Mentor(mentorEntity1);
-    assertFalse(dataAccess.dislikeMentor(null, null));
-  }
-
-  @Test
   public void dislikeMentorNonexistentMenteeTest() {
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
     Entity mentorEntity1 = new Entity("UserAccount");
@@ -853,23 +776,6 @@ public final class DatastoreAccessTest {
         mentor.getDatastoreKey(),
         new ArrayList(dataAccess.getMentee(mentee.getDatastoreKey()).getDislikedMentorKeys())
             .get(0));
-  }
-
-  @Test
-  public void getDislikedMentorsNullMenteeTest() {
-    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-    Entity mentorEntity1 = new Entity("UserAccount");
-    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
-    mentorEntity1.setProperty("userID", "201");
-    ds.put(mentorEntity1);
-    Entity menteeEntity1 = new Entity("UserAccount");
-    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
-    menteeEntity1.setProperty("userID", "301");
-    menteeEntity1.setProperty("dislikedMentorKeys", Arrays.asList(mentorEntity1.getKey().getId()));
-    ds.put(menteeEntity1);
-    Mentee mentee = new Mentee(menteeEntity1);
-    Mentor mentor = new Mentor(mentorEntity1);
-    assertEquals(0, dataAccess.getDislikedMentors(null).size());
   }
 
   @Test
