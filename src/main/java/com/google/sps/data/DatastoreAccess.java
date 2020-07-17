@@ -169,6 +169,7 @@ public class DatastoreAccess implements DataAccess {
           results.asQueryResultList(FetchOptions.Builder.withLimit(ServletUtils.REC_BATCH_SIZE));
       Cursor originalCursor = resultList.getCursor();
       mentee.setEncodedCursor(originalCursor.toWebSafeString());
+      saveUser(mentee);
     } else {
       Cursor decodedCursor = Cursor.fromWebSafeString(mentee.getEncodedCursor());
       resultList =
@@ -176,6 +177,7 @@ public class DatastoreAccess implements DataAccess {
               FetchOptions.Builder.withLimit(ServletUtils.REC_BATCH_SIZE).cursor(decodedCursor));
       Cursor updatedCursor = resultList.getCursor();
       mentee.setEncodedCursor(updatedCursor.toWebSafeString());
+      saveUser(mentee);
     }
     List<Mentor> mentorList =
         StreamSupport.stream(resultList.spliterator(), false)
