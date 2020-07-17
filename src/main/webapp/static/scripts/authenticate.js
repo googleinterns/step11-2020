@@ -14,7 +14,6 @@
 
 function loadAuthButton() {
   const request = '/authenticate?redir=' + encodeURIComponent(window.location.pathname) + (window.location.search);
-  console.log(request);
   fetch(request).then(handleFetchErrors).then(response => response.json())
     .then(loginState => {
       if (loginState.autoRedir && (!loginState.isLoggedIn)) {
