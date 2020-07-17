@@ -37,3 +37,11 @@ function checkForOther(val, label){
     document.getElementById(otherID).innerHTML = '';
   }
 }
+function checklistCheckForOther(label) {
+  var otherID = 'other-input-' + label;
+  if (document.getElementById('ethnicity-OTHER').checked) {
+    document.getElementById(otherID).innerHTML = 'Other: <input type ="text" name="' + label + 'Other" id="' + label + 'Other"/>';
+  } else {
+    document.getElementById(otherID).innerHTML = '';
+  }
+}

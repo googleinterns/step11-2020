@@ -94,6 +94,7 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void init() {
+    dataAccess = new DatastoreAccess();
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
     try {
@@ -140,6 +141,7 @@ public class QuestionnaireServlet extends HttpServlet {
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
+      LOG.warning(ErrorMessages.INVALID_PARAMATERS);
       LOG.warning(ErrorMessages.INVALID_PARAMATERS);
       response.sendRedirect(URLPatterns.LANDING);
     }

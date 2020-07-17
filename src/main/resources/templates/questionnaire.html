@@ -29,8 +29,7 @@ limitations under the License. -->
 {% block main_content %}
 <h1> Form </h1>
 <div class = "form-container">
-  <form id="information-form" action="/questionnaire" method="POST">
-    {%raw %}{{currentUser.ethnicityList|tojson}}{%endraw%}
+  <form id="information-form" action="/questionnaire" method="{%raw%}{%if currentUser %}PUT{% else %}POST{% endif %}{%endraw%}">
     <h3> Step 1: Basic Personal Information </h3>
     <input type="hidden" name="formType" id="formType" value={{"{{"}}formType{{"}}"}} />
     <label for="name">Your Name</label>
@@ -84,14 +83,15 @@ limitations under the License. -->
     <div id="ethnicity-div">
       <p> Check off whatever best applies to you </p>
       {% raw %}{% for ethnicity in ethnicities %}
-      <input type="checkbox" class="ethnicityCheckbox" name="{{ethnicity}}" value="{{ethnicity}}"
-      {% if currentUser and ethnicity in currentUser.ethnicityList %} checked
-      {% endif %}>
+      <input type="checkbox" class="ethnicityCheckbox" id="ethnicity-{{ethnicity}}" name="{{ethnicity}}"
+      value="{{ethnicity}}"{% if currentUser and ethnicity in currentUser.ethnicityList %} checked{% endif %}
+      {%if ethnicity == 'OTHER'%} onclick="checklistCheckForOther('ethnicity')" {% endif %}>
       <label for="{{ethnicity}}"> {{ethnicity.title}} </label><br>
       {% endfor %}{% endraw %}
       <!-- Used to store ethnicity values  -->
     <input type="hidden" name="ethnicity" id="ethnicity" value="" />
     </div> <br>
+    <div id="other-input-ethnicity"></div><br>
 
     <label for="gender">Gender</label>
     <select id="gender" name="gender" onchange="checkForOther(this.value, 'gender')">

@@ -62,13 +62,8 @@ import com.google.sps.util.URLPatterns;
 public final class QuestionnaireServletTest {
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
-  @Mock private DatastoreAccess dataAccess;
+  private DatastoreAccess dataAccess;
   @InjectMocks private QuestionnaireServlet servlet;
-  // private final LocalServiceTestHelper helper =
-  //     new LocalServiceTestHelper(
-  //             new
-  // LocalUserServiceTestConfig().setOAuthUserId("foo").setOAuthEmail("foo@gmail.com"))
-  //         .setEnvIsLoggedIn(true);
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
               new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig())
@@ -76,77 +71,16 @@ public final class QuestionnaireServletTest {
           .setEnvEmail("mudito@example.com")
           .setEnvAuthDomain("gmail.com")
           .setEnvIsLoggedIn(true);
-
+  private Mentor defaultMentor;
+  private Mentee defaultMentee;
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     helper.setUp();
-  }
-
-  @After
-  public void tearDown() {
-    helper.tearDown();
-  }
-
-  @Test
-  public void correctNameInText() throws Exception {
-    when(request.getParameter("name")).thenReturn("jake");
-    UserService userService = UserServiceFactory.getUserService();
-    when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
-
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter writer = new PrintWriter(stringWriter);
-
-    when(response.getWriter()).thenReturn(writer);
-
-    servlet.doPost(request, response);
-
-    verify(request).getParameter("name");
-    writer.flush();
-    Assert.assertTrue(stringWriter.toString().contains("jake"));
-  }
-
-  @Test
-  public void defaultNameInText() throws Exception {
-    when(request.getParameter("name")).thenReturn("");
-    UserService userService = UserServiceFactory.getUserService();
-    when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
-
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter writer = new PrintWriter(stringWriter);
-
-    when(response.getWriter()).thenReturn(writer);
-
-    servlet.doPost(request, response);
-
-    verify(request).getParameter("name");
-    writer.flush();
-    Assert.assertTrue(stringWriter.toString().contains("John Doe"));
-  }
-
-  @Test
-  public void mentorParamLoadsRespectiveTemplate() throws Exception {
-    servlet.init();
-    when(request.getParameter("formType")).thenReturn("mentor");
-
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter writer = new PrintWriter(stringWriter);
-
-    when(response.getWriter()).thenReturn(writer);
-
-    servlet.doGet(request, response);
-
-    writer.flush();
-    Assert.assertTrue(stringWriter.toString().contains("id=\"formType\" value=mentor"));
-  }
-
-  @Test
-  public void checkExistingValueIsSelected() throws Exception {
-    servlet.init();
-
-    when(dataAccess.getUser(ArgumentMatchers.anyLong())).thenReturn((new Mentor.Builder())
+    dataAccess = new DatastoreAccess();
+    defaultMentor = (new Mentor.Builder())
         .name("Mudito Mentor")
-        .userID("102")
+        .userID("101")
         .email("mudito.mentor@example.com")
         .dateOfBirth(new Date(984787200000L))
         .country(Country.US)
@@ -165,7 +99,50 @@ public final class QuestionnaireServletTest {
         .visibility(true)
         .userType(UserType.MENTOR)
         .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
-        .build());
+        .build();
+  }
+
+  @After
+  public void tearDown() {
+    helper.tearDown();
+  }
+
+  @Test
+  public void correctNameInText() throws Exception {
+    when(request.getParameter("name")).thenReturn("jake");
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doPost(request, response);
+
+    verify(request).getParameter("name");
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("jake"));
+  }
+
+  @Test
+  public void defaultNameInText() throws Exception {
+    when(request.getParameter("name")).thenReturn("");
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doPost(request, response);
+
+    verify(request).getParameter("name");
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("John Doe"));
+  }
+
+  @Test
+  public void requestParamLoadsRespectiveTemplate() throws Exception {
+    servlet.init();
+    when(request.getParameter("formType")).thenReturn("mentor");
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
@@ -175,7 +152,62 @@ public final class QuestionnaireServletTest {
     servlet.doGet(request, response);
 
     writer.flush();
-    Assert.assertTrue(stringWriter.toString().contains("<input type=\"checkbox\" class=\"ethnicityCheckbox\" name=\"INDIAN\" value=\"INDIAN\" checked>"));
+    Assert.assertTrue(stringWriter.toString().contains("id=\"formType\" value=mentor"));
+  }
+
+  @Test
+  public void existingParamLoadsRespectiveTemplate() throws Exception {
+    servlet.init();
+
+    dataAccess.createUser(defaultMentor);
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doGet(request, response);
+
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("id=\"formType\" value=mentor"));
+  }
+
+  @Test
+  public void checkExistingValueIsSelected() throws Exception {
+    servlet.init();
+
+    dataAccess.createUser(defaultMentor);
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doGet(request, response);
+
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("value=\"INDIAN\" checked"));
+    Assert.assertFalse(stringWriter.toString().contains("value=\"CAUCASIAN\" checked"));
+    Assert.assertTrue(stringWriter.toString().contains("value=\"HIGHSCHOOL\" selected"));
+    Assert.assertFalse(stringWriter.toString().contains("value=\"NONE\" selected"));
+    Assert.assertTrue(stringWriter.toString().contains("value=\"Mudito Mentor\""));
+  }
+
+  @Test
+  public void updatedDoMethodBasedOnExistingUser() throws Exception {
+    servlet.init();
+
+    dataAccess.createUser(defaultMentor);
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doGet(request, response);
+
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("method=\"PUT\""));
   }
 
   @Test
@@ -249,22 +281,5 @@ public final class QuestionnaireServletTest {
 
     writer.flush();
     Assert.assertFalse(stringWriter.toString().contains("omeganonbinary"));
-  }
-
-  public Map<String, Object> getTestRenderingContext(String currentURL) {
-    Map<String, Object> context = new HashMap<String, Object>();
-    context.put(ContextFields.URL, currentURL);
-    context.put(ContextFields.IS_LOGGED_IN, true);
-    UserAccount currentUser = null;
-    boolean isMentor = false, isMentee = false;
-      User user = getCurrentUser();
-    currentUser = getUser(user.getUserId());
-    isMentor = currentUser == null ? false : currentUser.getUserType() == UserType.MENTOR;
-    isMentee =
-        currentUser == null ? false : !isMentor && currentUser.getUserType() == UserType.MENTEE;
-    context.put(ContextFields.CURRENT_USER, currentUser);
-    context.put(ContextFields.IS_MENTOR, isMentor);
-    context.put(ContextFields.IS_MENTEE, isMentee);
-    return context;
   }
 }
