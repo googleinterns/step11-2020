@@ -813,4 +813,226 @@ public final class DatastoreAccessTest {
     assertEquals(1, dislikedMentors.size());
     assertTrue(mentor.looselyEquals(dislikedMentors.get(0)));
   }
+
+  @Test
+  public void publishRequestNonexistentUsersTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    Entity mentorEntity1 = new Entity("UserAccount");
+    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
+    mentorEntity1.setProperty("userID", "201");
+    Entity menteeEntity1 = new Entity("UserAccount");
+    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
+    menteeEntity1.setProperty("userID", "301");
+    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
+    MentorshipRequest request =
+        new MentorshipRequest(mentorEntity1.getKey().getId(), menteeEntity1.getKey().getId());
+    ds.delete(Arrays.asList(mentorEntity1.getKey(), menteeEntity1.getKey()));
+    assertEquals(0, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    assertFalse(dataAccess.publishRequest(request));
+  }
+
+  @Test
+  public void publishRequestValidUsersTest() throws EntityNotFoundException {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    Entity mentorEntity1 = new Entity("UserAccount");
+    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
+    mentorEntity1.setProperty("userID", "201");
+    Entity menteeEntity1 = new Entity("UserAccount");
+    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
+    menteeEntity1.setProperty("userID", "301");
+    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
+    MentorshipRequest request =
+        new MentorshipRequest(mentorEntity1.getKey().getId(), menteeEntity1.getKey().getId());
+    assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    assertTrue(dataAccess.publishRequest(request));
+    Entity createdRequestEntity =
+        ds.get(KeyFactory.createKey("MentorshipRequest", request.getDatastoreKey()));
+    assertTrue(
+        new Mentee(menteeEntity1)
+            .looselyEquals(
+                new Mentee(
+                    ds.get(
+                        KeyFactory.createKey(
+                            "UserAccount",
+                            (long) createdRequestEntity.getProperty("fromUserKey"))))));
+    assertTrue(
+        new Mentor(mentorEntity1)
+            .looselyEquals(
+                new Mentor(
+                    ds.get(
+                        KeyFactory.createKey(
+                            "UserAccount",
+                            (long) createdRequestEntity.getProperty("toUserKey"))))));
+  }
+
+  @Test
+  public void publishRequestPreexistingTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    Entity mentorEntity1 = new Entity("UserAccount");
+    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
+    mentorEntity1.setProperty("userID", "201");
+    Entity menteeEntity1 = new Entity("UserAccount");
+    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
+    menteeEntity1.setProperty("userID", "301");
+    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
+    MentorshipRequest request =
+        new MentorshipRequest(mentorEntity1.getKey().getId(), menteeEntity1.getKey().getId());
+    assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    assertTrue(dataAccess.publishRequest(request));
+    assertFalse(dataAccess.publishRequest(request));
+  }
+
+  @Test
+  public void getMentorshipRequestID0Test() {
+    assertNull(dataAccess.getMentorshipRequest(0));
+  }
+
+  @Test
+  public void getMentorshipRequestNonexistentRequestTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    Entity mentorEntity1 = new Entity("UserAccount");
+    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
+    mentorEntity1.setProperty("userID", "201");
+    Entity menteeEntity1 = new Entity("UserAccount");
+    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
+    menteeEntity1.setProperty("userID", "301");
+    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
+    MentorshipRequest request =
+        new MentorshipRequest(mentorEntity1.getKey().getId(), menteeEntity1.getKey().getId());
+    assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    MentorshipRequest createdRequest = dataAccess.getMentorshipRequest(request.getDatastoreKey());
+    assertNull(createdRequest);
+  }
+
+  @Test
+  public void getMentorshipRequestValidTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    Entity mentorEntity1 = new Entity("UserAccount");
+    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
+    mentorEntity1.setProperty("userID", "201");
+    Entity menteeEntity1 = new Entity("UserAccount");
+    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
+    menteeEntity1.setProperty("userID", "301");
+    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
+    MentorshipRequest request =
+        new MentorshipRequest(mentorEntity1.getKey().getId(), menteeEntity1.getKey().getId());
+    assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    ds.put(request.convertToEntity());
+    MentorshipRequest createdRequest = dataAccess.getMentorshipRequest(request.getDatastoreKey());
+    assertNotNull(createdRequest);
+    assertEquals(request.getToUserKey(), createdRequest.getToUserKey());
+    assertEquals(request.getFromUserKey(), createdRequest.getFromUserKey());
+  }
+
+  @Test
+  public void deleteRequestNonexistentRequestTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    Entity mentorEntity1 = new Entity("UserAccount");
+    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
+    mentorEntity1.setProperty("userID", "201");
+    Entity menteeEntity1 = new Entity("UserAccount");
+    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
+    menteeEntity1.setProperty("userID", "301");
+    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
+    MentorshipRequest request =
+        new MentorshipRequest(mentorEntity1.getKey().getId(), menteeEntity1.getKey().getId());
+    assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    assertFalse(dataAccess.deleteRequest(request));
+  }
+
+  @Test
+  public void deleteRequestValidTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    Entity mentorEntity1 = new Entity("UserAccount");
+    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
+    mentorEntity1.setProperty("userID", "201");
+    Entity menteeEntity1 = new Entity("UserAccount");
+    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
+    menteeEntity1.setProperty("userID", "301");
+    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
+    MentorshipRequest request =
+        new MentorshipRequest(mentorEntity1.getKey().getId(), menteeEntity1.getKey().getId());
+    assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    ds.put(request.convertToEntity());
+    assertEquals(1, ds.prepare(new Query("MentorshipRequest")).countEntities(withLimit(10)));
+    assertTrue(dataAccess.deleteRequest(request));
+    assertEquals(0, ds.prepare(new Query("MentorshipRequest")).countEntities(withLimit(10)));
+  }
+
+  @Test
+  public void deleteRequestTwiceTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    Entity mentorEntity1 = new Entity("UserAccount");
+    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
+    mentorEntity1.setProperty("userID", "201");
+    Entity menteeEntity1 = new Entity("UserAccount");
+    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
+    menteeEntity1.setProperty("userID", "301");
+    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
+    MentorshipRequest request =
+        new MentorshipRequest(mentorEntity1.getKey().getId(), menteeEntity1.getKey().getId());
+    assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    ds.put(request.convertToEntity());
+    assertEquals(1, ds.prepare(new Query("MentorshipRequest")).countEntities(withLimit(10)));
+    assertTrue(dataAccess.deleteRequest(request));
+    assertEquals(0, ds.prepare(new Query("MentorshipRequest")).countEntities(withLimit(10)));
+    assertFalse(dataAccess.deleteRequest(request));
+    assertEquals(0, ds.prepare(new Query("MentorshipRequest")).countEntities(withLimit(10)));
+  }
+
+  @Test
+  public void denyRequestNonexistentRequestTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    Entity mentorEntity1 = new Entity("UserAccount");
+    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
+    mentorEntity1.setProperty("userID", "201");
+    Entity menteeEntity1 = new Entity("UserAccount");
+    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
+    menteeEntity1.setProperty("userID", "301");
+    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
+    MentorshipRequest request =
+        new MentorshipRequest(mentorEntity1.getKey().getId(), menteeEntity1.getKey().getId());
+    assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    assertFalse(dataAccess.denyRequest(request));
+  }
+
+  @Test
+  public void denyRequestValidTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    Entity mentorEntity1 = new Entity("UserAccount");
+    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
+    mentorEntity1.setProperty("userID", "201");
+    Entity menteeEntity1 = new Entity("UserAccount");
+    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
+    menteeEntity1.setProperty("userID", "301");
+    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
+    MentorshipRequest request =
+        new MentorshipRequest(mentorEntity1.getKey().getId(), menteeEntity1.getKey().getId());
+    assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    ds.put(request.convertToEntity());
+    assertEquals(1, ds.prepare(new Query("MentorshipRequest")).countEntities(withLimit(10)));
+    assertTrue(dataAccess.denyRequest(request));
+    assertEquals(0, ds.prepare(new Query("MentorshipRequest")).countEntities(withLimit(10)));
+  }
+
+  @Test
+  public void denyRequestTwiceTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    Entity mentorEntity1 = new Entity("UserAccount");
+    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
+    mentorEntity1.setProperty("userID", "201");
+    Entity menteeEntity1 = new Entity("UserAccount");
+    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
+    menteeEntity1.setProperty("userID", "301");
+    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
+    MentorshipRequest request =
+        new MentorshipRequest(mentorEntity1.getKey().getId(), menteeEntity1.getKey().getId());
+    assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    ds.put(request.convertToEntity());
+    assertEquals(1, ds.prepare(new Query("MentorshipRequest")).countEntities(withLimit(10)));
+    assertTrue(dataAccess.denyRequest(request));
+    assertEquals(0, ds.prepare(new Query("MentorshipRequest")).countEntities(withLimit(10)));
+    assertFalse(dataAccess.denyRequest(request));
+    assertEquals(0, ds.prepare(new Query("MentorshipRequest")).countEntities(withLimit(10)));
+  }
 }

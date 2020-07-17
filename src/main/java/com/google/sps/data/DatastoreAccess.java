@@ -247,6 +247,9 @@ public class DatastoreAccess implements DataAccess {
   }
 
   public MentorshipRequest getMentorshipRequest(long requestKey) {
+    if (requestKey == 0) {
+      return null;
+    }
     try {
       return new MentorshipRequest(
           datastoreService.get(
