@@ -50,8 +50,6 @@ public interface DataAccess {
 
   Collection<Mentor> getRelatedMentors(Mentee mentee);
 
-  Collection<Mentee> getRelatedMentees(Mentor mentor);
-
   Collection<MentorshipRequest> getIncomingRequests(UserAccount user);
 
   Collection<MentorshipRequest> getOutgoingRequests(UserAccount user);

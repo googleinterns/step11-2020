@@ -213,9 +213,39 @@ public abstract class UserAccount implements DatastoreEntity {
                 .collect(Collectors.toList());
   }
 
+  /**
+   * Safe wrapper for getting long value from an entity
+   *
+   * @param longProperty the datastore object for the long value
+   * @return the numeric value in Long
+   */
+  private static Long getLongFromProperty(Object longProperty) {
+    return longProperty == null ? 0 : (Long) longProperty;
+  }
+
   public void updates(UserAccount oldUser) {
     this.datastoreKey = oldUser.datastoreKey;
     this.keyInitialized = true;
+  }
+
+  public boolean looselyEquals(UserAccount other) {
+    return this.userID.equals(other.userID)
+        && this.email.equals(other.email)
+        && this.name.equals(other.name)
+        && this.dateOfBirth.equals(other.dateOfBirth)
+        && this.country == other.country
+        && this.language == other.language
+        && this.timezone.getID().equals(other.timezone.getID())
+        && this.ethnicityList.equals(other.ethnicityList)
+        && this.ethnicityOther.equals(other.ethnicityOther)
+        && this.gender == other.gender
+        && this.genderOther.equals(other.genderOther)
+        && this.firstGen == other.firstGen
+        && this.lowIncome == other.lowIncome
+        && this.educationLevel == other.educationLevel
+        && this.educationLevelOther.equals(other.educationLevelOther)
+        && this.description.equals(other.description)
+        && this.userType == other.userType;
   }
 
   public long getDatastoreKey() {

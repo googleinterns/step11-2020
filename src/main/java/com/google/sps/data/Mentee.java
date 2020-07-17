@@ -105,6 +105,15 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     return dislikedMentorKeys.add(mentor.getDatastoreKey());
   }
 
+  @Override
+  public boolean looselyEquals(UserAccount other) {
+    return super.looselyEquals(other)
+        && this.goal == ((Mentee) other).goal
+        && this.desiredMentorType == ((Mentee) other).desiredMentorType
+        && this.desiredMeetingFrequency == ((Mentee) other).desiredMeetingFrequency
+        && this.dislikedMentorKeys.equals(((Mentee) other).dislikedMentorKeys);
+  }
+
   public Topic getGoal() {
     return goal;
   }

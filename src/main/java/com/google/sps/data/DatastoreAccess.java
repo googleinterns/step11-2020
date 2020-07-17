@@ -26,6 +26,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ParameterConstants;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -133,6 +134,10 @@ public class DatastoreAccess implements DataAccess {
   }
 
   public Collection<Mentor> getRelatedMentors(Mentee mentee) {
+    if (mentee == null
+        || (getMentee(mentee.getDatastoreKey()) == null && getMentee(mentee.getUserID()) == null)) {
+      return new ArrayList<Mentor>();
+    }
     Query query =
         new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT)
             .setFilter(
@@ -146,21 +151,11 @@ public class DatastoreAccess implements DataAccess {
         .collect(Collectors.toList());
   }
 
-  public Collection<Mentee> getRelatedMentees(Mentor mentor) {
-    Query query =
-        new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT)
-            .setFilter(
-                new Query.FilterPredicate(
-                    ParameterConstants.USER_TYPE,
-                    Query.FilterOperator.EQUAL,
-                    UserType.MENTEE.ordinal()));
-    PreparedQuery results = datastoreService.prepare(query);
-    return StreamSupport.stream(results.asIterable().spliterator(), false)
-        .map(Mentee::new)
-        .collect(Collectors.toList());
-  }
-
   public Collection<MentorshipRequest> getIncomingRequests(UserAccount user) {
+    if (user == null
+        || (getUser(user.getDatastoreKey()) == null && getUser(user.getUserID()) == null)) {
+      return new ArrayList<MentorshipRequest>();
+    }
     Query query =
         new Query(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST)
             .setFilter(
@@ -182,6 +177,10 @@ public class DatastoreAccess implements DataAccess {
   }
 
   public Collection<MentorshipRequest> getOutgoingRequests(UserAccount user) {
+    if (user == null
+        || (getUser(user.getDatastoreKey()) == null && getUser(user.getUserID()) == null)) {
+      return new ArrayList<MentorshipRequest>();
+    }
     Query query =
         new Query(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST)
             .setFilter(
