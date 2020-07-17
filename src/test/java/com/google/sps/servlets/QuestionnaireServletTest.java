@@ -1,18 +1,29 @@
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.sps.data.Country;
 import com.google.sps.data.DatastoreAccess;
+import com.google.sps.data.EducationLevel;
+import com.google.sps.data.Ethnicity;
+import com.google.sps.data.Gender;
+import com.google.sps.data.Language;
+import com.google.sps.data.Mentee;
+import com.google.sps.data.Mentor;
+import com.google.sps.data.MentorType;
+import com.google.sps.data.TimeZoneInfo;
+import com.google.sps.data.Topic;
+import com.google.sps.data.UserType;
 import com.google.sps.servlets.QuestionnaireServlet;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Map;
+import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
@@ -21,36 +32,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.TimeZone;
-import java.util.Date;
-import com.google.sps.data.Country;
-import com.google.sps.data.DataAccess;
-import com.google.sps.data.DatastoreAccess;
-import com.google.sps.data.EducationLevel;
-import com.google.sps.data.Ethnicity;
-import com.google.sps.data.Gender;
-import com.google.sps.data.Language;
-import com.google.sps.data.MeetingFrequency;
-import com.google.sps.data.Mentee;
-import com.google.sps.data.Mentor;
-import com.google.sps.data.MentorType;
-import com.google.sps.data.TimeZoneInfo;
-import com.google.sps.data.Topic;
-import com.google.sps.data.UserAccount;
-import com.google.sps.data.UserType;
-import com.google.sps.util.ContextFields;
-import com.google.sps.util.ErrorMessages;
-import com.google.sps.util.ParameterConstants;
-import com.google.sps.util.ResourceConstants;
-import com.google.sps.util.ServletUtils;
-import com.google.sps.util.URLPatterns;
 
 /**
  * TO RUN PROJECT WITHOUT TESTS RUN COMMAND: mvn package appengine:run -DskipTests Basic structure
@@ -80,28 +63,29 @@ public final class QuestionnaireServletTest {
     helper.setUp();
     dataAccess = new DatastoreAccess();
     servlet = new QuestionnaireServlet();
-    defaultMentor = (new Mentor.Builder())
-        .name("Mudito Mentor")
-        .userID("101")
-        .email("mudito.mentor@example.com")
-        .dateOfBirth(new Date(984787200000L))
-        .country(Country.US)
-        .language(Language.EN)
-        .timezone(new TimeZoneInfo(TimeZone.getTimeZone("GMT")))
-        .ethnicityList((Arrays.asList(Ethnicity.INDIAN)))
-        .ethnicityOther("")
-        .gender(Gender.MAN)
-        .genderOther("")
-        .firstGen(false)
-        .lowIncome(false)
-        .educationLevel(EducationLevel.HIGHSCHOOL)
-        .educationLevelOther("")
-        .description("I am very cool.")
-        .mentorType(MentorType.TUTOR)
-        .visibility(true)
-        .userType(UserType.MENTOR)
-        .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
-        .build();
+    defaultMentor =
+        (new Mentor.Builder())
+            .name("Mudito Mentor")
+            .userID("101")
+            .email("mudito.mentor@example.com")
+            .dateOfBirth(new Date(984787200000L))
+            .country(Country.US)
+            .language(Language.EN)
+            .timezone(new TimeZoneInfo(TimeZone.getTimeZone("GMT")))
+            .ethnicityList((Arrays.asList(Ethnicity.INDIAN)))
+            .ethnicityOther("")
+            .gender(Gender.MAN)
+            .genderOther("")
+            .firstGen(false)
+            .lowIncome(false)
+            .educationLevel(EducationLevel.HIGHSCHOOL)
+            .educationLevelOther("")
+            .description("I am very cool.")
+            .mentorType(MentorType.TUTOR)
+            .visibility(true)
+            .userType(UserType.MENTOR)
+            .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
+            .build();
   }
 
   @After
@@ -216,8 +200,6 @@ public final class QuestionnaireServletTest {
   public void otherEthnicityStringInputProperlyStored() throws Exception {
     when(request.getParameter("ethnicity")).thenReturn("OTHER");
     when(request.getParameter("ethnicityOther")).thenReturn("Tunisian");
-    // UserService userService = UserServiceFactory.getUserService();
-    // when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
@@ -235,8 +217,6 @@ public final class QuestionnaireServletTest {
   public void otherGenderStringInputProperlyStored() throws Exception {
     when(request.getParameter("gender")).thenReturn("OTHER");
     when(request.getParameter("genderOther")).thenReturn("omeganonbinary");
-    // UserService userService = UserServiceFactory.getUserService();
-    // when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
@@ -253,8 +233,6 @@ public final class QuestionnaireServletTest {
   public void otherEthnicityStringIsBlank() throws Exception {
     when(request.getParameter("ethnicity")).thenReturn("CAUCASIAN");
     when(request.getParameter("ethnicityOther")).thenReturn("Tunisian");
-    // UserService userService = UserServiceFactory.getUserService();
-    // when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
@@ -271,8 +249,6 @@ public final class QuestionnaireServletTest {
   public void otherGenderStringIsBlank() throws Exception {
     when(request.getParameter("gender")).thenReturn("NONBINARY");
     when(request.getParameter("genderOther")).thenReturn("omeganonbinary");
-    // UserService userService = UserServiceFactory.getUserService();
-    // when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
