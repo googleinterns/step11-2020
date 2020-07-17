@@ -206,8 +206,10 @@ limitations under the License. -->
     <input type="file" id="image-upload" name="image-upload">
 
     <label for="description"> (Optional) Write a short bio about yourself</label>
-    <input type="text" name="description" placeholder="For example, what are your hobbies... " {% raw %}{% if currentUser and currentUser.description %} value={{currentUser.description}}
-    {% endif %}{% endraw %}>
+    <textarea name="description" placeholder="For example, what are your hobbies... ">
+      {% raw %}{% if currentUser and currentUser.description %} {currentUser.description}}
+      {% endif %}{% endraw %}
+    </textarea>
     <input type="submit" value="Submit">
   </form>
 </div>

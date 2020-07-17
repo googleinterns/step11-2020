@@ -142,7 +142,6 @@ public class QuestionnaireServlet extends HttpServlet {
       response.getWriter().println(renderTemplate);
     } else {
       LOG.warning(ErrorMessages.INVALID_PARAMATERS);
-      LOG.warning(ErrorMessages.INVALID_PARAMATERS);
       response.sendRedirect(URLPatterns.LANDING);
     }
   }
