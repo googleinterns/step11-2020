@@ -27,6 +27,12 @@ limitations under the License. -->
   <button class="join-matcher-button pretty-button" id="join-as-mentee">Find a<br>mentor</button>
   <button class="join-matcher-button pretty-button" id="join-as-mentor">Become a mentor</button>
 </div>
+{%raw%}{% if !isLoggedIn %}
+<div class="content-block" id="member-sign-in">
+  <p class="short-tip" id="already-a-member">Already a member?</p>
+  <button class="pretty-button auth-button">Login</button>
+</div>
+{% endif %}{%endraw%}
 {% endblock %}
 
 {% block scripts %}
