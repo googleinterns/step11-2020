@@ -198,7 +198,7 @@ public abstract class UserAccount implements DatastoreEntity {
   }
 
   /**
-   * converts the list retrieved from datastore to a list of usable Ethnicity objects
+   * Converts the list retrieved from datastore to a list of usable Ethnicity objects
    *
    * @param ethnicityEnumIndexList the list off objects from datastore
    * @return the list of ethnicity objects
@@ -214,15 +214,12 @@ public abstract class UserAccount implements DatastoreEntity {
   }
 
   /**
-   * Safe wrapper for getting long value from an entity
+   * Marks this UserAccount as updating oldUser. This reassigns the datastoreKey to ensure that
+   * database updates affect the same entity.
    *
-   * @param longProperty the datastore object for the long value
-   * @return the numeric value in Long
+   * @param oldUser the user that is being updated (It's datastoreKey is copied to this
+   *     UserAccount.)
    */
-  private static Long getLongFromProperty(Object longProperty) {
-    return longProperty == null ? 0 : (Long) longProperty;
-  }
-
   public void updates(UserAccount oldUser) {
     this.datastoreKey = oldUser.datastoreKey;
     this.keyInitialized = true;
