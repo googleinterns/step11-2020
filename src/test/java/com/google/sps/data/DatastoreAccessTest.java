@@ -471,7 +471,9 @@ public final class DatastoreAccessTest {
     assertMenteeEqualsEntity(defaultMentee, ds.prepare(new Query("UserAccount")).asSingleEntity());
     assertTrue(dataAccess.createUser(defaultMentor));
     assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
-    assertMentorEqualsEntity(defaultMentor, ds.get(KeyFactory.createKey("UserAccount", defaultMentor.getDatastoreKey())));
+    assertMentorEqualsEntity(
+        defaultMentor,
+        ds.get(KeyFactory.createKey("UserAccount", defaultMentor.getDatastoreKey())));
   }
 
   @Test
@@ -522,9 +524,8 @@ public final class DatastoreAccessTest {
     mentorEntity1.setProperty("userID", "201");
     Entity mentorEntity2 = new Entity("UserAccount");
     mentorEntity2.setPropertiesFrom(defaultMentorEntity);
-    mentorEntity2.setProperty("userID", "202")
-    ds.put(
-        Arrays.asList(mentorEntity1, mentorEntity2));
+    mentorEntity2.setProperty("userID", "202");
+    ds.put(Arrays.asList(mentorEntity1, mentorEntity2));
     Collection<Mentor> mentors = dataAccess.getRelatedMentors(defaultMentee);
     assertTrue(mentors.isEmpty());
   }
