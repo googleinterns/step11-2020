@@ -47,13 +47,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.MockitoAnnotations;
 
 /**
- * TO RUN PROJECT WITHOUT TESTS RUN COMMAND: mvn package appengine:run -DskipTests Basic structure
- * of servlet tests using LocalServiceTestHelper for intiailizing services (dodges no api in thread
- * error), for more help with unit testing visit:
- * https://cloud.google.com/appengine/docs/standard/java/tools/localunittesting
+ * This test class uses JUnit to test all the DataStore queries in the DatastoreAccess class. To run
+ * the project without tests, use: mvn package appengine:run -DskipTests. The LocalServiceTestHelper
+ * is used to simulate a testing environment for the AppEngien APIs.
+ *
+ * @param JUnit4.class makes the tests run under the JUnit 4 framework
+ * @author guptamudit
+ * @version 1.0
  */
 @RunWith(JUnit4.class)
 public final class DatastoreAccessTest {
@@ -165,12 +167,9 @@ public final class DatastoreAccessTest {
 
   @Before
   public void setUp() {
-    MockitoAnnotations.initMocks(this);
     helper.setUp();
     dataAccess = new DatastoreAccess();
-
     setUpDefaultEntities();
-
     setUpDefaultObjects();
   }
 
@@ -244,8 +243,7 @@ public final class DatastoreAccessTest {
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
     assertEquals(0, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
     Collection<Entity> entities = Arrays.asList(defaultMenteeEntity, defaultMentorEntity);
-    boolean seeded = dataAccess.seed_db(entities);
-    assertTrue(seeded);
+    assertTrue(dataAccess.seed_db(entities));
     assertEquals(
         entities.size(), ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
   }
@@ -253,6 +251,7 @@ public final class DatastoreAccessTest {
   @Test
   public void getCurrentUserTest() {
     User user = dataAccess.getCurrentUser();
+    assertNotNull(user);
     assertEquals(user.getEmail(), "mudito@example.com");
     assertEquals(user.getUserId(), "101");
   }
@@ -260,184 +259,157 @@ public final class DatastoreAccessTest {
   @Test
   public void getCurrentUserLoggedOutTest() {
     helper.setEnvIsLoggedIn(false);
-    User user = dataAccess.getCurrentUser();
-    assertNull(user);
+    assertNull(dataAccess.getCurrentUser());
   }
 
   @Test
   public void getUserByUserIdTest() {
     Entity entity = new Entity("UserAccount");
     entity.setPropertiesFrom(defaultMenteeEntity);
-    final String testUserID = "1234";
-    entity.setProperty("userID", testUserID);
+    entity.setProperty("userID", "1234");
     DatastoreServiceFactory.getDatastoreService().put(entity);
-    UserAccount user = dataAccess.getUser(testUserID);
+    UserAccount user = dataAccess.getUser("1234");
     assertNotNull(user);
-    assertEquals(user.getUserID(), testUserID);
+    assertEquals(user.getUserID(), "1234");
   }
 
   @Test
   public void getUserByUserIdNonexistentTest() {
-    final String testUserID = "1234";
-    UserAccount user = dataAccess.getUser(testUserID);
-    assertNull(user);
+    assertNull(dataAccess.getUser("1234"));
   }
 
   @Test
   public void getUserByDatastoreKeyTest() {
-    final long testKeyId = 1234;
-    Key key = KeyFactory.createKey("UserAccount", testKeyId);
+    Key key = KeyFactory.createKey("UserAccount", 1234);
     Entity entity = new Entity(key);
     entity.setPropertiesFrom(defaultMenteeEntity);
     DatastoreServiceFactory.getDatastoreService().put(entity);
-    UserAccount user = dataAccess.getUser(testKeyId);
+    UserAccount user = dataAccess.getUser(1234);
     assertNotNull(user);
-    assertEquals(user.getDatastoreKey(), testKeyId);
+    assertEquals(user.getDatastoreKey(), 1234);
   }
 
   @Test
   public void getUserByDatastoreKeyNonexistentTest() {
-    final long testKeyId = 1234;
-    UserAccount user = dataAccess.getUser(testKeyId);
-    assertNull(user);
+    assertNull(dataAccess.getUser(1234));
   }
 
   @Test
   public void getMenteeByUserIdTest() {
     Entity entity = new Entity("UserAccount");
     entity.setPropertiesFrom(defaultMenteeEntity);
-    final String testUserID = "1234";
-    entity.setProperty("userID", testUserID);
+    entity.setProperty("userID", "1234");
     DatastoreServiceFactory.getDatastoreService().put(entity);
-    Mentee mentee = dataAccess.getMentee(testUserID);
+    Mentee mentee = dataAccess.getMentee("1234");
     assertNotNull(mentee);
-    assertEquals(mentee.getUserID(), testUserID);
+    assertEquals(mentee.getUserID(), "1234");
   }
 
   @Test
   public void getMenteeByUserIdNonexistentTest() {
-    final String testUserID = "1234";
-    Mentee mentee = dataAccess.getMentee(testUserID);
-    assertNull(mentee);
+    assertNull(dataAccess.getMentee("1234"));
   }
 
   @Test
   public void getMenteeByUserIdButItsAMentorTest() {
     Entity entity = new Entity("UserAccount");
     entity.setPropertiesFrom(defaultMentorEntity);
-    final String testUserID = "1234";
-    entity.setProperty("userID", testUserID);
+    entity.setProperty("userID", "1234");
     DatastoreServiceFactory.getDatastoreService().put(entity);
-    Mentee mentee = dataAccess.getMentee(testUserID);
-    assertNull(mentee);
+    assertNull(dataAccess.getMentee("1234"));
   }
 
   @Test
   public void getMenteeByDatastoreKeyTest() {
-    final long testKeyId = 1234;
-    Key key = KeyFactory.createKey("UserAccount", testKeyId);
+    Key key = KeyFactory.createKey("UserAccount", 1234);
     Entity entity = new Entity(key);
     entity.setPropertiesFrom(defaultMenteeEntity);
     DatastoreServiceFactory.getDatastoreService().put(entity);
-    Mentee mentee = dataAccess.getMentee(testKeyId);
+    Mentee mentee = dataAccess.getMentee(1234);
     assertNotNull(mentee);
-    assertEquals(mentee.getDatastoreKey(), testKeyId);
+    assertEquals(mentee.getDatastoreKey(), 1234);
   }
 
   @Test
   public void getMenteeByDatastoreKeyNonexistentTest() {
-    final long testKeyId = 1234;
-    Mentee mentee = dataAccess.getMentee(testKeyId);
-    assertNull(mentee);
+    assertNull(dataAccess.getMentee(1234));
   }
 
   @Test
   public void getMenteeByDatastoreKeyButItsAMentorTest() {
-    final long testKeyId = 1234;
-    Key key = KeyFactory.createKey("UserAccount", testKeyId);
+    Key key = KeyFactory.createKey("UserAccount", 1234);
     Entity entity = new Entity(key);
     entity.setPropertiesFrom(defaultMentorEntity);
     DatastoreServiceFactory.getDatastoreService().put(entity);
-    Mentee mentee = dataAccess.getMentee(testKeyId);
-    assertNull(mentee);
+    assertNull(dataAccess.getMentee(1234));
   }
 
   @Test
   public void getMentorByUserIdTest() {
     Entity entity = new Entity("UserAccount");
     entity.setPropertiesFrom(defaultMentorEntity);
-    final String testUserID = "1234";
-    entity.setProperty("userID", testUserID);
+    entity.setProperty("userID", "1234");
     DatastoreServiceFactory.getDatastoreService().put(entity);
-    Mentor mentor = dataAccess.getMentor(testUserID);
+    Mentor mentor = dataAccess.getMentor("1234");
     assertNotNull(mentor);
-    assertEquals(mentor.getUserID(), testUserID);
+    assertEquals(mentor.getUserID(), "1234");
   }
 
   @Test
   public void getMentorByUserIdNonexistentTest() {
-    final String testUserID = "1234";
-    Mentor mentor = dataAccess.getMentor(testUserID);
-    assertNull(mentor);
+    assertNull(dataAccess.getMentor("1234"));
   }
 
   @Test
   public void getMentorByUserIdButItsAMenteeTest() {
     Entity entity = new Entity("UserAccount");
     entity.setPropertiesFrom(defaultMenteeEntity);
-    final String testUserID = "1234";
-    entity.setProperty("userID", testUserID);
+    entity.setProperty("userID", "1234");
     DatastoreServiceFactory.getDatastoreService().put(entity);
-    Mentor mentor = dataAccess.getMentor(testUserID);
-    assertNull(mentor);
+    assertNull(dataAccess.getMentor("1234"));
   }
 
   @Test
   public void getMentorByDatastoreKeyTest() {
-    final long testKeyId = 1234;
-    Key key = KeyFactory.createKey("UserAccount", testKeyId);
+    Key key = KeyFactory.createKey("UserAccount", 1234);
     Entity entity = new Entity(key);
     entity.setPropertiesFrom(defaultMentorEntity);
     DatastoreServiceFactory.getDatastoreService().put(entity);
-    Mentor mentor = dataAccess.getMentor(testKeyId);
+    Mentor mentor = dataAccess.getMentor(1234);
     assertNotNull(mentor);
-    assertEquals(mentor.getDatastoreKey(), testKeyId);
+    assertEquals(mentor.getDatastoreKey(), 1234);
   }
 
   @Test
   public void getMentorByDatastoreKeyNonexistentTest() {
-    final long testKeyId = 1234;
-    Mentor mentor = dataAccess.getMentor(testKeyId);
-    assertNull(mentor);
+    assertNull(dataAccess.getMentor(1234));
   }
 
   @Test
   public void getMentorByDatastoreKeyButItsAMenteeTest() {
-    final long testKeyId = 1234;
-    Key key = KeyFactory.createKey("UserAccount", testKeyId);
+    Key key = KeyFactory.createKey("UserAccount", 1234);
     Entity entity = new Entity(key);
     entity.setPropertiesFrom(defaultMenteeEntity);
     DatastoreServiceFactory.getDatastoreService().put(entity);
-    Mentor mentor = dataAccess.getMentor(testKeyId);
-    assertNull(mentor);
+    assertNull(dataAccess.getMentor(1234));
   }
 
   @Test
-  public void getDefaultRenderingContextURLTest() {
+  public void getDefaultRenderingContextLoggedInNoAccountTest() {
     Map<String, Object> context = dataAccess.getDefaultRenderingContext("ilerjbfleq");
     assertEquals("ilerjbfleq", context.get("url"));
-  }
-
-  @Test
-  public void getDefaultRenderingContextLoggedInTest() {
-    Map<String, Object> context = dataAccess.getDefaultRenderingContext("");
     assertTrue((boolean) context.get("isLoggedIn"));
+    UserAccount user = (UserAccount) context.get("currentUser");
+    assertNull(user);
+    assertFalse((boolean) context.get("isMentee"));
+    assertFalse((boolean) context.get("isMentor"));
   }
 
   @Test
   public void getDefaultRenderingContextLoggedOutTest() {
     helper.setEnvIsLoggedIn(false);
-    Map<String, Object> context = dataAccess.getDefaultRenderingContext("");
+    Map<String, Object> context = dataAccess.getDefaultRenderingContext("ilerjbfleq");
+    assertEquals("ilerjbfleq", context.get("url"));
     assertFalse((boolean) context.get("isLoggedIn"));
     assertNull(context.get("currentUser"));
   }
@@ -475,8 +447,7 @@ public final class DatastoreAccessTest {
     assertEquals(0, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
     assertTrue(dataAccess.createUser(defaultMentee));
     assertEquals(1, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
-    Entity createdUserEntity = ds.prepare(new Query("UserAccount")).asSingleEntity();
-    assertMenteeEqualsEntity(defaultMentee, createdUserEntity);
+    assertMenteeEqualsEntity(defaultMentee, ds.prepare(new Query("UserAccount")).asSingleEntity());
   }
 
   @Test
@@ -485,12 +456,10 @@ public final class DatastoreAccessTest {
     assertEquals(0, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
     assertTrue(dataAccess.createUser(defaultMentee));
     assertEquals(1, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
-    Entity createdUserEntity = ds.prepare(new Query("UserAccount")).asSingleEntity();
-    assertMenteeEqualsEntity(defaultMentee, createdUserEntity);
+    assertMenteeEqualsEntity(defaultMentee, ds.prepare(new Query("UserAccount")).asSingleEntity());
     assertFalse(dataAccess.createUser(defaultMentee));
     assertEquals(1, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
-    createdUserEntity = ds.prepare(new Query("UserAccount")).asSingleEntity();
-    assertMenteeEqualsEntity(defaultMentee, createdUserEntity);
+    assertMenteeEqualsEntity(defaultMentee, ds.prepare(new Query("UserAccount")).asSingleEntity());
   }
 
   @Test
@@ -499,13 +468,10 @@ public final class DatastoreAccessTest {
     assertEquals(0, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
     assertTrue(dataAccess.createUser(defaultMentee));
     assertEquals(1, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
-    Entity createdMenteeEntity = ds.prepare(new Query("UserAccount")).asSingleEntity();
-    assertMenteeEqualsEntity(defaultMentee, createdMenteeEntity);
+    assertMenteeEqualsEntity(defaultMentee, ds.prepare(new Query("UserAccount")).asSingleEntity());
     assertTrue(dataAccess.createUser(defaultMentor));
     assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
-    Entity createdMentorEntity =
-        ds.get(KeyFactory.createKey("UserAccount", defaultMentor.getDatastoreKey()));
-    assertMentorEqualsEntity(defaultMentor, createdMentorEntity);
+    assertMentorEqualsEntity(defaultMentor, ds.get(KeyFactory.createKey("UserAccount", defaultMentor.getDatastoreKey())));
   }
 
   @Test
@@ -556,18 +522,9 @@ public final class DatastoreAccessTest {
     mentorEntity1.setProperty("userID", "201");
     Entity mentorEntity2 = new Entity("UserAccount");
     mentorEntity2.setPropertiesFrom(defaultMentorEntity);
-    mentorEntity2.setProperty("userID", "202");
-    Entity mentorEntity3 = new Entity("UserAccount");
-    mentorEntity3.setPropertiesFrom(defaultMentorEntity);
-    mentorEntity3.setProperty("userID", "203");
-    Entity mentorEntity4 = new Entity("UserAccount");
-    mentorEntity4.setPropertiesFrom(defaultMentorEntity);
-    mentorEntity4.setProperty("userID", "204");
-    Entity mentorEntity5 = new Entity("UserAccount");
-    mentorEntity5.setPropertiesFrom(defaultMentorEntity);
-    mentorEntity5.setProperty("userID", "205");
+    mentorEntity2.setProperty("userID", "202")
     ds.put(
-        Arrays.asList(mentorEntity1, mentorEntity2, mentorEntity3, mentorEntity4, mentorEntity5));
+        Arrays.asList(mentorEntity1, mentorEntity2));
     Collection<Mentor> mentors = dataAccess.getRelatedMentors(defaultMentee);
     assertTrue(mentors.isEmpty());
   }
@@ -615,8 +572,7 @@ public final class DatastoreAccessTest {
     requestEntity.setProperty("fromUserKey", menteeEntity1.getKey().getId());
     ds.put(requestEntity);
     assertEquals(1, ds.prepare(new Query("MentorshipRequest")).countEntities(withLimit(10)));
-    Collection<MentorshipRequest> requests = dataAccess.getIncomingRequests(defaultMentee);
-    assertTrue(requests.isEmpty());
+    assertEquals(0, dataAccess.getIncomingRequests(defaultMentee).size());
   }
 
   @Test
@@ -634,8 +590,7 @@ public final class DatastoreAccessTest {
     requestEntity.setProperty("fromUserKey", menteeEntity1.getKey().getId());
     ds.put(requestEntity);
     assertEquals(1, ds.prepare(new Query("MentorshipRequest")).countEntities(withLimit(10)));
-    Collection<MentorshipRequest> requests = dataAccess.getIncomingRequests(defaultMentee);
-    assertTrue(requests.isEmpty());
+    assertEquals(0, dataAccess.getIncomingRequests(defaultMentee).size());
   }
 
   @Test
