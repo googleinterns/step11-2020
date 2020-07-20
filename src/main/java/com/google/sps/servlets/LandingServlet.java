@@ -17,6 +17,8 @@ package com.google.sps.servlets;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DatastoreAccess;
+import com.google.sps.data.UserAccount;
+import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.ServletUtils;
@@ -78,15 +80,20 @@ public class LandingServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Map<String, Object> context =
+        new DatastoreAccess().getDefaultRenderingContext(URLPatterns.LANDING);
+    UserAccount currentUser = (UserAccount) context.get(ContextFields.CURRENT_USER);
+    if (currentUser != null) {
+      response.sendRedirect(URLPatterns.DASHBOARD);
+      return;
+    }
+
     response.setContentType(ServletUtils.CONTENT_HTML);
 
     if (staticResponse == null) {
       response.setStatus(500);
       return;
     }
-
-    Map<String, Object> context =
-        new DatastoreAccess().getDefaultRenderingContext(URLPatterns.LANDING);
 
     String rendered = jinjava.render(staticResponse, context);
 
