@@ -15,30 +15,15 @@
 package com.google.sps.servlets;
 
 import com.google.appengine.api.users.User;
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
+import com.google.gson.Gson;
 import com.google.sps.data.DataAccess;
 import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
-import com.google.sps.data.MentorshipRequest;
-import com.google.sps.util.ContextFields;
-import com.google.sps.util.ErrorMessages;
-import com.google.sps.util.ParameterConstants;
-import com.google.sps.util.ResourceConstants;
 import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
-import com.hubspot.jinjava.Jinjava;
-import com.hubspot.jinjava.JinjavaConfig;
-import com.hubspot.jinjava.loader.FileLocator;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = URLPatterns.REFILL_MENTOR)
 public class RefillMentorServlet extends HttpServlet {
 
-  private DataAccess dataAccess;
+  private DataAccess dataAccess = new DatastoreAccess();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -75,3 +60,4 @@ public class RefillMentorServlet extends HttpServlet {
     }
     response.sendRedirect(URLPatterns.LANDING);
   }
+}

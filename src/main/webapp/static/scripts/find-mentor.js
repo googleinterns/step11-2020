@@ -30,7 +30,13 @@ const getMiddleCard = () => {
   }
   return mentorCards[0];
 };
-
+const refillMentors = () => {
+  fetch('/refill-mentor').then(response => response.json())
+  .then(mentors => {
+    for (mentor in mentors)
+      console.log(mentor.name);
+  })
+};
 const updateChoiceButtons = () => {
   const middleCard = getMiddleCard();
   if (!middleCard) {
