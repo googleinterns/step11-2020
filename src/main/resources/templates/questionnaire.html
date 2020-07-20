@@ -29,7 +29,7 @@ limitations under the License. -->
 {% block main_content %}
 <h1> Form </h1>
 <div class = "form-container">
-  <form id="information-form" action="/questionnaire" method="POST">
+  <form id="information-form" action="/questionnaire" method="POST" onsubmit="return checkForm()">
     <h3> Step 1: Basic Personal Information </h3>
     <input type="hidden" name="formType" id="formType" value={{"{{"}}formType{{"}}"}} />
     <label for="name">Your Name</label>
@@ -161,6 +161,7 @@ limitations under the License. -->
   {% set scripts = [
       "static/scripts/questionnaire.js"
     ]%}
+  <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.4.0/moment.min.js"></script>
   {% for script in scripts %}
     <script charset="utf-8" type="text/javascript" src={{ script }}></script>
   {% endfor %}

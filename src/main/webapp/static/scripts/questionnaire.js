@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
+var errorMessage = ""
 const form = document.getElementById('information-form');
 form.addEventListener('submit', function() {
   getCheckboxValues('.focusListCheckbox', 'focusList');
@@ -35,5 +35,30 @@ function checkForOther(val, label){
     document.getElementById(otherID).innerHTML = 'Other: <input type ="text" name="' + label + 'Other" id="' + label + 'Other"/>';
   } else {
     document.getElementById(otherID).innerHTML = '';
+  }
+}
+
+function checkForm() {
+  if (errorMessage == "") {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function validate(date){
+  var currentDay = moment();
+  var birthday = moment(date);
+  if (currentDay.isBefore(birthday)) {
+  }
+  if (!birthday.isValid()) {
+    errorMessage = "invalid date";
+    return false
+  }
+  else if (eighteenYearsAgo.isAfter(birthday)) {
+    return true
+  }
+  else {
+    return "sorry, no";
   }
 }
