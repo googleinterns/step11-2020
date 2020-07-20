@@ -16,6 +16,8 @@ package com.google.sps.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -52,10 +54,11 @@ public class TimeZoneInfo {
   }
 
   public static Collection<TimeZoneInfo> getListOfNamesToDisplay(Collection<TimeZone> timeZones) {
-    Collection<TimeZoneInfo> infoList = new ArrayList<>();
+    List<TimeZoneInfo> infoList = new ArrayList<>();
     for (TimeZone timeZone : timeZones) {
       infoList.add(new TimeZoneInfo(timeZone));
     }
+    infoList.sort(Comparator.comparing(TimeZoneInfo::getOffset));
     return infoList;
   }
 }

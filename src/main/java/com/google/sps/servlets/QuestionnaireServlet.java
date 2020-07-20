@@ -136,7 +136,7 @@ public class QuestionnaireServlet extends HttpServlet {
     if (formType.equals(MENTOR) || formType.equals(MENTEE)) {
       context.put(ContextFields.FORM_TYPE, formType.toLowerCase());
       context.put("ethnicities", EnumSet.complementOf(EnumSet.of(Ethnicity.UNSPECIFIED)));
-      context.put("topics", Topic.values());
+      context.put("topics", Topic.valuesSorted());
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
@@ -294,9 +294,9 @@ public class QuestionnaireServlet extends HttpServlet {
 
   private Map<String, Object> selectionListsForFrontEnd() {
     Map<String, Object> map = new HashMap<>();
-    map.put("countries", Country.values());
+    map.put("countries", Country.valuesSorted());
     map.put("genders", Gender.values());
-    map.put("languages", Language.values());
+    map.put("languages", Language.valuesSorted());
     map.put("mentorTypes", MentorType.values());
 
     map.put(
