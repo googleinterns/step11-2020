@@ -174,4 +174,42 @@ public final class QuestionnaireServletTest {
     writer.flush();
     Assert.assertFalse(stringWriter.toString().contains("omeganonbinary"));
   }
+
+  @Test
+  public void checklistValuesStored() throws Exception {
+    when(request.getParameterValues("ethnicity"))
+        .thenReturn(new String[] {"HISPANIC", "CAUCASIAN"});
+    UserService userService = UserServiceFactory.getUserService();
+    when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doPost(request, response);
+
+    verify(request).getParameter("ethnicity");
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("HISPANIC"));
+    Assert.assertTrue(stringWriter.toString().contains("CAUCASIAN"));
+  }
+
+  @Test
+  public void checklistDefaultValueWhenNoneGiven() throws Exception {
+    when(request.getParameterValues("ethnicity")).thenReturn(new String[0]);
+    UserService userService = UserServiceFactory.getUserService();
+    when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doPost(request, response);
+
+    verify(request).getParameter("ethnicity");
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("UNSPECIFIED"));
+  }
 }
