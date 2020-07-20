@@ -198,7 +198,7 @@ public final class QuestionnaireServletTest {
 
   @Test
   public void otherEthnicityStringInputProperlyStored() throws Exception {
-    when(request.getParameter("ethnicity")).thenReturn("OTHER");
+    when(request.getParameterValues("ethnicity")).thenReturn(new String[] {"OTHER"});
     when(request.getParameter("ethnicityOther")).thenReturn("Tunisian");
 
     StringWriter stringWriter = new StringWriter();
@@ -231,7 +231,7 @@ public final class QuestionnaireServletTest {
 
   @Test
   public void otherEthnicityStringIsBlank() throws Exception {
-    when(request.getParameter("ethnicity")).thenReturn("CAUCASIAN");
+    when(request.getParameterValues("ethnicity")).thenReturn(new String[] {"CAUCASIAN"});
     when(request.getParameter("ethnicityOther")).thenReturn("Tunisian");
 
     StringWriter stringWriter = new StringWriter();
@@ -265,8 +265,6 @@ public final class QuestionnaireServletTest {
   public void checklistValuesStored() throws Exception {
     when(request.getParameterValues("ethnicity"))
         .thenReturn(new String[] {"HISPANIC", "CAUCASIAN"});
-    UserService userService = UserServiceFactory.getUserService();
-    when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
@@ -275,7 +273,7 @@ public final class QuestionnaireServletTest {
 
     servlet.doPost(request, response);
 
-    verify(request).getParameter("ethnicity");
+    verify(request).getParameterValues("ethnicity");
     writer.flush();
     Assert.assertTrue(stringWriter.toString().contains("HISPANIC"));
     Assert.assertTrue(stringWriter.toString().contains("CAUCASIAN"));
@@ -284,8 +282,6 @@ public final class QuestionnaireServletTest {
   @Test
   public void checklistDefaultValueWhenNoneGiven() throws Exception {
     when(request.getParameterValues("ethnicity")).thenReturn(new String[0]);
-    UserService userService = UserServiceFactory.getUserService();
-    when(dataAccess.getCurrentUser()).thenReturn(new User("foo@gmail.com", "gmail.com", "123"));
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
@@ -294,7 +290,7 @@ public final class QuestionnaireServletTest {
 
     servlet.doPost(request, response);
 
-    verify(request).getParameter("ethnicity");
+    verify(request).getParameterValues("ethnicity");
     writer.flush();
     Assert.assertTrue(stringWriter.toString().contains("UNSPECIFIED"));
   }
