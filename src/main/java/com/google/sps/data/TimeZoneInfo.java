@@ -58,7 +58,7 @@ public class TimeZoneInfo {
     for (TimeZone timeZone : timeZones) {
       infoList.add(new TimeZoneInfo(timeZone));
     }
-    infoList.sort(Comparator.comparing(TimeZoneInfo::getName));
+    infoList.sort(Comparator.comparing(TimeZoneInfo::getOffset));
     return infoList;
   }
 }
