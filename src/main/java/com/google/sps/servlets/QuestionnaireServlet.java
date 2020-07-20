@@ -302,12 +302,12 @@ public class QuestionnaireServlet extends HttpServlet {
         : "";
   }
 
-  private Map<String, Object> selectionListsForFrontEnd() {
+    private Map<String, Object> selectionListsForFrontEnd() {
     Map<String, Object> map = new HashMap<>();
-    map.put("countries", Country.values());
+    map.put("countries", Country.valuesSorted());
     map.put("ethnicities", Ethnicity.values());
     map.put("genders", Gender.values());
-    map.put("languages", Language.values());
+    map.put("languages", Language.valuesSorted());
     map.put("mentorTypes", MentorType.values());
 
     map.put(
@@ -318,7 +318,7 @@ public class QuestionnaireServlet extends HttpServlet {
                 .map(strID -> TimeZone.getTimeZone(strID))
                 .collect(Collectors.toList())));
     map.put("educationLevels", EducationLevel.values());
-    map.put("topics", Topic.values());
+    map.put("topics", Topic.valuesSorted());
     map.put("meetingFrequencies", MeetingFrequency.values());
     return map;
   }
