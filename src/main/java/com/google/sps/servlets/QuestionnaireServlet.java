@@ -49,6 +49,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,7 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void init() {
+    dataAccess = new DatastoreAccess();
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
     try {
@@ -123,12 +125,18 @@ public class QuestionnaireServlet extends HttpServlet {
       response.setStatus(500);
       return;
     }
+
+    Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
+    UserAccount currentUser = (UserAccount) context.get(ContextFields.CURRENT_USER);
     String formType =
-        ServletUtils.getParameter(request, ParameterConstants.FORM_TYPE, "").toLowerCase();
+        currentUser == null
+            ? ServletUtils.getParameter(request, ParameterConstants.FORM_TYPE, "").toLowerCase()
+            : currentUser.getUserType().getTitle().toLowerCase();
+
     if (formType.equals(MENTOR) || formType.equals(MENTEE)) {
-      Map<String, Object> context =
-          dataAccess.getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
-      context.put(ContextFields.FORM_TYPE, formType);
+      context.put(ContextFields.FORM_TYPE, formType.toLowerCase());
+      context.put("ethnicities", EnumSet.complementOf(EnumSet.of(Ethnicity.UNSPECIFIED)));
+      context.put("topics", Topic.values());
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
@@ -140,12 +148,15 @@ public class QuestionnaireServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserAccount user = constructNewUserFromRequest(request);
-    dataAccess.createUser(user);
     response.getWriter().println(new Gson().toJson(user));
-    if (user.getUserType().equals(UserType.MENTEE)) {
-      response.sendRedirect(URLPatterns.FIND_MENTOR);
+    if (dataAccess.createUser(user)) {
+      if (user.getUserType().equals(UserType.MENTEE)) {
+        response.sendRedirect(URLPatterns.FIND_MENTOR);
+      } else {
+        response.sendRedirect(URLPatterns.PROFILE);
+      }
     } else {
-      response.sendRedirect(URLPatterns.PROFILE);
+      LOG.warning(ErrorMessages.INVALID_PARAMATERS);
     }
   }
 
@@ -284,7 +295,6 @@ public class QuestionnaireServlet extends HttpServlet {
   private Map<String, Object> selectionListsForFrontEnd() {
     Map<String, Object> map = new HashMap<>();
     map.put("countries", Country.values());
-    map.put("ethnicities", Ethnicity.values());
     map.put("genders", Gender.values());
     map.put("languages", Language.values());
     map.put("mentorTypes", MentorType.values());
@@ -297,7 +307,6 @@ public class QuestionnaireServlet extends HttpServlet {
                 .map(strID -> TimeZone.getTimeZone(strID))
                 .collect(Collectors.toList())));
     map.put("educationLevels", EducationLevel.values());
-    map.put("topics", Topic.values());
     map.put("meetingFrequencies", MeetingFrequency.values());
     return map;
   }
