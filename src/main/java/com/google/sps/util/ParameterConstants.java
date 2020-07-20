@@ -45,6 +45,7 @@ public final class ParameterConstants {
   public static final String USER_TYPE = "userType";
   public static final String MENTEE_GOAL = "goal";
   public static final String MENTEE_DESIRED_MEETING_FREQUENCY = "desiredMeetingFrequency";
+  public static final String MENTEE_DESIRED_MENTOR_TYPE = "desiredMentorType";
   public static final String MENTEE_DISLIKED_MENTOR_KEYS = "dislikedMentorKeys";
   public static final String MENTOR_VISIBILITY = "visibility";
   public static final String MENTOR_FOCUS_LIST = "focusList";
