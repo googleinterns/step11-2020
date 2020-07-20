@@ -28,3 +28,4 @@ function checklistCheckForOther(label) {
   } else {
     document.getElementById(otherID).innerHTML = '';
   }
+}
