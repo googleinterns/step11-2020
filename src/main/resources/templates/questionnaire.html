@@ -81,15 +81,16 @@ limitations under the License. -->
     <p> This information is used to find a person that best fits you.
        Feel free to fill in with whatever you're comfortable sharing: everything in this step is optional </p>
     <div id="ethnicity-div">
-      <p> Check off whatever best applies to you </p>
-      {% raw %}{% for ethnicity in ethnicities %}
-      <input type="checkbox" class="ethnicityCheckbox" id="ethnicity-{{ethnicity}}" name="{{ethnicity}}"
-      value="{{ethnicity}}"{% if currentUser and ethnicity in currentUser.ethnicityList %} checked{% endif %}>
-      <label for="{{ethnicity}}"> {{ethnicity.title}} </label><br>
-      {% endfor %}{% endraw %}
-      <!-- Used to store ethnicity values  -->
-    <input type="hidden" name="ethnicity" id="ethnicity" value="" />
+     <p> Check off whatever best applies to you </p>
+     {% raw %}{% for ethnicity in ethnicities %}
+     <input type="checkbox" class="ethnicityCheckbox" id="ethnicity-{{ethnicity}}" name="ethnicity"
+     value="{{ethnicity}}"{% if currentUser and ethnicity in currentUser.ethnicityList %} checked{% endif %}
+     {%if ethnicity == 'OTHER'%} onclick="checklistCheckForOther('ethnicity')" {% endif %}>
+     <label for="{{ethnicity}}"> {{ethnicity.title}} </label><br>
+     {% endfor %}{% endraw %}
+     <!-- Used to store ethnicity values  -->
     </div> <br>
+    <div id="other-input-ethnicity"></div><br>
 
     <label for="gender">Gender</label>
     <select id="gender" name="gender" onchange="checkForOther(this.value, 'gender')">
@@ -151,11 +152,10 @@ limitations under the License. -->
     <div id="focusList-div">
       <p> What areas would you like to focus on (Choose all that apply). </p>
       {% raw %}{% for topic in topics %}
-      <input type="checkbox" class="focusListCheckbox" name="{{topic}}" value="{{topic}}" {% if currentUser and topic in currentUser.focusList %} checked
+      <input type="checkbox" class="focusListCheckbox" name="focusList" value="{{topic}}" {% if currentUser and topic in currentUser.focusList %} checked
       {% endif %}>
       <label for="{{topic}}"> {{topic.title}} </label><br>
       {% endfor %} {% endraw %}
-    <input type="hidden" name="focusList" id="focusList" value="" />
   </div> <br>
 
     <!-- Displayed to those who selected "Find a Mentor" -->
@@ -204,10 +204,8 @@ limitations under the License. -->
     <input type="file" id="image-upload" name="image-upload">
 
     <label for="description"> (Optional) Write a short bio about yourself</label>
-    <textarea name="description" placeholder="For example, what are your hobbies... ">
-      {% raw %}{% if currentUser and currentUser.description %} {currentUser.description}}
-      {% endif %}{% endraw %}
-    </textarea>
+    <textarea name="description" placeholder="For example, what are your hobbies... "
+    >{% raw %}{% if currentUser and currentUser.description %}{{currentUser.description}}{% endif %}{% endraw %}</textarea>
     <input type="submit" value="Submit">
   </form>
 </div>
