@@ -22,7 +22,7 @@ limitations under the License.
 
 html, body, .main-body {
   height: 100%;
-  /* height: -webkit-fill-available; */
+  min-height: fit-content;
 }
 
 body {
