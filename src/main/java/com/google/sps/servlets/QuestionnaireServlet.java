@@ -161,6 +161,17 @@ public class QuestionnaireServlet extends HttpServlet {
     }
   }
 
+  @Override
+  public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    UserAccount user = constructNewUserFromRequest(request);
+    response.getWriter().println(new Gson().toJson(user));
+    if (dataAccess.updateUser(user)) {
+      response.sendRedirect(URLPatterns.PROFILE);
+    } else {
+      LOG.warning(ErrorMessages.INVALID_PARAMATERS);
+    }
+  }
+
   private UserAccount constructNewUserFromRequest(HttpServletRequest request) {
     UserType userType =
         UserType.valueOf(
