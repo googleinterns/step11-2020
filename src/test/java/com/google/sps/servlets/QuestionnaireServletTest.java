@@ -198,7 +198,7 @@ public final class QuestionnaireServletTest {
 
   @Test
   public void otherEthnicityStringInputProperlyStored() throws Exception {
-    when(request.getParameter("ethnicity")).thenReturn("OTHER");
+    when(request.getParameterValues("ethnicity")).thenReturn(new String[] {"OTHER"});
     when(request.getParameter("ethnicityOther")).thenReturn("Tunisian");
 
     StringWriter stringWriter = new StringWriter();
@@ -231,7 +231,7 @@ public final class QuestionnaireServletTest {
 
   @Test
   public void otherEthnicityStringIsBlank() throws Exception {
-    when(request.getParameter("ethnicity")).thenReturn("CAUCASIAN");
+    when(request.getParameterValues("ethnicity")).thenReturn(new String[] {"CAUCASIAN"});
     when(request.getParameter("ethnicityOther")).thenReturn("Tunisian");
 
     StringWriter stringWriter = new StringWriter();
@@ -259,5 +259,39 @@ public final class QuestionnaireServletTest {
 
     writer.flush();
     Assert.assertFalse(stringWriter.toString().contains("omeganonbinary"));
+  }
+
+  @Test
+  public void checklistValuesStored() throws Exception {
+    when(request.getParameterValues("ethnicity"))
+        .thenReturn(new String[] {"HISPANIC", "CAUCASIAN"});
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doPost(request, response);
+
+    verify(request).getParameterValues("ethnicity");
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("HISPANIC"));
+    Assert.assertTrue(stringWriter.toString().contains("CAUCASIAN"));
+  }
+
+  @Test
+  public void checklistDefaultValueWhenNoneGiven() throws Exception {
+    when(request.getParameterValues("ethnicity")).thenReturn(new String[0]);
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doPost(request, response);
+
+    verify(request).getParameterValues("ethnicity");
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("UNSPECIFIED"));
   }
 }
