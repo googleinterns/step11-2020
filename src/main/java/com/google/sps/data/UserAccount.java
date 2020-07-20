@@ -198,7 +198,7 @@ public abstract class UserAccount implements DatastoreEntity {
   }
 
   /**
-   * converts the list retrieved from datastore to a list of usable Ethnicity objects
+   * Converts the list retrieved from datastore to a list of usable Ethnicity objects
    *
    * @param ethnicityEnumIndexList the list off objects from datastore
    * @return the list of ethnicity objects
@@ -213,8 +213,32 @@ public abstract class UserAccount implements DatastoreEntity {
                 .collect(Collectors.toList());
   }
 
+  public boolean looselyEquals(UserAccount other) {
+    return this.userID.equals(other.userID)
+        && this.email.equals(other.email)
+        && this.name.equals(other.name)
+        && this.dateOfBirth.equals(other.dateOfBirth)
+        && this.country == other.country
+        && this.language == other.language
+        && this.timezone.getID().equals(other.timezone.getID())
+        && this.ethnicityList.equals(other.ethnicityList)
+        && this.ethnicityOther.equals(other.ethnicityOther)
+        && this.gender == other.gender
+        && this.genderOther.equals(other.genderOther)
+        && this.firstGen == other.firstGen
+        && this.lowIncome == other.lowIncome
+        && this.educationLevel == other.educationLevel
+        && this.educationLevelOther.equals(other.educationLevelOther)
+        && this.description.equals(other.description)
+        && this.userType == other.userType;
+  }
+
   public long getDatastoreKey() {
     return datastoreKey;
+  }
+
+  public boolean isKeyInitialized() {
+    return keyInitialized;
   }
 
   public String getUserID() {
@@ -227,6 +251,10 @@ public abstract class UserAccount implements DatastoreEntity {
 
   public String getName() {
     return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public Date getDateOfBirth() {
