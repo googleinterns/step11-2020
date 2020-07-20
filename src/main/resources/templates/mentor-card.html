@@ -18,9 +18,9 @@ limitations under the License. -->
   <p class="mentor-dob">DOB: {{ mentor.dateOfBirth }}</p>
   <p class="mentor-country">Country: {{ mentor.country.longName }}</p>
   <p class="mentor-language">Language: {{ mentor.language.longName }}</p>
-  <p class="mentor-timezone">TimeZone: {{ mentor.timezone.displayName }}</p>
-  <p class="mentor-ethnicity">Ethnicity: {% if mentor.ethnicity.title != "Other" %}{{ mentor.ethnicity.title }}
-      {% else %}{{ mentor.ethnicityOther }}{% endif %}</p>
+  <p class="mentor-timezone">TimeZone: {{ mentor.timezone.name }} - {{ mentor.timezone.offset }}</p>
+  <p class="mentor-ethnicity">Ethnicity: {% for ethnicity in mentor.ethnicityList %}{% if ethnicity.title != "Other" %}{{ ethnicity.title }}
+      {% else %}{{ mentor.ethnicityOther }}{% endif %}{% endfor %}</p>
   <p class="mentor-gender">Gender: {% if mentor.gender.title != "Other" %}{{ mentor.gender.title }}
       {% else %}{{ mentor.genderOther }}{% endif %}</p>
   <p class="mentor-first-gen">First-gen: {% if mentor.firstGen %}Yes{% else %}No{% endif %}</p>

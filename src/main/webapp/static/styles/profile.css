@@ -28,13 +28,15 @@ limitations under the License.
   height: 250px;
 }
 
-#profile-container > header i {
+#profile-container > header #edit {
   position: relative;
   cursor: pointer;
-  right: -96%;
-  top: 25px;
+  float: right;
+  right: 2%;
+  top: 20%;
   font-size: 18px !important;
-  color: #fff;
+  background-color: #fff;
+  color: #000;
 }
 
 @media {
@@ -42,8 +44,8 @@ limitations under the License.
     height: 150px;
   }
 
-  #profile-container > header i {
-    right: -90%;
+  #profile-container > header #edit {
+    /* right: -90%; */
   }
 }
 
@@ -66,17 +68,6 @@ limitations under the License.
   border: 4px solid #fff;
 }
 
-#profile-container .active {
-  width: 20px;
-  height: 20px;
-  border-radius: 20px;
-  position: absolute;
-  right: calc(50% - 70px);
-  top: 75px;
-  background-color: #FFC107;
-  border: 3px solid #fff;
-}
-
 @media (max-width:990px) {
   #profile-container .active {
     right: calc(50% - 60px);
@@ -84,7 +75,7 @@ limitations under the License.
   }
 }
 
-#profile-container.name {
+#profile-container .name {
   margin-top: 20px;
   font-family: "Open Sans";
   font-weight: 600;
@@ -92,7 +83,7 @@ limitations under the License.
   color: #777;
 }
 
-#profile-container.info {
+#profile-container .info {
   margin-top: -5px;
   margin-bottom: 5px;
   font-family: 'Montserrat', sans-serif;
@@ -139,51 +130,3 @@ limitations under the License.
 #profile-container .right {
   padding: 0 25px 0 25px !important;
 }
-/*
-.nav {
-  display: inline-flex;
-}
-
-.nav li {
-  margin: 40px 30px 0 10px;
-  cursor: pointer;
-  font-size: 13pt;
-  text-transform: uppercase;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
-  color: #888;
-}
-
-.nav li:hover, .nav li:nth-child(1)  {
-  color: #999;
-  border-bottom: 2px solid #999;
-}
-
-.follow {
-  position: absolute;
-  right: 8%;
-  top: 35px;
-  font-size: 11pt;
-  background-color: #42b1fa;
-  color: #fff;
-  padding: 8px 15px;
-  cursor: pointer;
-  transition: all .4s;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 400;
-}
-
-.follow:hover {
-  box-shadow: 0 0 15px rgba(0,0,0,0.2), 0 0 15px rgba(0,0,0,0.2);
-}
-
-@media {
-
-  .follow {
-    width: 50%;
-    margin-left: 25%;
-    display: block;
-    position: unset;
-    text-align: center;
-  }
-} */
