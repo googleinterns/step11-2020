@@ -30,7 +30,7 @@ limitations under the License. -->
     {% endif %}
   </header>
   <main class="container">
-    <div class="row">
+    <div class="row justify-content-center">
       <h2>{{ profileUser.userType.title }}</h2>
     </div>
     <div class="row">
@@ -48,7 +48,7 @@ limitations under the License. -->
           <p class="desc">{{profileUser.description}}</p>
           {% if profileUser.userType.title == "Mentor" %}
             <p class="row user-mentor-type">{{ profileUser.mentorType.title }}</p>
-            <p class="row user-data-label">Focuses:</p>
+            <p class="row user-focus-label">Focuses:{% if profileUser.focusList|length == 0 %} None{% endif %}</p>
             <ul class="row user-focus-list">
               {% for focus in profileUser.focusList %}
                 <li class="user-focus-item">{{ focus.title }}</li>
@@ -62,11 +62,15 @@ limitations under the License. -->
       </div>
       <div class="right col-lg-8">
         <div class="stats">
+          {% if profileUser.userID == currentUser.userID %}
+            <p class="row user-dob">DOB: {{ profileUser.dateOfBirth }}</p>
+            <p class="row user-email">Email: {{ profileUser.email }}</p>
+          {% endif %}
           <p class="row user-country">Country: {{ profileUser.country.longName }}</p>
           <p class="row user-language">Language: {{ profileUser.language.longName }}</p>
           <p class="row user-timezone">TimeZone: {{ profileUser.timezone.name }}: GMT {{ ("-" if profileUser.timezone.offset < 0 else "+") + profileUser.timezone.offset }}</p>
           <p class="row user-ethnicity">Ethnicity: {% for ethnicity in profileUser.ethnicityList %}{% if ethnicity.title != "Other" %}{{ ethnicity.title }}
-              {% else %}{{ profileUser.ethnicityOther }}{% endif %}{% endfor %}</p>
+              {% else %}{{ profileUser.ethnicityOther }}{% endif %}{{ ", " if not loop.last }}{% endfor %}</p>
           <p class="row user-gender">Gender: {% if profileUser.gender.title != "Other" %}{{ profileUser.gender.title }}
               {% else %}{{ profileUser.genderOther }}{% endif %}</p>
           <p class="row user-first-gen">First-gen: {% if profileUser.firstGen %}Yes{% else %}No{% endif %}</p>
