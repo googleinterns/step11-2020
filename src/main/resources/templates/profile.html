@@ -31,33 +31,21 @@ limitations under the License. -->
   </header>
   <main class="container">
     <div class="row">
-      <div class="left col-lg-4">
+      <h2>{{ profileUser.userType.title }}</h2>
+    </div>
+    <div class="row">
+      <div class="left col-lg-4 justify-content-start" id="profile-title" >
         <!-- <div class="photo-left"> -->
-          <img class="photo" src="https://images.pexels.com/photos/1804796/pexels-photo-1804796.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"/>
+          <!-- <img class="photo" src="https://images.pexels.com/photos/1804796/pexels-photo-1804796.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"/> -->
         <!-- </div> -->
           <h4 class="name">
             {{profileUser.name}}
           </h4>
           <!-- <p class="email">{#profileUser.email#}</p> -->
           {% if profileUser.userType.title == "Mentor" %}
-            {% if !profileUser.visibilty %}Not {% endif %}Available for mentorship
+            <p class="user-mentor-visibility">{% if !profileUser.visibilty %}Not {% endif %}Available for mentorship</p>
           {% endif %}
-      </div>
-      <div class="right col-lg-8">
-        <div class="stats">
-          <p class="row user-dob">DOB: {{ profileUser.dateOfBirth }}</p>
-          <p class="row user-country">Country: {{ profileUser.country.longName }}</p>
-          <p class="row user-language">Language: {{ profileUser.language.longName }}</p>
-          <p class="row user-timezone">TimeZone: {{ profileUser.timezone.name }}: GMT {{ profileUser.timezone.offset }}</p>
-          <p class="row user-ethnicity">Ethnicity: {% for ethnicity in profileUser.ethnicityList %}{% if ethnicity.title != "Other" %}{{ ethnicity.title }}
-              {% else %}{{ profileUser.ethnicityOther }}{% endif %}{% endfor %}</p>
-          <p class="row user-gender">Gender: {% if profileUser.gender.title != "Other" %}{{ profileUser.gender.title }}
-              {% else %}{{ profileUser.genderOther }}{% endif %}</p>
-          <p class="row user-first-gen">First-gen: {% if profileUser.firstGen %}Yes{% else %}No{% endif %}</p>
-          <p class="row user-low-income">Low income: {% if profileUser.firstGen %}Yes{% else %}No{% endif %}</p>
-          <p class="row user-education-level">Education: {% if profileUser.educationLevel.title != "Other" %}{{ profileUser.educationLevel.title }}
-              {% else %}{{ profileUser.educationLevelOther }}{% endif %}</p>
-
+          <p class="desc">{{profileUser.description}}</p>
           {% if profileUser.userType.title == "Mentor" %}
             <p class="row user-mentor-type">{{ profileUser.mentorType.title }}</p>
             <p class="row user-data-label">Focuses:</p>
@@ -67,12 +55,25 @@ limitations under the License. -->
               {% endfor %}
             </ul>
           {% else %}
-            <p class="row user-mentee-desired-mentor-type">{{ profileUser.desiredMentorType.title }}</p>
-            <p class="row user-mentee-goal">{{ profileUser.goal.title }}</p>
-            <p class="row user-mentee-desired-meeting-frequency">{{ profileUser.desiredMeetingFrequency.title }}</p>
+            <p class="row user-mentee-goal">Mentorship Goal: {{ profileUser.goal.title }}</p>
+            <p class="row user-mentee-desired-meeting-frequency">Meeting times: {{ profileUser.desiredMeetingFrequency.title }}</p>
+            <p class="row user-mentee-desired-mentor-type">Preferred mentor: {{ profileUser.desiredMentorType.title }}</p>
           {% endif %}
+      </div>
+      <div class="right col-lg-8">
+        <div class="stats">
+          <p class="row user-country">Country: {{ profileUser.country.longName }}</p>
+          <p class="row user-language">Language: {{ profileUser.language.longName }}</p>
+          <p class="row user-timezone">TimeZone: {{ profileUser.timezone.name }}: GMT {{ ("-" if profileUser.timezone.offset < 0 else "+") + profileUser.timezone.offset }}</p>
+          <p class="row user-ethnicity">Ethnicity: {% for ethnicity in profileUser.ethnicityList %}{% if ethnicity.title != "Other" %}{{ ethnicity.title }}
+              {% else %}{{ profileUser.ethnicityOther }}{% endif %}{% endfor %}</p>
+          <p class="row user-gender">Gender: {% if profileUser.gender.title != "Other" %}{{ profileUser.gender.title }}
+              {% else %}{{ profileUser.genderOther }}{% endif %}</p>
+          <p class="row user-first-gen">First-gen: {% if profileUser.firstGen %}Yes{% else %}No{% endif %}</p>
+          <p class="row user-low-income">Low income: {% if profileUser.firstGen %}Yes{% else %}No{% endif %}</p>
+          <p class="row user-education-level">Education: {% if profileUser.educationLevel.title != "Other" %}{{ profileUser.educationLevel.title }}
+              {% else %}{{ profileUser.educationLevelOther }}{% endif %}</p>
         </div>
-        <p class="desc">{{profileUser.description}}</p>
       </div>
   </main>
 </div>
