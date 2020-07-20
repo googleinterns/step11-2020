@@ -205,7 +205,7 @@ limitations under the License. -->
 
     <label for="description"> (Optional) Write a short bio about yourself</label>
     <textarea name="description" placeholder="For example, what are your hobbies... ">
-      {% raw %}{% if currentUser and currentUser.description %} {currentUser.description}}
+      {% raw %}{% if currentUser and currentUser.description %} {{currentUser.description}}
       {% endif %}{% endraw %}
     </textarea>
     <input type="submit" value="Submit">
