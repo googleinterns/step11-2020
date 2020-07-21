@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var errorMessage = ""
+var errorMessage = '';
 const form = document.getElementById('information-form');
+
+
 function checkForOther(val, label){
   var otherID = 'other-input-' + label;
   if(val.toLowerCase()=='other') {
@@ -33,26 +35,27 @@ function checklistCheckForOther(label) {
 }
 
 function checkForm() {
-  if (errorMessage == "") {
+  validateDate(document.getElementById('dateOfBirth').value);
+  if (errorMessage == '') {
     return true;
   } else {
     return false;
   }
 }
 
-function validate(date){
+function validateDate(date){
   var currentDay = moment();
   var birthday = moment(date);
-  if (currentDay.isBefore(birthday)) {
-  }
   if (!birthday.isValid()) {
-    errorMessage = "invalid date";
-    return false
-  }
-  else if (eighteenYearsAgo.isAfter(birthday)) {
-    return true
-  }
-  else {
-    return "sorry, no";
+    document.getElementById('date-of-birth-error-container').innerHTML = '<label for="dateOfBirth">Invalid date format: Should be MM/DD/YYYY</label>';
+    errorMessage = 'invalid date';
+    return false;
+  }else if (currentDay.isBefore(birthday)) {
+    document.getElementById('date-of-birth-error-container').innerHTML = '<label for="dateOfBirth">You can\'t be born in the future!</label>';
+    errorMessage = 'invalid date';
+    return false;
+  } else {
+    document.getElementById('date-of-birth-error-container').innerHTML = '';
+    return true;
   }
 }
