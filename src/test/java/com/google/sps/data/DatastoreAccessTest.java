@@ -116,7 +116,7 @@ public final class DatastoreAccessTest {
 
   private void setUpDefaultObjects() {
     defaultMentee =
-        (new Mentee.Builder())
+        (Mentee.Builder.newBuilder())
             .name("Mudito Mentee")
             .userID("101")
             .email("mudito.mentee@example.com")
@@ -141,7 +141,7 @@ public final class DatastoreAccessTest {
             .build();
 
     defaultMentor =
-        (new Mentor.Builder())
+        (Mentor.Builder.newBuilder())
             .name("Mudito Mentor")
             .userID("102")
             .email("mudito.mentor@example.com")

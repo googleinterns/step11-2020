@@ -1,5 +1,7 @@
 package com.google.sps.util;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import com.google.sps.data.Country;
 import com.google.sps.data.EducationLevel;
 import com.google.sps.data.Ethnicity;
@@ -11,12 +13,18 @@ import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZoneInfo;
 import com.google.sps.data.Topic;
+import com.google.sps.data.UserAccount;
 import com.google.sps.data.UserType;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 /**
  * This class provides static methods for creating random user objects. These functions are useful
@@ -27,6 +35,30 @@ import java.util.TimeZone;
  */
 public class RandomObjects {
   private static Random rnd = new Random();
+  private static String[] names;
+
+  static {
+    try {
+      names =
+          Resources.toString(
+                  RandomObjects.class.getResource(ResourceConstants.DUMMY_DATA_NAMES),
+                  Charsets.UTF_8)
+              .split(",");
+    } catch (IOException e) {
+    }
+  }
+
+  private static List<TimeZoneInfo> timezones =
+      (List<TimeZoneInfo>)
+          TimeZoneInfo.getListOfNamesToDisplay(
+              Arrays.asList(TimeZone.getAvailableIDs()).stream()
+                  .filter(strID -> strID.toUpperCase().equals(strID))
+                  .map(strID -> TimeZone.getTimeZone(strID))
+                  .collect(Collectors.toList()));
+
+  public static String randomName() {
+    return names[rnd.nextInt(names.length)] + " " + names[rnd.nextInt(names.length)];
+  }
 
   public static String randomNumberAsString(int digCount) {
     StringBuilder sb = new StringBuilder(digCount);
@@ -52,56 +84,78 @@ public class RandomObjects {
     return enumClass.getEnumConstants()[x];
   }
 
-  public static Mentee randomMentee() {
-    return (new Mentee.Builder())
-        .name(randomLetters(10))
+  public static <T extends UserAccount.Builder<T>> T randomUserBuilder(T builder) {
+    String name = randomName();
+    String email = name.replace(" ", ".").toLowerCase() + "@example.com";
+    builder
+        .name(name)
         .userID(randomNumberAsString(21))
-        .email(randomLetters(7) + "@gmail.com")
-        .dateOfBirth(new Date())
+        .email(email)
+        .dateOfBirth(new Date(1300187200000L - ((long) rnd.nextDouble()) * 630700000000L))
         .country(randomEnum(Country.class))
         .language(randomEnum(Language.class))
-        .timezone(
-            new TimeZoneInfo(TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)])))
-        .ethnicityList(Arrays.asList(randomEnum(Ethnicity.class)))
-        .ethnicityOther(randomLetters(10))
-        .gender(randomEnum(Gender.class))
-        .genderOther(randomLetters(10))
+        .timezone(timezones.get(rnd.nextInt(timezones.size())))
         .firstGen(rnd.nextBoolean())
         .lowIncome(rnd.nextBoolean())
-        .educationLevel(randomEnum(EducationLevel.class))
-        .educationLevelOther(randomLetters(10))
-        .description(randomLetters(30))
+        .description(randomLetters(30));
+    Set<Ethnicity> ethnicities = new HashSet<>();
+    ethnicities.add(randomEnum(Ethnicity.class));
+    if (ethnicities.contains(Ethnicity.OTHER)) {
+      builder.ethnicityOther("unique ethnicity");
+    } else {
+      for (int i = rnd.nextInt(Ethnicity.values().length - 3); i > 0; i--) {
+        Ethnicity newEthnicity = randomEnum(Ethnicity.class);
+        if (newEthnicity != Ethnicity.OTHER) {
+          ethnicities.add(newEthnicity);
+        }
+      }
+      builder.ethnicityOther("");
+    }
+    builder.ethnicityList(new ArrayList(ethnicities));
+    Gender gender = randomEnum(Gender.class);
+    builder.gender(gender);
+    if (gender == Gender.OTHER) {
+      builder.genderOther("unique gender");
+    } else {
+      builder.genderOther("");
+    }
+    EducationLevel educationLevel = randomEnum(EducationLevel.class);
+    builder.educationLevel(educationLevel);
+    if (educationLevel == EducationLevel.OTHER) {
+      builder.educationLevelOther("unique educationLevel");
+    } else {
+      builder.educationLevelOther("");
+    }
+    return builder;
+  }
+
+  public static Mentee randomMentee() {
+    return randomUserBuilder(Mentee.Builder.newBuilder())
         .userType(UserType.MENTEE)
         .goal(randomEnum(Topic.class))
         .desiredMeetingFrequency(randomEnum(MeetingFrequency.class))
-        .dislikedMentorKeys(Collections.emptySet())
+        .dislikedMentorKeys(new HashSet<Long>())
         .desiredMentorType(randomEnum(MentorType.class))
         .build();
   }
 
   public static Mentor randomMentor() {
-    return (new Mentor.Builder())
-        .name(randomLetters(10))
-        .userID(randomNumberAsString(21))
-        .email(randomLetters(7) + "@gmail.com")
-        .dateOfBirth(new Date())
-        .country(randomEnum(Country.class))
-        .language(randomEnum(Language.class))
-        .timezone(
-            new TimeZoneInfo(TimeZone.getTimeZone(TimeZone.getAvailableIDs()[rnd.nextInt(500)])))
-        .ethnicityList(Arrays.asList(randomEnum(Ethnicity.class)))
-        .ethnicityOther(randomLetters(10))
-        .gender(randomEnum(Gender.class))
-        .genderOther(randomLetters(10))
-        .firstGen(rnd.nextBoolean())
-        .lowIncome(rnd.nextBoolean())
-        .educationLevel(randomEnum(EducationLevel.class))
-        .educationLevelOther(randomLetters(10))
-        .description(randomLetters(30))
-        .userType(UserType.MENTOR)
-        .visibility(rnd.nextBoolean())
-        .focusList(Arrays.asList())
-        .mentorType(randomEnum(MentorType.class))
-        .build();
+    Mentor.Builder builder =
+        randomUserBuilder(Mentor.Builder.newBuilder())
+            .userType(UserType.MENTOR)
+            .visibility(rnd.nextBoolean())
+            .mentorType(randomEnum(MentorType.class));
+    Set<Topic> focuses = new HashSet<>();
+    focuses.add(randomEnum(Topic.class));
+    if (!focuses.contains(Topic.OTHER)) {
+      for (int i = rnd.nextInt(Topic.values().length - 2); i > 0; i--) {
+        Topic newFocus = randomEnum(Topic.class);
+        if (newFocus != Topic.OTHER) {
+          focuses.add(newFocus);
+        }
+      }
+    }
+    builder.focusList(new ArrayList(focuses));
+    return builder.build();
   }
 }

@@ -173,6 +173,11 @@ public abstract class UserAccount implements DatastoreEntity {
   }
 
   public Entity convertToEntity() {
+    if (!this.keyInitialized && this.datastoreKey == 0) {
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      KeyRange keyRange = datastore.allocateIds(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, 1);
+      this.datastoreKey = keyRange.getStart().getId();
+    }
     Key key = KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, this.datastoreKey);
     Entity entity = new Entity(key);
     entity.setProperty(ParameterConstants.USER_ID, this.userID);
@@ -313,7 +318,7 @@ public abstract class UserAccount implements DatastoreEntity {
     return userType;
   }
 
-  protected abstract static class Builder<T extends Builder<T>> {
+  public abstract static class Builder<T extends Builder<T>> {
     private static long datastoreKey;
     private static boolean keyInitialized = false;
     private static String userID;
@@ -334,7 +339,7 @@ public abstract class UserAccount implements DatastoreEntity {
     private static String description;
     private static UserType userType;
 
-    public Builder() {}
+    protected Builder() {}
 
     public T datastoreKey(long datastoreKey) {
       this.datastoreKey = datastoreKey;

@@ -137,7 +137,9 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     private Set<Long> dislikedMentorKeys;
     private MentorType desiredMentorType;
 
-    public Builder() {}
+    public static Builder newBuilder() {
+      return new Builder();
+    }
 
     public Builder goal(Topic goal) {
       this.goal = goal;
