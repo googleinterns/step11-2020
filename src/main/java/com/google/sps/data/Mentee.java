@@ -60,7 +60,8 @@ public class Mentee extends UserAccount implements DatastoreEntity {
         getDislikedSetFromProperty(
             (Collection) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS));
     this.desiredMentorType =
-        MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE))];
+        MentorType.values()[
+            toIntExact((long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE))];
     this.sanitizeValues();
   }
 
@@ -103,6 +104,15 @@ public class Mentee extends UserAccount implements DatastoreEntity {
    */
   public boolean dislikeMentor(Mentor mentor) {
     return dislikedMentorKeys.add(mentor.getDatastoreKey());
+  }
+
+  @Override
+  public boolean looselyEquals(UserAccount other) {
+    return super.looselyEquals(other)
+        && this.goal == ((Mentee) other).goal
+        && this.desiredMentorType == ((Mentee) other).desiredMentorType
+        && this.desiredMeetingFrequency == ((Mentee) other).desiredMeetingFrequency
+        && this.dislikedMentorKeys.equals(((Mentee) other).dislikedMentorKeys);
   }
 
   public Topic getGoal() {

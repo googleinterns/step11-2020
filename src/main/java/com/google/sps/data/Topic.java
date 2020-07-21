@@ -15,6 +15,11 @@
 
 package com.google.sps.data;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * This enum represents a potential topic of study for a mentee to want/mentor to provide help with.
  * Every Mentee object stores a single instance of this enum while Mentor objects store a collection
@@ -42,5 +47,11 @@ public enum Topic {
 
   public String getTitle() {
     return title;
+  }
+
+  public static Collection<Topic> valuesSorted() {
+    List<Topic> values = Arrays.asList(Topic.values());
+    values.sort(Comparator.comparing(Topic::getTitle));
+    return values;
   }
 }

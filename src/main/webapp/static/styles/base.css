@@ -22,14 +22,13 @@ limitations under the License.
 
 html, body, .main-body {
   height: 100%;
-  /* height: -webkit-fill-available; */
+  min-height: fit-content;
 }
 
 body {
   margin: auto;
   display: flex;
   flex-flow: column nowrap;
-  min-width: 700px;
   align-items: center;
 }
 
@@ -40,7 +39,6 @@ body {
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  min-width: 700px;
   width: 100%;
   background-color: var(--dark-blue);
 }

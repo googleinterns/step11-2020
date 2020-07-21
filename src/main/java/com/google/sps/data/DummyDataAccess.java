@@ -170,7 +170,7 @@ public class DummyDataAccess implements DataAccess {
     return false;
   }
 
-  public boolean saveUser(UserAccount user) {
+  public boolean updateUser(UserAccount user) {
     return false;
   }
 
@@ -243,74 +243,6 @@ public class DummyDataAccess implements DataAccess {
             .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
             .build());
     return mentors;
-  }
-
-  public Collection<Mentee> getRelatedMentees(Mentor mentor) {
-    Collection<Mentee> mentees = new ArrayList(5);
-    mentees.add(
-        (new Mentee.Builder())
-            .name("Bradley")
-            .userID("112454")
-            .email("bradley@gmail.com")
-            .dateOfBirth(new Date())
-            .country(Country.AU)
-            .language(Language.ES)
-            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
-            .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
-            .ethnicityOther("")
-            .gender(Gender.MAN)
-            .genderOther("")
-            .firstGen(true)
-            .lowIncome(true)
-            .educationLevel(EducationLevel.BACHELORS)
-            .educationLevelOther("")
-            .description("hi im bradley")
-            .goal(Topic.COMPUTER_SCIENCE)
-            .desiredMeetingFrequency(MeetingFrequency.WEEKLY)
-            .build());
-    mentees.add(
-        (new Mentee.Builder())
-            .name("Cooper")
-            .userID("534153")
-            .email("cooper@gmail.com")
-            .dateOfBirth(new Date())
-            .country(Country.AU)
-            .language(Language.ES)
-            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
-            .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
-            .ethnicityOther("")
-            .gender(Gender.MAN)
-            .genderOther("")
-            .firstGen(true)
-            .lowIncome(true)
-            .educationLevel(EducationLevel.BACHELORS)
-            .educationLevelOther("")
-            .description("hi im cooper")
-            .goal(Topic.COMPUTER_SCIENCE)
-            .desiredMeetingFrequency(MeetingFrequency.WEEKLY)
-            .build());
-    mentees.add(
-        (new Mentee.Builder())
-            .name("Stacy")
-            .userID("999999")
-            .email("stacy@gmail.com")
-            .dateOfBirth(new Date())
-            .country(Country.AU)
-            .language(Language.ES)
-            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
-            .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
-            .ethnicityOther("")
-            .gender(Gender.WOMAN)
-            .genderOther("")
-            .firstGen(true)
-            .lowIncome(true)
-            .educationLevel(EducationLevel.BACHELORS)
-            .educationLevelOther("")
-            .description("hi im STACY")
-            .goal(Topic.COMPUTER_SCIENCE)
-            .desiredMeetingFrequency(MeetingFrequency.WEEKLY)
-            .build());
-    return mentees;
   }
 
   public Collection<MentorshipRequest> getIncomingRequests(UserAccount user) {
