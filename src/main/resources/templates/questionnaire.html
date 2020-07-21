@@ -39,7 +39,7 @@ limitations under the License. -->
     <label for="dateOfBirth">Date of Birth:</label>
     <input type="date" name="dateOfBirth" id="dateOfBirth" {% raw %}{% if currentUser and currentUser.description != '' %} value={{currentUser.dateOfBirth}}
     {% endif %}{% endraw %} required>
-    <div id="date-of-birth-error-container"></div>
+    <div id="date-of-birth-error-container"></div><br>
 
     <label for="country">Country</label>
     <select id="country" name="country" required>
