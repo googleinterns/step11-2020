@@ -13,9 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-.nav-bar {
+/* .nav-bar {
   overflow: hidden;
-  background-color: var(--blue);
+  background-color: var(--primary);
   position: fixed;
   left: 0;
   top: 0;
@@ -56,13 +56,11 @@ limitations under the License.
   display: none;
 }
 
-/* Change the color of links on hover .*/
 .nav-bar a:hover {
   background-color: var(--blue-lightened);
   color: black;
   cursor: pointer;
 }
-/* Add a color to the active/current link .*/
 .nav-bar a.active {
   background-color: var(--dark-blue);
 }
@@ -99,4 +97,4 @@ limitations under the License.
     right: 0;
     top: 0;
   }
-}
+} */

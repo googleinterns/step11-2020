@@ -17,7 +17,7 @@ limitations under the License. -->
 
 <head>
 	<meta charset="utf-8">
-	<title>{% block title %}Mentor Matching{% endblock %}</title>
+	<title>{% block tab_title %}Mentor Matching{% endblock %}</title>
 	{% block icon %}
     <link rel="icon" type="image/png" sizes="32x32" href="static/images/logo.png">
   {% endblock %}
@@ -25,6 +25,7 @@ limitations under the License. -->
   {% block styles %}
     <link rel="stylesheet" type="text/css" href="static/styles/base.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/coliff/bootstrap-rfs/bootstrap-rfs.css" media="screen and (max-width: 1200px)">
   {% endblock %}
 </head>
 
@@ -36,6 +37,11 @@ limitations under the License. -->
 	</header>
 	<div class="main-body">
 		<div class="main-content">
+      <div id="title-block">
+        {% block title_block %}
+        <h1 id="page-title">{% block page_title %}{% endblock %}</h1>
+        {% endblock %}
+      </div>
       {% block main_content %}{% endblock %}
     </div>
   </div>

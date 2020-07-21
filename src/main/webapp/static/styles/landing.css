@@ -52,3 +52,7 @@ limitations under the License.
 #login-button {
   background-color: var(--dark-blue-lightened);
 }
+
+#join-mentor-matcher .questionnaire-button-icon {
+  font-size: 15em;
+}
