@@ -173,6 +173,11 @@ public abstract class UserAccount implements DatastoreEntity {
   }
 
   public Entity convertToEntity() {
+    if (!this.keyInitialized && this.datastoreKey == 0) {
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      KeyRange keyRange = datastore.allocateIds(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, 1);
+      this.datastoreKey = keyRange.getStart().getId();
+    }
     Key key = KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, this.datastoreKey);
     Entity entity = new Entity(key);
     entity.setProperty(ParameterConstants.USER_ID, this.userID);
