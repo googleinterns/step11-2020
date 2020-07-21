@@ -60,7 +60,8 @@ public class AuthenticateServlet extends HttpServlet {
       loginState.isLoggedIn = false;
     } else {
       String redirUrlAfterLogout = URLPatterns.BASE;
-      loginState.toggleLoginURL = userService.createLogoutURL(redirUrlAfterLogout);
+      loginState.toggleLoginURL =
+          URLPatterns.LOGOUT + "?" + ParameterConstants.REDIR + "=" + (redirUrlAfterLogout);
       loginState.userProfileURL =
           URLPatterns.PROFILE
               + "?"

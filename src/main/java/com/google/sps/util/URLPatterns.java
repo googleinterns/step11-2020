@@ -31,6 +31,7 @@ public final class URLPatterns {
   public static final String DASHBOARD = "/dashboard";
   public static final String FIND_MENTOR = "/find-mentor";
   public static final String LANDING = "/landing";
+  public static final String LOGOUT = "/logout";
   public static final String MAIN = "/main";
   public static final String MENTORSHIP_REQUESTS = "/mentorship-requests";
   public static final String PROFILE = "/profile";

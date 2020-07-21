@@ -180,23 +180,6 @@ public final class QuestionnaireServletTest {
   }
 
   @Test
-  public void updatedDoMethodBasedOnExistingUser() throws Exception {
-    servlet.init();
-
-    dataAccess.createUser(defaultMentor);
-
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter writer = new PrintWriter(stringWriter);
-
-    when(response.getWriter()).thenReturn(writer);
-
-    servlet.doGet(request, response);
-
-    writer.flush();
-    Assert.assertTrue(stringWriter.toString().contains("method=\"PUT\""));
-  }
-
-  @Test
   public void otherEthnicityStringInputProperlyStored() throws Exception {
     when(request.getParameterValues("ethnicity")).thenReturn(new String[] {"OTHER"});
     when(request.getParameter("ethnicityOther")).thenReturn("Tunisian");
