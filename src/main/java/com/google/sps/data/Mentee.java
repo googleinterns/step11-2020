@@ -42,7 +42,7 @@ public class Mentee extends UserAccount implements DatastoreEntity {
   private Set<Long> dislikedMentorKeys;
   private Set<Long> requestedMentorKeys;
   private SortedSet<Long> servedMentorKeys;
-  public String encodedCursor;
+  private String encodedCursor;
   private Long lastRequestedMentorKey;
   private Long lastDislikedMentorKey;
 
@@ -219,6 +219,15 @@ public class Mentee extends UserAccount implements DatastoreEntity {
 
   public Long getLastDislikedMentorKey() {
     return lastDislikedMentorKey;
+  }
+
+  public String getEncodedCursor() {
+    return encodedCursor;
+  }
+
+  public boolean setEncodedCursor(String newCursor) {
+    encodedCursor = newCursor;
+    return (encodedCursor == newCursor);
   }
 
   public int similarityWithMentor(Mentor mentor) {
