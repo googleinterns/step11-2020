@@ -59,6 +59,7 @@ function validateDate(date){
     errorMessage = 'invalid date';
     return false;
   } else {
+    errorMessage = '';
     dateError.innerHTML = '';
     return true;
   }

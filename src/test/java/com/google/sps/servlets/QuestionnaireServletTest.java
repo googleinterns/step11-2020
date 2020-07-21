@@ -13,7 +13,7 @@ import com.google.sps.data.Language;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorType;
-import com.google.sps.data.TimeZoneInfo;
+import com.google.sps.data.TimeZone;
 import com.google.sps.data.Topic;
 import com.google.sps.data.UserType;
 import com.google.sps.servlets.QuestionnaireServlet;
@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
-import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
@@ -71,7 +70,7 @@ public final class QuestionnaireServletTest {
             .dateOfBirth(new Date(984787200000L))
             .country(Country.US)
             .language(Language.EN)
-            .timezone(new TimeZoneInfo(TimeZone.getTimeZone("GMT")))
+            .timezone(TimeZone.GMT)
             .ethnicityList((Arrays.asList(Ethnicity.INDIAN)))
             .ethnicityOther("")
             .gender(Gender.MAN)

@@ -28,7 +28,7 @@ import com.google.sps.data.MeetingFrequency;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorType;
-import com.google.sps.data.TimeZoneInfo;
+import com.google.sps.data.TimeZone;
 import com.google.sps.data.Topic;
 import com.google.sps.data.UserAccount;
 import com.google.sps.data.UserType;
@@ -47,15 +47,12 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -185,10 +182,9 @@ public class QuestionnaireServlet extends HttpServlet {
     Country country =
         ServletUtils.getEnumParameter(
             Country.class, request, ParameterConstants.COUNTRY, Country.US.toString());
-    TimeZoneInfo timeZone =
-        new TimeZoneInfo(
-            TimeZone.getTimeZone(
-                ServletUtils.getParameter(request, ParameterConstants.TIMEZONE, "est")));
+    TimeZone timeZone =
+        ServletUtils.getEnumParameter(
+            TimeZone.class, request, ParameterConstants.TIMEZONE, TimeZone.EST.toString());
     Language language =
         ServletUtils.getEnumParameter(
             Language.class, request, ParameterConstants.LANGUAGE, Language.EN.toString());
@@ -304,14 +300,7 @@ public class QuestionnaireServlet extends HttpServlet {
     map.put("genders", Gender.values());
     map.put("languages", Language.valuesSorted());
     map.put("mentorTypes", MentorType.values());
-
-    map.put(
-        "timezones",
-        TimeZoneInfo.getListOfNamesToDisplay(
-            Arrays.asList(TimeZone.getAvailableIDs()).stream()
-                .filter(strID -> strID.toUpperCase().equals(strID))
-                .map(strID -> TimeZone.getTimeZone(strID))
-                .collect(Collectors.toList())));
+    map.put("timezones", TimeZone.valuesSorted());
     map.put("educationLevels", EducationLevel.values());
     map.put("meetingFrequencies", MeetingFrequency.values());
     return map;
