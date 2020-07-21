@@ -22,7 +22,7 @@ const getMiddleCard = () => {
   const mentorCards = mentorCardContainer.children;
   if (mentorCards.length > 1) {
     const boundingBox = mentorCardContainer.getBoundingClientRect();
-    let middleCard = document.elementFromPoint(window.innerWidth/2,boundingBox.top + boundingBox.height / 2);
+    let middleCard = document.elementFromPoint(window.innerWidth / 2, boundingBox.top + boundingBox.height / 2);
     while (middleCard.className != "mentor-card") {
       middleCard = middleCard.parentElement;
     }
@@ -30,12 +30,23 @@ const getMiddleCard = () => {
   }
   return mentorCards[0];
 };
-const refillMentors = () => {
-  fetch('/refill-mentor').then(response => response.json())
-  .then(mentors => {
-    for (mentor in mentors)
-      console.log(mentor.name);
-  })
+const refillMentors = async () => {
+  console.log("calling refillMentors");
+  let response = await fetch("/refill-mentor", {
+    method: "GET"
+  });
+  let mentors = await response.json();
+  console.log(JSON.stringify(mentors));
+  console.log("got mentors");
+  let i = 0;
+  for (i = 0; i < mentors.length; i++) {
+    let mentor = mentors[i];
+    let newCard = document.createElement("div");
+    newCard.class = "mentor-card";
+    console.log(JSON.stringify(mentor));
+    newCard.innerHTML = "<h3>" + mentor.name + "</h3>";
+    mentorCardContainer.appendChild(newCard);
+  }
 };
 const updateChoiceButtons = () => {
   const middleCard = getMiddleCard();
@@ -64,14 +75,17 @@ for (const buttonName in buttonDict) {
     const middleCard = getMiddleCard();
     const mentorID = middleCard.querySelector(".mentor-id").innerText;
     let response = await fetch("/find-mentor", {
-        method: "POST",
-        body: new URLSearchParams({mentorID, choice: buttonName})
-      });
+      method: "POST",
+      body: new URLSearchParams({ mentorID, choice: buttonName })
+    });
     let text = await response.text();
     let data = JSON.parse(text);
     if (data.success) {
       mentorCardContainer.removeChild(middleCard);
       updateChoiceButtons();
+      if (mentorCardContainer.childElementCount < 5) {
+        refillMentors();
+      }
     }
   });
 }
