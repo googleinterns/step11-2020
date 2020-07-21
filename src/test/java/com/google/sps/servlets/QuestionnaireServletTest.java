@@ -64,7 +64,7 @@ public final class QuestionnaireServletTest {
     dataAccess = new DatastoreAccess();
     servlet = new QuestionnaireServlet();
     defaultMentor =
-        (new Mentor.Builder())
+        (Mentor.Builder.newBuilder())
             .name("Mudito Mentor")
             .userID("101")
             .email("mudito.mentor@example.com")

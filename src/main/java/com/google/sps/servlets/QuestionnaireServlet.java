@@ -239,7 +239,7 @@ public class QuestionnaireServlet extends HttpServlet {
       Topic goal =
           ServletUtils.getEnumParameter(
               Topic.class, request, ParameterConstants.MENTEE_GOAL, Topic.OTHER.toString());
-      return new Mentee.Builder()
+      return Mentee.Builder.newBuilder()
           .name(name)
           .userID(dataAccess.getCurrentUser().getUserId())
           .email(dataAccess.getCurrentUser().getEmail())
@@ -267,7 +267,7 @@ public class QuestionnaireServlet extends HttpServlet {
           ServletUtils.getListOfCheckedValues(
               Topic.class, request, ParameterConstants.MENTOR_FOCUS_LIST, Topic.OTHER.toString());
 
-      return new Mentor.Builder()
+      return Mentor.Builder.newBuilder()
           .name(name)
           .userID(dataAccess.getCurrentUser().getUserId())
           .email(dataAccess.getCurrentUser().getEmail())

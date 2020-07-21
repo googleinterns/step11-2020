@@ -313,7 +313,7 @@ public abstract class UserAccount implements DatastoreEntity {
     return userType;
   }
 
-  protected abstract static class Builder<T extends Builder<T>> {
+  public abstract static class Builder<T extends Builder<T>> {
     private static long datastoreKey;
     private static boolean keyInitialized = false;
     private static String userID;
@@ -334,7 +334,7 @@ public abstract class UserAccount implements DatastoreEntity {
     private static String description;
     private static UserType userType;
 
-    public Builder() {}
+    protected Builder() {}
 
     public T datastoreKey(long datastoreKey) {
       this.datastoreKey = datastoreKey;

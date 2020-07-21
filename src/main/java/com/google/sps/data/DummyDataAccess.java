@@ -62,7 +62,7 @@ public class DummyDataAccess implements DataAccess {
   }
 
   public UserAccount getUser(String userID) {
-    return (new Mentor.Builder())
+    return (Mentor.Builder.newBuilder())
         .name("Alice")
         .userID(userID)
         .email("alice@gmail.com")
@@ -87,7 +87,7 @@ public class DummyDataAccess implements DataAccess {
   }
 
   public UserAccount getUser(long datastoreKey) {
-    return (new Mentor.Builder())
+    return (Mentor.Builder.newBuilder())
         .name("Alice")
         .userID("321432")
         .email("alice@gmail.com")
@@ -111,7 +111,7 @@ public class DummyDataAccess implements DataAccess {
   }
 
   public Mentee getMentee(String userID) {
-    return (new Mentee.Builder())
+    return (Mentee.Builder.newBuilder())
         .name("Alice")
         .userID("321432")
         .email("alice@gmail.com")
@@ -134,7 +134,7 @@ public class DummyDataAccess implements DataAccess {
   }
 
   public Mentee getMentee(long datastoreKey) {
-    return (new Mentee.Builder())
+    return (Mentee.Builder.newBuilder())
         .name("Alice")
         .userID("321432")
         .email("alice@gmail.com")
@@ -177,7 +177,7 @@ public class DummyDataAccess implements DataAccess {
   public Collection<Mentor> getRelatedMentors(Mentee mentee) {
     Collection<Mentor> mentors = new ArrayList<>(5);
     mentors.add(
-        (new Mentor.Builder())
+        (Mentor.Builder.newBuilder())
             .name("Alice")
             .userID("321432")
             .email("alice@gmail.com")
@@ -199,7 +199,7 @@ public class DummyDataAccess implements DataAccess {
             .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
             .build());
     mentors.add(
-        (new Mentor.Builder())
+        (Mentor.Builder.newBuilder())
             .name("Ethan")
             .userID("532345")
             .email("ethan@gmail.com")
@@ -221,7 +221,7 @@ public class DummyDataAccess implements DataAccess {
             .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
             .build());
     mentors.add(
-        (new Mentor.Builder())
+        (Mentor.Builder.newBuilder())
             .name("Sam")
             .userID("539032")
             .email("sam@gmail.com")
@@ -251,7 +251,7 @@ public class DummyDataAccess implements DataAccess {
       MentorshipRequest request = new MentorshipRequest(i + 1, i + 2);
       request.setToUser(user);
       request.setFromUser(
-          (new Mentee.Builder())
+          (Mentee.Builder.newBuilder())
               .name("Stacy")
               .userID("999999")
               .email("stacy@gmail.com")
@@ -291,7 +291,7 @@ public class DummyDataAccess implements DataAccess {
   public Collection<Mentor> getDislikedMentors(Mentee mentee) {
     Collection<Mentor> mentors = new ArrayList<>(5);
     mentors.add(
-        (new Mentor.Builder())
+        (Mentor.Builder.newBuilder())
             .name("Alice")
             .userID("321432")
             .email("alice@gmail.com")
@@ -313,7 +313,7 @@ public class DummyDataAccess implements DataAccess {
             .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
             .build());
     mentors.add(
-        (new Mentor.Builder())
+        (Mentor.Builder.newBuilder())
             .name("Ethan")
             .userID("532345")
             .email("ethan@gmail.com")
@@ -335,7 +335,7 @@ public class DummyDataAccess implements DataAccess {
             .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
             .build());
     mentors.add(
-        (new Mentor.Builder())
+        (Mentor.Builder.newBuilder())
             .name("Sam")
             .userID("539032")
             .email("sam@gmail.com")
@@ -392,7 +392,7 @@ public class DummyDataAccess implements DataAccess {
       if (user.getUserType() == UserType.MENTOR) {
         mentorMenteeRelation.setMentor((Mentor) user);
         mentorMenteeRelation.setMentee(
-            (new Mentee.Builder())
+            (Mentee.Builder.newBuilder())
                 .name("Stacy")
                 .userID("999999")
                 .email("stacy@gmail.com")
@@ -415,7 +415,7 @@ public class DummyDataAccess implements DataAccess {
       } else {
         mentorMenteeRelation.setMentee((Mentee) user);
         mentorMenteeRelation.setMentor(
-            (new Mentor.Builder())
+            (Mentor.Builder.newBuilder())
                 .name("Sam")
                 .userID("539032")
                 .email("sam@gmail.com")

@@ -113,7 +113,9 @@ public class Mentor extends UserAccount implements DatastoreEntity {
     private Collection<Topic> focusList;
     private MentorType mentorType;
 
-    public Builder() {}
+    public static Builder newBuilder() {
+      return new Builder();
+    }
 
     public Builder visibility(boolean visibility) {
       this.visibility = visibility;
