@@ -11,20 +11,16 @@ import com.google.sps.data.MeetingFrequency;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorType;
-import com.google.sps.data.TimeZoneInfo;
+import com.google.sps.data.TimeZone;
 import com.google.sps.data.Topic;
 import com.google.sps.data.UserAccount;
 import com.google.sps.data.UserType;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.TimeZone;
-import java.util.stream.Collectors;
 
 /**
  * This class provides static methods for creating random user objects. These functions are useful
@@ -47,14 +43,6 @@ public class RandomObjects {
     } catch (IOException e) {
     }
   }
-
-  private static List<TimeZoneInfo> timezones =
-      (List<TimeZoneInfo>)
-          TimeZoneInfo.getListOfNamesToDisplay(
-              Arrays.asList(TimeZone.getAvailableIDs()).stream()
-                  .filter(strID -> strID.toUpperCase().equals(strID))
-                  .map(strID -> TimeZone.getTimeZone(strID))
-                  .collect(Collectors.toList()));
 
   public static String randomName() {
     return names[rnd.nextInt(names.length)] + " " + names[rnd.nextInt(names.length)];
@@ -94,7 +82,7 @@ public class RandomObjects {
         .dateOfBirth(new Date(1300187200000L - ((long) rnd.nextDouble()) * 630700000000L))
         .country(randomEnum(Country.class))
         .language(randomEnum(Language.class))
-        .timezone(timezones.get(rnd.nextInt(timezones.size())))
+        .timezone(randomEnum(TimeZone.class))
         .firstGen(rnd.nextBoolean())
         .lowIncome(rnd.nextBoolean())
         .description(randomLetters(30));

@@ -61,7 +61,7 @@ limitations under the License. -->
       <option value="" selected disabled hidden> select an option </option>
       {% endif %}{% endraw %}
       {% for timezone in timezones %}
-      <option value="{{timezone.timezoneID}}"> {{timezone.name}}: {{timezone.offset}} </option>
+      <option value="{{timezone}}"> {{timezone.name}}: {{timezone.offset}} </option>
       {% endfor %}
     </select>
 

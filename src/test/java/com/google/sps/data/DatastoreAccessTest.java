@@ -29,7 +29,7 @@ import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorMenteeRelation;
 import com.google.sps.data.MentorType;
 import com.google.sps.data.MentorshipRequest;
-import com.google.sps.data.TimeZoneInfo;
+import com.google.sps.data.TimeZone;
 import com.google.sps.data.Topic;
 import com.google.sps.data.UserAccount;
 import com.google.sps.data.UserType;
@@ -40,7 +40,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
 import org.junit.After;
 import org.junit.Before;
@@ -77,7 +76,7 @@ public final class DatastoreAccessTest {
     defaultUserAccountEntity.setProperty("dateOfBirth", new Date(984787200000L));
     defaultUserAccountEntity.setProperty("country", (long) Country.US.ordinal());
     defaultUserAccountEntity.setProperty("language", (long) Language.EN.ordinal());
-    defaultUserAccountEntity.setProperty("timezone", "GMT");
+    defaultUserAccountEntity.setProperty("timezone", (long) TimeZone.GMT.ordinal());
     defaultUserAccountEntity.setProperty(
         "ethnicity", Arrays.asList((long) Ethnicity.INDIAN.ordinal()));
     defaultUserAccountEntity.setProperty("ethnicityOther", "");
@@ -123,7 +122,7 @@ public final class DatastoreAccessTest {
             .dateOfBirth(new Date(984787200000L))
             .country(Country.US)
             .language(Language.EN)
-            .timezone(new TimeZoneInfo(TimeZone.getTimeZone("GMT")))
+            .timezone(TimeZone.GMT)
             .ethnicityList((Arrays.asList(Ethnicity.INDIAN)))
             .ethnicityOther("")
             .gender(Gender.MAN)
@@ -148,7 +147,7 @@ public final class DatastoreAccessTest {
             .dateOfBirth(new Date(984787200000L))
             .country(Country.US)
             .language(Language.EN)
-            .timezone(new TimeZoneInfo(TimeZone.getTimeZone("GMT")))
+            .timezone(TimeZone.GMT)
             .ethnicityList((Arrays.asList(Ethnicity.INDIAN)))
             .ethnicityOther("")
             .gender(Gender.MAN)
@@ -186,7 +185,7 @@ public final class DatastoreAccessTest {
     assertEquals(user.getDateOfBirth(), entity.getProperty("dateOfBirth"));
     assertEquals((long) user.getCountry().ordinal(), entity.getProperty("country"));
     assertEquals((long) user.getLanguage().ordinal(), entity.getProperty("language"));
-    assertEquals(user.getTimezone().getID(), entity.getProperty("timezone"));
+    assertEquals((long) user.getTimezone().ordinal(), entity.getProperty("timezone"));
     assertEquals(
         user.getEthnicityList().stream()
             .map(ethnicity -> ethnicity.ordinal())

@@ -26,7 +26,6 @@ import com.google.sps.util.ParameterConstants;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 /**
@@ -47,7 +46,7 @@ public abstract class UserAccount implements DatastoreEntity {
   private Date dateOfBirth;
   private Country country;
   private Language language;
-  private TimeZoneInfo timezone;
+  private TimeZone timezone;
   private Collection<Ethnicity> ethnicityList;
   private String ethnicityOther;
   private Gender gender;
@@ -66,7 +65,7 @@ public abstract class UserAccount implements DatastoreEntity {
       Date dateOfBirth,
       Country country,
       Language language,
-      TimeZoneInfo timezone,
+      TimeZone timezone,
       Collection<Ethnicity> ethnicityList,
       String ethnicityOther,
       Gender gender,
@@ -137,8 +136,7 @@ public abstract class UserAccount implements DatastoreEntity {
     this.language =
         Language.values()[toIntExact((long) entity.getProperty(ParameterConstants.LANGUAGE))];
     this.timezone =
-        new TimeZoneInfo(
-            TimeZone.getTimeZone((String) entity.getProperty(ParameterConstants.TIMEZONE)));
+        TimeZone.values()[toIntExact((long) entity.getProperty(ParameterConstants.TIMEZONE))];
     this.ethnicityList =
         getEthnicityListFromProperty((Collection) entity.getProperty(ParameterConstants.ETHNICITY));
     this.ethnicityOther = (String) entity.getProperty(ParameterConstants.ETHNICITY_OTHER);
@@ -186,7 +184,7 @@ public abstract class UserAccount implements DatastoreEntity {
     entity.setProperty(ParameterConstants.DATE_OF_BIRTH, this.dateOfBirth);
     entity.setProperty(ParameterConstants.COUNTRY, this.country.ordinal());
     entity.setProperty(ParameterConstants.LANGUAGE, this.language.ordinal());
-    entity.setProperty(ParameterConstants.TIMEZONE, this.timezone.getID());
+    entity.setProperty(ParameterConstants.TIMEZONE, this.timezone.ordinal());
     entity.setProperty(
         ParameterConstants.ETHNICITY,
         ethnicityList.stream().map(ethnicity -> ethnicity.ordinal()).collect(Collectors.toList()));
@@ -225,7 +223,7 @@ public abstract class UserAccount implements DatastoreEntity {
         && this.dateOfBirth.equals(other.dateOfBirth)
         && this.country == other.country
         && this.language == other.language
-        && this.timezone.getID().equals(other.timezone.getID())
+        && this.timezone == other.timezone
         && this.ethnicityList.equals(other.ethnicityList)
         && this.ethnicityOther.equals(other.ethnicityOther)
         && this.gender == other.gender
@@ -274,7 +272,7 @@ public abstract class UserAccount implements DatastoreEntity {
     return language;
   }
 
-  public TimeZoneInfo getTimezone() {
+  public TimeZone getTimezone() {
     return timezone;
   }
 
@@ -327,7 +325,7 @@ public abstract class UserAccount implements DatastoreEntity {
     private static Date dateOfBirth;
     private static Country country;
     private static Language language;
-    private static TimeZoneInfo timezone;
+    private static TimeZone timezone;
     private static Collection<Ethnicity> ethnicityList;
     private static String ethnicityOther;
     private static Gender gender;
@@ -377,7 +375,7 @@ public abstract class UserAccount implements DatastoreEntity {
       return (T) this;
     }
 
-    public T timezone(TimeZoneInfo timezone) {
+    public T timezone(TimeZone timezone) {
       this.timezone = timezone;
       return (T) this;
     }
