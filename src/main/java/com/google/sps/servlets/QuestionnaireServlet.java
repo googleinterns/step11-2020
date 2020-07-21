@@ -149,7 +149,13 @@ public class QuestionnaireServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserAccount user = constructNewUserFromRequest(request);
     response.getWriter().println(new Gson().toJson(user));
-    if (dataAccess.createUser(user)) {
+    boolean infoAdded;
+    if (dataAccess.getUser(dataAccess.getCurrentUser().getUserId()) == null) {
+      infoAdded = dataAccess.createUser(user);
+    } else {
+      infoAdded = dataAccess.updateUser(user);
+    }
+    if (infoAdded) {
       if (user.getUserType().equals(UserType.MENTEE)) {
         response.sendRedirect(URLPatterns.FIND_MENTOR);
       } else {

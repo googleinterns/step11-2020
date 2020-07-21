@@ -22,39 +22,63 @@ limitations under the License. -->
 {% endblock %}
 
 {% block main_content %}{% raw %}
-<div class="container">
+<div id="profile-container">
   <header>
-    <i class="fa fa-bars" aria-hidden="true"></i>
+    <!-- <i class="fa fa-bars" aria-hidden="true"></i> -->
+    {% if profileUser.userID == currentUser.userID %}
+      <button id="edit" onclick="location.href='/questionnaire?formType={{currentUser.userType.title}}';">Edit My Profile</button>
+    {% endif %}
   </header>
-  <main>
+  <main class="container">
+    <div class="row justify-content-center">
+      <h2>{{ profileUser.userType.title }}</h2>
+    </div>
     <div class="row">
-      <div class="left col-lg-4">
-        <div class="photo-left">
-          <img class="photo" src="https://images.pexels.com/photos/1804796/pexels-photo-1804796.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"/>
-          <div class="active"></div>
+      <div class="left col-lg-4 justify-content-start" id="profile-title" >
+        <!-- <div class="photo-left"> -->
+          <!-- <img class="photo" src="https://images.pexels.com/photos/1804796/pexels-photo-1804796.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"/> -->
+        <!-- </div> -->
           <h4 class="name">
             {{profileUser.name}}
           </h4>
-          <p class="info">
-            {{profileUser.email}}
-          </p>
-        </div>
+          <!-- <p class="email">{#profileUser.email#}</p> -->
+          {% if profileUser.userType.title == "Mentor" %}
+            <p class="user-mentor-visibility">{% if !profileUser.visibilty %}Not {% endif %}Available for mentorship</p>
+          {% endif %}
+          <p class="desc">{{profileUser.description}}</p>
+          {% if profileUser.userType.title == "Mentor" %}
+            <p class="row user-mentor-type">{{ profileUser.mentorType.title }}</p>
+            <p class="row user-focus-label">Focuses:{% if profileUser.focusList|length == 0 %} None{% endif %}</p>
+            <ul class="row user-focus-list">
+              {% for focus in profileUser.focusList %}
+                <li class="user-focus-item">{{ focus.title }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="row user-mentee-goal">Mentorship Goal: {{ profileUser.goal.title }}</p>
+            <p class="row user-mentee-desired-meeting-frequency">Meeting times: {{ profileUser.desiredMeetingFrequency.title }}</p>
+            <p class="row user-mentee-desired-mentor-type">Preferred mentor: {{ profileUser.desiredMentorType.title }}</p>
+          {% endif %}
       </div>
-
       <div class="right col-lg-8">
-
-        <div class="stats row">
-        {% if profileUser.userType.title == "Mentor" %}
-          Mentor Information to display
-        {% else %}
-          Mentee Information to display
-        {% endif %}
+        <div class="stats">
+          {% if profileUser.userID == currentUser.userID %}
+            <p class="row user-dob">DOB: {{ profileUser.dateOfBirth }}</p>
+            <p class="row user-email">Email: {{ profileUser.email }}</p>
+          {% endif %}
+          <p class="row user-country">Country: {{ profileUser.country.longName }}</p>
+          <p class="row user-language">Language: {{ profileUser.language.longName }}</p>
+          <p class="row user-timezone">TimeZone: {{ profileUser.timezone.name }}: GMT {{ ("-" if profileUser.timezone.offset < 0 else "+") + profileUser.timezone.offset }}</p>
+          <p class="row user-ethnicity">Ethnicity: {% for ethnicity in profileUser.ethnicityList %}{% if ethnicity.title != "Other" %}{{ ethnicity.title }}
+              {% else %}{{ profileUser.ethnicityOther }}{% endif %}{{ ", " if not loop.last }}{% endfor %}</p>
+          <p class="row user-gender">Gender: {% if profileUser.gender.title != "Other" %}{{ profileUser.gender.title }}
+              {% else %}{{ profileUser.genderOther }}{% endif %}</p>
+          <p class="row user-first-gen">First-gen: {% if profileUser.firstGen %}Yes{% else %}No{% endif %}</p>
+          <p class="row user-low-income">Low income: {% if profileUser.firstGen %}Yes{% else %}No{% endif %}</p>
+          <p class="row user-education-level">Education: {% if profileUser.educationLevel.title != "Other" %}{{ profileUser.educationLevel.title }}
+              {% else %}{{ profileUser.educationLevelOther }}{% endif %}</p>
         </div>
-        <p class="desc">About Me here</p>
       </div>
-      {% if profileUser.userID == currentUser.userID %}
-        <button onclick="location.href='/questionnaire?formType={{currentUser.userType.title}}';">Edit My Profile</button>
-      {% endif %}
   </main>
 </div>
 {% endraw %}{% endblock %}
