@@ -47,26 +47,11 @@ import java.util.stream.StreamSupport;
  */
 public class DatastoreAccess implements DataAccess {
 
-  private static boolean seeded = false;
   private static DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
   private static UserService userService = UserServiceFactory.getUserService();
 
-  public DatastoreAccess() {
-    if (!DatastoreAccess.seeded) {
-      DatastoreAccess.seeded =
-          datastoreService
-                  .prepare(new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT))
-                  .countEntities()
-              != 0;
-    }
-  }
-
   public boolean seed_db(Collection<Entity> entities) {
-    if (DatastoreAccess.seeded) {
-      return false;
-    }
     datastoreService.put(entities);
-    DatastoreAccess.seeded = true;
     return true;
   }
 
@@ -137,17 +122,35 @@ public class DatastoreAccess implements DataAccess {
 
   public boolean createUser(UserAccount user) {
     if (getUser(user.getDatastoreKey()) == null) {
-      return saveUser(user);
+      datastoreService.put(user.convertToEntity());
+      return true;
     }
     return false;
   }
 
-  public boolean saveUser(UserAccount user) {
-    datastoreService.put(user.convertToEntity());
-    return true;
+  public boolean updateUser(UserAccount user) {
+    UserAccount oldUser =
+        user.isKeyInitialized() ? getUser(user.getDatastoreKey()) : getUser(user.getUserID());
+    if (oldUser != null) {
+      if (user.isKeyInitialized()) {
+        datastoreService.put(user.convertToEntity());
+      } else {
+        Entity newUserEntity =
+            new Entity(
+                KeyFactory.createKey(
+                    ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, oldUser.getDatastoreKey()));
+        newUserEntity.setPropertiesFrom(user.convertToEntity());
+        datastoreService.put(newUserEntity);
+      }
+      return true;
+    }
+    return false;
   }
 
   public Collection<Mentor> getRelatedMentors(Mentee mentee) {
+    if (getMentee(mentee.getDatastoreKey()) == null && getMentee(mentee.getUserID()) == null) {
+      return new ArrayList<Mentor>();
+    }
     Query query =
         new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT)
             .setFilter(
@@ -161,7 +164,7 @@ public class DatastoreAccess implements DataAccess {
                         Query.FilterOperator.EQUAL,
                         mentee.getDesiredMentorType().ordinal()),
                     new Query.FilterPredicate(
-                        ParameterConstants.MENTOR_VISIBILITY, Query.FilterOperator.EQUAL, false)));
+                        ParameterConstants.MENTOR_VISIBILITY, Query.FilterOperator.EQUAL, true)));
     PreparedQuery results = datastoreService.prepare(query);
     System.out.println("Prepared query\n");
     QueryResultList<Entity> resultList;
@@ -217,25 +220,14 @@ public class DatastoreAccess implements DataAccess {
         mentee.saveServedMentorKey(mentor.getDatastoreKey());
       }
     }
-    saveUser(mentee);
+    updateUser(mentee);
     return filteredMentors;
   }
 
-  public Collection<Mentee> getRelatedMentees(Mentor mentor) {
-    Query query =
-        new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT)
-            .setFilter(
-                new Query.FilterPredicate(
-                    ParameterConstants.USER_TYPE,
-                    Query.FilterOperator.EQUAL,
-                    UserType.MENTEE.ordinal()));
-    PreparedQuery results = datastoreService.prepare(query);
-    return StreamSupport.stream(results.asIterable().spliterator(), false)
-        .map(Mentee::new)
-        .collect(Collectors.toList());
-  }
-
   public Collection<MentorshipRequest> getIncomingRequests(UserAccount user) {
+    if (getUser(user.getDatastoreKey()) == null && getUser(user.getUserID()) == null) {
+      return new ArrayList<MentorshipRequest>();
+    }
     Query query =
         new Query(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST)
             .setFilter(
@@ -257,6 +249,9 @@ public class DatastoreAccess implements DataAccess {
   }
 
   public Collection<MentorshipRequest> getOutgoingRequests(UserAccount user) {
+    if (getUser(user.getDatastoreKey()) == null && getUser(user.getUserID()) == null) {
+      return new ArrayList<MentorshipRequest>();
+    }
     Query query =
         new Query(ParameterConstants.ENTITY_TYPE_MENTORSHIP_REQUEST)
             .setFilter(
@@ -281,7 +276,7 @@ public class DatastoreAccess implements DataAccess {
     if (getMentee(mentee.getDatastoreKey()) != null
         && getMentor(mentor.getDatastoreKey()) != null) {
       if (mentee.dislikeMentor(mentor)) {
-        saveUser(mentee);
+        updateUser(mentee);
         return true;
       }
     }
@@ -292,7 +287,7 @@ public class DatastoreAccess implements DataAccess {
     if (getMentee(mentee.getDatastoreKey()) != null
         && getMentor(mentor.getDatastoreKey()) != null) {
       if (mentee.requestMentor(mentor)) {
-        saveUser(mentee);
+        updateUser(mentee);
         return true;
       }
     }
@@ -300,6 +295,9 @@ public class DatastoreAccess implements DataAccess {
   }
 
   public Collection<Mentor> getDislikedMentors(Mentee mentee) {
+    if (getMentee(mentee.getDatastoreKey()) == null && getMentee(mentee.getUserID()) == null) {
+      return new ArrayList<Mentor>();
+    }
     return datastoreService
         .get(
             mentee.getDislikedMentorKeys().stream()
@@ -326,6 +324,9 @@ public class DatastoreAccess implements DataAccess {
   }
 
   public MentorshipRequest getMentorshipRequest(long requestKey) {
+    if (requestKey == 0) {
+      return null;
+    }
     try {
       return new MentorshipRequest(
           datastoreService.get(
@@ -369,14 +370,38 @@ public class DatastoreAccess implements DataAccess {
   }
 
   public boolean makeMentorMenteeRelation(long mentorKey, long menteeKey) {
-    if (getMentor(mentorKey) != null && getMentee(menteeKey) != null) {
+    if (getMentor(mentorKey) != null
+        && getMentee(menteeKey) != null
+        && !areConnected(mentorKey, menteeKey)) {
       MentorMenteeRelation mentorMenteeRelation = new MentorMenteeRelation(mentorKey, menteeKey);
       datastoreService.put(mentorMenteeRelation.convertToEntity());
+      return true;
     }
     return false;
   }
 
+  private boolean areConnected(long mentorKey, long menteeKey) {
+    return datastoreService
+            .prepare(
+                new Query(ParameterConstants.ENTITY_TYPE_MENTOR_MENTEE_RELATION)
+                    .setFilter(
+                        Query.CompositeFilterOperator.and(
+                            new Query.FilterPredicate(
+                                ParameterConstants.MENTOR_KEY,
+                                Query.FilterOperator.EQUAL,
+                                mentorKey),
+                            new Query.FilterPredicate(
+                                ParameterConstants.MENTEE_KEY,
+                                Query.FilterOperator.EQUAL,
+                                menteeKey))))
+            .asSingleEntity()
+        != null;
+  }
+
   public Collection<MentorMenteeRelation> getMentorMenteeRelations(UserAccount user) {
+    if (getUser(user.getDatastoreKey()) == null) {
+      return new ArrayList<MentorMenteeRelation>();
+    }
     Query query =
         new Query(ParameterConstants.ENTITY_TYPE_MENTOR_MENTEE_RELATION)
             .setFilter(

@@ -94,6 +94,18 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     if (this.dislikedMentorKeys == null) {
       this.dislikedMentorKeys = new HashSet<>();
     }
+    if (this.encodedCursor == null) {
+      this.encodedCursor = "";
+    }
+    if (this.servedMentorKeys == null) {
+      this.servedMentorKeys = new TreeSet<>();
+    }
+    if (this.lastRequestedMentorKey == null) {
+      this.lastRequestedMentorKey = new Long(0);
+    }
+    if (this.lastDislikedMentorKey == null) {
+      this.lastDislikedMentorKey = new Long(0);
+    }
   }
 
   public Entity convertToEntity() {
@@ -185,6 +197,15 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     return servedMentorKeys.add(servedMentorKey);
   }
 
+  @Override
+  public boolean looselyEquals(UserAccount other) {
+    return super.looselyEquals(other)
+        && this.goal == ((Mentee) other).goal
+        && this.desiredMentorType == ((Mentee) other).desiredMentorType
+        && this.desiredMeetingFrequency == ((Mentee) other).desiredMeetingFrequency
+        && this.dislikedMentorKeys.equals(((Mentee) other).dislikedMentorKeys);
+  }
+
   public Topic getGoal() {
     return goal;
   }
@@ -244,7 +265,9 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     private Long lastRequestedMentorKey;
     public String encodedCursor;
 
-    public Builder() {}
+    public static Builder newBuilder() {
+      return new Builder();
+    }
 
     public Builder goal(Topic goal) {
       this.goal = goal;

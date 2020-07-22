@@ -60,6 +60,7 @@ limitations under the License.
 .nav-bar a:hover {
   background-color: var(--blue-lightened);
   color: black;
+  cursor: pointer;
 }
 /* Add a color to the active/current link .*/
 .nav-bar a.active {

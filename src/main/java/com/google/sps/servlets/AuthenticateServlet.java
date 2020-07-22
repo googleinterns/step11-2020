@@ -56,12 +56,12 @@ public class AuthenticateServlet extends HttpServlet {
     if (!PublicAccessPage.publicAccessPage.contains(redirDest)) loginState.autoRedir = true;
     if (!userService.isUserLoggedIn()) {
       String redirUrlAfterLogin = redirDest;
-      LOG.info(redirUrlAfterLogin);
       loginState.toggleLoginURL = userService.createLoginURL(redirUrlAfterLogin);
       loginState.isLoggedIn = false;
     } else {
       String redirUrlAfterLogout = URLPatterns.BASE;
-      loginState.toggleLoginURL = userService.createLogoutURL(redirUrlAfterLogout);
+      loginState.toggleLoginURL =
+          URLPatterns.LOGOUT + "?" + ParameterConstants.REDIR + "=" + (redirUrlAfterLogout);
       loginState.userProfileURL =
           URLPatterns.PROFILE
               + "?"
