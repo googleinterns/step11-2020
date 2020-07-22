@@ -32,6 +32,17 @@ limitations under the License.
   background-color: var(--dark-blue-lightened);
 } */
 
+#title-block > #header-pic {
+  width: 100%;
+  filter: grayscale(0.3) brightness(0.7);
+}
+
+#title-block > #header-text {
+  font-size: 3em;
+  bottom: 30%;
+  left: 50%;
+}
+
 #join-mentor-matcher .questionnaire-button-icon {
   font-size: 15em;
 }

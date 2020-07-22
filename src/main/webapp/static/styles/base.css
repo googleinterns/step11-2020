@@ -26,6 +26,10 @@ body {
   background-color: var(--primary) !important;
 }
 
+.bg-gray {
+  background-color: var(--gray) !important;
+}
+
 .text-primary {
   color: var(--primary) !important;
 }
