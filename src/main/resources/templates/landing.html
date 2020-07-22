@@ -20,14 +20,17 @@ limitations under the License. -->
 {% endblock %}
 
 {% block title_block %}
-<div class="" id="title-block">
-  <h1 id="page-title">Mentor Matcher</h1>
-  <p>A quick description</p>
+<div class="d-flex justify-content-around bg-dark" id="intro-to-mentorship" id="title-block">
+  <img src="static/images/about-stock1.jpg" alt="Man getting mentored">
+  <div class="d-flex flex-column align-items-start">
+    <h1>Mentor Matcher</h1>
+    <p>Find a mentor that fits you, or help others by becoming one.</p>
+  </div>
 </div>
 {% endblock %}
 
 {% block main_content %}
-<div class="content-block d-flex flex-lg-row flex-column justify-content-center align-items-center" id="join-mentor-matcher">
+<div class="d-flex flex-lg-row flex-column justify-content-center align-items-center" id="join-mentor-matcher">
   <div class="card join-matcher-card border-0">
     <a class="text-primary mr-5" href="/questionnaire?formType=MENTEE">
       <i class="card-img-top fa fa-fw fa-pencil questionnaire-button-icon"></i>
