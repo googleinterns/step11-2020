@@ -146,7 +146,9 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     return servedMentorKeyList == null
         ? new TreeSet<Long>()
         : (SortedSet<Long>)
-            servedMentorKeyList.stream().map(key -> (long) key).collect(Collectors.toSet());
+            servedMentorKeyList.stream()
+                .map(key -> (long) key)
+                .collect(Collectors.toCollection(TreeSet::new));
   }
 
   /**
