@@ -40,7 +40,6 @@ public class Mentee extends UserAccount implements DatastoreEntity {
   private Topic goal;
   private MeetingFrequency desiredMeetingFrequency;
   private Set<Long> dislikedMentorKeys;
-  private Set<Long> requestedMentorKeys;
   private SortedSet<Long> servedMentorKeys;
   private String encodedCursor;
   private Long lastRequestedMentorKey;
@@ -54,7 +53,6 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     this.desiredMeetingFrequency = builder.desiredMeetingFrequency;
     this.dislikedMentorKeys = builder.dislikedMentorKeys;
     this.desiredMentorType = builder.desiredMentorType;
-    this.requestedMentorKeys = builder.requestedMentorKeys;
     this.servedMentorKeys = builder.servedMentorKeys;
     this.lastRequestedMentorKey = builder.lastRequestedMentorKey;
     this.lastDislikedMentorKey = builder.lastDislikedMentorKey;
@@ -76,9 +74,6 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     this.desiredMentorType =
         MentorType.values()[
             toIntExact((long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE))];
-    this.requestedMentorKeys =
-        getRequestedSetFromProperty(
-            (Collection) entity.getProperty(ParameterConstants.MENTEE_REQUESTED_MENTOR_KEYS));
     this.servedMentorKeys =
         getServedSetFromProperty(
             (Collection) entity.getProperty(ParameterConstants.MENTEE_SERVED_MENTOR_KEYS));
@@ -108,7 +103,6 @@ public class Mentee extends UserAccount implements DatastoreEntity {
         ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, desiredMeetingFrequency.ordinal());
     entity.setProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS, this.dislikedMentorKeys);
     entity.setProperty(ParameterConstants.MENTOR_TYPE, desiredMentorType.ordinal());
-    entity.setProperty(ParameterConstants.MENTEE_REQUESTED_MENTOR_KEYS, this.requestedMentorKeys);
     entity.setProperty(ParameterConstants.MENTEE_SERVED_MENTOR_KEYS, this.servedMentorKeys);
     entity.setProperty(
         ParameterConstants.MENTEE_LAST_DISLIKED_MENTOR_KEY, this.lastDislikedMentorKey);
@@ -130,17 +124,6 @@ public class Mentee extends UserAccount implements DatastoreEntity {
         ? new HashSet<Long>()
         : (Set<Long>)
             dislikedMentorKeyList.stream().map(key -> (long) key).collect(Collectors.toSet());
-  }
-
-  /**
-   * @param requestedMentorKeyList the list of requested mentor key objects from datastore
-   * @return the list of long values
-   */
-  private static Set<Long> getRequestedSetFromProperty(Collection<Object> requestedMentorKeyList) {
-    return requestedMentorKeyList == null
-        ? new HashSet<Long>()
-        : (Set<Long>)
-            requestedMentorKeyList.stream().map(key -> (long) key).collect(Collectors.toSet());
   }
 
   /**
@@ -182,6 +165,7 @@ public class Mentee extends UserAccount implements DatastoreEntity {
    */
   public boolean dislikeMentor(Mentor mentor) {
     lastDislikedMentorKey = mentor.getDatastoreKey();
+    servedMentorKeys.remove(mentor.getDatastoreKey());
     return dislikedMentorKeys.add(mentor.getDatastoreKey());
   }
 
@@ -194,7 +178,11 @@ public class Mentee extends UserAccount implements DatastoreEntity {
    */
   public boolean requestMentor(Mentor mentor) {
     lastRequestedMentorKey = mentor.getDatastoreKey();
-    return requestedMentorKeys.add(mentor.getDatastoreKey());
+    return servedMentorKeys.remove(mentor.getDatastoreKey());
+  }
+
+  public boolean saveServedMentorKey(Long servedMentorKey) {
+    return servedMentorKeys.add(servedMentorKey);
   }
 
   public Topic getGoal() {
@@ -211,6 +199,10 @@ public class Mentee extends UserAccount implements DatastoreEntity {
 
   public Set<Long> getDislikedMentorKeys() {
     return this.dislikedMentorKeys;
+  }
+
+  public SortedSet<Long> getServedMentorKeys() {
+    return this.servedMentorKeys;
   }
 
   public Long getLastRequestedMentorKey() {
@@ -247,7 +239,6 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     private MeetingFrequency desiredMeetingFrequency;
     private Set<Long> dislikedMentorKeys;
     private MentorType desiredMentorType;
-    private Set<Long> requestedMentorKeys;
     private SortedSet<Long> servedMentorKeys;
     private Long lastDislikedMentorKey;
     private Long lastRequestedMentorKey;
@@ -272,11 +263,6 @@ public class Mentee extends UserAccount implements DatastoreEntity {
 
     public Builder desiredMentorType(MentorType desiredMentorType) {
       this.desiredMentorType = desiredMentorType;
-      return this;
-    }
-
-    public Builder requestedMentorKeys(Set<Long> requestedMentorKeys) {
-      this.requestedMentorKeys = requestedMentorKeys;
       return this;
     }
 

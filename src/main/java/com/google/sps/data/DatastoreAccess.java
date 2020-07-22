@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -169,7 +170,6 @@ public class DatastoreAccess implements DataAccess {
           results.asQueryResultList(FetchOptions.Builder.withLimit(ServletUtils.REC_BATCH_SIZE));
       Cursor originalCursor = resultList.getCursor();
       mentee.setEncodedCursor(originalCursor.toWebSafeString());
-      saveUser(mentee);
     } else {
       Cursor decodedCursor = Cursor.fromWebSafeString(mentee.getEncodedCursor());
       resultList =
@@ -177,14 +177,20 @@ public class DatastoreAccess implements DataAccess {
               FetchOptions.Builder.withLimit(ServletUtils.REC_BATCH_SIZE).cursor(decodedCursor));
       Cursor updatedCursor = resultList.getCursor();
       mentee.setEncodedCursor(updatedCursor.toWebSafeString());
-      saveUser(mentee);
     }
     List<Mentor> mentorList =
         StreamSupport.stream(resultList.spliterator(), false)
             .map(Mentor::new)
             .collect(Collectors.toList());
     ArrayList<Mentor> filteredMentors = new ArrayList<Mentor>(mentorList);
-
+    boolean repullMentors = false;
+    if (filteredMentors.size() == 0) {
+      repullMentors = true;
+      SortedSet<Long> servedMentorKeys = mentee.getServedMentorKeys();
+      for (Long key : servedMentorKeys) {
+        filteredMentors.add(getMentor(key));
+      }
+    }
     Mentor lastRequestedMentor =
         mentee.getLastRequestedMentorKey() == 0
             ? null
@@ -206,6 +212,12 @@ public class DatastoreAccess implements DataAccess {
             result = mentee.similarityWithMentor(mentorA) - mentee.similarityWithMentor(mentorB);
           return result;
         });
+    if (!repullMentors) {
+      for (Mentor mentor : filteredMentors) {
+        mentee.saveServedMentorKey(mentor.getDatastoreKey());
+      }
+    }
+    saveUser(mentee);
     return filteredMentors;
   }
 
