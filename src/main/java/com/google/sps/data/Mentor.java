@@ -18,6 +18,7 @@ import static java.lang.Math.toIntExact;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.sps.util.ParameterConstants;
+import com.google.sps.util.ServletUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -106,6 +107,18 @@ public class Mentor extends UserAccount implements DatastoreEntity {
 
   public MentorType getMentorType() {
     return mentorType;
+  }
+
+  public int similarity(Mentor other) {
+    int result = 0;
+    if (other.getTimezone() == super.getTimezone() || other.getCountry() == super.getCountry())
+      result += ServletUtils.SIMILARITY_SCORE_HIGH;
+    if (other.getGender() == super.getGender()) result += ServletUtils.SIMILARITY_SCORE_HIGH;
+    if (other.isFirstGen() == super.isFirstGen()) result += ServletUtils.SIMILARITY_SCORE_HIGH;
+    if (other.isLowIncome() == super.isLowIncome()) result += ServletUtils.SIMILARITY_SCORE_LOW;
+    if (other.getEducationLevel().ordinal() == super.getEducationLevel().ordinal())
+      result += ServletUtils.SIMILARITY_SCORE_LOW;
+    return result;
   }
 
   public static class Builder extends UserAccount.Builder<Builder> {

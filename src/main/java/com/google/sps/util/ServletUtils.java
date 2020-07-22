@@ -30,6 +30,9 @@ import javax.servlet.http.HttpServletResponse;
 public final class ServletUtils {
   public static final String CONTENT_HTML = "text/html;";
   public static final String CONTENT_JSON = "application/json;";
+  public static final int REC_BATCH_SIZE = 20;
+  public static final int SIMILARITY_SCORE_LOW = 5;
+  public static final int SIMILARITY_SCORE_HIGH = 8;
 
   public static final String DEV_SERVER_AUTH_COOKIE = "dev_appserver_login";
   public static final String HTTP_AUTH_COOKIE = "ACSID";
