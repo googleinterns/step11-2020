@@ -36,5 +36,6 @@ public final class URLPatterns {
   public static final String MENTORSHIP_REQUESTS = "/mentorship-requests";
   public static final String PROFILE = "/profile";
   public static final String QUESTIONNAIRE = "/questionnaire";
+  public static final String REFILL_MENTOR = "/refill-mentor";
   public static final String SEED_DB = "/seed-db";
 }

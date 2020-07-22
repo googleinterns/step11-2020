@@ -103,6 +103,7 @@ public class FindMentorServlet extends HttpServlet {
         Map<String, Object> context =
             dataAccess.getDefaultRenderingContext(URLPatterns.FIND_MENTOR);
 
+        System.out.println("Calling getRelatedMentors\n");
         Collection<Mentor> relatedMentors = dataAccess.getRelatedMentors(mentee);
         context.put(ContextFields.MENTORS, relatedMentors);
 
@@ -152,6 +153,7 @@ public class FindMentorServlet extends HttpServlet {
       MentorshipRequest mentorshipRequest =
           new MentorshipRequest(mentor.getDatastoreKey(), mentee.getDatastoreKey());
       dataAccess.publishRequest(mentorshipRequest);
+      dataAccess.requestMentor(mentee, mentor);
     } else if (choice.equals(DISLIKE)) {
       dataAccess.dislikeMentor(mentee, mentor);
     }
