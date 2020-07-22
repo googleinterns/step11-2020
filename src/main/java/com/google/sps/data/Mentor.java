@@ -88,6 +88,14 @@ public class Mentor extends UserAccount implements DatastoreEntity {
                 .collect(Collectors.toList());
   }
 
+  @Override
+  public boolean looselyEquals(UserAccount other) {
+    return super.looselyEquals(other)
+        && this.visibility == ((Mentor) other).visibility
+        && this.focusList.equals(((Mentor) other).focusList)
+        && this.mentorType == ((Mentor) other).mentorType;
+  }
+
   public boolean getVisibility() {
     return visibility;
   }
@@ -105,7 +113,9 @@ public class Mentor extends UserAccount implements DatastoreEntity {
     private Collection<Topic> focusList;
     private MentorType mentorType;
 
-    public Builder() {}
+    public static Builder newBuilder() {
+      return new Builder();
+    }
 
     public Builder visibility(boolean visibility) {
       this.visibility = visibility;

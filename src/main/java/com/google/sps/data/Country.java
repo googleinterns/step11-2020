@@ -14,6 +14,11 @@
 
 package com.google.sps.data;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * This class represents a user's country of origin. Every UserAccount object stores an instance of
  * this enum.
@@ -281,5 +286,11 @@ public enum Country {
 
   public String getLongName() {
     return longName;
+  }
+
+  public static Collection<Country> valuesSorted() {
+    List<Country> values = Arrays.asList(Country.values());
+    values.sort(Comparator.comparing(Country::getLongName));
+    return values;
   }
 }

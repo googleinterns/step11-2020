@@ -37,4 +37,5 @@ public final class ResourceConstants {
   public static final String TEMPLATE_MENTEE_DASHBOARD = "/templates/mentee-dashboard.html";
 
   public static final String DUMMY_DATA_USERS = "/dummy_data/users.json";
+  public static final String DUMMY_DATA_NAMES = "/dummy_data/names.txt";
 }

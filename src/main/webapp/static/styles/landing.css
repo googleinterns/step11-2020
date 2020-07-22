@@ -18,15 +18,21 @@ limitations under the License.
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  justify-content: center;
+}
+
+.content-block#title-block {
+  text-align: center;
+  vertical-align: center;
 }
 
 #join-mentor-matcher > .join-matcher-button {
-  font-size: 7em;
+  font-size: 7.5vw;
   font-weight: bolder;
   padding: 0.5em;
-  margin: 0.5em;
+  margin: 3%;
   box-sizing: border-box;
-  width: 40%;
+  width: 44%;
   height: 4em;
   text-align: center;
   vertical-align: middle;

@@ -16,6 +16,7 @@ import com.google.sps.util.DummyDataConstants;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author sylviaziyuz
  * @author guptamudit
+ * @author tquintanilla
  * @version 1.0
  * @param URLPatterns.SEED_DB this servlet serves requests at /seed-db
  */
@@ -83,7 +85,7 @@ public class SeedDatabaseServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     boolean success = dataAccess.seed_db(entities);
 
-    response.setContentType("application/json;");
+    response.setContentType(ServletUtils.CONTENT_JSON);
     response.getWriter().println("{\"seeded\":\n" + success + "}");
   }
 }

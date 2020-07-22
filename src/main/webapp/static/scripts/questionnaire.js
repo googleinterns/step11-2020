@@ -12,28 +12,55 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
+var errorMessage = '';
 const form = document.getElementById('information-form');
-form.addEventListener('submit', function() {
-  getCheckboxValues('.focusListCheckbox', 'focusList');
-  getCheckboxValues('.ethnicityCheckbox', 'ethnicity');
-});
 
-function getCheckboxValues(checkboxClass, valueLabel) {
-  let checkboxes = document.querySelectorAll(checkboxClass + ':checked');
-  if (checkboxes.length > 0) {
-    for (let i = 0; i < checkboxes.length-1; i++) {
-      document.getElementById(valueLabel).value += checkboxes[i].value + ', ';
-    }
-    document.getElementById(valueLabel).value += checkboxes[checkboxes.length-1].value;
+
+function checkForOther(val, label){
+  let otherID = 'other-input-' + label;
+  let otherContainer = document.getElementById(otherID);
+  if(val.toLowerCase()=='other') {
+    otherContainer.innerHTML = 'Other: <input type ="text" name="' + label + 'Other" id="' + label + 'Other"/>';
+  } else {
+    otherContainer.innerHTML = '';
   }
 }
 
-function checkForOther(val, label){
-  var otherID = 'other-input-' + label;
-  if(val.toLowerCase()=='other') {
-    document.getElementById(otherID).innerHTML = 'Other: <input type ="text" name="' + label + 'Other" id="' + label + 'Other"/>';
+function checklistCheckForOther(label) {
+  let otherID = 'other-input-' + label;
+  let otherContainer = document.getElementById(otherID);
+  if (document.getElementById('ethnicity-OTHER').checked) {
+    otherContainer.innerHTML = 'Other: <input type ="text" name="' + label + 'Other" id="' + label + 'Other"/>';
   } else {
-    document.getElementById(otherID).innerHTML = '';
+    otherContainer.innerHTML = '';
+  }
+}
+
+function checkForm() {
+  validateDate(document.getElementById('dateOfBirth').value);
+  if (errorMessage == '') {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function validateDate(date){
+  let currentDay = moment();
+  let birthday = moment(date);
+  let dateError = document.getElementById('date-of-birth-error-container');
+  if (!birthday.isValid()) {
+    dateError.innerHTML =
+    '<label id="date-of-birth-error-label" for="dateOfBirth">Invalid date format: Should be MM/DD/YYYY</label>';
+    errorMessage = 'invalid date';
+    return false;
+  } else if (currentDay.isBefore(birthday)) {
+    dateError.innerHTML = '<label id="date-of-birth-error-label" for="dateOfBirth">You can\'t be born in the future!</label>';
+    errorMessage = 'invalid date';
+    return false;
+  } else {
+    errorMessage = '';
+    dateError.innerHTML = '';
+    return true;
   }
 }

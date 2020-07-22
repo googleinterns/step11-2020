@@ -28,7 +28,7 @@ import com.google.sps.data.MeetingFrequency;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorType;
-import com.google.sps.data.TimeZoneInfo;
+import com.google.sps.data.TimeZone;
 import com.google.sps.data.Topic;
 import com.google.sps.data.UserAccount;
 import com.google.sps.data.UserType;
@@ -47,15 +47,12 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -93,6 +90,7 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void init() {
+    dataAccess = new DatastoreAccess();
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
     try {
@@ -124,12 +122,18 @@ public class QuestionnaireServlet extends HttpServlet {
       response.setStatus(500);
       return;
     }
+
+    Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
+    UserAccount currentUser = (UserAccount) context.get(ContextFields.CURRENT_USER);
     String formType =
-        ServletUtils.getParameter(request, ParameterConstants.FORM_TYPE, "").toLowerCase();
+        currentUser == null
+            ? ServletUtils.getParameter(request, ParameterConstants.FORM_TYPE, "").toLowerCase()
+            : currentUser.getUserType().getTitle().toLowerCase();
+
     if (formType.equals(MENTOR) || formType.equals(MENTEE)) {
-      Map<String, Object> context =
-          dataAccess.getDefaultRenderingContext(URLPatterns.QUESTIONNAIRE);
-      context.put(ContextFields.FORM_TYPE, formType);
+      context.put(ContextFields.FORM_TYPE, formType.toLowerCase());
+      context.put("ethnicities", EnumSet.complementOf(EnumSet.of(Ethnicity.UNSPECIFIED)));
+      context.put("topics", Topic.valuesSorted());
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
@@ -141,20 +145,28 @@ public class QuestionnaireServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserAccount user = constructNewUserFromRequest(request);
-    dataAccess.createUser(user);
     response.getWriter().println(new Gson().toJson(user));
-    if (user.getUserType().equals(UserType.MENTEE)) {
-      response.sendRedirect(URLPatterns.FIND_MENTOR);
+    boolean infoAdded;
+    if (dataAccess.getUser(dataAccess.getCurrentUser().getUserId()) == null) {
+      infoAdded = dataAccess.createUser(user);
     } else {
-      response.sendRedirect(URLPatterns.PROFILE);
+      infoAdded = dataAccess.updateUser(user);
+    }
+    if (infoAdded) {
+      if (user.getUserType().equals(UserType.MENTEE)) {
+        response.sendRedirect(URLPatterns.FIND_MENTOR);
+      } else {
+        response.sendRedirect(URLPatterns.PROFILE);
+      }
+    } else {
+      LOG.warning(ErrorMessages.INVALID_PARAMATERS);
     }
   }
 
   private UserAccount constructNewUserFromRequest(HttpServletRequest request) {
     UserType userType =
-        UserType.valueOf(
-            ServletUtils.getParameter(request, ParameterConstants.FORM_TYPE, "MENTEE")
-                .toUpperCase());
+        ServletUtils.getEnumParameter(
+            UserType.class, request, ParameterConstants.FORM_TYPE, "MENTEE");
     String name = ServletUtils.getParameter(request, ParameterConstants.NAME, "John Doe");
     Date dateOfBirth;
     try {
@@ -168,27 +180,21 @@ public class QuestionnaireServlet extends HttpServlet {
       LOG.warning(ErrorMessages.BAD_DATE_PARSE);
     }
     Country country =
-        Country.valueOf(
-            ServletUtils.getParameter(request, ParameterConstants.COUNTRY, Country.US.toString()));
-    TimeZoneInfo timeZone =
-        new TimeZoneInfo(
-            TimeZone.getTimeZone(
-                ServletUtils.getParameter(request, ParameterConstants.TIMEZONE, "est")));
+        ServletUtils.getEnumParameter(
+            Country.class, request, ParameterConstants.COUNTRY, Country.US.toString());
+    TimeZone timeZone =
+        ServletUtils.getEnumParameter(
+            TimeZone.class, request, ParameterConstants.TIMEZONE, TimeZone.EST.toString());
     Language language =
-        Language.valueOf(
-            ServletUtils.getParameter(
-                request, ParameterConstants.LANGUAGE, Language.EN.toString()));
+        ServletUtils.getEnumParameter(
+            Language.class, request, ParameterConstants.LANGUAGE, Language.EN.toString());
 
-    List<Ethnicity> ethnicities = new ArrayList<>();
-    String ethnicityString =
-        ServletUtils.getParameter(request, ParameterConstants.ETHNICITY, "UNSPECIFIED");
-    try {
-      for (String ethnicity : ethnicityString.split(", ")) {
-        ethnicities.add(Ethnicity.valueOf(ethnicity));
-      }
-    } catch (IllegalArgumentException e) {
-      LOG.warning(ErrorMessages.INVALID_PARAMATERS);
-    }
+    List<Ethnicity> ethnicities =
+        ServletUtils.getListOfCheckedValues(
+            Ethnicity.class,
+            request,
+            ParameterConstants.ETHNICITY,
+            Ethnicity.UNSPECIFIED.toString());
 
     String ethnicityOther =
         ethnicities.contains(Ethnicity.OTHER)
@@ -196,16 +202,20 @@ public class QuestionnaireServlet extends HttpServlet {
             : "";
 
     Gender gender =
-        Gender.valueOf(
-            ServletUtils.getParameter(request, ParameterConstants.GENDER, "UNSPECIFIED"));
+        ServletUtils.getEnumParameter(
+            Gender.class, request, ParameterConstants.GENDER, Gender.UNSPECIFIED.toString());
     String genderOther =
-        getOtherStringValue(gender, Gender.class, request, ParameterConstants.GENDER_OTHER);
+        ServletUtils.getOtherStringValue(
+            gender, Gender.class, request, ParameterConstants.GENDER_OTHER);
 
     EducationLevel educationLevel =
-        EducationLevel.valueOf(
-            ServletUtils.getParameter(request, ParameterConstants.EDUCATION_LEVEL, "UNSPECIFIED"));
+        ServletUtils.getEnumParameter(
+            EducationLevel.class,
+            request,
+            ParameterConstants.EDUCATION_LEVEL,
+            EducationLevel.UNSPECIFIED.toString());
     String educationLevelOther =
-        getOtherStringValue(
+        ServletUtils.getOtherStringValue(
             educationLevel,
             EducationLevel.class,
             request,
@@ -217,23 +227,21 @@ public class QuestionnaireServlet extends HttpServlet {
         Boolean.parseBoolean(
             ServletUtils.getParameter(request, ParameterConstants.LOW_INCOME, "false"));
     MentorType mentorType =
-        MentorType.valueOf(
-            ServletUtils.getParameter(
-                request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR.toString()));
+        ServletUtils.getEnumParameter(
+            MentorType.class, request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR.toString());
     String description = ServletUtils.getParameter(request, ParameterConstants.DESCRIPTION, "");
 
     if (userType.equals(UserType.MENTEE)) {
       MeetingFrequency desiredMeetingFrequency =
-          MeetingFrequency.valueOf(
-              ServletUtils.getParameter(
-                  request,
-                  ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY,
-                  MeetingFrequency.WEEKLY.toString()));
+          ServletUtils.getEnumParameter(
+              MeetingFrequency.class,
+              request,
+              ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY,
+              MeetingFrequency.WEEKLY.toString());
       Topic goal =
-          Topic.valueOf(
-              ServletUtils.getParameter(
-                  request, ParameterConstants.MENTEE_GOAL, Topic.OTHER.toString()));
-      return (new Mentee.Builder())
+          ServletUtils.getEnumParameter(
+              Topic.class, request, ParameterConstants.MENTEE_GOAL, Topic.OTHER.toString());
+      return Mentee.Builder.newBuilder()
           .name(name)
           .userID(dataAccess.getCurrentUser().getUserId())
           .email(dataAccess.getCurrentUser().getEmail())
@@ -257,19 +265,11 @@ public class QuestionnaireServlet extends HttpServlet {
           .build();
 
     } else {
-      ArrayList<Topic> focusList = new ArrayList<>();
-      String focusListString =
-          ServletUtils.getParameter(
-              request, ParameterConstants.MENTOR_FOCUS_LIST, Topic.OTHER.toString());
-      try {
-        for (String focus : focusListString.split(", ")) {
-          focusList.add(Topic.valueOf(focus));
-        }
-      } catch (IllegalArgumentException e) {
-        LOG.warning(ErrorMessages.INVALID_PARAMATERS);
-      }
+      List<Topic> focusList =
+          ServletUtils.getListOfCheckedValues(
+              Topic.class, request, ParameterConstants.MENTOR_FOCUS_LIST, Topic.OTHER.toString());
 
-      return (new Mentor.Builder())
+      return Mentor.Builder.newBuilder()
           .name(name)
           .userID(dataAccess.getCurrentUser().getUserId())
           .email(dataAccess.getCurrentUser().getEmail())
@@ -294,31 +294,14 @@ public class QuestionnaireServlet extends HttpServlet {
     }
   }
 
-  // credit to guptamudit
-  private <C extends Enum<C>> String getOtherStringValue(
-      C value, Class<C> enumClass, HttpServletRequest request, String otherParamTitle) {
-    return value == Enum.valueOf(enumClass, "OTHER")
-        ? ServletUtils.getParameter(request, otherParamTitle, "")
-        : "";
-  }
-
   private Map<String, Object> selectionListsForFrontEnd() {
     Map<String, Object> map = new HashMap<>();
-    map.put("countries", Country.values());
-    map.put("ethnicities", Ethnicity.values());
+    map.put("countries", Country.valuesSorted());
     map.put("genders", Gender.values());
-    map.put("languages", Language.values());
+    map.put("languages", Language.valuesSorted());
     map.put("mentorTypes", MentorType.values());
-
-    map.put(
-        "timezones",
-        TimeZoneInfo.getListOfNamesToDisplay(
-            Arrays.asList(TimeZone.getAvailableIDs()).stream()
-                .filter(strID -> strID.toUpperCase().equals(strID))
-                .map(strID -> TimeZone.getTimeZone(strID))
-                .collect(Collectors.toList())));
+    map.put("timezones", TimeZone.valuesSorted());
     map.put("educationLevels", EducationLevel.values());
-    map.put("topics", Topic.values());
     map.put("meetingFrequencies", MeetingFrequency.values());
     return map;
   }

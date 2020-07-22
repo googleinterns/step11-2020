@@ -18,9 +18,9 @@ limitations under the License. -->
   <p class="mentor-dob">DOB: {{ mentor.dateOfBirth }}</p>
   <p class="mentor-country">Country: {{ mentor.country.longName }}</p>
   <p class="mentor-language">Language: {{ mentor.language.longName }}</p>
-  <p class="mentor-timezone">TimeZone: {{ mentor.timezone.displayName }}</p>
-  <p class="mentor-ethnicity">Ethnicity: {% if mentor.ethnicity.title != "Other" %}{{ mentor.ethnicity.title }}
-      {% else %}{{ mentor.ethnicityOther }}{% endif %}</p>
+  <p class="mentor-timezone">TimeZone: {{ mentor.timezone.name }}: GMT {{ ("-" if profileUser.timezone.offset < 0 else "+") + profileUser.timezone.offset }}</p>
+  <p class="mentor-ethnicity">Ethnicity: {% for ethnicity in mentor.ethnicityList %}{% if ethnicity.title != "Other" %}{{ ethnicity.title }}
+      {% else %}{{ mentor.ethnicityOther }}{% endif %}{{ ", " if not loop.last }}{% endfor %}</p>
   <p class="mentor-gender">Gender: {% if mentor.gender.title != "Other" %}{{ mentor.gender.title }}
       {% else %}{{ mentor.genderOther }}{% endif %}</p>
   <p class="mentor-first-gen">First-gen: {% if mentor.firstGen %}Yes{% else %}No{% endif %}</p>
@@ -29,7 +29,7 @@ limitations under the License. -->
       {% else %}{{ mentor.educationLevelOther }}{% endif %}</p>
   <p class="mentor-description">{{ mentor.description }}</p>
   <p class="mentor-mentor-type">{{ mentor.mentorType.title }}</p>
-  <p class="mentor-data-label">Focuses:</p>
+  <p class="mentor-focus-label">Focuses:{% if profileUser.focusList|length == 0 %} None{% endif %}</p>
   <ul class="mentor-focus-list">
     {% for focus in mentor.focusList %}
       <li class="mentor-focus-item">{{ focus.title }}</li>
