@@ -13,26 +13,24 @@ See the License for the specific language governing permissions and
 limitations under the License. -->
 
 
-<link rel="stylesheet" type="text/css" href="static/styles/navbar.css">
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-primary">
   <a class="navbar-brand" href="/"><img src="static/images/logo.png" width="30" height="30" class="d-inline-block align-top" alt="logo"></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"><i class="fa fa-fw fa-bars"></i></span>
+    <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       {% for nav_item in nav_items %}{% if nav_item.adjust == "left" %}
-      <li class="nav-item {{ nav_item.class }}{% if nav_item.baseURL == url %} active{% endif %}" id="nav-{{ nav_item.sectionID }}">
-        <a class="nav-link" href="/{{nav_item.baseURL}}"><i class="fa fa-fw fa-{{ nav_item.iconLabel }}"></i>{{ nav_item.text }}{% if nav_item.baseURL == url %} <span class="sr-only">(current)</span>{% endif %}</a>
+      <li class="nav-item{% if ("/"+nav_item.baseURL) == url %} active{% else %} text-white{% endif %}" id="nav-{{ nav_item.baseURL }}">
+        <a class="nav-link {{ nav_item.class }}" href="/{{nav_item.baseURL}}"><i class="fa fa-fw fa-{{ nav_item.iconLabel }}"></i>{{ nav_item.text }}{% if nav_item.baseURL == url %} <span class="sr-only">(current)</span>{% endif %}</a>
       </li>
       {% endif %}{% endfor %}
     </ul>
     <ul class="navbar-nav">
       {% for nav_item in nav_items %}{% if nav_item.adjust == "right" %}
-      <li class="nav-item {{ nav_item.class }}{% if nav_item.baseURL == url %} active{% endif %}" id="nav-{{ nav_item.sectionID }}">
-        <a class="nav-link" href="/{{nav_item.baseURL}}"><i class="fa fa-fw fa-{{ nav_item.iconLabel }}"></i>{{ nav_item.text }}{% if nav_item.baseURL == url %} <span class="sr-only">(current)</span>{% endif %}</a>
+      <li class="nav-item{% if ("/"+nav_item.baseURL) == url %} active{% else %} text-white{% endif %}" id="nav-{{ nav_item.baseURL }}">
+        <a class="nav-link {{ nav_item.class }}" href="/{{nav_item.baseURL}}"><i class="fa fa-fw fa-{{ nav_item.iconLabel }}"></i>{{ nav_item.text }}{% if nav_item.baseURL == url %} <span class="sr-only">(current)</span>{% endif %}</a>
       </li>
       {% endif %}{% endfor %}
     </ul>

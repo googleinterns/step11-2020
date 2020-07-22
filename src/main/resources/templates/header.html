@@ -17,7 +17,7 @@ limitations under the License. -->
   {% if isMentee %}
     {% set nav_items = [
         {
-          "baseURL": "/find-mentor", "iconLabel": "search", "text": "Find Mentor",
+          "baseURL": "find-mentor", "iconLabel": "search", "text": "Find Mentor",
           "adjust": "left"
         }
       ] %}
@@ -25,7 +25,7 @@ limitations under the License. -->
     {% if isMentor %}
       {% set nav_items = [
           {
-            "baseURL": "/mentorship-requests", "iconLabel": "comment", "text": "Mentorship Requests",
+            "baseURL": "mentorship-requests", "iconLabel": "comment", "text": "Mentorship Requests",
             "adjust": "left"
           }
         ] %}
@@ -33,22 +33,22 @@ limitations under the License. -->
   {% endif %}
   {% set nav_items = nav_items + [
       {
-        "baseURL": "/dashboard", "iconLabel": "thumb-tack", "text": "Dashboard",
+        "baseURL": "dashboard", "iconLabel": "thumb-tack", "text": "Dashboard",
         "adjust": "left"
       },
       {
-        "baseURL": "/profile", "iconLabel": "user", "text": "Profile",
+        "baseURL": "profile", "iconLabel": "user", "text": "Profile",
         "adjust": "right"
       }
     ] %}
 {% endif %}
 {% set nav_items = nav_items + [
     {
-      "baseURL": "/about", "iconLabel": "question-circle", "text": "About",
+      "baseURL": "about", "iconLabel": "question-circle", "text": "About",
       "adjust": "left"
     },
     {
-      "baseURL": "/authors", "iconLabel": "users", "text": "Meet the Creators",
+      "baseURL": "authors", "iconLabel": "users", "text": "Meet the Creators",
       "adjust": "left"
     },
     {

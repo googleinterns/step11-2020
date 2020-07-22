@@ -19,36 +19,34 @@ limitations under the License. -->
   <link rel="stylesheet" type="text/css" href="static/styles/landing.css">
 {% endblock %}
 
-{% block main_content %}
-<div class="content-block" id="title-block">
-  <h1 class="page-title" id="title">Mentor Matching</h1>
+{% block title_block %}
+<div class="" id="title-block">
+  <h1 id="page-title">Mentor Matcher</h1>
+  <p>A quick description</p>
 </div>
-<div class="content-block" id="join-mentor-matcher">
-  <div class="row">
-    <div class="col-lg-auto">
-      <div class="card">
-        <a href="/questionnaire?formType=MENTEE">
-          <i class="card-img-top fa fa-fw fa-pencil questionnaire-button-icon"></i>
-          <div class="card-body">
-            <h2 class="card-text">Find a mentor</h2>
-          </div>
-        </a>
+{% endblock %}
+
+{% block main_content %}
+<div class="content-block d-flex flex-lg-row flex-column justify-content-center align-items-center" id="join-mentor-matcher">
+  <div class="card join-matcher-card border-0">
+    <a class="text-primary mr-5" href="/questionnaire?formType=MENTEE">
+      <i class="card-img-top fa fa-fw fa-pencil questionnaire-button-icon"></i>
+      <div class="card-body d-flex flex-column">
+        <h2 class="card-text align-self-center">Find a mentor</h2>
       </div>
-    </div>
-    <div class="col-lg-auto">
-      <div class="card">
-        <a href="/questionnaire?formType=MENTOR">
-          <i class="card-img-top fa fa-fw fa-mortar-board questionnaire-button-icon"></i>
-          <div class="card-body">
-            <h2 class="card-text">Find a mentor</h2>
-          </div>
-        </a>
+    </a>
+  </div>
+  <div class="card join-matcher-card border-0">
+    <a class="text-primary" href="/questionnaire?formType=MENTOR">
+      <i class="card-img-top fa fa-fw fa-mortar-board questionnaire-button-icon"></i>
+      <div class="card-body d-flex flex-column">
+        <h2 class="card-text align-self-center">Become a mentor</h2>
       </div>
-    </div>
+    </a>
   </div>
 </div>
 {%raw%}{% if !isLoggedIn %}
-<div class="content-block" id="member-sign-in">
+<div class="content-block mt-10 d-flex flex-row align-items-center justify-content-center" id="member-sign-in">
   <p class="short-tip" id="already-a-member">Already a member?</p>
   <button class="pretty-button auth-button">Login</button>
 </div>

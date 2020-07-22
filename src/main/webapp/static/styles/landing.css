@@ -13,33 +13,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-.content-block#join-mentor-matcher {
-  width: 100%;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: center;
-}
 
-.content-block#title-block {
-  text-align: center;
-  vertical-align: center;
-}
+/* #join-mentor-matcher > .join-matcher-card {
+  color: var(--primary)
+} */
 
-#join-mentor-matcher > .join-matcher-button {
-  font-size: 7.5vw;
-  font-weight: bolder;
-  padding: 0.5em;
-  margin: 3%;
-  box-sizing: border-box;
-  width: 44%;
-  height: 4em;
-  text-align: center;
-  vertical-align: middle;
-  background-color: var(--dark-blue-lightened)
-}
-
-#member-sign-in {
+/* #member-sign-in {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
@@ -51,7 +30,7 @@ limitations under the License.
 
 #login-button {
   background-color: var(--dark-blue-lightened);
-}
+} */
 
 #join-mentor-matcher .questionnaire-button-icon {
   font-size: 15em;
