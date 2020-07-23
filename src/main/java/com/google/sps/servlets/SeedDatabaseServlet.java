@@ -79,15 +79,19 @@ public class SeedDatabaseServlet extends HttpServlet {
         users.add(gson.fromJson(user, Mentee.class));
       }
     }
-
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Collection<Entity> entities;
     boolean success = false;
-    if (seeded < users.length) {
-      entities = users.stream().skip(seeded).limit(1000).map(UserAccount::convertToEntity).collect(Collectors.toList());
+    if (seeded < users.size()) {
+      entities =
+          users.stream()
+              .skip(seeded)
+              .limit(1000)
+              .map(UserAccount::convertToEntity)
+              .collect(Collectors.toList());
       success = dataAccess.seed_db(entities);
       if (success) {
         seeded += 1000;
