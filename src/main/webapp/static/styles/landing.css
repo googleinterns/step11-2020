@@ -24,6 +24,7 @@ limitations under the License.
   top: 20%;
   left: 50%;
   transform: translate(-50%, -50%);
+  width: fit-content;
 }
 
 #header-text > #hook {

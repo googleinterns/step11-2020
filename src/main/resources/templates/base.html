@@ -1,4 +1,4 @@
-<!-- Copyright 2019 Google LLC
+{#  Copyright 2019 Google LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -10,10 +10,10 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. -->
+limitations under the License.  #}
 
 <!DOCTYPE html>
-<html>
+<html class="h-100">
 
 <head>
 	<meta charset="utf-8">
@@ -30,13 +30,13 @@ limitations under the License. -->
   {% endblock %}
 </head>
 
-<body>
+<body class="d-flex flex-column h-100">
 	<header class="container-fluid px-0 mx-0 sticky-top">
     {% block header %}
       {% raw %}{% include "header.html" %}{% endraw %}
     {% endblock %}
 	</header>
-	<main>
+	<main class="flex-grow-1">
     {% block title_block %}
     <div class="d-flex flex-column align-items-center justify-content-center" id="title-block">
       <h1 id="page-title">{% block page_title %}{% endblock %}</h1>
@@ -46,7 +46,7 @@ limitations under the License. -->
       {% block main_content %}{% endblock %}
     </div>
   </main>
-  <footer class="footer bg-light py-2">
+  <footer class="footer bg-light py-3 flex-shrink-0 mt-auto">
     <div class="container">
       <span class="text-muted">Copyright 2019 Google LLC</span>
     </div>

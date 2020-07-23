@@ -1,4 +1,4 @@
-<!-- Copyright 2019 Google LLC
+{#  Copyright 2019 Google LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. -->
+limitations under the License.  #}
 
 {% extends "base.html" %}
 
@@ -19,10 +19,9 @@ limitations under the License. -->
   <link rel="stylesheet" type="text/css" href="static/styles/authors.css">
 {% endblock %}
 
+{% block page_title %}Meet the Creators{% endblock %}
+
 {% block main_content %}
-<div class="content-block" id="title-block">
-  <h1 class="page-title" id="title">Meet The Creators</h1>
-</div>
 <div class="content-block" id="creator-cards-container">
   <div class="creator-card" id="thomas-card">
     <img class="creator-picture" src="static/images/thomas.jpg" alt="Thomas Quintanilla" />
