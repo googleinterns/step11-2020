@@ -15,6 +15,7 @@ limitations under the License.
 
 :root {
   --blue: #4285F4 !important;
+  --light-blue: #dae7fc !important;
   --primary: var(--blue) !important;
 }
 
@@ -32,6 +33,20 @@ body {
 
 .text-primary {
   color: var(--primary) !important;
+}
+
+.btn-outline-primary {
+  color: var(--primary) !important;
+  border-color: var(--primary) !important
+}
+
+.btn-outline-primary:hover {
+  color: white !important;
+  background-color: var(--primary) !important;
+}
+
+.text-light-blue {
+  color: var(--light-blue) !important;
 }
 
 .divider-top {

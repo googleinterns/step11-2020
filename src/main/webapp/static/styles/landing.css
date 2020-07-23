@@ -17,12 +17,17 @@ limitations under the License.
   width: 100%;
   filter: grayscale(0.3) brightness(0.7);
   object-fit: cover;
+  object-position: 70% top;
 }
 
 #intro-to-mentorship > #header-text {
-  font-size: 3em;
-  bottom: 20%;
+  top: 20%;
   left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#header-text > #hook {
+  font-weight: 350;
 }
 
 #join-mentor-matcher .questionnaire-button-icon {

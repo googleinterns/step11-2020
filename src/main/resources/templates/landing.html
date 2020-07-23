@@ -20,11 +20,11 @@ limitations under the License. -->
 {% endblock %}
 
 {% block title_block %}
-<div class="d-flex justify-content-around container-fluid px-0" id="intro-to-mentorship"">
-  <img id="header-pic" class="w-100" src="static/images/landing-mentorship-stock1.jpg" alt="Man getting mentored">
-  <div class="d-flex flex-column align-items-start justify-content-center mr-auto position-absolute text-white" id="header-text">
-    <h1>Mentor Matcher</h1>
-    <p class="">Find a mentor that fits you, or help others by becoming one.</p>
+<div class="d-flex justify-content-around container-fluid px-0 vh-100 w-100" id="intro-to-mentorship">
+  <img id="header-pic" class="mw-100 mh-100" src="static/images/landing-mentorship-stock1.jpg" alt="Man getting mentored">
+  <div class="d-flex flex-column align-items-center justify-content-center mr-auto position-absolute text-white p-3" id="header-text">
+    <h1 class="display-1">Mentor Matcher</h1>
+    <p class="h1" id="hook">Find a mentor that fits you, or help others by becoming one.</p>
   </div>
 </div>
 {% endblock %}
@@ -50,8 +50,8 @@ limitations under the License. -->
 </div>
 {%raw%}{% if !isLoggedIn %}
 <div class="mt-3 d-flex flex-row align-items-center justify-content-center" id="member-sign-in">
-  <p class="short-tip" id="already-a-member">Already a member?</p>
-  <button class="auth-button">Log in</button>
+  <p class="short-tip m-0" id="already-a-member">Already a member?</p>
+  <button class="btn btn-outline-primary ml-2">Log in</button>
 </div>
 {% endif %}{%endraw%}
 <div class="container align-items-center justify-content-center mt-5 pt-4 px-0 divider-top" id="quick-summary">
