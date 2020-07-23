@@ -57,6 +57,7 @@ public abstract class UserAccount implements DatastoreEntity {
   private String educationLevelOther;
   private String description;
   private UserType userType;
+  private boolean isFakeUser;
 
   public UserAccount(
       String userID,
@@ -75,7 +76,8 @@ public abstract class UserAccount implements DatastoreEntity {
       EducationLevel educationLevel,
       String educationLevelOther,
       String description,
-      UserType userType) {
+      UserType userType,
+      boolean isFakeUser) {
     this.userID = userID;
     this.email = email;
     this.name = name;
@@ -93,6 +95,7 @@ public abstract class UserAccount implements DatastoreEntity {
     this.educationLevelOther = educationLevelOther;
     this.description = description;
     this.userType = userType;
+    this.isFakeUser = isFakeUser;
   }
 
   protected UserAccount(Builder<?> builder) {
@@ -113,7 +116,8 @@ public abstract class UserAccount implements DatastoreEntity {
         builder.educationLevel,
         builder.educationLevelOther,
         builder.description,
-        builder.userType);
+        builder.userType
+        builder.isFakeUser);
     this.keyInitialized = builder.keyInitialized;
     if (builder.keyInitialized) {
       this.datastoreKey = builder.datastoreKey;
@@ -151,13 +155,14 @@ public abstract class UserAccount implements DatastoreEntity {
         (String) entity.getProperty(ParameterConstants.EDUCATION_LEVEL_OTHER);
     this.description = (String) entity.getProperty(ParameterConstants.DESCRIPTION);
     this.userType =
-        UserType.values()[toIntExact((long) entity.getProperty(ParameterConstants.USER_TYPE))];
+        UserType.values()[toIntExact((long) entity.getProperty(ParameterConstants.IS_FAKE_USER))];
+    this.isFakeUser = (boolean) entity.getProperty(ParameterConstants.IS_FAKE_USER);
   }
 
   public static UserAccount fromEntity(Entity entity) {
     return entity == null
         ? null
-        : UserType.values()[toIntExact((long) (entity.getProperty(ParameterConstants.USER_TYPE)))]
+        : UserType.values()[toIntExact((long) (entity.getProperty(ParameterConstants.IS_FAKE_USER)))]
                 == UserType.MENTEE
             ? new Mentee(entity)
             : new Mentor(entity);
@@ -197,6 +202,7 @@ public abstract class UserAccount implements DatastoreEntity {
     entity.setProperty(ParameterConstants.EDUCATION_LEVEL_OTHER, this.educationLevelOther);
     entity.setProperty(ParameterConstants.DESCRIPTION, this.description);
     entity.setProperty(ParameterConstants.USER_TYPE, this.userType.ordinal());
+    entity.setProperty(ParameterConstants.IS_FAKE_USER, this.isFakeUser);
     return entity;
   }
 
@@ -316,6 +322,14 @@ public abstract class UserAccount implements DatastoreEntity {
     return userType;
   }
 
+  public UserType getUserType() {
+    return userType;
+  }
+
+  public boolean getIsFakeUser() {
+    return isFakeUser;
+  }
+
   public abstract static class Builder<T extends Builder<T>> {
     private static long datastoreKey;
     private static boolean keyInitialized = false;
@@ -336,6 +350,7 @@ public abstract class UserAccount implements DatastoreEntity {
     private static String educationLevelOther;
     private static String description;
     private static UserType userType;
+    private static boolean isFakeUser;
 
     protected Builder() {}
 
@@ -427,6 +442,11 @@ public abstract class UserAccount implements DatastoreEntity {
 
     public T userType(UserType userType) {
       this.userType = userType;
+      return (T) this;
+    }
+
+    public T isFakeUser(boolean isFakeUser) {
+      this.isFakeUser = isFakeUser;
       return (T) this;
     }
   }

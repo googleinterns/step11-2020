@@ -85,7 +85,8 @@ public class RandomObjects {
         .timezone(randomEnum(TimeZone.class))
         .firstGen(rnd.nextBoolean())
         .lowIncome(rnd.nextBoolean())
-        .description(randomLetters(30));
+        .description(randomLetters(30))
+        .isFakeUser(true);
     Set<Ethnicity> ethnicities = new HashSet<>();
     ethnicities.add(randomEnum(Ethnicity.class));
     if (ethnicities.contains(Ethnicity.OTHER)) {
