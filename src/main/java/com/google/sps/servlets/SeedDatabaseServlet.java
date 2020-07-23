@@ -51,7 +51,7 @@ public class SeedDatabaseServlet extends HttpServlet {
   @Override
   public void init() {
     dataAccess = new DatastoreAccess();
-    gson = new GsonBuilder().setDateFormat("MMM dd, yyyy HH:mm:ss a").create();
+    gson = new GsonBuilder().setDateFormat("MMM dd, yyyy, HH:mm:ss a").create();
     users = new ArrayList<>(FAKE_USER_COUNT);
 
     JsonParser jsonParser = new JsonParser();
