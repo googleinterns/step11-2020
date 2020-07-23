@@ -20,8 +20,8 @@ limitations under the License. -->
 {% endblock %}
 
 {% block title_block %}
-<div class="d-flex justify-content-around bg-gray" id="intro-to-mentorship" id="title-block">
-  <img id="header-pic" src="static/images/landing-mentorship-stock1.jpg" alt="Man getting mentored">
+<div class="d-flex justify-content-around container-fluid px-0" id="intro-to-mentorship"">
+  <img id="header-pic" class="w-100" src="static/images/landing-mentorship-stock1.jpg" alt="Man getting mentored">
   <div class="d-flex flex-column align-items-start justify-content-center mr-auto position-absolute text-white" id="header-text">
     <h1>Mentor Matcher</h1>
     <p class="">Find a mentor that fits you, or help others by becoming one.</p>
@@ -30,7 +30,7 @@ limitations under the License. -->
 {% endblock %}
 
 {% block main_content %}
-<div class="d-flex flex-lg-row flex-column justify-content-center align-items-center" id="join-mentor-matcher">
+<div class="d-flex flex-lg-row flex-column justify-content-center align-items-center mt-5" id="join-mentor-matcher">
   <div class="card join-matcher-card border-0">
     <a class="text-primary mr-5" href="/questionnaire?formType=MENTEE">
       <i class="card-img-top fa fa-fw fa-pencil questionnaire-button-icon"></i>
@@ -49,17 +49,13 @@ limitations under the License. -->
   </div>
 </div>
 {%raw%}{% if !isLoggedIn %}
-<div class="content-block mt-10 d-flex flex-row align-items-center justify-content-center" id="member-sign-in">
+<div class="mt-3 d-flex flex-row align-items-center justify-content-center" id="member-sign-in">
   <p class="short-tip" id="already-a-member">Already a member?</p>
-  <button class="pretty-button auth-button">Login</button>
-</div>
-<div class="align-items-center justify-content-center mt-10" id="quick-summary">
-  <p>Mentor Matcher is a quick and easy website to find your ideal mentor. Our specialized algorithm shows you mentors that fit what you are looking for. Just simply fill out our 2 minute questionnaire and you can start matching!</p>
+  <button class="auth-button">Log in</button>
 </div>
 {% endif %}{%endraw%}
-{% endblock %}
-
-{% block scripts %}
-  {{ super() }}
-  <script charset="utf-8" type="text/javascript" src="static/scripts/landing.js"></script>
+<div class="container align-items-center justify-content-center mt-5 pt-4 px-0 divider-top" id="quick-summary">
+  <p class="h3" id="pitch-paragraph">Mentor Matcher is a quick and easy website to find your ideal mentor. Our specialized algorithm shows you mentors that fit what you are looking for. Just simply fill out our 2 minute questionnaire and you can start matching!</p>
+</div>
+<div class="d-none d-lg-block" id="bottom-spacer"></div>
 {% endblock %}

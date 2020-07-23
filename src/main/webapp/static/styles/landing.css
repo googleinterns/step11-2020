@@ -13,36 +13,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
-/* #join-mentor-matcher > .join-matcher-card {
-  color: var(--primary)
-} */
-
-/* #member-sign-in {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-#login-button {
-  background-color: var(--dark-blue-lightened);
-} */
-
-#title-block > #header-pic {
+#intro-to-mentorship > #header-pic {
   width: 100%;
   filter: grayscale(0.3) brightness(0.7);
+  object-fit: cover;
 }
 
-#title-block > #header-text {
+#intro-to-mentorship > #header-text {
   font-size: 3em;
-  bottom: 30%;
+  bottom: 20%;
   left: 50%;
 }
 
 #join-mentor-matcher .questionnaire-button-icon {
   font-size: 15em;
+}
+
+#bottom-spacer {
+  min-height: 10em;
 }

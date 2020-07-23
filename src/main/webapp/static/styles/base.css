@@ -33,3 +33,17 @@ body {
 .text-primary {
   color: var(--primary) !important;
 }
+
+.divider-top {
+  position: relative !important;
+}
+
+.divider-top::before {
+  content: " ";
+  width: 35%;
+  height: 0;
+  border: solid thin var(--primary);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
