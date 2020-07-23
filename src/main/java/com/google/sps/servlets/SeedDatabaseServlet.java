@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -50,7 +51,7 @@ public class SeedDatabaseServlet extends HttpServlet {
   @Override
   public void init() {
     dataAccess = new DatastoreAccess();
-    gson = new Gson();
+    gson = new GsonBuilder().setDateFormat("MMM dd, yyyy HH:mm:ss a").create();
     users = new ArrayList<>(FAKE_USER_COUNT);
 
     JsonParser jsonParser = new JsonParser();
