@@ -29,6 +29,7 @@ function loadAuthButton() {
             authButtonElem.innerText = "Log In";
           authButtonElem.onclick =
             (event) => { window.location = loginState.toggleLoginURL; };
+          authButtonElem.href = loginState.toggleLoginURL;
         }
       }
     })
