@@ -28,7 +28,7 @@ import com.google.sps.data.MeetingFrequency;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorType;
-import com.google.sps.data.TimeZoneInfo;
+import com.google.sps.data.TimeZone;
 import com.google.sps.data.Topic;
 import com.google.sps.data.UserAccount;
 import com.google.sps.data.UserType;
@@ -47,15 +47,12 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -136,7 +133,7 @@ public class QuestionnaireServlet extends HttpServlet {
     if (formType.equals(MENTOR) || formType.equals(MENTEE)) {
       context.put(ContextFields.FORM_TYPE, formType.toLowerCase());
       context.put("ethnicities", EnumSet.complementOf(EnumSet.of(Ethnicity.UNSPECIFIED)));
-      context.put("topics", Topic.values());
+      context.put("topics", Topic.valuesSorted());
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
       response.getWriter().println(renderTemplate);
     } else {
@@ -149,7 +146,13 @@ public class QuestionnaireServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserAccount user = constructNewUserFromRequest(request);
     response.getWriter().println(new Gson().toJson(user));
-    if (dataAccess.createUser(user)) {
+    boolean infoAdded;
+    if (dataAccess.getUser(dataAccess.getCurrentUser().getUserId()) == null) {
+      infoAdded = dataAccess.createUser(user);
+    } else {
+      infoAdded = dataAccess.updateUser(user);
+    }
+    if (infoAdded) {
       if (user.getUserType().equals(UserType.MENTEE)) {
         response.sendRedirect(URLPatterns.FIND_MENTOR);
       } else {
@@ -179,10 +182,9 @@ public class QuestionnaireServlet extends HttpServlet {
     Country country =
         ServletUtils.getEnumParameter(
             Country.class, request, ParameterConstants.COUNTRY, Country.US.toString());
-    TimeZoneInfo timeZone =
-        new TimeZoneInfo(
-            TimeZone.getTimeZone(
-                ServletUtils.getParameter(request, ParameterConstants.TIMEZONE, "est")));
+    TimeZone timeZone =
+        ServletUtils.getEnumParameter(
+            TimeZone.class, request, ParameterConstants.TIMEZONE, TimeZone.EST.toString());
     Language language =
         ServletUtils.getEnumParameter(
             Language.class, request, ParameterConstants.LANGUAGE, Language.EN.toString());
@@ -239,7 +241,7 @@ public class QuestionnaireServlet extends HttpServlet {
       Topic goal =
           ServletUtils.getEnumParameter(
               Topic.class, request, ParameterConstants.MENTEE_GOAL, Topic.OTHER.toString());
-      return new Mentee.Builder()
+      return Mentee.Builder.newBuilder()
           .name(name)
           .userID(dataAccess.getCurrentUser().getUserId())
           .email(dataAccess.getCurrentUser().getEmail())
@@ -267,7 +269,7 @@ public class QuestionnaireServlet extends HttpServlet {
           ServletUtils.getListOfCheckedValues(
               Topic.class, request, ParameterConstants.MENTOR_FOCUS_LIST, Topic.OTHER.toString());
 
-      return new Mentor.Builder()
+      return Mentor.Builder.newBuilder()
           .name(name)
           .userID(dataAccess.getCurrentUser().getUserId())
           .email(dataAccess.getCurrentUser().getEmail())
@@ -294,18 +296,11 @@ public class QuestionnaireServlet extends HttpServlet {
 
   private Map<String, Object> selectionListsForFrontEnd() {
     Map<String, Object> map = new HashMap<>();
-    map.put("countries", Country.values());
+    map.put("countries", Country.valuesSorted());
     map.put("genders", Gender.values());
-    map.put("languages", Language.values());
+    map.put("languages", Language.valuesSorted());
     map.put("mentorTypes", MentorType.values());
-
-    map.put(
-        "timezones",
-        TimeZoneInfo.getListOfNamesToDisplay(
-            Arrays.asList(TimeZone.getAvailableIDs()).stream()
-                .filter(strID -> strID.toUpperCase().equals(strID))
-                .map(strID -> TimeZone.getTimeZone(strID))
-                .collect(Collectors.toList())));
+    map.put("timezones", TimeZone.valuesSorted());
     map.put("educationLevels", EducationLevel.values());
     map.put("meetingFrequencies", MeetingFrequency.values());
     return map;

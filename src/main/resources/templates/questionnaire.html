@@ -29,16 +29,17 @@ limitations under the License. -->
 {% block main_content %}
 <h1> Form </h1>
 <div class = "form-container">
-  <form id="information-form" action="/questionnaire" method="{%raw%}{%if currentUser %}PUT{% else %}POST{% endif %}{%endraw%}">
+  <form id="information-form" action="/questionnaire" method="POST" onsubmit="return checkForm()">
     <h3> Step 1: Basic Personal Information </h3>
     <input type="hidden" name="formType" id="formType" value={{"{{"}}formType{{"}}"}} />
     <label for="name">Your Name</label>
     <input type="text" id="name" name="name" placeholder="Your name.." {% raw %}{% if currentUser and currentUser.name %} value="{{currentUser.name}}"
-    {% endif %}{% endraw %}>
+    {% endif %}{% endraw %} required>
 
     <label for="dateOfBirth">Date of Birth:</label>
-    <input type="date" name="dateOfBirth" {% raw %}{% if currentUser and currentUser.description != '' %} value={{currentUser.dateOfBirth}}
-    {% endif %}{% endraw %}>
+    <input type="date" name="dateOfBirth" id="dateOfBirth" {% raw %}{% if currentUser and currentUser.dateOfBirth != '' %} value={{currentUser.dateOfBirth}}
+    {% endif %}{% endraw %} required>
+    <div id="date-of-birth-error-container"></div><br>
 
     <label for="country">Country</label>
     <select id="country" name="country" required>
@@ -55,12 +56,12 @@ limitations under the License. -->
     <label for="timezone">Your Location's Timezone</label>
     <select id="timezone" name="timezone" required >
       {% raw %}{% if currentUser and currentUser.timezone %}
-      <option value="{{ currentUser.timezone.timezoneID }}" selected hidden> {{currentUser.timezone.name}} {{timezone.offset}} </option>
+      <option value="{{ currentUser.timezone}}" selected hidden> {{currentUser.timezone.name}} {{timezone.offset}} </option>
       {% else %}
       <option value="" selected disabled hidden> select an option </option>
       {% endif %}{% endraw %}
       {% for timezone in timezones %}
-      <option value="{{timezone.timezoneID}}"> {{timezone.name}}: {{timezone.offset}} </option>
+      <option value="{{timezone}}"> {{timezone.name}}: {{timezone.offset}} </option>
       {% endfor %}
     </select>
 
@@ -216,6 +217,7 @@ limitations under the License. -->
   {% set scripts = [
       "static/scripts/questionnaire.js"
     ]%}
+  <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.4.0/moment.min.js"></script>
   {% for script in scripts %}
     <script charset="utf-8" type="text/javascript" src={{ script }}></script>
   {% endfor %}

@@ -13,7 +13,7 @@ import com.google.sps.data.Language;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorType;
-import com.google.sps.data.TimeZoneInfo;
+import com.google.sps.data.TimeZone;
 import com.google.sps.data.Topic;
 import com.google.sps.data.UserType;
 import com.google.sps.servlets.QuestionnaireServlet;
@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
-import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
@@ -64,14 +63,14 @@ public final class QuestionnaireServletTest {
     dataAccess = new DatastoreAccess();
     servlet = new QuestionnaireServlet();
     defaultMentor =
-        (new Mentor.Builder())
+        (Mentor.Builder.newBuilder())
             .name("Mudito Mentor")
             .userID("101")
             .email("mudito.mentor@example.com")
             .dateOfBirth(new Date(984787200000L))
             .country(Country.US)
             .language(Language.EN)
-            .timezone(new TimeZoneInfo(TimeZone.getTimeZone("GMT")))
+            .timezone(TimeZone.GMT)
             .ethnicityList((Arrays.asList(Ethnicity.INDIAN)))
             .ethnicityOther("")
             .gender(Gender.MAN)
@@ -177,23 +176,6 @@ public final class QuestionnaireServletTest {
     Assert.assertTrue(stringWriter.toString().contains("value=\"HIGHSCHOOL\" selected"));
     Assert.assertFalse(stringWriter.toString().contains("value=\"NONE\" selected"));
     Assert.assertTrue(stringWriter.toString().contains("value=\"Mudito Mentor\""));
-  }
-
-  @Test
-  public void updatedDoMethodBasedOnExistingUser() throws Exception {
-    servlet.init();
-
-    dataAccess.createUser(defaultMentor);
-
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter writer = new PrintWriter(stringWriter);
-
-    when(response.getWriter()).thenReturn(writer);
-
-    servlet.doGet(request, response);
-
-    writer.flush();
-    Assert.assertTrue(stringWriter.toString().contains("method=\"PUT\""));
   }
 
   @Test

@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimeZone;
 
 /**
  * This class provides access to hardcoded mock data meant for testing.
@@ -62,14 +61,14 @@ public class DummyDataAccess implements DataAccess {
   }
 
   public UserAccount getUser(String userID) {
-    return (new Mentor.Builder())
+    return (Mentor.Builder.newBuilder())
         .name("Alice")
         .userID(userID)
         .email("alice@gmail.com")
         .dateOfBirth(new Date())
         .country(Country.AU)
         .language(Language.ES)
-        .timezone(new TimeZoneInfo(TimeZone.getDefault()))
+        .timezone(TimeZone.EST)
         .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
         .ethnicityOther("")
         .gender(Gender.WOMAN)
@@ -87,14 +86,14 @@ public class DummyDataAccess implements DataAccess {
   }
 
   public UserAccount getUser(long datastoreKey) {
-    return (new Mentor.Builder())
+    return (Mentor.Builder.newBuilder())
         .name("Alice")
         .userID("321432")
         .email("alice@gmail.com")
         .dateOfBirth(new Date())
         .country(Country.AU)
         .language(Language.ES)
-        .timezone(new TimeZoneInfo(TimeZone.getDefault()))
+        .timezone(TimeZone.EST)
         .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
         .ethnicityOther("")
         .gender(Gender.WOMAN)
@@ -111,14 +110,14 @@ public class DummyDataAccess implements DataAccess {
   }
 
   public Mentee getMentee(String userID) {
-    return (new Mentee.Builder())
+    return (Mentee.Builder.newBuilder())
         .name("Alice")
         .userID("321432")
         .email("alice@gmail.com")
         .dateOfBirth(new Date())
         .country(Country.AU)
         .language(Language.ES)
-        .timezone(new TimeZoneInfo(TimeZone.getDefault()))
+        .timezone(TimeZone.EST)
         .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
         .ethnicityOther("")
         .gender(Gender.WOMAN)
@@ -134,14 +133,14 @@ public class DummyDataAccess implements DataAccess {
   }
 
   public Mentee getMentee(long datastoreKey) {
-    return (new Mentee.Builder())
+    return (Mentee.Builder.newBuilder())
         .name("Alice")
         .userID("321432")
         .email("alice@gmail.com")
         .dateOfBirth(new Date())
         .country(Country.AU)
         .language(Language.ES)
-        .timezone(new TimeZoneInfo(TimeZone.getDefault()))
+        .timezone(TimeZone.EST)
         .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
         .ethnicityOther("")
         .gender(Gender.WOMAN)
@@ -177,14 +176,14 @@ public class DummyDataAccess implements DataAccess {
   public Collection<Mentor> getRelatedMentors(Mentee mentee) {
     Collection<Mentor> mentors = new ArrayList<>(5);
     mentors.add(
-        (new Mentor.Builder())
+        (Mentor.Builder.newBuilder())
             .name("Alice")
             .userID("321432")
             .email("alice@gmail.com")
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
+            .timezone(TimeZone.EST)
             .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
             .ethnicityOther("")
             .gender(Gender.WOMAN)
@@ -199,14 +198,14 @@ public class DummyDataAccess implements DataAccess {
             .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
             .build());
     mentors.add(
-        (new Mentor.Builder())
+        (Mentor.Builder.newBuilder())
             .name("Ethan")
             .userID("532345")
             .email("ethan@gmail.com")
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
+            .timezone(TimeZone.EST)
             .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
             .ethnicityOther("")
             .gender(Gender.MAN)
@@ -221,14 +220,14 @@ public class DummyDataAccess implements DataAccess {
             .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
             .build());
     mentors.add(
-        (new Mentor.Builder())
+        (Mentor.Builder.newBuilder())
             .name("Sam")
             .userID("539032")
             .email("sam@gmail.com")
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
+            .timezone(TimeZone.EST)
             .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
             .ethnicityOther("")
             .gender(Gender.NONBINARY)
@@ -251,14 +250,14 @@ public class DummyDataAccess implements DataAccess {
       MentorshipRequest request = new MentorshipRequest(i + 1, i + 2);
       request.setToUser(user);
       request.setFromUser(
-          (new Mentee.Builder())
+          (Mentee.Builder.newBuilder())
               .name("Stacy")
               .userID("999999")
               .email("stacy@gmail.com")
               .dateOfBirth(new Date())
               .country(Country.AU)
               .language(Language.ES)
-              .timezone(new TimeZoneInfo(TimeZone.getDefault()))
+              .timezone(TimeZone.EST)
               .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
               .ethnicityOther("")
               .gender(Gender.WOMAN)
@@ -288,17 +287,21 @@ public class DummyDataAccess implements DataAccess {
     return false;
   }
 
+  public boolean requestMentor(Mentee mentee, Mentor mentor) {
+    return false;
+  }
+
   public Collection<Mentor> getDislikedMentors(Mentee mentee) {
     Collection<Mentor> mentors = new ArrayList<>(5);
     mentors.add(
-        (new Mentor.Builder())
+        (Mentor.Builder.newBuilder())
             .name("Alice")
             .userID("321432")
             .email("alice@gmail.com")
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
+            .timezone(TimeZone.EST)
             .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
             .ethnicityOther("")
             .gender(Gender.WOMAN)
@@ -313,14 +316,14 @@ public class DummyDataAccess implements DataAccess {
             .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
             .build());
     mentors.add(
-        (new Mentor.Builder())
+        (Mentor.Builder.newBuilder())
             .name("Ethan")
             .userID("532345")
             .email("ethan@gmail.com")
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
+            .timezone(TimeZone.EST)
             .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
             .ethnicityOther("")
             .gender(Gender.MAN)
@@ -335,14 +338,14 @@ public class DummyDataAccess implements DataAccess {
             .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
             .build());
     mentors.add(
-        (new Mentor.Builder())
+        (Mentor.Builder.newBuilder())
             .name("Sam")
             .userID("539032")
             .email("sam@gmail.com")
             .dateOfBirth(new Date())
             .country(Country.AU)
             .language(Language.ES)
-            .timezone(new TimeZoneInfo(TimeZone.getDefault()))
+            .timezone(TimeZone.EST)
             .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
             .ethnicityOther("")
             .gender(Gender.NONBINARY)
@@ -392,14 +395,14 @@ public class DummyDataAccess implements DataAccess {
       if (user.getUserType() == UserType.MENTOR) {
         mentorMenteeRelation.setMentor((Mentor) user);
         mentorMenteeRelation.setMentee(
-            (new Mentee.Builder())
+            (Mentee.Builder.newBuilder())
                 .name("Stacy")
                 .userID("999999")
                 .email("stacy@gmail.com")
                 .dateOfBirth(new Date())
                 .country(Country.AU)
                 .language(Language.ES)
-                .timezone(new TimeZoneInfo(TimeZone.getDefault()))
+                .timezone(TimeZone.EST)
                 .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
                 .ethnicityOther("")
                 .gender(Gender.WOMAN)
@@ -415,14 +418,14 @@ public class DummyDataAccess implements DataAccess {
       } else {
         mentorMenteeRelation.setMentee((Mentee) user);
         mentorMenteeRelation.setMentor(
-            (new Mentor.Builder())
+            (Mentor.Builder.newBuilder())
                 .name("Sam")
                 .userID("539032")
                 .email("sam@gmail.com")
                 .dateOfBirth(new Date())
                 .country(Country.AU)
                 .language(Language.ES)
-                .timezone(new TimeZoneInfo(TimeZone.getDefault()))
+                .timezone(TimeZone.EST)
                 .ethnicityList(new ArrayList<Ethnicity>(Arrays.asList(Ethnicity.CAUCASIAN)))
                 .ethnicityOther("")
                 .gender(Gender.NONBINARY)

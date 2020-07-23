@@ -33,6 +33,7 @@ public final class ParameterConstants {
   public static final String COUNTRY = "country";
   public static final String LANGUAGE = "language";
   public static final String TIMEZONE = "timezone";
+  public static final String ENCODED_CURSOR = "encodedCursor";
   public static final String ETHNICITY = "ethnicity";
   public static final String ETHNICITY_OTHER = "ethnicityOther";
   public static final String GENDER = "gender";
@@ -47,6 +48,10 @@ public final class ParameterConstants {
   public static final String MENTEE_DESIRED_MEETING_FREQUENCY = "desiredMeetingFrequency";
   public static final String MENTEE_DESIRED_MENTOR_TYPE = "desiredMentorType";
   public static final String MENTEE_DISLIKED_MENTOR_KEYS = "dislikedMentorKeys";
+  public static final String MENTEE_LAST_DISLIKED_MENTOR_KEY = "lastDislikedMentorKey";
+  public static final String MENTEE_LAST_REQUESTED_MENTOR_KEY = "lastRequestedMentorKey";
+  public static final String MENTEE_REQUESTED_MENTOR_KEYS = "requestedMentorKeys";
+  public static final String MENTEE_SERVED_MENTOR_KEYS = "servedMentorKeys";
   public static final String MENTOR_VISIBILITY = "visibility";
   public static final String MENTOR_FOCUS_LIST = "focusList";
   public static final String MENTOR_TYPE = "mentorType";

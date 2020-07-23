@@ -14,22 +14,28 @@
 
 package com.google.sps.data;
 
+import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.QueryResultList;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ParameterConstants;
+import com.google.sps.util.ServletUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -148,14 +154,74 @@ public class DatastoreAccess implements DataAccess {
     Query query =
         new Query(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT)
             .setFilter(
-                new Query.FilterPredicate(
-                    ParameterConstants.USER_TYPE,
-                    Query.FilterOperator.EQUAL,
-                    UserType.MENTOR.ordinal()));
+                Query.CompositeFilterOperator.and(
+                    new Query.FilterPredicate(
+                        ParameterConstants.USER_TYPE,
+                        Query.FilterOperator.EQUAL,
+                        UserType.MENTOR.ordinal()),
+                    new Query.FilterPredicate(
+                        ParameterConstants.MENTOR_TYPE,
+                        Query.FilterOperator.EQUAL,
+                        mentee.getDesiredMentorType().ordinal()),
+                    new Query.FilterPredicate(
+                        ParameterConstants.MENTOR_VISIBILITY, Query.FilterOperator.EQUAL, true)));
     PreparedQuery results = datastoreService.prepare(query);
-    return StreamSupport.stream(results.asIterable().spliterator(), false)
-        .map(Mentor::new)
-        .collect(Collectors.toList());
+    System.out.println("Prepared query\n");
+    QueryResultList<Entity> resultList;
+    if (mentee.getEncodedCursor() == "") {
+      resultList =
+          results.asQueryResultList(FetchOptions.Builder.withLimit(ServletUtils.REC_BATCH_SIZE));
+      Cursor originalCursor = resultList.getCursor();
+      mentee.setEncodedCursor(originalCursor.toWebSafeString());
+    } else {
+      Cursor decodedCursor = Cursor.fromWebSafeString(mentee.getEncodedCursor());
+      resultList =
+          results.asQueryResultList(
+              FetchOptions.Builder.withLimit(ServletUtils.REC_BATCH_SIZE).cursor(decodedCursor));
+      Cursor updatedCursor = resultList.getCursor();
+      mentee.setEncodedCursor(updatedCursor.toWebSafeString());
+    }
+    List<Mentor> mentorList =
+        StreamSupport.stream(resultList.spliterator(), false)
+            .map(Mentor::new)
+            .collect(Collectors.toList());
+    ArrayList<Mentor> filteredMentors = new ArrayList<Mentor>(mentorList);
+    boolean repullMentors = false;
+    if (filteredMentors.size() == 0) {
+      repullMentors = true;
+      SortedSet<Long> servedMentorKeys = mentee.getServedMentorKeys();
+      for (Long key : servedMentorKeys) {
+        filteredMentors.add(getMentor(key));
+      }
+    }
+    Mentor lastRequestedMentor =
+        mentee.getLastRequestedMentorKey() == 0
+            ? null
+            : getMentor(mentee.getLastRequestedMentorKey());
+    Mentor lastDislikedMentor =
+        mentee.getLastDislikedMentorKey() == 0
+            ? null
+            : getMentor(mentee.getLastDislikedMentorKey());
+    filteredMentors.sort(
+        (Mentor mentorA, Mentor mentorB) -> {
+          int result = 0;
+          if (lastRequestedMentor != null)
+            result +=
+                mentorA.similarity(lastRequestedMentor) - mentorB.similarity(lastRequestedMentor);
+          if (lastDislikedMentor != null)
+            result -=
+                mentorA.similarity(lastDislikedMentor) - mentorB.similarity(lastDislikedMentor);
+          if (lastRequestedMentor == null && lastDislikedMentor == null)
+            result = mentee.similarityWithMentor(mentorA) - mentee.similarityWithMentor(mentorB);
+          return result;
+        });
+    if (!repullMentors) {
+      for (Mentor mentor : filteredMentors) {
+        mentee.saveServedMentorKey(mentor.getDatastoreKey());
+      }
+    }
+    updateUser(mentee);
+    return filteredMentors;
   }
 
   public Collection<MentorshipRequest> getIncomingRequests(UserAccount user) {
@@ -210,6 +276,17 @@ public class DatastoreAccess implements DataAccess {
     if (getMentee(mentee.getDatastoreKey()) != null
         && getMentor(mentor.getDatastoreKey()) != null) {
       if (mentee.dislikeMentor(mentor)) {
+        updateUser(mentee);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean requestMentor(Mentee mentee, Mentor mentor) {
+    if (getMentee(mentee.getDatastoreKey()) != null
+        && getMentor(mentor.getDatastoreKey()) != null) {
+      if (mentee.requestMentor(mentor)) {
         updateUser(mentee);
         return true;
       }

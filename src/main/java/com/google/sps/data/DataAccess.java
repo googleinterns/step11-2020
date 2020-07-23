@@ -160,6 +160,8 @@ public interface DataAccess {
    */
   boolean dislikeMentor(Mentee mentee, Mentor mentor);
 
+  boolean requestMentor(Mentee mentee, Mentor mentor);
+
   /**
    * retrieves a collection of mentors from the database based on the blacklist of the passed in
    * Mentee

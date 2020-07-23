@@ -16,7 +16,9 @@ package com.google.sps.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * This class provides common functionality to all servlets to reduce code redundancy.
@@ -28,6 +30,13 @@ import javax.servlet.http.HttpServletRequest;
 public final class ServletUtils {
   public static final String CONTENT_HTML = "text/html;";
   public static final String CONTENT_JSON = "application/json;";
+  public static final int REC_BATCH_SIZE = 20;
+  public static final int SIMILARITY_SCORE_LOW = 5;
+  public static final int SIMILARITY_SCORE_HIGH = 8;
+
+  public static final String DEV_SERVER_AUTH_COOKIE = "dev_appserver_login";
+  public static final String HTTP_AUTH_COOKIE = "ACSID";
+  public static final String HTTPS_AUTH_COOKIE = "SACSID";
 
   public static String getParameter(
       HttpServletRequest request, String parameterName, String defaultValue) {
@@ -68,5 +77,12 @@ public final class ServletUtils {
       values.add(Enum.valueOf(enumClass, value));
     }
     return values;
+  }
+
+  public static void eraseCookie(HttpServletResponse response, String cookieName) {
+    Cookie cookie = new Cookie(cookieName, "");
+    cookie.setMaxAge(0);
+    cookie.setPath("/");
+    response.addCookie(cookie);
   }
 }
