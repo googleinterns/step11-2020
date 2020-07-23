@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -45,12 +46,13 @@ public class SeedDatabaseServlet extends HttpServlet {
   private DatastoreAccess dataAccess;
   private Gson gson;
   private Collection<UserAccount> users;
-  private Collection<Entity> entities;
+  // private
+  private int seeded = 0;
 
   @Override
   public void init() {
     dataAccess = new DatastoreAccess();
-    gson = new Gson();
+    gson = new GsonBuilder().setDateFormat("MMM dd, yyyy, HH:mm:ss a").create();
     users = new ArrayList<>(FAKE_USER_COUNT);
 
     JsonParser jsonParser = new JsonParser();
@@ -77,13 +79,24 @@ public class SeedDatabaseServlet extends HttpServlet {
         users.add(gson.fromJson(user, Mentee.class));
       }
     }
-
-    entities = users.stream().map(UserAccount::convertToEntity).collect(Collectors.toList());
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    boolean success = dataAccess.seed_db(entities);
+    Collection<Entity> entities;
+    boolean success = false;
+    if (seeded < users.size()) {
+      entities =
+          users.stream()
+              .skip(seeded)
+              .limit(1000)
+              .map(UserAccount::convertToEntity)
+              .collect(Collectors.toList());
+      success = dataAccess.seed_db(entities);
+      if (success) {
+        seeded += 1000;
+      }
+    }
 
     response.setContentType(ServletUtils.CONTENT_JSON);
     response.getWriter().println("{\"seeded\":\n" + success + "}");
