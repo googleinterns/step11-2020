@@ -14,25 +14,15 @@ limitations under the License. -->
 
 {% extends "base.html" %}
 
-{% block styles %}
-{{ super() }}
-{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
 
 {% block main_content %}
-<div class="content-block" id="title-block">
-	<h1 class="page-title" id="title">Your Dashboard</h1>
-</div>
-<div class="content-block" id="mentor-cards-container">
+<div class="content-block" id="mentee-cards-container">
 	{% raw %}{% for mentorMenteeRelation in mentorMenteeRelations %}
 	<div class="mentee" id="{{ mentorMenteeRelation.mentee.name }}">
 		<h3 class="mentee-name">{{ mentorMenteeRelation.mentee.name }}</h3>
-		<h5 class="mentee-data-label">Focus: {{ mentorMenteeRelation.mentee.goal.title }}</h5>
+		<h5 class="mentee-email">{{ mentorMenteeRelation.mentee.email }}</h5>
 	</div>
 	{% endfor %}{% endraw %}
 </div>
-{% endblock %}
-
-{% block scripts %}
-{{ super() }}
-<script charset="utf-8" type="text/javascript" src="static/scripts/authenticate.js" onload="loadAuthButton()"></script>
 {% endblock %}
