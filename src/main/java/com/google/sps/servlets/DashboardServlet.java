@@ -98,7 +98,7 @@ public class DashboardServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.DASHBOARD);
 
-    if ((boolean) context.get(ContextFields.IS_LOGGED_IN)) {
+    if (!(boolean) context.get(ContextFields.IS_LOGGED_IN)) {
       response.sendRedirect(URLPatterns.LANDING);
       return;
     }
