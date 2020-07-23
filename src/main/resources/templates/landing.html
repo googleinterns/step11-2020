@@ -19,23 +19,43 @@ limitations under the License. -->
   <link rel="stylesheet" type="text/css" href="static/styles/landing.css">
 {% endblock %}
 
-{% block main_content %}
-<div class="content-block" id="title-block">
-  <h1 class="page-title" id="title">Mentor Matching</h1>
+{% block title_block %}
+<div class="d-flex justify-content-around container-fluid px-0 vh-100 w-100" id="intro-to-mentorship">
+  <img id="header-pic" class="mw-100 mh-100" src="static/images/landing-mentorship-stock1.jpg" alt="Man getting mentored">
+  <div class="d-flex flex-column align-items-center justify-content-center mr-auto position-absolute text-white p-3" id="header-text">
+    <h1 class="display-1">Mentor Matcher</h1>
+    <p class="h1" id="hook">Find a mentor that fits you, or help others by becoming one.</p>
+  </div>
 </div>
-<div class="content-block" id="join-mentor-matcher">
-  <button class="join-matcher-button pretty-button" id="join-as-mentee">Find a<br>mentor</button>
-  <button class="join-matcher-button pretty-button" id="join-as-mentor">Become a mentor</button>
-</div>
-{%raw%}{% if !isLoggedIn %}
-<div class="content-block" id="member-sign-in">
-  <p class="short-tip" id="already-a-member">Already a member?</p>
-  <button class="pretty-button auth-button">Login</button>
-</div>
-{% endif %}{%endraw%}
 {% endblock %}
 
-{% block scripts %}
-  {{ super() }}
-  <script charset="utf-8" type="text/javascript" src="static/scripts/landing.js"></script>
+{% block main_content %}
+<div class="d-flex flex-lg-row flex-column justify-content-center align-items-center mt-5" id="join-mentor-matcher">
+  <div class="card join-matcher-card border-0">
+    <a class="text-primary mr-5" href="/questionnaire?formType=MENTEE">
+      <i class="card-img-top fa fa-fw fa-pencil questionnaire-button-icon"></i>
+      <div class="card-body d-flex flex-column">
+        <h2 class="card-text align-self-center">Find a mentor</h2>
+      </div>
+    </a>
+  </div>
+  <div class="card join-matcher-card border-0">
+    <a class="text-primary" href="/questionnaire?formType=MENTOR">
+      <i class="card-img-top fa fa-fw fa-mortar-board questionnaire-button-icon"></i>
+      <div class="card-body d-flex flex-column">
+        <h2 class="card-text align-self-center">Become a mentor</h2>
+      </div>
+    </a>
+  </div>
+</div>
+{%raw%}{% if !isLoggedIn %}
+<div class="mt-3 d-flex flex-row align-items-center justify-content-center" id="member-sign-in">
+  <p class="short-tip m-0" id="already-a-member">Already a member?</p>
+  <button class="btn btn-outline-primary ml-2">Log in</button>
+</div>
+{% endif %}{%endraw%}
+<div class="container align-items-center justify-content-center mt-5 pt-4 px-0 divider-top" id="quick-summary">
+  <p class="h3" id="pitch-paragraph">Mentor Matcher is a quick and easy website to find your ideal mentor. Our specialized algorithm shows you mentors that fit what you are looking for. Just simply fill out our 2 minute questionnaire and you can start matching!</p>
+</div>
+<div class="d-none d-lg-block" id="bottom-spacer"></div>
 {% endblock %}
