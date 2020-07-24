@@ -15,7 +15,6 @@
 var errorMessage = '';
 const form = document.getElementById('information-form');
 
-
 function checkForOther(val, label){
   let otherID = 'other-input-' + label;
   let otherContainer = document.getElementById(otherID);
@@ -53,10 +52,12 @@ function validateDate(date){
     dateError.innerHTML =
     '<label id="date-of-birth-error-label" for="dateOfBirth">Invalid date format: Should be MM/DD/YYYY</label>';
     errorMessage = 'invalid date';
+    document.getElementById('step1').scrollIntoView();
     return false;
   } else if (currentDay.isBefore(birthday)) {
     dateError.innerHTML = '<label id="date-of-birth-error-label" for="dateOfBirth">You can\'t be born in the future!</label>';
     errorMessage = 'invalid date';
+    document.getElementById('step1').scrollIntoView();
     return false;
   } else {
     errorMessage = '';
