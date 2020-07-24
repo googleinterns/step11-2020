@@ -29,7 +29,7 @@ limitations under the License.  #}
       {% else %}{{ mentor.educationLevelOther }}{% endif %}</p>
   <p class="mentor-description">{{ mentor.description }}</p>
   <p class="mentor-mentor-type">{{ mentor.mentorType.title }}</p>
-  <p class="mentor-focus-label">Focuses:{% if profileUser.focusList|length == 0 %} None{% endif %}</p>
+  <p class="mentor-focus-label">Focuses:{% if mentor.focusList|length == 0 %} None{% endif %}</p>
   <ul class="mentor-focus-list">
     {% for focus in mentor.focusList %}
       <li class="mentor-focus-item">{{ focus.title }}</li>
