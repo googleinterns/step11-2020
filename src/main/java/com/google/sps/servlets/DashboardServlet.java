@@ -14,14 +14,12 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.sps.data.DataAccess;
 import com.google.sps.data.DatastoreAccess;
-import com.google.sps.data.Mentee;
-import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorMenteeRelation;
+import com.google.sps.data.UserAccount;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ResourceConstants;
@@ -98,34 +96,31 @@ public class DashboardServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.DASHBOARD);
 
-    User user = dataAccess.getCurrentUser();
-    if (user != null) {
-      response.setContentType(ServletUtils.CONTENT_HTML);
-      Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.DASHBOARD);
-
-      Mentor mentor = dataAccess.getMentor(user.getUserId());
-      Mentee mentee = dataAccess.getMentee(user.getUserId());
-      if (mentor != null) {
-        Collection<MentorMenteeRelation> connectedMentees =
-            dataAccess.getMentorMenteeRelations(mentor);
-        context.put(ContextFields.MENTOR_MENTEE_RELATIONS, connectedMentees);
-
-        String renderedTemplate = jinjava.render(dashboardMentorTemplate, context);
-
-        response.getWriter().println(renderedTemplate);
-        return;
-      } else if (mentee != null) {
-        Collection<MentorMenteeRelation> connectedMentors =
-            dataAccess.getMentorMenteeRelations(mentee);
-        context.put(ContextFields.MENTOR_MENTEE_RELATIONS, connectedMentors);
-
-        String renderedTemplate = jinjava.render(dashboardMenteeTemplate, context);
-
-        response.getWriter().println(renderedTemplate);
-        return;
-      }
+    if (!(boolean) context.get(ContextFields.IS_LOGGED_IN)) {
+      response.sendRedirect(URLPatterns.LANDING);
+      return;
     }
-    response.sendRedirect(URLPatterns.LANDING);
+
+    UserAccount currentUser = (UserAccount) context.get(ContextFields.CURRENT_USER);
+    if (currentUser == null) {
+      response.sendRedirect(URLPatterns.LANDING);
+      return;
+    }
+
+    Collection<MentorMenteeRelation> connectedUsers =
+        dataAccess.getMentorMenteeRelations(currentUser);
+    context.put(ContextFields.MENTOR_MENTEE_RELATIONS, connectedUsers);
+
+    String template =
+        (boolean) context.get(ContextFields.IS_MENTOR)
+            ? dashboardMentorTemplate
+            : dashboardMenteeTemplate;
+
+    String renderedTemplate = jinjava.render(template, context);
+
+    response.setContentType(ServletUtils.CONTENT_HTML);
+    response.getWriter().println(renderedTemplate);
   }
 }
