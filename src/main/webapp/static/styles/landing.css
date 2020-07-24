@@ -1,4 +1,4 @@
-/* Copyright 2019 Google LLC
+/* Copyright 2020 Google LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,42 +13,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-.content-block#join-mentor-matcher {
+#intro-to-mentorship > #header-pic {
   width: 100%;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: center;
+  filter: grayscale(0.3) brightness(0.7);
+  object-fit: cover;
+  object-position: 70% top;
 }
 
-.content-block#title-block {
-  text-align: center;
-  vertical-align: center;
-}
-
-#join-mentor-matcher > .join-matcher-button {
-  font-size: 7.5vw;
-  font-weight: bolder;
-  padding: 0.5em;
-  margin: 3%;
-  box-sizing: border-box;
-  width: 44%;
-  height: 4em;
-  text-align: center;
-  vertical-align: middle;
-  background-color: var(--dark-blue-lightened)
-}
-
-#member-sign-in {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+#intro-to-mentorship > #header-text {
+  top: 20%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
+  width: fit-content;
 }
 
-#login-button {
-  background-color: var(--dark-blue-lightened);
+#header-text > #hook {
+  font-weight: 350;
+}
+
+#join-mentor-matcher .questionnaire-button-icon {
+  font-size: 15em;
+}
+
+#bottom-spacer {
+  min-height: 10em;
 }

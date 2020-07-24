@@ -1,4 +1,4 @@
-/* Copyright 2019 Google LLC
+/* Copyright 2020 Google LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,101 +14,56 @@ limitations under the License.
 */
 
 :root {
-  --blue: #348edc !important;
-  --blue-lightened: #99c6ed !important;
-  --dark-blue: #4c81af !important;
-  --dark-blue-lightened: #a4c0d7 !important;
-}
-
-html, body, .main-body {
-  height: 100%;
-  min-height: fit-content;
+  --blue: #4285F4 !important;
+  --light-blue: #dae7fc !important;
+  --primary: var(--blue) !important;
 }
 
 body {
-  margin: auto;
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: center;
+  font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif !important;
 }
 
-.main-body {
-  position: relative;
-  top: 48px;
-  margin: auto;
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: center;
-  width: 100%;
-  background-color: var(--dark-blue);
+.vh-60 {
+  height: 60vh !important;
 }
 
-.main-body::after {
+.bg-primary {
+  background-color: var(--primary) !important;
+}
+
+.bg-gray {
+  background-color: var(--gray) !important;
+}
+
+.text-primary {
+  color: var(--primary) !important;
+}
+
+.btn-outline-primary {
+  color: var(--primary) !important;
+  border-color: var(--primary) !important
+}
+
+.btn-outline-primary:hover {
+  color: white !important;
+  background-color: var(--primary) !important;
+}
+
+.text-light-blue {
+  color: var(--light-blue) !important;
+}
+
+.divider-top {
+  position: relative !important;
+}
+
+.divider-top::before {
   content: " ";
+  width: 35%;
+  height: 0;
+  border: solid thin var(--primary);
+  background-color: var(--primary);
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.main-content {
-  box-sizing: border-box;
-  z-index: 1;
-  height: -webkit-fill-available;
-  width: 100%;
-  max-width: 100%;
-}
-
-.pretty-button {
-  min-height: 30px;
-  padding: 0px 10px;
-  margin: 10px;
-  color: black;
-  font-family: roboto;
-  font-weight: bold;
-  font-size: 16px;
-  background-color: rgba(255, 255, 255, 0);
-  border-radius: 15px;
-  border-color: black;
-  border-width: 1px;
-}
-.pretty-button :hover {
-  background-color: rgba(255, 255, 255, 0.5);
-  color: rgba(0, 0, 0, 0.5);
-  border-color: rgba(0, 0, 0, 0.5);
-}
-
-.inline-pic-left {
-  float: left;
-  margin-right: 2em;
-}
-
-.inline-pic-right {
-  float: right;
-  margin-left: 2em;
-}
-
-.content-block {
-  display: flex;
-  flex-flow: column nowrap;
-  box-sizing: 100%;
-  width: 100%;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-.content-block > h1 {
-  align-self: center;
-}
-
-
-
-.content-block#title-block > #title {
-  font-size: 64px;
-  z-index: 1;
-  opacity: 1.0;
-  color: darkseagreen;
-  margin-top: 1em;
 }
