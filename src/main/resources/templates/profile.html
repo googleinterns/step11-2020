@@ -67,7 +67,7 @@ limitations under the License.  #}
           {% endif %}
           <p class="row user-country">Country: {{ profileUser.country.longName }}</p>
           <p class="row user-language">Language: {{ profileUser.language.longName }}</p>
-          <p class="row user-timezone">TimeZone: {{ profileUser.timezone.name }}: GMT {{ ("-" if profileUser.timezone.offset < 0 else "+") + profileUser.timezone.offset }}</p>
+          <p class="row user-timezone">TimeZone: {{ profileUser.timezone.name }}: GMT {{ ("+" if profileUser.timezone.offset >= 0 else "") + profileUser.timezone.offset }}</p>
           <p class="row user-ethnicity">Ethnicity: {% for ethnicity in profileUser.ethnicityList %}{% if ethnicity.title != "Other" %}{{ ethnicity.title }}
               {% else %}{{ profileUser.ethnicityOther }}{% endif %}{{ ", " if not loop.last }}{% endfor %}</p>
           <p class="row user-gender">Gender: {% if profileUser.gender.title != "Other" %}{{ profileUser.gender.title }}
