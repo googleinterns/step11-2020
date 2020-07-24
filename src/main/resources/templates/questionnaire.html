@@ -74,12 +74,12 @@ limitations under the License.  #}
       <div class="col-sm-10">
         <select id="timezone" name="timezone" class="form-control" required>
           {% raw %}{% if currentUser and currentUser.timezone %}
-          <option value="{{ currentUser.timezone}}" selected hidden> {{currentUser.timezone.name}}: {{timezone.offset}} </option>
+          <option value="{{currentUser.timezone}}" selected hidden>{{ currentUser.timezone.name }}: GMT {{ ("+" if currentUser.timezone.offset > 0 else "") + currentUser.timezone.offset }}</option>
           {% else %}
           <option value="" selected disabled hidden> select an option </option>
           {% endif %}{% endraw %}
           {% for timezone in timezones %}
-          <option value="{{timezone}}"> {{timezone.name}}: {{timezone.offset}} </option>
+          <option value="{{timezone}}">{{ timezone.name }}: GMT {{ ("+" if timezone.offset > 0 else "") + timezone.offset }}</option>
           {% endfor %}
         </select>
       </div>
