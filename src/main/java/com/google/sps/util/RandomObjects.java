@@ -79,7 +79,7 @@ public class RandomObjects {
         .name(name)
         .userID(randomNumberAsString(21))
         .email(email)
-        .dateOfBirth(new Date(1300187200000L - ((long) rnd.nextDouble()) * 630700000000L))
+        .dateOfBirth(new Date(1300187200000L - ((long) (rnd.nextDouble() * 630700000000L))))
         .country(randomEnum(Country.class))
         .language(randomEnum(Language.class))
         .timezone(randomEnum(TimeZone.class))
@@ -94,7 +94,7 @@ public class RandomObjects {
     } else {
       for (int i = rnd.nextInt(Ethnicity.values().length - 3); i > 0; i--) {
         Ethnicity newEthnicity = randomEnum(Ethnicity.class);
-        if (newEthnicity != Ethnicity.OTHER) {
+        if (newEthnicity != Ethnicity.OTHER && newEthnicity != Ethnicity.UNSPECIFIED) {
           ethnicities.add(newEthnicity);
         }
       }
