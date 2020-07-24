@@ -39,9 +39,15 @@ body {
   color: var(--primary) !important;
 }
 
+.btn-primary {
+  color: white !important;
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
 .btn-outline-primary {
   color: var(--primary) !important;
-  border-color: var(--primary) !important
+  border-color: var(--primary) !important;
 }
 
 .btn-outline-primary:hover {
