@@ -1,4 +1,4 @@
-/* Copyright 2019 Google LLC
+/* Copyright 2020 Google LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,14 +24,20 @@ limitations under the License.
   top: 20%;
   left: 50%;
   transform: translate(-50%, -50%);
+  width: fit-content;
 }
 
 #header-text > #hook {
   font-weight: 350;
 }
+@media (max-width: 576px) {
+  .join-matcher-card {
+    width: min-content;
+  }
+}
 
-#join-mentor-matcher .questionnaire-button-icon {
-  font-size: 15em;
+.join-matcher-card > .questionnaire-button-icon {
+  font-size: 200%;
 }
 
 #bottom-spacer {

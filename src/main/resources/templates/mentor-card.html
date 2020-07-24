@@ -1,4 +1,4 @@
-<!-- Copyright 2019 Google LLC
+{#  Copyright 2020 Google LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. -->
+limitations under the License.  #}
 
 <div class="mentor-card" id="{{ mentor.name }}-card">
   <p class="mentor-id" hidden>{{ mentor.datastoreKey }}</p>
@@ -18,7 +18,7 @@ limitations under the License. -->
   <p class="mentor-dob">DOB: {{ mentor.dateOfBirth }}</p>
   <p class="mentor-country">Country: {{ mentor.country.longName }}</p>
   <p class="mentor-language">Language: {{ mentor.language.longName }}</p>
-  <p class="mentor-timezone">TimeZone: {{ mentor.timezone.name }}: GMT {{ ("-" if profileUser.timezone.offset < 0 else "+") + profileUser.timezone.offset }}</p>
+  <p class="mentor-timezone">TimeZone: {{ mentor.timezone.name }}: GMT {{ ("+" if mentor.timezone.offset >= 0 else "") + mentor.timezone.offset }}</p>
   <p class="mentor-ethnicity">Ethnicity: {% for ethnicity in mentor.ethnicityList %}{% if ethnicity.title != "Other" %}{{ ethnicity.title }}
       {% else %}{{ mentor.ethnicityOther }}{% endif %}{{ ", " if not loop.last }}{% endfor %}</p>
   <p class="mentor-gender">Gender: {% if mentor.gender.title != "Other" %}{{ mentor.gender.title }}
@@ -29,7 +29,7 @@ limitations under the License. -->
       {% else %}{{ mentor.educationLevelOther }}{% endif %}</p>
   <p class="mentor-description">{{ mentor.description }}</p>
   <p class="mentor-mentor-type">{{ mentor.mentorType.title }}</p>
-  <p class="mentor-focus-label">Focuses:{% if profileUser.focusList|length == 0 %} None{% endif %}</p>
+  <p class="mentor-focus-label">Focuses:{% if mentor.focusList|length == 0 %} None{% endif %}</p>
   <ul class="mentor-focus-list">
     {% for focus in mentor.focusList %}
       <li class="mentor-focus-item">{{ focus.title }}</li>

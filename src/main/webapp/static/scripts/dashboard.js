@@ -12,27 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.data;
 
-/**
- * This enum represents a mentors's style of mentorship. Every Mentor object stores an instance of
- * this enum.
- *
- * @author tquintanilla
- * @version 1.0
- */
-public enum MentorType {
-  TUTOR("Tutor"),
-  COLLEGE("College Advisor"),
-  CAREER("Career Advisor");
-
-  private String title;
-
-  private MentorType(String title) {
-    this.title = title;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-}
+window.addEventListener("load", (event) => {
+  let cards = document.querySelectorAll(".user-card-short");
+  cards.forEach((userCard) => {
+    let email = userCard.querySelector(".user-email");
+    email.innerHTML = email.innerHTML.replace(/([\.@])/g, "<wbr>$1");
+  });
+});

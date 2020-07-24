@@ -1,4 +1,4 @@
-<!-- Copyright 2019 Google LLC
+{#  Copyright 2020 Google LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. -->
+limitations under the License.  #}
 
 {% extends "base.html" %}
 
@@ -78,12 +78,12 @@ limitations under the License. -->
       <div class="col-sm-10">
         <select id="timezone" name="timezone" class="form-control" required>
           {% raw %}{% if currentUser and currentUser.timezone %}
-          <option value="{{ currentUser.timezone}}" selected hidden> {{currentUser.timezone.name}}: {{timezone.offset}} </option>
+          <option value="{{currentUser.timezone}}" selected hidden>{{ currentUser.timezone.name }}: GMT {{ ("+" if currentUser.timezone.offset > 0 else "") + currentUser.timezone.offset }}</option>
           {% else %}
           <option value="" selected disabled hidden> select an option </option>
           {% endif %}{% endraw %}
           {% for timezone in timezones %}
-          <option value="{{timezone}}"> {{timezone.name}}: {{timezone.offset}} </option>
+          <option value="{{timezone}}">{{ timezone.name }}: GMT {{ ("+" if timezone.offset > 0 else "") + timezone.offset }}</option>
           {% endfor %}
         </select>
         <div class="valid-feedback">Please choose your location's timzeone</div>
@@ -118,9 +118,9 @@ limitations under the License. -->
         <legend class="col-form-label col-sm-2">Ethnicity(s)</legend>
         <div class="col-sm-10 pl-5">
           {% raw %}{% for ethnicity in ethnicities %}
-          <input type="checkbox" id="ethnicity-{{ethnicity}}" name="ethnicity" value="{{ethnicity}}" class="ethnicityCheckbox form-check-input"
+          <input type="checkbox" id="ethnicity-{{ethnicity}}" name="ethnicity" class="ethnicityCheckbox form-check-input"
           {%if ethnicity == 'OTHER'%} onclick="checklistCheckForOther('ethnicity')"{% endif %}
-          {% if currentUser and ethnicity in currentUser.ethnicityList %} checked{% endif %}>
+          value="{{ethnicity}}"{% if currentUser and ethnicity in currentUser.ethnicityList %} checked{% endif %}>
           <label class="form-check-label col-sm-2" for="ethnicity-{{ethnicity}}"> {{ethnicity.title}} </label><br>
           {% endfor %}{% endraw %}
           <div id="other-input-ethnicity" class="pt-3"></div>

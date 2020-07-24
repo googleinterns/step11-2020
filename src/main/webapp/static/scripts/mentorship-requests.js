@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 // limitations under the License.
 
 const menteeCardContainer = document.getElementById("mentee-card-container");
-Array.prototype.forEach.call(document.querySelectorAll(".mentee-card"), (menteeCard) => {
+document.querySelectorAll(".mentee-card").forEach(menteeCard => {
   const acceptButton = menteeCard.querySelector("button#yes");
   const denyButton = menteeCard.querySelector("button#no");
   acceptButton.addEventListener("click", async (event) => {
@@ -37,7 +37,6 @@ const sendRequestDecision = async (requestID, choice) => {
       method: "POST",
       body: new URLSearchParams({requestID, choice})
     });
-  let text = await response.text();
-  let data = JSON.parse(text);
+  let data = await response.json();
   return data.success;
 }

@@ -13,13 +13,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#creator-cards-container {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: space-around;
+#mentorship-requests-tips > * {
+  width: fit-content;
 }
 
-.creator-card {
-  max-width: min-content;
+#mentorship-requests-tips > :last-child {
+  margin-bottom: 1em !important;
 }
