@@ -15,22 +15,47 @@ limitations under the License.  #}
 {% extends "base.html" %}
 
 {% block styles %}
-  {{ super() }}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="static/styles/mentorship-requests.css">
 {% endblock %}
 
 {% block page_title %}Mentorship Requests{% endblock %}
 
 {% block main_content %}
-<div class="content-block" id="mentee-card-container">
+<div class="px-3" id="mentorship-requests-tips">
+  {% raw %}{% if mentorshipRequests|length > 0 %}
+    <p class="m-0">Connect with some mentees and help them through their journey!</p>
+  {% else %}
+    <p class="m-0">
+      You haven't been contacted by any mentees yet!
+    </p>
+  {% endif %}{% endraw %}
+</div>
+<div class="d-flex flew-row flex-wrap justify-content-start align-items-start" id="mentee-card-container">
   {% raw %}{% for request in mentorshipRequests %}
     {% set mentee = request.fromUser %}
-    <div class="mentee-card" id="{{ mentee.name }}-card">
-      <p class="request-id" hidden>{{ request.datastoreKey }}</p>
-      <h3 class="mentee-name">Name: {{ mentee.name }}</h3>
-      <p class="mentee-name">UserKey: {{ mentee.datastoreKey }}</p>
-      <div class="request-buttons">
-        <button id="yes">Accept</button>
-        <button id="no">Decline</button>
+    <div class="card mentee-card mx-4 mb-4" id="user-{{ mentee.userID }}">
+      <div class="card-body d-flex flex-column align-items-start justify-content-start position-relative">
+        <p class="request-id invisible d-none" hidden>{{ request.datastoreKey }}</p>
+        <h1 class="card-text user-name text-break"><a class="stretched-link" href="/profile?userID={{ mentee.userID }}">{{ mentee.name }}</a></h1>
+        <p class="card-text lead user-email text-break">{{ mentee.email }}</p>
+        <p class="card-text user-goal text-break">Subject focus: {{ mentee.goal.title }}</p>
+        <p class="card-text user-desired-meeting-frequency text-break">Meeting times: {{ mentee.desiredMeetingFrequency.title }}</p>
+        <p class="card-text user-desired-mentor-type text-break">Preferred mentor: {{ mentee.desiredMentorType.title }}</p>
+        <p class="card-text user-country text-break">Country: {{ mentee.country.longName }}</p>
+        <p class="card-text user-language text-break">Language: {{ mentee.language.longName }}</p>
+        <p class="card-text user-timezone text-break">TimeZone: {{ mentee.timezone.name }}: GMT {{ ("+" if mentee.timezone.offset >= 0 else "") + mentee.timezone.offset }}</p>
+        <p class="card-text user-ethnicity text-break">Ethnicity: {% for ethnicity in mentee.ethnicityList %}{% if ethnicity.title != "Other" %}{{ ethnicity.title }}{% else %}{{ mentee.ethnicityOther }}{% endif %}{{ ", " if not loop.last }}{% endfor %}</p>
+        <p class="card-text user-gender text-break">Gender: {% if mentee.gender.title != "Other" %}{{ mentee.gender.title }}
+            {% else %}{{ mentee.genderOther }}{% endif %}</p>
+        <p class="card-text user-first-gen text-break">First-gen: {% if mentee.firstGen %}Yes{% else %}No{% endif %}</p>
+        <p class="card-text user-low-income text-break">Low income: {% if mentee.firstGen %}Yes{% else %}No{% endif %}</p>
+        <p class="card-text user-education-level text-break">Education: {% if mentee.educationLevel.title != "Other" %}{{ mentee.educationLevel.title }}
+            {% else %}{{ mentee.educationLevelOther }}{% endif %}</p>
+      </div>
+      <div class="card-body btn-group-vertical request-buttons w-100" role="group" aria-label="Basic example">
+        <button class="btn btn-outline-primary" id="yes">Accept</button>
+        <button class="btn btn-outline-primary" id="no">Decline</button>
       </div>
     </div>
   {% endfor %} {% endraw %}

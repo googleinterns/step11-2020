@@ -18,7 +18,7 @@ limitations under the License.  #}
   {{ super() }}
   <link rel="stylesheet" type="text/css" href="static/styles/profile.css">
 {% endblock %}
-{% block page_title %}{% if profileUser.userID == currentUser.userID %}Your{% else %}{{ profileUser.name }}'s{% endif %} Profile{% endblock %}
+{% block page_title %}Profile{% endblock %}
 
 {% block main_content %}{% raw %}
 <div id="profile-container">
