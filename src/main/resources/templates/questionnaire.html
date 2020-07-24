@@ -34,13 +34,16 @@ limitations under the License.  #}
 <div class="form-container d-flex align-items-center justify-content-center mt-5 pt-4 px-0">
   <form id="information-form" action="/questionnaire" method="POST" onsubmit="return checkForm()">
     <input type="hidden" name="formType" id="formType" value={{"{{"}}formType{{"}}"}} />
-    <h3> Step 1: Basic Personal Information </h3>
+    <div class="step-div">
+      <h3 class="display-4 step-header"> Step 1: Basic Personal Information </h3>
+    </div>
 
     <div class="form-group row">
       <label for="name" class="col-form-label col-sm-2">Your Name</label>
       <div class="col-sm-10">
         <input type="text" id="name" name="name" class="form-control" placeholder="Your name.." {% raw %}{% if currentUser and currentUser.name %} value="{{currentUser.name}}"
         {% endif %}{% endraw %} required>
+        <div class="valid-feedback">Please enter your name.</div>
       </div>
     </div>
 
@@ -49,8 +52,8 @@ limitations under the License.  #}
       <div class="col-sm-10">
         <input type="date" name="dateOfBirth" id="dateOfBirth" class="form-control" {% raw %}{% if currentUser and currentUser.dateOfBirth != '' %} value={{currentUser.dateOfBirth}}
         {% endif %}{% endraw %} required>
+        <div id="date-of-birth-error-container" class="invalid-feedback"></div>
       </div>
-      <div id="date-of-birth-error-container"></div>
     </div>
 
     <div class="form-group row">
@@ -66,6 +69,7 @@ limitations under the License.  #}
           <option value="{{country}}">{{country.longName}}</option>
           {% endfor %}
         </select>
+        <div class="valid-feedback">Please choose a country.</div>
       </div>
     </div>
 
@@ -82,6 +86,7 @@ limitations under the License.  #}
           <option value="{{timezone}}">{{ timezone.name }}: GMT {{ ("+" if timezone.offset > 0 else "") + timezone.offset }}</option>
           {% endfor %}
         </select>
+        <div class="valid-feedback">Please choose your location's timzeone</div>
       </div>
     </div>
 
@@ -98,15 +103,16 @@ limitations under the License.  #}
           <option value="{{language}}"> {{language.longName}}</option>
           {% endfor %}
         </select>
+        <div class="valid-feedback">Please choose your language.</div>
       </div>
     </div>
 
 
-
-
-    <h3 class="divider-top mt-5 pt-4"> Step 2: More Personal Information </h3>
-    <p> This information is used to find a person that best fits you.
-       Feel free to fill in with whatever you're comfortable sharing: everything in this step is optional </p>
+    <div class="step-div">
+      <h3 class="divider-top mt-5 pt-4 display-4 step-header"> Step 2: More Personal Information </h3>
+      <p> This information is used to find a person that best fits you.
+         Feel free to fill in with whatever you're comfortable sharing; everything in this step is optional.</p>
+    </div>
     <fieldset class="form-group">
       <div id="ethnicity-div" class="row">
         <legend class="col-form-label col-sm-2">Ethnicity(s)</legend>
@@ -182,7 +188,9 @@ limitations under the License.  #}
       </div>
     </fieldset>
 
-    <h3 class="divider-top mt-5 pt-4"> Step 3: Goals and Logistics </h3>
+    <div class="step-div">
+      <h3 class="divider-top mt-5 pt-4 display-4 step-header"> Step 3: Goals and Logistics </h3>
+    </div>
     <!-- Displayed to those who selected "Become a Mentor" -->
     {% raw %}{% if formType == "mentor" %} {% endraw %}
     <div id="mentorType-div" class="form-group row">
@@ -198,6 +206,7 @@ limitations under the License.  #}
           <option value="{{mentorType}}"> {{mentorType.title}}</option>
           {% endfor %}
         </select>
+        <div class="valid-feedback">Please choose a mentor type.</div>
       </div>
     </div>
 
@@ -229,6 +238,7 @@ limitations under the License.  #}
           <option value="{{mentorType}}"> {{mentorType.title}}</option>
           {% endfor %}
         </select>
+        <div class="valid-feedback">Please choose a mentor type.</div>
       </div>
     </div>
 
@@ -245,12 +255,13 @@ limitations under the License.  #}
           <option value="{{meetingFrequency}}"> {{meetingFrequency.title}}</option>
           {% endfor %}
         </select>
+        <div class="valid-feedback">Please choose how often you'd like to meet.</div>
       </div>
     </div>
 
 
     <div id="goal-div" class="form-group row">
-      <label for="goal" class="col-form-label col-sm-2">What subject would you like to focus on (if applicable)? </label>
+      <label for="goal" class="col-form-label col-sm-2">What subject would you like to focus on? </label>
       <div class="col-sm-10">
         <select id="goal" name="goal" class="form-control">
           {% raw %} {% if currentUser and currentUser.goal %}
@@ -266,8 +277,9 @@ limitations under the License.  #}
     </div>
     {% raw %} {% endif %} {% endraw %}
 
-
-    <h3 class="divider-top mt-5 pt-4"> Step 4: Extra </h3>
+    <div class="step-div">
+      <h3 class="divider-top mt-5 pt-4 display-4 step-header"> Step 4: Extra </h3>
+    </div>
 
     <div id="image-div" class="form-group row">
       <label for="image-upload" class="col-form-label col-sm-2"> (Optional) Upload an image of yourself </label>
