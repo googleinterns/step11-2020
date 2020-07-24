@@ -30,22 +30,18 @@ limitations under the License.  #}
 {% endblock %}
 
 {% block main_content %}
-<div class="d-flex flex-row flex-wrap justify-content-center align-items-center mt-5" id="join-mentor-matcher">
-  <div class="card join-matcher-card border-0">
-    <a class="text-primary mr-5" href="/questionnaire?formType=MENTEE">
-      <i class="card-img-top fa fa-fw fa-pencil questionnaire-button-icon"></i>
-      <div class="card-body d-flex flex-column">
-        <h2 class="card-text align-self-center">Find a mentor</h2>
-      </div>
-    </a>
+<div class="d-flex flex-row flex-wrap justify-content-center align-items-center mt-5 text-primary" id="join-mentor-matcher">
+  <div class="card join-matcher-card border-0 mr-5 display-1">
+    <i class="card-img-top fa fa-fw fa-pencil questionnaire-button-icon w-100"></i>
+    <div class="card-body d-flex flex-column">
+      <a class="h2 stretched-link card-text text-center align-self-center" href="/questionnaire?formType=MENTEE">Find a mentor</a>
+    </div>
   </div>
-  <div class="card join-matcher-card border-0">
-    <a class="text-primary" href="/questionnaire?formType=MENTOR">
-      <i class="card-img-top fa fa-fw fa-mortar-board questionnaire-button-icon"></i>
-      <div class="card-body d-flex flex-column">
-        <h2 class="card-text align-self-center">Become a mentor</h2>
-      </div>
-    </a>
+  <div class="card join-matcher-card border-0 display-1">
+    <i class="card-img-top fa fa-fw fa-mortar-board questionnaire-button-icon w-100"></i>
+    <div class="card-body d-flex flex-column">
+      <a class="h2 stretched-link card-text text-center align-self-center" href="/questionnaire?formType=MENTOR">Become <span class="text-nowrap">a mentor</span></a>
+    </div>
   </div>
 </div>
 {%raw%}{% if !isLoggedIn %}
