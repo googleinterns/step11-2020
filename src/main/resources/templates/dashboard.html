@@ -14,24 +14,30 @@ limitations under the License. #}
 
 {% extends "base.html" %}
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="static/styles/dashboard.css">
+{% endblock %}
+
 {% block page_title %}Dashboard{% endblock %}
 
 {% block main_content %}
 {% raw %}{% set otherUserType = "mentor" if currentUser.userType.title == "Mentee" else "mentee" %}{% endraw %}
-<div class="">
+<div class="px-3" id="dashboard-tips">
   {% raw %}{% if mentorMenteeRelations|length > 0 %}
-  <p>Reach out to your {{ otherUserType }} with a quick email!</p>
-  {% if currentUser.userType.title == "Mentee" %}
-    <p class="small">&nbsp;&nbsp;&nbsp;&nbsp;This page won't show pending requests.</p>
-  {% endif %}
-  <p class="position-relative">
-    You haven't connected with any {{ otherUserType }}s yet!
+    <p class="m-0">Reach out to your {{ otherUserType }} with a quick email!</p>
     {% if currentUser.userType.title == "Mentee" %}
-      Try finding one at the <a class="stretched-link">Find Mentor</a> page.
-    {% else %}
-      Find interested menttees on the <a class="stretched-link">Mentorship Requests</a> page.
+      <p class="small text-muted m-0">&nbsp;&nbsp;&nbsp;&nbsp;This page won't show pending requests.</p>
     {% endif %}
-  </p>
+  {% else %}
+    <p class="position-relative m-0">
+      You haven't connected with any {{ otherUserType }}s yet!
+      {% if currentUser.userType.title == "Mentee" %}
+        Try finding one at the <a class="stretched-link" href="/mentorship-requests">Find Mentor</a> page.
+      {% else %}
+        Find interested mentees on the <a class="stretched-link" href="/find-mentor">Mentorship Requests</a> page.
+      {% endif %}
+    </p>
   {% endif %}{% endraw %}
 </div>
 <div class="d-flex flex-row flex-wrap justify-content-start align-items-start" id="user-cards-container">
