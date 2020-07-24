@@ -24,205 +24,266 @@ limitations under the License. -->
   {% endfor %}
 {% endblock %}
 
+{% block title_block %}
+  <div class="d-flex flex-column align-items-center justify-content-center mr-auto pt-5" id="header-text">
+    <h1 class="display-1">{% raw %}{{formType|capitalize}}{% endraw %} Matcher</h1>
+  </div>
+{% endblock %}
+
 {% block main_content %}
-<h1> Form </h1>
-<div class = "form-container">
+<div class="form-container d-flex align-items-center justify-content-center mt-5 pt-4 px-0">
   <form id="information-form" action="/questionnaire" method="POST" onsubmit="return checkForm()">
-  <input type="hidden" name="formType" id="formType" value={{"{{"}}formType{{"}}"}} />
+    <input type="hidden" name="formType" id="formType" value={{"{{"}}formType{{"}}"}} />
     <h3> Step 1: Basic Personal Information </h3>
-    <div class="form-group">
-      <input type="text" id="name" name="name" class="form-control" placeholder="Your name.." {% raw %}{% if currentUser and currentUser.name %} value="{{currentUser.name}}"
-      {% endif %}{% endraw %} required>
-      <label for="name">Your Name</label>
+
+    <div class="form-group row">
+      <label for="name" class="col-form-label col-sm-2">Your Name</label>
+      <div class="col-sm-10">
+        <input type="text" id="name" name="name" class="form-control" placeholder="Your name.." {% raw %}{% if currentUser and currentUser.name %} value="{{currentUser.name}}"
+        {% endif %}{% endraw %} required>
+      </div>
     </div>
 
-    <div class="form-group">
-      <input type="date" name="dateOfBirth" id="dateOfBirth" {% raw %}{% if currentUser and currentUser.dateOfBirth != '' %} value={{currentUser.dateOfBirth}}
-      {% endif %}{% endraw %} required>
-      <div id="date-of-birth-error-container"></div><br>
-      <label for="dateOfBirth">Date of Birth:</label>
+    <div class="form-group row">
+      <label for="dateOfBirth" class="col-form-label col-sm-2">Date of Birth:</label>
+      <div class="col-sm-10">
+        <input type="date" name="dateOfBirth" id="dateOfBirth" class="form-control" {% raw %}{% if currentUser and currentUser.dateOfBirth != '' %} value={{currentUser.dateOfBirth}}
+        {% endif %}{% endraw %} required>
+      </div>
+      <div id="date-of-birth-error-container"></div>
     </div>
 
-    <div class="form-group">
-      <select id="country" name="country" required>
-        {% raw %} {% if currentUser and currentUser.country %}
-        <option value="{{ currentUser.country }}" selected hidden> {{currentUser.country.longName}} </option>
-        {% else %}
-        <option value="" selected hidden> select an option </option>
-        {% endif %} {% endraw %}
-        {% for country in countries %}
-        <option value="{{country}}">{{country.longName}}</option>
-        {% endfor %}
-      </select>
-        <label for="country">Country</label>
+    <div class="form-group row">
+      <label for="country" class="col-form-label col-sm-2">Country</label>
+      <div class="col-sm-10">
+        <select id="country" name="country" class="form-control" required>
+          {% raw %} {% if currentUser and currentUser.country %}
+          <option value="{{ currentUser.country }}" selected hidden> {{currentUser.country.longName}} </option>
+          {% else %}
+          <option value="" selected hidden> select an option </option>
+          {% endif %} {% endraw %}
+          {% for country in countries %}
+          <option value="{{country}}">{{country.longName}}</option>
+          {% endfor %}
+        </select>
+      </div>
     </div>
 
-    <div class="form-group">
-      <select id="timezone" name="timezone" required >
-        {% raw %}{% if currentUser and currentUser.timezone %}
-        <option value="{{ currentUser.timezone}}" selected hidden> {{currentUser.timezone.name}}: {{timezone.offset}} </option>
-        {% else %}
-        <option value="" selected disabled hidden> select an option </option>
-        {% endif %}{% endraw %}
-        {% for timezone in timezones %}
-        <option value="{{timezone}}"> {{timezone.name}}: {{timezone.offset}} </option>
-        {% endfor %}
-      </select>
-      <label for="timezone">Your Location's Timezone</label>
+    <div class="form-group row">
+      <label for="timezone" class="col-form-label col-sm-2">Your Location's Timezone</label>
+      <div class="col-sm-10">
+        <select id="timezone" name="timezone" class="form-control" required>
+          {% raw %}{% if currentUser and currentUser.timezone %}
+          <option value="{{ currentUser.timezone}}" selected hidden> {{currentUser.timezone.name}}: {{timezone.offset}} </option>
+          {% else %}
+          <option value="" selected disabled hidden> select an option </option>
+          {% endif %}{% endraw %}
+          {% for timezone in timezones %}
+          <option value="{{timezone}}"> {{timezone.name}}: {{timezone.offset}} </option>
+          {% endfor %}
+        </select>
+      </div>
     </div>
 
-    <div class="form-group">
-      <select id="language" name="language">
-        {% raw %}{% if currentUser and currentUser.language %}
-        <option value="{{ currentUser.language }}" selected hidden> {{currentUser.language.longName}}</option>
-        {% else %}
-        <option value="" selected disabled hidden> select an option </option>
-        {% endif %}{% endraw %}
-        {% for language in languages %}
-        <option value="{{language}}"> {{language.longName}}</option>
-        {% endfor %}
-      </select>
-      <label for="language">Preferred Language</label>
+    <div class="form-group row">
+      <label for="language" class="col-form-label col-sm-2">Preferred Language</label>
+      <div class="col-sm-10">
+        <select id="language" name="language" class="form-control">
+          {% raw %}{% if currentUser and currentUser.language %}
+          <option value="{{ currentUser.language }}" selected hidden> {{currentUser.language.longName}}</option>
+          {% else %}
+          <option value="" selected disabled hidden> select an option </option>
+          {% endif %}{% endraw %}
+          {% for language in languages %}
+          <option value="{{language}}"> {{language.longName}}</option>
+          {% endfor %}
+        </select>
+      </div>
     </div>
 
 
-    <h3> Step 2: More Personal Information </h3>
+
+
+    <h3 class="divider-top mt-5 pt-4"> Step 2: More Personal Information </h3>
     <p> This information is used to find a person that best fits you.
        Feel free to fill in with whatever you're comfortable sharing: everything in this step is optional </p>
-    <div id="ethnicity-div" class="form-check">
-     <p> Check off whatever best applies to you </p>
-     {% raw %}{% for ethnicity in ethnicities %}
-     <input type="checkbox" class="ethnicityCheckbox form-check-input" id="ethnicity-{{ethnicity}}" name="ethnicity"
-     value="{{ethnicity}}"{% if currentUser and ethnicity in currentUser.ethnicityList %} checked{% endif %}
-     {%if ethnicity == 'OTHER'%} onclick="checklistCheckForOther('ethnicity')" {% endif %}>
-     <label class="form-check-label" for="ethnicity-{{ethnicity}}"> {{ethnicity.title}} </label><br>
-     {% endfor %}{% endraw %}
-     <!-- Used to store ethnicity values  -->
-    </div> <br>
-    <div id="other-input-ethnicity"></div><br>
-
-    <label for="gender">Gender</label>
-    <select id="gender" name="gender" onchange="checkForOther(this.value, 'gender')">
-      {% raw %}{% if currentUser and currentUser.gender %}
-      <option value="{{ currentUser.gender }}" selected hidden> {{currentUser.gender.title}}</option>
-      {% else %}
-      <option value="" selected disabled hidden> select an option </option>
-      {% endif %}{% endraw %}
-      {% for gender in genders %}
-      <option value="{{gender}}"> {{gender.title}}</option>
-      {% endfor %}
-    </select>
-    <div id="other-input-gender"></div><br>
-
-    <label for="educationLevel">Current/Highest Level of Education</label>
-    <select id="educationLevel" name="educationLevel"  onchange="checkForOther(this.value, 'educationLevel')">
-      {% raw %}{% if currentUser and currentUser.educationLevel %}
-      <option value="{{ currentUser.educationLevel }}" selected hidden> {{currentUser.educationLevel.title}}</option>
-      {% else %}
-      <option value="" selected disabled hidden> select an option </option>
-      {% endif %}{% endraw %}
-      {% for educationLevel in educationLevels %}
-      <option value="{{educationLevel}}"> {{educationLevel.title}}</option>
-      {% endfor %}
-    </select>
-    <div id="other-input-educationLevel"></div><br>
-
-    <div id="firstGen" class="form-check">
-      <p> Do/did you consider yourself a first generation student?</p>
-      <input class="form-check-input" type="radio" name="firstGen" id="first-gen-true" value="true" {% raw %}{% if currentUser and currentUser.firstGen %} checked {% endif %}{% endraw %}>
-      <label class="form-check-label" for="first-gen-true"> Yes </label><br>
-      <input class="form-check-input" type="radio" name="firstGen" id="first-gen-false" value="false" {% raw %}{% if currentUser and not currentUser.firstGen %} checked
-      {% endif %}{% endraw %}>
-      <label class="form-check-label" for="first-gen-false"> No </label><br>
-    </div>
-    <div id="low-income">
-      <p> Do/did you consider yourself a low income student?</p>
-      <div id="low-income-true" class="form-check">
-        <p> Do/did you consider yourself a low income student?</p>
-        <input class="form-check-input" type="radio" name="lowIncome" id="low-income-true" value="true" {% raw %}{% if currentUser and currentUser.firstGen %} checked {% endif %}{% endraw %}>
-        <label class="form-check-label" for="low-income-true"> Yes </label><br>
+    <fieldset class="form-group">
+      <div id="ethnicity-div" class="row">
+        <legend class="col-form-label col-sm-2">Ethnicity(s)</legend>
+        <div class="col-sm-10 pl-5">
+          {% raw %}{% for ethnicity in ethnicities %}
+          <input type="checkbox" id="ethnicity-{{ethnicity}}" name="ethnicity" value="{{ethnicity}}" class="ethnicityCheckbox form-check-input"
+          {%if ethnicity == 'OTHER'%} onclick="checklistCheckForOther('ethnicity')"{% endif %}
+          {% if currentUser and ethnicity in currentUser.ethnicityList %} checked{% endif %}>
+          <label class="form-check-label col-sm-2" for="ethnicity-{{ethnicity}}"> {{ethnicity.title}} </label><br>
+          {% endfor %}{% endraw %}
+          <div id="other-input-ethnicity" class="pt-3"></div>
+        </div>
       </div>
-      <div id="low-income-false" class="form-check">
-        <input class="form-check-input" type="radio" name="lowIncome" id="low-income-false" value="false" {% raw %}{% if currentUser and not currentUser.firstGen %} checked
-        {% endif %}{% endraw %}>
-        <label class="form-check-label" for="low-income-false"> No </label><br>
+    </fieldset>
+
+    <div id="gender-div" class="form-group row">
+      <label for="gender" class="col-form-label col-sm-2">Gender</label>
+      <div class="col-sm-10">
+        <select id="gender" name="gender" class="form-control" onchange="checkForOther(this.value, 'gender')">
+          {% raw %}{% if currentUser and currentUser.gender %}
+          <option value="{{ currentUser.gender }}" selected hidden> {{currentUser.gender.title}}</option>
+          {% else %}
+          <option value="" selected disabled hidden> select an option </option>
+          {% endif %}{% endraw %}
+          {% for gender in genders %}
+          <option value="{{gender}}"> {{gender.title}}</option>
+          {% endfor %}
+        </select>
+        <div id="other-input-gender" class="pt-3"></div>
       </div>
     </div>
 
+    <div id="educationLevel-div" class="form-group row">
+      <label for="educationLevel" class="col-form-label col-sm-2">Current/Highest Level of Education</label>
+        <div class="col-sm-10">
+        <select id="educationLevel" name="educationLevel"  class="form-control" onchange="checkForOther(this.value, 'educationLevel')">
+          {% raw %}{% if currentUser and currentUser.educationLevel %}
+          <option value="{{ currentUser.educationLevel }}" selected hidden> {{currentUser.educationLevel.title}}</option>
+          {% else %}
+          <option value="" selected disabled hidden> select an option </option>
+          {% endif %}{% endraw %}
+          {% for educationLevel in educationLevels %}
+          <option value="{{educationLevel}}"> {{educationLevel.title}}</option>
+          {% endfor %}
+        </select>
+        <div id="other-input-educationLevel" class="pt-3"></div>
+      </div>
+    </div>
 
-    <h3> Step 3: Goals and Logistics </h3>
+    <fieldset class="form-group">
+      <div id="firstGen" class="row">
+        <legend class="col-form-label col-sm-2">Do/did you consider yourself a first generation student?</legend>
+        <div class="col-sm-10 pl-5">
+          <input class="form-check-input" type="radio" name="firstGen" id="first-gen-true" value="true" {% raw %}{% if currentUser and currentUser.firstGen %} checked {% endif %}{% endraw %}>
+          <label class="form-check-label" for="first-gen-true"> Yes </label><br>
+          <input class="form-check-input" type="radio" name="firstGen" id="first-gen-false" value="false" {% raw %}{% if currentUser and not currentUser.firstGen %} checked
+          {% endif %}{% endraw %}>
+          <label class="form-check-label" class="col-form-label col-sm-2" for="first-gen-false"> No </label><br>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="form-group">
+      <div id="low-income" class="row">
+        <legend class="col-form-label col-sm-2">Do/did you consider yourself a low income student?</legend>
+        <div class="col-sm-10 pl-5">
+          <input class="form-check-input" type="radio" name="lowIncome" id="low-income-true" value="true" {% raw %}{% if currentUser and currentUser.firstGen %} checked {% endif %}{% endraw %}>
+          <label class="form-check-label" for="low-income-true"> Yes </label><br>
+          <input class="form-check-input" type="radio" name="lowIncome" id="low-income-false" value="false" {% raw %}{% if currentUser and not currentUser.firstGen %} checked
+          {% endif %}{% endraw %}>
+          <label class="form-check-label" for="low-income-false"> No </label><br>
+        </div>
+      </div>
+    </fieldset>
+
+    <h3 class="divider-top mt-5 pt-4"> Step 3: Goals and Logistics </h3>
     <!-- Displayed to those who selected "Become a Mentor" -->
     {% raw %}{% if formType == "mentor" %} {% endraw %}
-    <label for="mentorType"> What type of Mentor would you like to be? </label>
-    <select id="mentorType" name="mentorType" required>
-      {% raw %} {% if currentUser and currentUser.mentorType %}
-      <option value="{{ currentUser.mentorType }}" selected hidden> {{currentUser.mentorType.title}} </option>
-      {% else %}
-      <option value="" selected hidden> select an option </option>
-      {% endif %} {% endraw %}
-      {% for mentorType in mentorTypes %}
-      <option value="{{mentorType}}"> {{mentorType.title}}</option>
-      {% endfor %}
-    </select> <br>
+    <div id="mentorType-div" class="form-group row">
+      <label for="mentorType" class="col-form-label col-sm-2"> What type of Mentor would you like to be? </label>
+      <div class="col-sm-10">
+        <select id="mentorType" name="mentorType" class="form-control" required>
+          {% raw %} {% if currentUser and currentUser.mentorType %}
+          <option value="{{ currentUser.mentorType }}" selected hidden> {{currentUser.mentorType.title}} </option>
+          {% else %}
+          <option value="" selected hidden> select an option </option>
+          {% endif %} {% endraw %}
+          {% for mentorType in mentorTypes %}
+          <option value="{{mentorType}}"> {{mentorType.title}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
 
-    <div id="focusList-div" class="form-check">
-      <p> What areas would you like to focus on (Choose all that apply). </p>
-      {% raw %}{% for topic in topics %}
-      <input type="checkbox" class="focusListCheckbox form-check-input" id="focus-{{ethnicity}}" name="focusList" value="{{topic}}" {% if currentUser and topic in currentUser.focusList %} checked
-      {% endif %}>
-      <label for="focus-{{ethnicity}}" class="form-check-label"> {{topic.title}} </label><br>
-      {% endfor %} {% endraw %}
-  </div> <br>
+    <fieldset class="form-group">
+      <div id="focusList-div" class="row">
+        <legend class="col-form-label col-sm-2">What areas would you like to focus on (Choose all that apply). </legend>
+        <div class="col-sm-10 pl-5">
+          {% raw %}{% for topic in topics %}
+          <input type="checkbox" class="focusListCheckbox form-check-input" id="focus-{{topic.title}}" name="focusList" value="{{topic}}" {% if currentUser and topic in currentUser.focusList %} checked
+          {% endif %}>
+          <label for="focus-{{topic.title}}" class="form-check-label"> {{topic.title}} </label><br>
+          {% endfor %} {% endraw %}
+        </div>
+      </div>
+    </fieldset>
 
     <!-- Displayed to those who selected "Find a Mentor" -->
     {% raw %} {% else %} {% endraw %}
-    <label for="mentorType"> What type of Mentor are you looking for? </label>
-    <select id="mentorType" name="mentorType" required>
-      {% raw %} {% if currentUser and currentUser.desiredMentorType %}
-      <option value="{{ currentUser.desiredMentorType }}" selected hidden> {{currentUser.desiredMentorType.title}} </option>
-      {% else %}
-      <option value="" selected hidden> select an option </option>
-      {% endif %} {% endraw %}
-      {% for mentorType in mentorTypes %}
-      <option value="{{mentorType}}"> {{mentorType.title}}</option>
-      {% endfor %}
-    </select> <br>
+    <div id="mentorType-div" class="form-group row">
+      <label for="mentorType" class="col-form-label col-sm-2"> What type of Mentor are you looking for? </label>
+      <div class="col-sm-10">
+        <select id="mentorType" name="mentorType" class="form-control" required>
+          {% raw %} {% if currentUser and currentUser.desiredMentorType %}
+          <option value="{{ currentUser.desiredMentorType }}" selected hidden> {{currentUser.desiredMentorType.title}} </option>
+          {% else %}
+          <option value="" selected hidden> select an option </option>
+          {% endif %} {% endraw %}
+          {% for mentorType in mentorTypes %}
+          <option value="{{mentorType}}"> {{mentorType.title}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
 
-    <label for="desiredMeetingFrequency">How often would you like to meet?</label>
-    <select id="desiredMeetingFrequency" name="desiredMeetingFrequency" required>
-      {% raw %} {% if currentUser  and currentUser.desiredMeetingFrequency %}
-      <option value="{{ currentUser.desiredMeetingFrequency }}" selected hidden> {{currentUser.desiredMeetingFrequency.title}} </option>
-      {% else %}
-      <option value="" selected hidden> select an option </option>
-      {% endif %} {% endraw %}
-      {% for meetingFrequency in meetingFrequencies %}
-      <option value="{{meetingFrequency}}"> {{meetingFrequency.title}}</option>
-      {% endfor %}
-    </select> <br>
-
-    <label for="goal">What subject would you like to focus on (if applicable)? </label>
-    <select id="goal" name="goal" required>
-      {% raw %} {% if currentUser and currentUser.goal %}
-      <option value="{{ currentUser.goal }}" selected hidden> {{currentUser.goal.title}} </option>
-      {% else %}
-      <option value="" selected hidden> select an option </option>
-      {% endif %}
-      {% for topic in topics %}
-      <option value="{{topic}}"> {{topic.title}}</option>
-      {% endfor %}{% endraw %}
-    </select>
-    {% raw %} {% endif %} {% endraw %}
+    <div id="desiredMeetingFrequency-div" class="form-group row">
+      <label for="desiredMeetingFrequency" class="col-form-label col-sm-2">How often would you like to meet?</label>
+      <div class="col-sm-10">
+        <select id="desiredMeetingFrequency" name="desiredMeetingFrequency" class="form-control" required>
+          {% raw %} {% if currentUser  and currentUser.desiredMeetingFrequency %}
+          <option value="{{ currentUser.desiredMeetingFrequency }}" selected hidden> {{currentUser.desiredMeetingFrequency.title}} </option>
+          {% else %}
+          <option value="" selected hidden> select an option </option>
+          {% endif %} {% endraw %}
+          {% for meetingFrequency in meetingFrequencies %}
+          <option value="{{meetingFrequency}}"> {{meetingFrequency.title}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
 
 
-    <h3> Step 4: Extra </h3>
+    <div id="goal-div" class="form-group row">
+      <label for="goal" class="col-form-label col-sm-2">What subject would you like to focus on (if applicable)? </label>
+      <div class="col-sm-10">
+        <select id="goal" name="goal" class="form-control">
+          {% raw %} {% if currentUser and currentUser.goal %}
+          <option value="{{ currentUser.goal }}" selected hidden> {{currentUser.goal.title}} </option>
+          {% else %}
+          <option value="" selected hidden> select an option </option>
+          {% endif %}
+          {% for topic in topics %}
+          <option value="{{topic}}"> {{topic.title}}</option>
+          {% endfor %}{% endraw %}
+        </select>
+        {% raw %} {% endif %} {% endraw %}
+      </div>
+    </div>
 
-    <label for="image-upload"> (Optional) Upload an image of yourself </label>
-    <input type="file" id="image-upload" name="image-upload">
 
-    <label for="description"> (Optional) Write a short bio about yourself</label>
-    <textarea name="description" placeholder="For example, what are your hobbies... "
-    >{% raw %}{% if currentUser and currentUser.description %}{{currentUser.description}}{% endif %}{% endraw %}</textarea>
-    <input type="submit" value="Submit">
+    <h3 class="divider-top mt-5 pt-4"> Step 4: Extra </h3>
+
+    <div id="image-div" class="form-group row">
+      <label for="image-upload" class="col-form-label col-sm-2"> (Optional) Upload an image of yourself </label>
+      <div class="col-sm-10">
+        <input type="file" id="image-upload" name="image-upload" class="form-control-file">
+      </div>
+    </div>
+    <div id="description-div" class="form-group row">
+      <label for="description" class="col-form-label col-sm-2"> (Optional) Write a short bio about yourself</label>
+      <div class="col-sm-10">
+        <textarea name="description" placeholder="For example, what are your hobbies... " class="form-control"
+        >{% raw %}{% if currentUser and currentUser.description %}{{currentUser.description}}{% endif %}{% endraw %}</textarea>
+      </div>
+    </div>
+
+    <button class="btn btn-outline-primary btn-lg btn-block" type="submit">Submit Your Information</button>
   </form>
 </div>
 {% endblock %}
