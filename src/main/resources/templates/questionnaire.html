@@ -26,12 +26,12 @@ limitations under the License.  #}
 
 {% block title_block %}
   <div class="d-flex flex-column align-items-center justify-content-center mr-auto pt-5" id="header-text">
-    <h1 class="display-1">{% raw %}{{formType|capitalize}}{% endraw %} Sign-up</h1>
+    <h1 class="display-1">{% raw %}{% if currentUser %}Edit Profile{% else %}{{formType|capitalize}} Sign-up{% endif %}{% endraw %}</h1>
   </div>
 {% endblock %}
 
 {% block main_content %}
-<div class="form-container d-flex align-items-center justify-content-center mt-5 pt-4 px-0">
+<div class="form-container d-flex align-items-center justify-content-center mt-5 pt-0 px-0">
   <form id="information-form" action="/questionnaire" method="POST" onsubmit="return checkForm()">
     <input type="hidden" name="formType" id="formType" value={{"{{"}}formType{{"}}"}} />
     <div class="step-div">
@@ -121,7 +121,7 @@ limitations under the License.  #}
           <input type="checkbox" id="ethnicity-{{ethnicity}}" name="ethnicity" class="ethnicityCheckbox form-check-input"
           {%if ethnicity == 'OTHER'%} onclick="checklistCheckForOther('ethnicity')"{% endif %}
           value="{{ethnicity}}"{% if currentUser and ethnicity in currentUser.ethnicityList %} checked{% endif %}>
-          <label class="form-check-label col-sm-2" for="ethnicity-{{ethnicity}}"> {{ethnicity.title}} </label><br>
+          <label class="form-check-label" for="ethnicity-{{ethnicity}}"> {{ethnicity.title}} </label><br>
           {% endfor %}{% endraw %}
           <div id="other-input-ethnicity" class="pt-3"></div>
         </div>
@@ -170,7 +170,7 @@ limitations under the License.  #}
           <label class="form-check-label" for="first-gen-true"> Yes </label><br>
           <input class="form-check-input" type="radio" name="firstGen" id="first-gen-false" value="false" {% raw %}{% if currentUser and not currentUser.firstGen %} checked
           {% endif %}{% endraw %}>
-          <label class="form-check-label" class="col-form-label col-sm-2" for="first-gen-false"> No </label><br>
+          <label class="form-check-label" class="col-form-label" for="first-gen-false"> No </label><br>
         </div>
       </div>
     </fieldset>
