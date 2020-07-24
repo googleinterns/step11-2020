@@ -112,12 +112,13 @@ limitations under the License.  #}
         <legend class="col-form-label col-sm-2">Ethnicity(s)</legend>
         <div class="col-sm-10 pl-5">
           {% raw %}{% for ethnicity in ethnicities %}
-          <input type="checkbox" id="ethnicity-{{ethnicity}}" name="ethnicity" value="{{ethnicity}}" class="ethnicityCheckbox form-check-input"
+          <input type="checkbox" id="ethnicity-{{ethnicity}}" name="ethnicity" class="ethnicityCheckbox form-check-input"
           {%if ethnicity == 'OTHER'%} onclick="checklistCheckForOther('ethnicity')"{% endif %}
-          {% if currentUser and ethnicity in currentUser.ethnicityList %} checked{% endif %}>
+          value="{{ethnicity}}"{% if currentUser and ethnicity in currentUser.ethnicityList %} checked{% endif %}>
           <label class="form-check-label col-sm-2" for="ethnicity-{{ethnicity}}"> {{ethnicity.title}} </label><br>
           {% endfor %}{% endraw %}
           <div id="other-input-ethnicity" class="pt-3"></div>
+        </div>
         </div>
       </div>
     </fieldset>

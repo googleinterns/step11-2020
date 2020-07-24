@@ -13,6 +13,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#button-container {
+  justify-content: center;
+}
+
 #mentor-cards-container {
   display: flex;
   flex-flow: row nowrap;
@@ -24,4 +28,31 @@ limitations under the License.
 .mentor-card {
   min-width: 75ch;
   padding: 3em;
+  border: 0.2em inset #4285f4;
+  background-color: #dae7fc;
+  font-family: "Roboto", sans-serif;
+}
+
+.pretty-button {
+  display: inline-block;
+  padding: 0.35em 1.2em;
+  border: 0.1em, solid #4285f4;
+  margin: 0 0.3em 0.3em 0;
+  border-radius: 0.12em;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  color:#4285f4;
+  text-align: center;
+  transition: all 0.2s;
+}
+.pretty-button:hover {
+  color: black;
+  background-color: #dae7fc;
+}
+@media all and (max-width:30em) {
+  .pretty-button {
+    display:block;
+    margin: 0.4em auto;
+  }
 }
