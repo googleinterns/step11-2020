@@ -12,26 +12,4 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.  #}
 
-{% extends "base.html" %}
-
-{% block styles %}
-{{ super() }}
-{% endblock %}
-
-{% block page_title %}Your Dashboard{% endblock %}
-
-{% block main_content %}
-<div class="content-block" id="mentor-cards-container">
-	{% raw %}{% for mentorMenteeRelation in mentorMenteeRelations %}
-	<div class="mentee" id="{{ mentorMenteeRelation.mentee.name }}">
-		<h3 class="mentee-name">{{ mentorMenteeRelation.mentee.name }}</h3>
-		<h5 class="mentee-data-label">Focus: {{ mentorMenteeRelation.mentee.goal.title }}</h5>
-	</div>
-	{% endfor %}{% endraw %}
-</div>
-{% endblock %}
-
-{% block scripts %}
-{{ super() }}
-<script charset="utf-8" type="text/javascript" src="static/scripts/authenticate.js" onload="loadAuthButton()"></script>
-{% endblock %}
+{% extends "dashboard.html" %}
