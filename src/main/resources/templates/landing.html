@@ -20,9 +20,9 @@ limitations under the License.  #}
 {% endblock %}
 
 {% block title_block %}
-<div class="d-flex justify-content-around container-fluid px-0 vh-100 w-100" id="intro-to-mentorship">
+<div class="d-flex justify-content-around container-fluid px-0 vh-60 w-100" id="intro-to-mentorship">
   <img id="header-pic" class="mw-100 mh-100" src="static/images/landing-mentorship-stock1.jpg" alt="Man getting mentored">
-  <div class="d-flex flex-column align-items-center justify-content-center mr-auto position-absolute text-white p-3" id="header-text">
+  <div class="container d-flex flex-column align-items-center justify-content-center mr-auto position-absolute text-white p-3" id="header-text">
     <h1 class="display-1">Mentor Matcher</h1>
     <p class="h1" id="hook">Find a mentor that fits you, or help others by becoming one.</p>
   </div>
@@ -30,7 +30,7 @@ limitations under the License.  #}
 {% endblock %}
 
 {% block main_content %}
-<div class="d-flex flex-lg-row flex-column justify-content-center align-items-center mt-5" id="join-mentor-matcher">
+<div class="d-flex flex-row flex-wrap justify-content-center align-items-center mt-5" id="join-mentor-matcher">
   <div class="card join-matcher-card border-0">
     <a class="text-primary mr-5" href="/questionnaire?formType=MENTEE">
       <i class="card-img-top fa fa-fw fa-pencil questionnaire-button-icon"></i>
