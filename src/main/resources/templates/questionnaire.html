@@ -121,9 +121,10 @@ limitations under the License.  #}
           <input type="checkbox" id="ethnicity-{{ethnicity}}" name="ethnicity" class="ethnicityCheckbox form-check-input"
           {%if ethnicity == 'OTHER'%} onclick="checklistCheckForOther('ethnicity')"{% endif %}
           value="{{ethnicity}}"{% if currentUser and ethnicity in currentUser.ethnicityList %} checked{% endif %}>
-          <label class="form-check-label" for="ethnicity-{{ethnicity}}"> {{ethnicity.title}} </label><br>
+          <label class="form-check-label col-sm-2" for="ethnicity-{{ethnicity}}"> {{ethnicity.title}} </label><br>
           {% endfor %}{% endraw %}
           <div id="other-input-ethnicity" class="pt-3"></div>
+        </div>
         </div>
       </div>
     </fieldset>
