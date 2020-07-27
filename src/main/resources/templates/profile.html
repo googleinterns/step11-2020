@@ -70,7 +70,7 @@ limitations under the License.  #}
         <p class="user-gender">Gender: {% if profileUser.gender.title != "Other" %}{{ profileUser.gender.title }}
             {% else %}{{ profileUser.genderOther }}{% endif %}</p>
         <p class="user-first-gen">First-gen: {% if profileUser.firstGen %}Yes{% else %}No{% endif %}</p>
-        <p class="user-low-income">Low income: {% if profileUser.firstGen %}Yes{% else %}No{% endif %}</p>
+        <p class="user-low-income">Low income: {% if profileUser.lowIncome %}Yes{% else %}No{% endif %}</p>
         <p class="user-education-level">Education: {% if profileUser.educationLevel.title != "Other" %}{{ profileUser.educationLevel.title }}
             {% else %}{{ profileUser.educationLevelOther }}{% endif %}</p>
       </div>
@@ -78,8 +78,3 @@ limitations under the License.  #}
   </main>
 </div>
 {% endraw %}{% endblock %}
-
-{% block scripts %}
-  {{ super() }}
-  <script charset="utf-8" type="text/javascript" src="static/scripts/profile.js"></script>
-{% endblock %}

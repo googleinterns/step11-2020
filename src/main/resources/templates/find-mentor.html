@@ -14,27 +14,51 @@ limitations under the License.  #}
 
 {% extends "base.html" %}
 
-{% block styles %}
-{{ super() }}
-<link rel="stylesheet" type="text/css" href="static/styles/find-mentor.css">
-{% endblock %}
-
 {% block page_title %}Find a Mentor{% endblock %}
 
+{% block main_class %}d-flex flex-column{% endblock %}
+{% block main_content_class %}flex-grow-1 d-flex flex-column-reverse flex-md-column{% endblock %}
+
 {% block main_content %}
-<div class="content-block" id="mentor-cards-container">
-	{% raw %}{% for mentor in mentors %}
-	{% include "mentor-card.html" %}
-	{% endfor %}{% endraw %}
+<div id="mentor-cards-carousel" class="flex-grow-1 container carousel slide mb-4" data-interval="false">
+  <div class="carousel-inner">
+    {#{% raw %}{% for mentor in mentors %}
+    <div class="carousel-item{% if loop.first %} active{% endif %}">
+      <div class="mentor-card px-5 py-4 mw-100 bg-light-blue border border-primary border-width-medium rounded-lg" id="{{ mentor.name }}-card">
+        <p class="mentor-id" hidden>{{ mentor.datastoreKey }}</p>
+        <h3 class="mentor-name">{{ mentor.name }}</h3>
+        <p class="mentor-dob">DOB: {{ mentor.dateOfBirth }}</p>
+        <p class="mentor-country">Country: {{ mentor.country.longName }}</p>
+        <p class="mentor-language">Language: {{ mentor.language.longName }}</p>
+        <p class="mentor-timezone">TimeZone: {{ mentor.timezone.name }}: GMT {{ ("+" if mentor.timezone.offset >= 0 else "") + mentor.timezone.offset }}</p>
+        <p class="mentor-ethnicity">Ethnicity: {% for ethnicity in mentor.ethnicityList %}{% if ethnicity.title != "Other" %}{{ ethnicity.title }}
+            {% else %}{{ mentor.ethnicityOther }}{% endif %}{{ ", " if not loop.last }}{% endfor %}</p>
+        <p class="mentor-gender">Gender: {% if mentor.gender.title != "Other" %}{{ mentor.gender.title }}
+            {% else %}{{ mentor.genderOther }}{% endif %}</p>
+        <p class="mentor-first-gen">First-gen: {% if mentor.firstGen %}Yes{% else %}No{% endif %}</p>
+        <p class="mentor-low-income">Low income: {% if mentor.lowIncome %}Yes{% else %}No{% endif %}</p>
+        <p class="mentor-education-level">Education: {% if mentor.educationLevel.title != "Other" %}{{ mentor.educationLevel.title }}
+            {% else %}{{ mentor.educationLevelOther }}{% endif %}</p>
+        <p class="mentor-description">{{ mentor.description }}</p>
+        <p class="mentor-mentor-type">{{ mentor.mentorType.title }}</p>
+        <p class="m-0 mentor-focus-label">Focus{% if mentor.focusList|length == 0 %}es: None{% else %}{% if mentor.focusList|length == 1 %}:{% else %}es:{% endif %}{% endif %}</p>
+        <ul class="mentor-focus-list">
+          {% for focus in mentor.focusList %}
+            <li class="mentor-focus-item">{{ focus.title }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endfor %}{% endraw %}#}
+  </div>
 </div>
-<div class="content-block button-container" id="mentor-rating-buttons">
-  <button class="pretty-button mentor-rating-button" id="send-request">Send mentor request!</button>
-  <button class="pretty-button mentor-rating-button" id="dislike-mentor">I don't want to work with this mentor.</button>
+<div class="container d-flex flex-column align-items-center justify-content-center mb-4" id="mentor-rating-buttons">
+  <button class="w-100 btn btn-outline-secondary mb-3 mentor-rating-button" id="send-request">Send mentor request!</button>
+  <button class="w-100 btn btn-outline-danger mentor-rating-button" id="dislike-mentor">I don't want to work with this mentor.</button>
 </div>
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
 <script charset="utf-8" type="text/javascript" src="static/scripts/find-mentor.js"></script>
-<script charset="utf-8" type="text/javascript" src="static/scripts/authenticate.js" onload="loadAuthButton()"></script>
 {% endblock %}

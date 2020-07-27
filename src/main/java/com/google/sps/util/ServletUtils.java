@@ -54,7 +54,6 @@ public final class ServletUtils {
     if (values == null || values.length == 0) {
       values = defaultValues;
     }
-    System.out.println(values);
     return values;
   }
 

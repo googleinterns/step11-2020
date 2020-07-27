@@ -189,7 +189,6 @@ public class DatastoreAccess implements DataAccess {
                     new Query.FilterPredicate(
                         ParameterConstants.MENTOR_VISIBILITY, Query.FilterOperator.EQUAL, true)));
     PreparedQuery results = datastoreService.prepare(query);
-    System.out.println("Prepared query\n");
     QueryResultList<Entity> resultList;
     if (mentee.getEncodedCursor() == "") {
       resultList =
