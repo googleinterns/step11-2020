@@ -123,7 +123,8 @@ limitations under the License.  #}
           value="{{ethnicity}}"{% if currentUser and ethnicity in currentUser.ethnicityList %} checked{% endif %}>
           <label class="form-check-label" for="ethnicity-{{ethnicity}}"> {{ethnicity.title}} </label><br>
           {% endfor %}{% endraw %}
-          <div id="other-input-ethnicity" class="pt-3"></div>
+          <input type ="text" name="ethnicityOther" id="ethnicityOther" style="" {% raw %}{% if currentUser and currentUser.ethnicityOther %} value="{{currentUser.ethnicityOther}}"
+          {% endif %}{% endraw %} hidden/>
         </div>
       </div>
     </fieldset>
@@ -141,7 +142,10 @@ limitations under the License.  #}
           <option value="{{gender}}"> {{gender.title}}</option>
           {% endfor %}
         </select>
-        <div id="other-input-gender" class="pt-3"></div>
+        <div id="other-input-gender" class="pt-3">
+          <input type ="text" name="genderOther" id="genderOther" style=""{% raw %}{% if currentUser and currentUser.genderOther %} value="{{currentUser.genderOther}}"
+          {% endif %}{% endraw %} hidden/>
+        </div>
       </div>
     </div>
 
@@ -158,7 +162,10 @@ limitations under the License.  #}
           <option value="{{educationLevel}}"> {{educationLevel.title}}</option>
           {% endfor %}
         </select>
-        <div id="other-input-educationLevel" class="pt-3"></div>
+        <div id="other-input-educationLevel" class="pt-3">
+          <input type ="text" name="educationLevelOther" id="educationLevelOther" style=""{% raw %}{% if currentUser and currentUser.educationLevelOther %} value="{{currentUser.educationLevelOther}}"
+          {% endif %}{% endraw %} hidden/>
+        </div>
       </div>
     </div>
 
