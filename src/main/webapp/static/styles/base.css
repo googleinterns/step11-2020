@@ -37,13 +37,19 @@ body {
   }
 }
 
-/* @media (min-width: 992px) {
-
-} */
+@media (min-width: 992px) {
+  .w-lg-50 {
+    width: 50% !important;
+  }
+}
 
 @media (min-width: 1200px) {
   .w-xl-33 {
     width: 33% !important;
+  }
+
+  .w-xl-50 {
+    width: 50% !important;
   }
 }
 
