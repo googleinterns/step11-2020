@@ -17,11 +17,13 @@ import com.google.sps.util.DummyDataConstants;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ResourceConstants;
+import com.google.sps.util.RandomObjects;
 import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Stream;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -39,46 +41,16 @@ import javax.servlet.http.HttpServletResponse;
  * @version 1.0
  * @param URLPatterns.SEED_DB this servlet serves requests at /seed-db
  */
-@WebServlet(URLPatterns.SEED_DB)
-public class SeedDatabaseServlet extends HttpServlet {
-  private static final int FAKE_USER_COUNT = 10000;
+@WebServlet("random")
+public class RandomData extends HttpServlet {
 
-  private DatastoreAccess dataAccess;
   private Gson gson;
   private Collection<UserAccount> users;
-  // private
-  private int seeded = 0;
 
   @Override
   public void init() {
-    dataAccess = new DatastoreAccess();
     gson = new GsonBuilder().setDateFormat("MMM dd, yyyy, HH:mm:ss a").create();
-    users = new ArrayList<>(FAKE_USER_COUNT);
 
-    JsonParser jsonParser = new JsonParser();
-    String jsonData = "";
-    try {
-      jsonData =
-          Resources.toString(
-              this.getClass().getResource(ResourceConstants.DUMMY_DATA_USERS), Charsets.UTF_8);
-    } catch (IOException e) {
-      System.err.println(ErrorMessages.SEEDING_FAILED);
-      return;
-    }
-
-    JsonObject jsonObject = new JsonParser().parse(jsonData).getAsJsonObject();
-    JsonArray usersJson = jsonObject.getAsJsonArray(DummyDataConstants.USERS);
-
-    for (JsonElement element : usersJson) {
-      JsonObject user = element.getAsJsonObject();
-      if (user.get(ParameterConstants.USER_TYPE)
-          .getAsString()
-          .equals(DummyDataConstants.MENTOR_CAPS)) {
-        users.add(gson.fromJson(user, Mentor.class));
-      } else {
-        users.add(gson.fromJson(user, Mentee.class));
-      }
-    }
   }
 
   @Override

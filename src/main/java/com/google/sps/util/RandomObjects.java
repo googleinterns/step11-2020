@@ -85,7 +85,6 @@ public class RandomObjects {
         .timezone(randomEnum(TimeZone.class))
         .firstGen(rnd.nextBoolean())
         .lowIncome(rnd.nextBoolean())
-        .description(randomLetters(30))
         .isFakeUser(true);
     Set<Ethnicity> ethnicities = new HashSet<>();
     ethnicities.add(randomEnum(Ethnicity.class));
@@ -120,6 +119,7 @@ public class RandomObjects {
 
   public static Mentee randomMentee() {
     return randomUserBuilder(Mentee.Builder.newBuilder())
+        .description("This is a fake bio. I'm not a real mentee, but I would love to get some help from a fake mentor!");
         .userType(UserType.MENTEE)
         .goal(randomEnum(Topic.class))
         .desiredMeetingFrequency(randomEnum(MeetingFrequency.class))
@@ -131,13 +131,14 @@ public class RandomObjects {
   public static Mentor randomMentor() {
     Mentor.Builder builder =
         randomUserBuilder(Mentor.Builder.newBuilder())
+            .description("This is a fake bio. I'm not a real mentor, but I would love to help some fake mentees!");
             .userType(UserType.MENTOR)
             .visibility(rnd.nextBoolean())
             .mentorType(randomEnum(MentorType.class));
     Set<Topic> focuses = new HashSet<>();
     focuses.add(randomEnum(Topic.class));
     if (!focuses.contains(Topic.OTHER)) {
-      for (int i = rnd.nextInt(Topic.values().length - 2); i > 0; i--) {
+      for (int i = rnd.nextInt(3); i > 0; i--) {
         Topic newFocus = randomEnum(Topic.class);
         if (newFocus != Topic.OTHER) {
           focuses.add(newFocus);
