@@ -42,7 +42,7 @@ limitations under the License. #}
 </div>
 <div class="d-flex flex-row flex-wrap justify-content-start align-items-start" id="user-cards-container">
 	{% raw %}{% for mentorMenteeRelation in mentorMenteeRelations %}
-  <div class="mw-100 p-3">
+  <div class="mw-100 p-3 w-100 w-md-50 w-xl-33">
     {% set cardUser = mentorMenteeRelation[otherUserType] %}
     {% include "user-card-short.html" %}
   </div>
