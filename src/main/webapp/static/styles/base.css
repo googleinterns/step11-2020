@@ -17,6 +17,11 @@ limitations under the License.
   --blue: #4285F4 !important;
   --light-blue: #dae7fc !important;
   --primary: var(--blue) !important;
+  --green: #0F9D58 !important;
+  --secondary: var(--green) !important;
+  --red: #DB4437 !important;
+  --danger: var(--red) !important;
+  --light-gray: #EEEEEE !important;
 }
 
 body {
@@ -42,12 +47,27 @@ body {
   }
 }
 
+.w-90 {
+  width: 90%;
+}
+
 .vh-60 {
   height: 60vh !important;
 }
 
+@media (min-width: 768px) {
+  .mw-md-50 {
+    max-width: 50%;
+  }
+}
+
+
 .bg-primary {
   background-color: var(--primary) !important;
+}
+
+.bg-light-gray {
+  background-color: var(--light-gray) !important;
 }
 
 .bg-gray {
@@ -72,6 +92,26 @@ body {
 .btn-outline-primary:hover {
   color: white !important;
   background-color: var(--primary) !important;
+}
+
+.btn-outline-secondary {
+  color: var(--secondary) !important;
+  border-color: var(--secondary) !important;
+}
+
+.btn-outline-secondary:hover {
+  color: white !important;
+  background-color: var(--secondary) !important;
+}
+
+.btn-outline-danger {
+  color: var(--danger) !important;
+  border-color: var(--danger) !important;
+}
+
+.btn-outline-danger:hover {
+  color: white !important;
+  background-color: var(--danger) !important;
 }
 
 .text-light-blue {

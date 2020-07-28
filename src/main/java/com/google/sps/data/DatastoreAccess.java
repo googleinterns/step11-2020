@@ -20,6 +20,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -145,6 +146,28 @@ public class DatastoreAccess implements DataAccess {
       return true;
     }
     return false;
+  }
+
+  public boolean deleteUser(UserAccount user) {
+    if (!user.isKeyInitialized()) {
+      user = getUser(user.getUserID());
+    }
+    if (user == null) {
+      return false;
+    }
+    try {
+      this.getIncomingRequests(user).stream().forEach(request -> this.deleteRequest(request));
+      this.getOutgoingRequests(user).stream().forEach(request -> this.deleteRequest(request));
+      this.getMentorMenteeRelations(user).stream()
+          .forEach(relation -> this.deleteMentorMenteeRelation(relation));
+      Key userKey =
+          KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, user.getDatastoreKey());
+      datastoreService.get(userKey);
+      datastoreService.delete(userKey);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   public Collection<Mentor> getRelatedMentors(Mentee mentee) {
@@ -440,5 +463,18 @@ public class DatastoreAccess implements DataAccess {
           }
         });
     return mentorMenteeRelations;
+  }
+
+  public boolean deleteMentorMenteeRelation(MentorMenteeRelation relation) {
+    try {
+      Key relationKey =
+          KeyFactory.createKey(
+              ParameterConstants.ENTITY_TYPE_MENTOR_MENTEE_RELATION, relation.getDatastoreKey());
+      datastoreService.get(relationKey);
+      datastoreService.delete(relationKey);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
   }
 }
