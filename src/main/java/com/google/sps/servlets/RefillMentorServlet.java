@@ -60,8 +60,6 @@ public class RefillMentorServlet extends HttpServlet {
       Mentee mentee = dataAccess.getMentee(user.getUserId());
       if (mentee != null) {
         response.setContentType(ServletUtils.CONTENT_JSON);
-
-        // System.out.println("Refilling getRelatedMentors\n");
         Collection<Mentor> relatedMentors = dataAccess.getRelatedMentors(mentee);
         response.getWriter().println(gson.toJson(relatedMentors));
         return;

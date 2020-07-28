@@ -36,7 +36,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -209,12 +208,12 @@ public class DatastoreAccess implements DataAccess {
             .collect(Collectors.toList());
     ArrayList<Mentor> filteredMentors = new ArrayList<Mentor>(mentorList);
     boolean repullMentors = false;
-    if (filteredMentors.size() == 0) {
+    if (filteredMentors.size() < ServletUtils.REC_BATCH_SIZE) {
       repullMentors = true;
-      SortedSet<Long> servedMentorKeys = mentee.getServedMentorKeys();
-      for (Long key : servedMentorKeys) {
-        filteredMentors.add(getMentor(key));
-      }
+      mentee.getServedMentorKeys().stream()
+          .limit(ServletUtils.REC_BATCH_SIZE - filteredMentors.size())
+          .map(this::getMentor)
+          .forEach(filteredMentors::add);
     }
     Mentor lastRequestedMentor =
         mentee.getLastRequestedMentorKey() == 0
@@ -226,15 +225,13 @@ public class DatastoreAccess implements DataAccess {
             : getMentor(mentee.getLastDislikedMentorKey());
     filteredMentors.sort(
         (Mentor mentorA, Mentor mentorB) -> {
-          int result = 0;
+          int result = mentee.similarityWithMentor(mentorA) - mentee.similarityWithMentor(mentorB);
           if (lastRequestedMentor != null)
             result +=
                 mentorA.similarity(lastRequestedMentor) - mentorB.similarity(lastRequestedMentor);
           if (lastDislikedMentor != null)
             result -=
                 mentorA.similarity(lastDislikedMentor) - mentorB.similarity(lastDislikedMentor);
-          if (lastRequestedMentor == null && lastDislikedMentor == null)
-            result = mentee.similarityWithMentor(mentorA) - mentee.similarityWithMentor(mentorB);
           return result;
         });
     if (!repullMentors) {

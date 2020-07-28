@@ -38,7 +38,7 @@ limitations under the License.  #}
       <h1 class="mb-0">{{profileUser.name}}</h1>
       <h4 class="mb-0">{{profileUser.userType.title}}</h4>
       {% if profileUser.userType.title == "Mentor" %}
-        <h6 class="mb-2">{% if !profileUser.visibilty %}Not {% endif %}Available for mentorship</h6>
+        <h6 class="mb-2">{% if !profileUser.visibility %}Not {% endif %}Available for mentorship</h6>
       {% endif %}
       {% if profileUser.userType.title == "Mentor" %}
         <p class="user-mentor-type">{{ profileUser.mentorType.title }}</p>
