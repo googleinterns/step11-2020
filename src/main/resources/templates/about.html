@@ -14,6 +14,10 @@ limitations under the License.  #}
 
 {% extends "base.html" %}
 
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" type="text/css" href="static/styles/about.css">
+{% endblock %}
 
 {% block page_title %}
 <div class="d-flex flex-column align-items-center justify-content-center mr-auto pt-5" id="header-text">
@@ -22,13 +26,11 @@ limitations under the License.  #}
 {% endblock %}
 
 {% block main_content %}
-<div class=" d-flex flex-column align-items-center justify-content-center w-50 mt-4 pt-0 px-5">
+<div class=" d-flex flex-column align-items-center justify-content-center mt-4 pt-0 px-5">
 	<img src = "static/images/about-stock1.jpg" class="mw-100 mh-100"alt="Mentor meeting with her mentee"> <br>
-	<h3 class="display-4"> Our Mission </h3>
-	<p>
-		Individuals that are seeking mentorship often find it difficult to find someone that can relate to them on a personal level beyond the goals of the mentee/mentor relationship. There are nonprofit programs in place to help these individuals by matching them with registered volunteer mentors, however this selection often feels like a black box process to the mentee, which isn’t as conducive of a fruitful relationship compared to simply choosing their own mentor.
-    <br>
-    Mentor Matcher aims to create a way for students/individuals to find and connect with mentors of their own choosing, so that they may furnish better relationships with those helping them. Not only will a user be able to choose who they would like to work with, our algorithm will provide them a selection of individuals who share similar interests and goals. This will ensure that the user can find someone they truly want to initiate a connection with.
+	<h3 class="display-3 pt-3 pb-1"> Our Purpose </h3>
+	<p class="w-50 text-justify" id="about-description">Individuals that are seeking mentorship often find it difficult to find someone that can relate to them on a personal level beyond the goals of the mentee/mentor relationship. There are nonprofit programs in place to help these individuals by matching them with registered volunteer mentors, however this selection often feels like a black box process to the mentee, which is not as conducive of a fruitful relationship compared to simply choosing their own mentor.<br>
+  Mentor Matcher aims to create a way for students/individuals to find and connect with mentors of their own choosing, so that they may furnish better relationships with those helping them. Not only will a user be able to choose who they would like to work with, our algorithm will provide them a selection of individuals who share similar interests and goals. This will ensure that the user can find someone they truly want to initiate a connection with.
   </p>
 </div>
 {% endblock %}
