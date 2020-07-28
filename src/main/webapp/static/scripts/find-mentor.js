@@ -44,6 +44,7 @@ const newMentorCardHTML = mentor =>
       </div>
       <div class="d-flex flex-column align-items-start justify-content-start mw-md-50">
         <div class="stats">
+          <p class="mb-1 mentor-age">Age: ${mentor.age}</p>
           <p class="mb-1 mentor-country">Country: ${mentor.country.longName}</p>
           <p class="mb-1 mentor-language">Language: ${mentor.language.longName}</p>
           <p class="mb-1 mentor-timezone">TimeZone: ${mentor.timezone.name}: GMT ${(mentor.timezone.offset >= 0 ? "+" : "") + mentor.timezone.offset }</p>
