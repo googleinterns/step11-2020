@@ -13,15 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#mentor-cards-container {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  width: 100%;
-  overflow-x: scroll;
-}
-
-.mentor-card {
-  min-width: 75ch;
-  padding: 3em;
+#about-description {
+  font-size: 1.4em;
+  line-height: 200%;
+  white-space: pre-line;
 }
