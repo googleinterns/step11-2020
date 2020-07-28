@@ -30,6 +30,12 @@ limitations under the License.
 #header-text > #hook {
   font-weight: 350;
 }
+
+@media (min-width: 1200px) {
+  #title {
+    font-size: 8rem;
+  }
+}
 @media (max-width: 576px) {
   .join-matcher-card {
     width: min-content;
