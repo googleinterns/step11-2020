@@ -13,6 +13,14 @@
 // limitations under the License.
 
 const menteeCardContainer = document.getElementById("mentee-card-container");
+
+const onSuccess = (menteeCard) => {
+  menteeCardContainer.removeChild(menteeCard);
+  if (menteeCardContainer.children.length === 0) {
+    window.location = "/dashboard";
+  }
+};
+
 document.querySelectorAll(".mentee-card").forEach(menteeCard => {
   const acceptButton = menteeCard.querySelector("button#yes");
   const denyButton = menteeCard.querySelector("button#no");
@@ -20,14 +28,14 @@ document.querySelectorAll(".mentee-card").forEach(menteeCard => {
     const requestID = menteeCard.querySelector(".request-id").innerText;
     let success = await sendRequestDecision(requestID, "accept");
     if (success) {
-      menteeCardContainer.removeChild(menteeCard);
+      onSuccess(menteeCard);
     }
   });
   denyButton.addEventListener("click", async (event) => {
     const requestID = menteeCard.querySelector(".request-id").innerText;
     let success = await sendRequestDecision(requestID, "deny");
     if (success) {
-      menteeCardContainer.removeChild(menteeCard);
+      onSuccess(menteeCard);
     }
   });
 });
