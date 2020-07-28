@@ -315,7 +315,18 @@ public class DatastoreAccess implements DataAccess {
     if (getMentorshipRequest(request.getDatastoreKey()) == null) {
       UserAccount toUser = getUser(request.getToUserKey());
       UserAccount fromUser = getUser(request.getFromUserKey());
-      if (toUser != null && fromUser != null && toUser.getUserType() != fromUser.getUserType()) {
+      long mentorKey =
+          toUser.getUserType() == UserType.MENTOR
+              ? toUser.getDatastoreKey()
+              : fromUser.getDatastoreKey();
+      long menteeKey =
+          toUser.getUserType() == UserType.MENTEE
+              ? toUser.getDatastoreKey()
+              : fromUser.getDatastoreKey();
+      if (toUser != null
+          && fromUser != null
+          && toUser.getUserType() != fromUser.getUserType()
+          && !areConnected(mentorKey, menteeKey)) {
         datastoreService.put(request.convertToEntity());
         return true;
       }
