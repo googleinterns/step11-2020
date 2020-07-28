@@ -22,6 +22,7 @@ import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.MentorshipRequest;
+import com.google.sps.data.UserAccount;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ParameterConstants;
@@ -35,7 +36,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -94,26 +94,21 @@ public class FindMentorServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    User user = dataAccess.getCurrentUser();
-    if (user != null) {
-      Mentee mentee = dataAccess.getMentee(user.getUserId());
-      if (mentee != null) {
-        response.setContentType(ServletUtils.CONTENT_HTML);
+    Map<String, Object> context = dataAccess.getDefaultRenderingContext(URLPatterns.FIND_MENTOR);
 
-        Map<String, Object> context =
-            dataAccess.getDefaultRenderingContext(URLPatterns.FIND_MENTOR);
-
-        System.out.println("Calling getRelatedMentors\n");
-        Collection<Mentor> relatedMentors = dataAccess.getRelatedMentors(mentee);
-        context.put(ContextFields.MENTORS, relatedMentors);
-
-        String renderedTemplate = jinjava.render(findMentorTemplate, context);
-
-        response.getWriter().println(renderedTemplate);
-        return;
-      }
+    if (!(boolean) context.get(ContextFields.IS_LOGGED_IN)) {
+      response.sendRedirect(URLPatterns.LANDING);
+      return;
     }
-    response.sendRedirect(URLPatterns.LANDING);
+
+    UserAccount currentUser = (UserAccount) context.get(ContextFields.CURRENT_USER);
+    if (currentUser == null || !(boolean) context.get(ContextFields.IS_MENTEE)) {
+      response.sendRedirect(URLPatterns.LANDING);
+      return;
+    }
+    String renderedTemplate = jinjava.render(findMentorTemplate, context);
+    response.setContentType(ServletUtils.CONTENT_HTML);
+    response.getWriter().println(renderedTemplate);
   }
 
   @Override

@@ -16,10 +16,12 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.sps.data.DataAccess;
 import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
+import com.google.sps.util.EnumAdapterFactory;
 import com.google.sps.util.ServletUtils;
 import com.google.sps.util.URLPatterns;
 import java.io.IOException;
@@ -42,7 +44,14 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = URLPatterns.REFILL_MENTOR)
 public class RefillMentorServlet extends HttpServlet {
 
-  private DataAccess dataAccess = new DatastoreAccess();
+  private DataAccess dataAccess;
+  private Gson gson;
+
+  @Override
+  public void init() {
+    dataAccess = new DatastoreAccess();
+    gson = (new GsonBuilder()).registerTypeAdapterFactory(new EnumAdapterFactory()).create();
+  }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -51,10 +60,8 @@ public class RefillMentorServlet extends HttpServlet {
       Mentee mentee = dataAccess.getMentee(user.getUserId());
       if (mentee != null) {
         response.setContentType(ServletUtils.CONTENT_JSON);
-
-        System.out.println("Refilling getRelatedMentors\n");
         Collection<Mentor> relatedMentors = dataAccess.getRelatedMentors(mentee);
-        response.getWriter().println(new Gson().toJson(relatedMentors));
+        response.getWriter().println(gson.toJson(relatedMentors));
         return;
       }
     }

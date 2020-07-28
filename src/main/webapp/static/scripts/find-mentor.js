@@ -12,68 +12,76 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const mentorCardContainer = document.getElementById("mentor-cards-container");
-const sendRequestButton = document.getElementById("send-request");
-const SEND_REQUEST_TEXT = sendRequestButton.innerText;
-const dislikeMentorButton = document.getElementById("dislike-mentor");
-const DISLIKE_MENTOR_TEXT = dislikeMentorButton.innerText;
+const carouselContainer = document.querySelector("#mentor-cards-carousel");
+const mentorCardContainer = carouselContainer.querySelector(".carousel-inner");
+const sendRequestButton = document.querySelector("#send-request");
+const dislikeMentorButton = document.querySelector("#dislike-mentor");
 
-const getMiddleCard = () => {
-  const mentorCards = mentorCardContainer.children;
-  if (mentorCards.length > 1) {
-    const boundingBox = mentorCardContainer.getBoundingClientRect();
-    let middleCard = document.elementFromPoint(window.innerWidth / 2, boundingBox.top + boundingBox.height / 2);
-    while (middleCard.className != "mentor-card") {
-      middleCard = middleCard.parentElement;
-    }
-    return middleCard;
+const getActiveMentorCard = () => {
+  let activeCard = mentorCardContainer.querySelector(".carousel-item.active");
+  if (!activeCard && mentorCardContainer.children.length > 0) {
+    mentorCardContainer.children[0].classList.add("active");
+    activeCard = mentorCardContainer.querySelector(".carousel-item.active");
   }
-  return mentorCards[0];
+  return activeCard;
 };
+
+const newMentorCardHTML = mentor =>
+  `<div class="mentor-profile-card shadow-sm mx-1 mb-1 position-relative" id="mentor-${mentor.datastoreKey}-card">
+    <a class="stretched-link d-none" href="/profile?userID=${mentor.userID}"></a>
+    <p class="mentor-id d-none" hidden>${mentor.datastoreKey}</p>
+    <main class="container divider-top p-4 d-flex flex-row flex-wrap align-items-start justify-content-center">
+      <div class="d-flex flex-column align-items-start justify-content-start mb-3 mr-md-3 mw-md-50" id="profile-title" >
+        <h1 class="mb-0">${mentor.name}</h1>
+        <h6 class="mb-2">${!mentor.visibility ? "Not a" : "A"}vailable for mentorship</h6>
+        <p class="mentor-mentor-type">${mentor.mentorType.title}</p>
+        <p class="m-0 mentor-focus-label">${mentor.focusList.length === 0 ? "Focuses: None" : mentor.focusList.length === 1 ? `Focus: ${mentor.focusList[0].title}` : "Focuses:"}</p>
+        <ul class="mentor-focus-list">
+          ${mentor.focusList.length === 1 ? "" : mentor.focusList.map(focus => `<li class="mentor-focus-item">${focus.title}</li>`).join("\n")}
+        </ul>
+        <p class="m-0">Bio:</p>
+        <p class="mentor-description">${mentor.description}</p>
+      </div>
+      <div class="d-flex flex-column align-items-start justify-content-start mw-md-50">
+        <div class="stats">
+          <p class="mb-1 mentor-age">Age: ${mentor.age}</p>
+          <p class="mb-1 mentor-country">Country: ${mentor.country.longName}</p>
+          <p class="mb-1 mentor-language">Language: ${mentor.language.longName}</p>
+          <p class="mb-1 mentor-timezone">TimeZone: ${mentor.timezone.name}: GMT ${(mentor.timezone.offset >= 0 ? "+" : "") + mentor.timezone.offset }</p>
+          <p class="mb-1 mentor-ethnicity">Ethnicity: ${mentor.ethnicityList.map(ethnicity => ethnicity.title !== "Other" ? ethnicity.title : mentor.ethnicityOther).join(", ")}</p>
+          <p class="mb-1 mentor-gender">Gender: ${mentor.gender.title !== "Other" ? mentor.gender.title : mentor.genderOther}</p>
+          <p class="mb-1 mentor-first-gen">First-gen: ${mentor.firstGen  ? "Yes" : "No"}</p>
+          <p class="mb-1 mentor-low-income">Low income: ${mentor.lowIncome  ? "Yes" : "No"}</p>
+          <p class="mb-1 mentor-education-level">Education: ${mentor.educationLevel.title != "Other" ? mentor.educationLevel.title : mentor.educationLevelOther}</p>
+        </div>
+      </div>
+    </main>
+  </div>`;
+
 const refillMentors = async () => {
-  console.log("calling refillMentors");
-  let response = await fetch("/refill-mentor", {
-    method: "GET"
-  });
+  let response = await fetch("/refill-mentor");
   let mentors = await response.json();
-  console.log(JSON.stringify(mentors));
-  console.log("got mentors");
-  let i = 0;
-  for (i = 0; i < mentors.length; i++) {
-    let mentor = mentors[i];
-    let newCard = document.createElement("div");
-    newCard.class = "mentor-card";
-    console.log(JSON.stringify(mentor));
-    newCard.innerHTML = "<h3>" + mentor.name + "</h3>";
-    mentorCardContainer.appendChild(newCard);
-  }
+  let hasActive = getActiveMentorCard() !== null;
+  mentors.forEach((mentor, i) => {
+    if (!mentorCardContainer.querySelector(`#mentor-${mentor.datastoreKey}-card`)) {
+      let newCard = document.createElement("div");
+      newCard.className = `carousel-item${i == 0 && !hasActive ? " active" : ""}`;
+      newCard.innerHTML = newMentorCardHTML(mentor);
+      mentorCardContainer.appendChild(newCard);
+    }
+  });
 };
-const updateChoiceButtons = () => {
-  const middleCard = getMiddleCard();
-  if (!middleCard) {
-    sendRequestButton.innerText = `${SEND_REQUEST_TEXT}`;
-    dislikeMentorButton.innerText = `${DISLIKE_MENTOR_TEXT}`;
-    return;
-  }
-  const name = middleCard.querySelector(".mentor-name").innerText;
-  sendRequestButton.innerText = `${SEND_REQUEST_TEXT} (${name})`;
-  dislikeMentorButton.innerText = `${DISLIKE_MENTOR_TEXT} (${name})`;
-}
-updateChoiceButtons();
-
-mentorCardContainer.addEventListener("scroll", (event) => {
-  updateChoiceButtons();
-});
+refillMentors();
 
 const buttonDict = {
   "sendRequest": sendRequestButton,
   "dislikeMentor": dislikeMentorButton
 }
-
+const MIN_MENTOR_THRESHOLD = 5;
 for (const buttonName in buttonDict) {
   buttonDict[buttonName].addEventListener("click", async (event) => {
-    const middleCard = getMiddleCard();
-    const mentorID = middleCard.querySelector(".mentor-id").innerText;
+    const activeMentorCard = getActiveMentorCard();
+    const mentorID = activeMentorCard.querySelector(".mentor-id").innerText;
     let response = await fetch("/find-mentor", {
       method: "POST",
       body: new URLSearchParams({ mentorID, choice: buttonName })
@@ -81,11 +89,11 @@ for (const buttonName in buttonDict) {
     let text = await response.text();
     let data = JSON.parse(text);
     if (data.success) {
-      mentorCardContainer.removeChild(middleCard);
-      updateChoiceButtons();
-      if (mentorCardContainer.childElementCount < 5) {
+      mentorCardContainer.removeChild(activeMentorCard);
+      if (mentorCardContainer.childElementCount < MIN_MENTOR_THRESHOLD) {
         refillMentors();
       }
+      getActiveMentorCard();
     }
   });
 }
