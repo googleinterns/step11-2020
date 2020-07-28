@@ -15,7 +15,7 @@ limitations under the License.  #}
 <div class="mentor-card" id="{{ mentor.name }}-card">
   <p class="mentor-id" hidden>{{ mentor.datastoreKey }}</p>
   <h3 class="mentor-name">{{ mentor.name }}</h3>
-  <p class="mentor-dob">DOB: {{ mentor.dateOfBirth }}</p>
+  <p class="mentor-age">Age: {{ mentor.age }}</p>
   <p class="mentor-country">Country: {{ mentor.country.longName }}</p>
   <p class="mentor-language">Language: {{ mentor.language.longName }}</p>
   <p class="mentor-timezone">TimeZone: {{ mentor.timezone.name }}: GMT {{ ("+" if mentor.timezone.offset >= 0 else "") + mentor.timezone.offset }}</p>

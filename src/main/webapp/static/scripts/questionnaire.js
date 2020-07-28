@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,23 +15,29 @@
 var errorMessage = '';
 const form = document.getElementById('information-form');
 
+$(window).on('load', function() {
+  checkForOther($('#gender')[0].value, 'gender');
+  checkForOther($('#educationLevel')[0].value, 'educationLevel');
+  checklistCheckForOther('ethnicity');
+});
+
 function checkForOther(val, label){
-  let otherID = 'other-input-' + label;
-  let otherContainer = document.getElementById(otherID);
+  let otherID = '#'+label+'Other';
+  let otherContainer = $(otherID)[0];
   if(val.toLowerCase()=='other') {
-    otherContainer.innerHTML = 'Other: <input type ="text" name="' + label + 'Other" id="' + label + 'Other"/>';
+    otherContainer.hidden = false;
   } else {
-    otherContainer.innerHTML = '';
+    otherContainer.hidden = true;
   }
 }
 
 function checklistCheckForOther(label) {
-  let otherID = 'other-input-' + label;
-  let otherContainer = document.getElementById(otherID);
-  if (document.getElementById('ethnicity-OTHER').checked) {
-    otherContainer.innerHTML = 'Other: <input type ="text" name="' + label + 'Other" id="' + label + 'Other"/>';
+  let otherID = '#'+label+'Other';
+  let otherContainer = $(otherID)[0];
+  if ($('#' + label + '-OTHER')[0].checked) {
+    otherContainer.hidden = false;
   } else {
-    otherContainer.innerHTML = '';
+    otherContainer.hidden = true;
   }
 }
 
@@ -52,12 +58,10 @@ function validateDate(date){
     dateError.innerHTML =
     '<label id="date-of-birth-error-label" for="dateOfBirth">Invalid date format: Should be MM/DD/YYYY</label>';
     errorMessage = 'invalid date';
-    document.getElementById('step1').scrollIntoView();
     return false;
   } else if (currentDay.isBefore(birthday)) {
     dateError.innerHTML = '<label id="date-of-birth-error-label" for="dateOfBirth">You can\'t be born in the future!</label>';
     errorMessage = 'invalid date';
-    document.getElementById('step1').scrollIntoView();
     return false;
   } else {
     errorMessage = '';

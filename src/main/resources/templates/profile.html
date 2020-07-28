@@ -59,7 +59,7 @@ limitations under the License.  #}
     <div class="d-flex flex-column align-items-start justify-content-start mw-md-50">
       <div class="stats">
         {% if profileUser.userID == currentUser.userID %}
-          <p class="user-dob">DOB: {{ profileUser.dateOfBirth }}</p>
+          <p class="user-age">Age: {{ profileUser.age }}</p>
           <p class="user-email">Email: {{ profileUser.email }}</p>
         {% endif %}
         <p class="user-country">Country: {{ profileUser.country.longName }}</p>
