@@ -22,34 +22,7 @@ limitations under the License.  #}
 {% block main_content %}
 <div id="mentor-cards-carousel" class="flex-grow-1 container carousel slide mb-4" data-interval="false">
   <div class="carousel-inner">
-    {#{% raw %}{% for mentor in mentors %}
-    <div class="carousel-item{% if loop.first %} active{% endif %}">
-      <div class="mentor-card px-5 py-4 mw-100 bg-light-blue border border-primary border-width-medium rounded-lg" id="{{ mentor.name }}-card">
-        <p class="mentor-id" hidden>{{ mentor.datastoreKey }}</p>
-        <h3 class="mentor-name">{{ mentor.name }}</h3>
-        <p class="mentor-dob">DOB: {{ mentor.dateOfBirth }}</p>
-        <p class="mentor-country">Country: {{ mentor.country.longName }}</p>
-        <p class="mentor-language">Language: {{ mentor.language.longName }}</p>
-        <p class="mentor-timezone">TimeZone: {{ mentor.timezone.name }}: GMT {{ ("+" if mentor.timezone.offset >= 0 else "") + mentor.timezone.offset }}</p>
-        <p class="mentor-ethnicity">Ethnicity: {% for ethnicity in mentor.ethnicityList %}{% if ethnicity.title != "Other" %}{{ ethnicity.title }}
-            {% else %}{{ mentor.ethnicityOther }}{% endif %}{{ ", " if not loop.last }}{% endfor %}</p>
-        <p class="mentor-gender">Gender: {% if mentor.gender.title != "Other" %}{{ mentor.gender.title }}
-            {% else %}{{ mentor.genderOther }}{% endif %}</p>
-        <p class="mentor-first-gen">First-gen: {% if mentor.firstGen %}Yes{% else %}No{% endif %}</p>
-        <p class="mentor-low-income">Low income: {% if mentor.lowIncome %}Yes{% else %}No{% endif %}</p>
-        <p class="mentor-education-level">Education: {% if mentor.educationLevel.title != "Other" %}{{ mentor.educationLevel.title }}
-            {% else %}{{ mentor.educationLevelOther }}{% endif %}</p>
-        <p class="mentor-description">{{ mentor.description }}</p>
-        <p class="mentor-mentor-type">{{ mentor.mentorType.title }}</p>
-        <p class="m-0 mentor-focus-label">Focus{% if mentor.focusList|length == 0 %}es: None{% else %}{% if mentor.focusList|length == 1 %}:{% else %}es:{% endif %}{% endif %}</p>
-        <ul class="mentor-focus-list">
-          {% for focus in mentor.focusList %}
-            <li class="mentor-focus-item">{{ focus.title }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-    {% endfor %}{% endraw %}#}
+    
   </div>
 </div>
 <div class="container d-flex flex-row flex-md-column align-items-center justify-content-center mb-4" id="mentor-rating-buttons">
