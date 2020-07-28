@@ -114,4 +114,23 @@ public final class ProfileServlet extends HttpServlet {
     response.setContentType(ServletUtils.CONTENT_HTML);
     response.getWriter().println(renderedTemplate);
   }
+
+  @Override
+  public void doDelete(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    User user = dataAccess.getCurrentUser();
+    if (user == null) {
+      ServletUtils.writeJsonSuccessToResponse(response, false);
+      return;
+    }
+    UserAccount userAccount = dataAccess.getUser(user.getUserId());
+    if (userAccount == null) {
+      ServletUtils.writeJsonSuccessToResponse(response, false);
+      return;
+    }
+
+    boolean success = dataAccess.deleteUser(userAccount);
+
+    ServletUtils.writeJsonSuccessToResponse(response, success);
+  }
 }
