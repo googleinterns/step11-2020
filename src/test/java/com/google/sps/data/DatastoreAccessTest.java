@@ -516,6 +516,54 @@ public final class DatastoreAccessTest {
   }
 
   @Test
+  public void deleteUserEmptyDatabaseTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    assertEquals(0, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    assertFalse(dataAccess.deleteUser(defaultMentee));
+    assertEquals(0, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+  }
+
+  @Test
+  public void deleteUserInDatabaseTest() throws EntityNotFoundException {
+    final long menteeKey = defaultMentee.getDatastoreKey();
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    try {
+      Entity entity = ds.get(KeyFactory.createKey("UserAccount", menteeKey));
+      fail(
+          "Datastore should not include user with key:"
+              + menteeKey
+              + " but "
+              + entity
+              + " was found");
+    } catch (EntityNotFoundException expectedException) {
+    }
+    assertTrue(dataAccess.createUser(defaultMentee));
+    assertEquals(1, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    assertTrue(dataAccess.deleteUser(defaultMentee));
+    assertEquals(0, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    try {
+      Entity entity = ds.get(KeyFactory.createKey("UserAccount", menteeKey));
+      fail(
+          "Datastore should not include user with key:"
+              + menteeKey
+              + " but "
+              + entity
+              + " was found");
+    } catch (EntityNotFoundException expectedException) {
+    }
+  }
+
+  @Test
+  public void deleteNonexistentUserWhileOthersPresentTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    assertEquals(0, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    assertTrue(dataAccess.createUser(defaultMentee));
+    assertEquals(1, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    assertFalse(dataAccess.deleteUser(defaultMentor));
+    assertEquals(1, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+  }
+
+  @Test
   public void getRelatedMentorsForNonexistentMenteeTest() {
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
     Entity mentorEntity1 = new Entity("UserAccount");
@@ -1151,5 +1199,61 @@ public final class DatastoreAccessTest {
     assertEquals(1, createdRelations.size());
     assertTrue(new Mentee(menteeEntity1).looselyEquals(createdRelations.get(0).getMentee()));
     assertTrue(new Mentor(mentorEntity1).looselyEquals(createdRelations.get(0).getMentor()));
+  }
+
+  @Test
+  public void deleteMentorMenteeRelationNonexistentRequestTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    Entity mentorEntity1 = new Entity("UserAccount");
+    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
+    mentorEntity1.setProperty("userID", "201");
+    Entity menteeEntity1 = new Entity("UserAccount");
+    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
+    menteeEntity1.setProperty("userID", "301");
+    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
+    MentorMenteeRelation relation =
+        new MentorMenteeRelation(mentorEntity1.getKey().getId(), menteeEntity1.getKey().getId());
+    assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    assertFalse(dataAccess.deleteMentorMenteeRelation(relation));
+  }
+
+  @Test
+  public void deleteMentorMenteeRelationValidTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    Entity mentorEntity1 = new Entity("UserAccount");
+    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
+    mentorEntity1.setProperty("userID", "201");
+    Entity menteeEntity1 = new Entity("UserAccount");
+    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
+    menteeEntity1.setProperty("userID", "301");
+    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
+    MentorMenteeRelation relation =
+        new MentorMenteeRelation(mentorEntity1.getKey().getId(), menteeEntity1.getKey().getId());
+    assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    ds.put(relation.convertToEntity());
+    assertEquals(1, ds.prepare(new Query("MentorMenteeRelation")).countEntities(withLimit(10)));
+    assertTrue(dataAccess.deleteMentorMenteeRelation(relation));
+    assertEquals(0, ds.prepare(new Query("MentorMenteeRelation")).countEntities(withLimit(10)));
+  }
+
+  @Test
+  public void deleteMentorMenteeRelationTwiceTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    Entity mentorEntity1 = new Entity("UserAccount");
+    mentorEntity1.setPropertiesFrom(defaultMentorEntity);
+    mentorEntity1.setProperty("userID", "201");
+    Entity menteeEntity1 = new Entity("UserAccount");
+    menteeEntity1.setPropertiesFrom(defaultMenteeEntity);
+    menteeEntity1.setProperty("userID", "301");
+    ds.put(Arrays.asList(mentorEntity1, menteeEntity1));
+    MentorMenteeRelation relation =
+        new MentorMenteeRelation(mentorEntity1.getKey().getId(), menteeEntity1.getKey().getId());
+    assertEquals(2, ds.prepare(new Query("UserAccount")).countEntities(withLimit(10)));
+    ds.put(relation.convertToEntity());
+    assertEquals(1, ds.prepare(new Query("MentorMenteeRelation")).countEntities(withLimit(10)));
+    assertTrue(dataAccess.deleteMentorMenteeRelation(relation));
+    assertEquals(0, ds.prepare(new Query("MentorMenteeRelation")).countEntities(withLimit(10)));
+    assertFalse(dataAccess.deleteMentorMenteeRelation(relation));
+    assertEquals(0, ds.prepare(new Query("MentorMenteeRelation")).countEntities(withLimit(10)));
   }
 }

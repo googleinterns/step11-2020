@@ -13,14 +13,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#date-of-birth-error-container > #date-of-birth-error-label {
-  display:inline !important;
+#dashboard-tips > * {
+  width: fit-content;
 }
 
-.step-div {
-  padding-bottom: 0.5em;
-}
-
-.step-header {
-  font-size: 2.6em !important;
+#dashboard-tips > :last-child {
+  margin-bottom: 1em !important;
 }

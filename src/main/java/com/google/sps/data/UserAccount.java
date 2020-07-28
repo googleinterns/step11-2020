@@ -23,7 +23,10 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.KeyRange;
 import com.google.sps.util.ParameterConstants;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -39,6 +42,7 @@ import java.util.stream.Collectors;
  */
 public abstract class UserAccount implements DatastoreEntity {
   private long datastoreKey;
+  private long age;
   private boolean keyInitialized;
   private String userID;
   private String email;
@@ -173,6 +177,7 @@ public abstract class UserAccount implements DatastoreEntity {
     if (this.ethnicityList == null) {
       this.ethnicityList = new ArrayList<>();
     }
+    updateAge();
   }
 
   public Entity convertToEntity() {
@@ -322,12 +327,27 @@ public abstract class UserAccount implements DatastoreEntity {
     return userType;
   }
 
-  public UserType getUserType() {
-    return userType;
-  }
 
   public boolean getIsFakeUser() {
     return isFakeUser;
+  }
+
+  private void updateAge() {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(dateOfBirth);
+    LocalDate birthdayLocal =
+        LocalDate.of(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH) + 1,
+            calendar.get(Calendar.DATE));
+    LocalDate today = LocalDate.now();
+    if (today != null && dateOfBirth != null) {
+      this.age = Period.between(birthdayLocal, today).getYears();
+    }
+  }
+
+  public Long getAge() {
+    return age;
   }
 
   public abstract static class Builder<T extends Builder<T>> {

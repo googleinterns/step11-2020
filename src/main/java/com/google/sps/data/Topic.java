@@ -37,21 +37,31 @@ public enum Topic {
   MATH("Math"),
   LANGUAGE("Language"),
   BIOLOGY("Biology"),
-  OTHER("Other");
+  OTHER("Other", "ZZZ");
 
   private String title;
+  private String sortTitle;
 
   private Topic(String title) {
+    this(title, title);
+  }
+
+  private Topic(String title, String sortTitle) {
     this.title = title;
+    this.sortTitle = sortTitle;
   }
 
   public String getTitle() {
     return title;
   }
 
+  public String getSortTitle() {
+    return this.sortTitle;
+  }
+
   public static Collection<Topic> valuesSorted() {
     List<Topic> values = Arrays.asList(Topic.values());
-    values.sort(Comparator.comparing(Topic::getTitle));
+    values.sort(Comparator.comparing(Topic::getSortTitle));
     return values;
   }
 }

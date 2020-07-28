@@ -119,6 +119,17 @@ public interface DataAccess {
   boolean updateUser(UserAccount user);
 
   /**
+   * Deletes an entry in the database with the information from the passed in UserAccount object
+   * Attempting to delete a user who's key is not yet present in the database will result in a
+   * failure (return false). All related MentorshipRequests and MentorMenteeRelations will be
+   * deleted.
+   *
+   * @param user the UserAccount to be deleted from the database
+   * @return a boolean representing the success of the operation
+   */
+  boolean deleteUser(UserAccount user);
+
+  /**
    * Gets a collection of mentors from the database that are similar to the passed in mentee.
    * Invalid mentees (non existent in the database) will result in an empty list being returned.
    *
@@ -241,4 +252,13 @@ public interface DataAccess {
    *     never null)
    */
   Collection<MentorMenteeRelation> getMentorMenteeRelations(UserAccount user);
+
+  /**
+   * Deletes the specified MentorMenteeRelation from the database. Invalid relations (non existent
+   * in the database) will result in a failure (retrn false).
+   *
+   * @param relation the MentorMenteeRelation to be removed from the database
+   * @return a boolean representing the success of the operation
+   */
+  boolean deleteMentorMenteeRelation(MentorMenteeRelation relation);
 }

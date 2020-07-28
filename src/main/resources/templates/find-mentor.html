@@ -14,27 +14,24 @@ limitations under the License.  #}
 
 {% extends "base.html" %}
 
-{% block styles %}
-{{ super() }}
-<link rel="stylesheet" type="text/css" href="static/styles/find-mentor.css">
-{% endblock %}
-
 {% block page_title %}Find a Mentor{% endblock %}
 
+{% block main_class %}d-flex flex-column{% endblock %}
+{% block main_content_class %}flex-grow-1 d-flex flex-column{% endblock %}
+
 {% block main_content %}
-<div class="content-block" id="mentor-cards-container">
-	{% raw %}{% for mentor in mentors %}
-	{% include "mentor-card.html" %}
-	{% endfor %}{% endraw %}
+<div id="mentor-cards-carousel" class="flex-grow-1 container carousel slide mb-4" data-interval="false">
+  <div class="carousel-inner">
+    
+  </div>
 </div>
-<div class="content-block" id="mentor-rating-buttons">
-  <button class="pretty-button mentor-rating-button" id="send-request">Send mentor request!</button>
-  <button class="pretty-button mentor-rating-button" id="dislike-mentor">I don't want to work with this mentor.</button>
+<div class="container d-flex flex-row flex-md-column align-items-center justify-content-center mb-4" id="mentor-rating-buttons">
+  <button class="w-100 btn btn-outline-secondary mr-3 mb-md-3 mr-md-0 mentor-rating-button" id="send-request"><span class="d-none d-md-block">Send mentor request!</span><span class="d-md-none d-block h2 m-0"><i class="fa fa-fw fa-check"></i></span></button>
+  <button class="w-100 btn btn-outline-danger mentor-rating-button" id="dislike-mentor"><span class="d-none d-md-block">I don't want to work with this mentor.</span><span class="d-md-none d-block h2 m-0"><i class="fa fa-fw fa-times"></i></span></button>
 </div>
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
 <script charset="utf-8" type="text/javascript" src="static/scripts/find-mentor.js"></script>
-<script charset="utf-8" type="text/javascript" src="static/scripts/authenticate.js" onload="loadAuthButton()"></script>
 {% endblock %}

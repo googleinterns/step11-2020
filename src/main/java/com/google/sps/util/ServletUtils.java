@@ -14,6 +14,7 @@
 
 package com.google.sps.util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.Cookie;
@@ -53,7 +54,6 @@ public final class ServletUtils {
     if (values == null || values.length == 0) {
       values = defaultValues;
     }
-    System.out.println(values);
     return values;
   }
 
@@ -84,5 +84,11 @@ public final class ServletUtils {
     cookie.setMaxAge(0);
     cookie.setPath("/");
     response.addCookie(cookie);
+  }
+
+  public static void writeJsonSuccessToResponse(HttpServletResponse response, boolean success)
+      throws IOException {
+    response.setContentType(ServletUtils.CONTENT_JSON);
+    response.getWriter().println("{\"success\": " + success + "}");
   }
 }

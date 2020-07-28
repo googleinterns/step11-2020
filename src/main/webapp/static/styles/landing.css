@@ -31,8 +31,19 @@ limitations under the License.
   font-weight: 350;
 }
 
-#join-mentor-matcher .questionnaire-button-icon {
-  font-size: 15em;
+@media (min-width: 1200px) {
+  #title {
+    font-size: 8rem;
+  }
+}
+@media (max-width: 576px) {
+  .join-matcher-card {
+    width: min-content;
+  }
+}
+
+.join-matcher-card > .questionnaire-button-icon {
+  font-size: 200%;
 }
 
 #bottom-spacer {

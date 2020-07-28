@@ -13,15 +13,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#mentor-cards-container {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  width: 100%;
-  overflow-x: scroll;
+#mentorship-requests-tips > * {
+  width: fit-content;
 }
 
-.mentor-card {
-  min-width: 75ch;
-  padding: 3em;
+#mentorship-requests-tips > :last-child {
+  margin-bottom: 1em !important;
 }

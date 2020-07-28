@@ -13,21 +13,29 @@
 // limitations under the License.
 
 const menteeCardContainer = document.getElementById("mentee-card-container");
-Array.prototype.forEach.call(document.querySelectorAll(".mentee-card"), (menteeCard) => {
+
+const onSuccess = (menteeCard) => {
+  menteeCardContainer.removeChild(menteeCard);
+  if (menteeCardContainer.children.length === 0) {
+    window.location = "/dashboard";
+  }
+};
+
+document.querySelectorAll(".mentee-card").forEach(menteeCard => {
   const acceptButton = menteeCard.querySelector("button#yes");
   const denyButton = menteeCard.querySelector("button#no");
   acceptButton.addEventListener("click", async (event) => {
     const requestID = menteeCard.querySelector(".request-id").innerText;
     let success = await sendRequestDecision(requestID, "accept");
     if (success) {
-      menteeCardContainer.removeChild(menteeCard);
+      onSuccess(menteeCard);
     }
   });
   denyButton.addEventListener("click", async (event) => {
     const requestID = menteeCard.querySelector(".request-id").innerText;
     let success = await sendRequestDecision(requestID, "deny");
     if (success) {
-      menteeCardContainer.removeChild(menteeCard);
+      onSuccess(menteeCard);
     }
   });
 });
@@ -37,7 +45,6 @@ const sendRequestDecision = async (requestID, choice) => {
       method: "POST",
       body: new URLSearchParams({requestID, choice})
     });
-  let text = await response.text();
-  let data = JSON.parse(text);
+  let data = await response.json();
   return data.success;
 }

@@ -20,6 +20,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -35,7 +36,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -147,6 +147,28 @@ public class DatastoreAccess implements DataAccess {
     return false;
   }
 
+  public boolean deleteUser(UserAccount user) {
+    if (!user.isKeyInitialized()) {
+      user = getUser(user.getUserID());
+    }
+    if (user == null) {
+      return false;
+    }
+    try {
+      this.getIncomingRequests(user).stream().forEach(request -> this.deleteRequest(request));
+      this.getOutgoingRequests(user).stream().forEach(request -> this.deleteRequest(request));
+      this.getMentorMenteeRelations(user).stream()
+          .forEach(relation -> this.deleteMentorMenteeRelation(relation));
+      Key userKey =
+          KeyFactory.createKey(ParameterConstants.ENTITY_TYPE_USER_ACCOUNT, user.getDatastoreKey());
+      datastoreService.get(userKey);
+      datastoreService.delete(userKey);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
   public Collection<Mentor> getRelatedMentors(Mentee mentee) {
     if (getMentee(mentee.getDatastoreKey()) == null && getMentee(mentee.getUserID()) == null) {
       return new ArrayList<Mentor>();
@@ -166,7 +188,6 @@ public class DatastoreAccess implements DataAccess {
                     new Query.FilterPredicate(
                         ParameterConstants.MENTOR_VISIBILITY, Query.FilterOperator.EQUAL, true)));
     PreparedQuery results = datastoreService.prepare(query);
-    System.out.println("Prepared query\n");
     QueryResultList<Entity> resultList;
     if (mentee.getEncodedCursor() == "") {
       resultList =
@@ -187,12 +208,12 @@ public class DatastoreAccess implements DataAccess {
             .collect(Collectors.toList());
     ArrayList<Mentor> filteredMentors = new ArrayList<Mentor>(mentorList);
     boolean repullMentors = false;
-    if (filteredMentors.size() == 0) {
+    if (filteredMentors.size() < ServletUtils.REC_BATCH_SIZE) {
       repullMentors = true;
-      SortedSet<Long> servedMentorKeys = mentee.getServedMentorKeys();
-      for (Long key : servedMentorKeys) {
-        filteredMentors.add(getMentor(key));
-      }
+      mentee.getServedMentorKeys().stream()
+          .limit(ServletUtils.REC_BATCH_SIZE - filteredMentors.size())
+          .map(this::getMentor)
+          .forEach(filteredMentors::add);
     }
     Mentor lastRequestedMentor =
         mentee.getLastRequestedMentorKey() == 0
@@ -204,15 +225,13 @@ public class DatastoreAccess implements DataAccess {
             : getMentor(mentee.getLastDislikedMentorKey());
     filteredMentors.sort(
         (Mentor mentorA, Mentor mentorB) -> {
-          int result = 0;
+          int result = mentee.similarityWithMentor(mentorA) - mentee.similarityWithMentor(mentorB);
           if (lastRequestedMentor != null)
             result +=
                 mentorA.similarity(lastRequestedMentor) - mentorB.similarity(lastRequestedMentor);
           if (lastDislikedMentor != null)
             result -=
                 mentorA.similarity(lastDislikedMentor) - mentorB.similarity(lastDislikedMentor);
-          if (lastRequestedMentor == null && lastDislikedMentor == null)
-            result = mentee.similarityWithMentor(mentorA) - mentee.similarityWithMentor(mentorB);
           return result;
         });
     if (!repullMentors) {
@@ -316,8 +335,18 @@ public class DatastoreAccess implements DataAccess {
       UserAccount toUser = getUser(request.getToUserKey());
       UserAccount fromUser = getUser(request.getFromUserKey());
       if (toUser != null && fromUser != null && toUser.getUserType() != fromUser.getUserType()) {
-        datastoreService.put(request.convertToEntity());
-        return true;
+        long mentorKey =
+            toUser.getUserType() == UserType.MENTOR
+                ? toUser.getDatastoreKey()
+                : fromUser.getDatastoreKey();
+        long menteeKey =
+            toUser.getUserType() == UserType.MENTEE
+                ? toUser.getDatastoreKey()
+                : fromUser.getDatastoreKey();
+        if (!areConnected(mentorKey, menteeKey)) {
+          datastoreService.put(request.convertToEntity());
+          return true;
+        }
       }
     }
     return false;
@@ -430,5 +459,18 @@ public class DatastoreAccess implements DataAccess {
           }
         });
     return mentorMenteeRelations;
+  }
+
+  public boolean deleteMentorMenteeRelation(MentorMenteeRelation relation) {
+    try {
+      Key relationKey =
+          KeyFactory.createKey(
+              ParameterConstants.ENTITY_TYPE_MENTOR_MENTEE_RELATION, relation.getDatastoreKey());
+      datastoreService.get(relationKey);
+      datastoreService.delete(relationKey);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
   }
 }
