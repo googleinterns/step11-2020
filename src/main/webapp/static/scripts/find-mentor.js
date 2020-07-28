@@ -30,30 +30,25 @@ const newMentorCardHTML = mentor =>
   `<div class="mentor-profile-card shadow-sm mx-1 mb-1 position-relative" id="mentor-${mentor.datastoreKey}-card">
     <a class="stretched-link d-none" href="/profile?userID=${mentor.userID}"></a>
     <p class="mentor-id d-none" hidden>${mentor.datastoreKey}</p>
-    <main class="container divider-top p-4 d-flex flex-row flex-wrap align-items-start justify-content-center">
+    <main class="container divider-top p-4 d-flex flex-row flex-wrap align-items-center justify-content-start justify-content-md-center">
       <div class="d-flex flex-column align-items-start justify-content-start mb-3 mr-md-3 mw-md-50" id="profile-title" >
         <h1 class="mb-0">${mentor.name}</h1>
-        <h6 class="mb-2">${!mentor.visibility ? "Not a" : "A"}vailable for mentorship</h6>
-        <p class="mentor-mentor-type">${mentor.mentorType.title}</p>
-        <p class="m-0 mentor-focus-label">${mentor.focusList.length === 0 ? "Focuses: None" : mentor.focusList.length === 1 ? `Focus: ${mentor.focusList[0].title}` : "Focuses:"}</p>
-        <ul class="mentor-focus-list">
-          ${mentor.focusList.length === 1 ? "" : mentor.focusList.map(focus => `<li class="mentor-focus-item">${focus.title}</li>`).join("\n")}
-        </ul>
+        <h6 class="mb-1">${!mentor.visibility ? "Not a" : "A"}vailable for mentorship</h6>
+        <p class="mb-2 mentor-mentor-type">${mentor.mentorType.title}</p>
+        <p class="mb-2 mentor-focus">${mentor.focusList.length === 0 ? "Focuses: None" : mentor.focusList.length === 1 ? `Focus: ` : "Focuses: "}${mentor.focusList.map(focus => focus.title).join(", ")}</p>
         <p class="m-0">Bio:</p>
-        <p class="mentor-description">${mentor.description}</p>
+        <p class="m-0 mentor-description text-break">${mentor.description}</p>
       </div>
       <div class="d-flex flex-column align-items-start justify-content-start mw-md-50">
-        <div class="stats">
-          <p class="mb-1 mentor-age">Age: ${mentor.age}</p>
-          <p class="mb-1 mentor-country">Country: ${mentor.country.longName}</p>
-          <p class="mb-1 mentor-language">Language: ${mentor.language.longName}</p>
-          <p class="mb-1 mentor-timezone">TimeZone: ${mentor.timezone.name}: GMT ${(mentor.timezone.offset >= 0 ? "+" : "") + mentor.timezone.offset }</p>
-          <p class="mb-1 mentor-ethnicity">Ethnicity: ${mentor.ethnicityList.map(ethnicity => ethnicity.title !== "Other" ? ethnicity.title : mentor.ethnicityOther).join(", ")}</p>
-          <p class="mb-1 mentor-gender">Gender: ${mentor.gender.title !== "Other" ? mentor.gender.title : mentor.genderOther}</p>
-          <p class="mb-1 mentor-first-gen">First-gen: ${mentor.firstGen  ? "Yes" : "No"}</p>
-          <p class="mb-1 mentor-low-income">Low income: ${mentor.lowIncome  ? "Yes" : "No"}</p>
-          <p class="mb-1 mentor-education-level">Education: ${mentor.educationLevel.title != "Other" ? mentor.educationLevel.title : mentor.educationLevelOther}</p>
-        </div>
+        <p class="mb-1 mentor-age">Age: ${mentor.age}</p>
+        <p class="mb-1 mentor-country">Country: ${mentor.country.longName}</p>
+        <p class="mb-1 mentor-language">Language: ${mentor.language.longName}</p>
+        <p class="mb-1 mentor-timezone">TimeZone: ${mentor.timezone.name}: GMT ${(mentor.timezone.offset >= 0 ? "+" : "") + mentor.timezone.offset }</p>
+        <p class="mb-1 mentor-ethnicity">Ethnicity: ${mentor.ethnicityList.map(ethnicity => ethnicity.title !== "Other" ? ethnicity.title : (mentor.ethnicityOther || "Other")).join(", ")}</p>
+        <p class="mb-1 mentor-gender">Gender: ${mentor.gender.title !== "Other" ? mentor.gender.title : mentor.genderOther}</p>
+        <p class="mb-1 mentor-first-gen">First-gen: ${mentor.firstGen  ? "Yes" : "No"}</p>
+        <p class="mb-1 mentor-low-income">Low income: ${mentor.lowIncome  ? "Yes" : "No"}</p>
+        <p class="mb-1 mentor-education-level">Education: ${mentor.educationLevel.title != "Other" ? mentor.educationLevel.title : mentor.educationLevelOther}</p>
       </div>
     </main>
   </div>`;
