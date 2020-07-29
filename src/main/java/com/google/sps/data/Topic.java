@@ -29,15 +29,21 @@ import java.util.List;
  * @version 1.0
  */
 public enum Topic {
-  COMPUTER_SCIENCE("Computer Science"),
-  PHYSICS("Physics"),
   ART("Art"),
+  BIOLOGY("Biology"),
+  CHEMISTRY("Chemistry"),
+  CHINESE_CANTONESE("Chinese (Cantonese)"),
+  CHINESE_MANDARIN("Chinese (Mandarin)"),
+  COMPUTER_SCIENCE("Computer Science"),
+  ENGLISH("English"),
+  KOREAN("Korean"),
+  LANGUAGE("Language"),
+  LITERATURE("Literature"),
   MEDICINE("Medicine"),
   MUSIC("Music"),
   MATH("Math"),
-  LANGUAGE("Language"),
-  BIOLOGY("Biology"),
-  OTHER("Other", "ZZZ");
+  PHYSICS("Physics"),
+  SPANISH("Spanish");
 
   private String title;
   private String sortTitle;

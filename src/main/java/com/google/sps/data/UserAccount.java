@@ -14,8 +14,6 @@
 
 package com.google.sps.data;
 
-import static java.lang.Math.toIntExact;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -61,6 +59,7 @@ public abstract class UserAccount implements DatastoreEntity {
   private String educationLevelOther;
   private String description;
   private UserType userType;
+  private boolean isFakeUser;
 
   public UserAccount(
       String userID,
@@ -79,7 +78,8 @@ public abstract class UserAccount implements DatastoreEntity {
       EducationLevel educationLevel,
       String educationLevelOther,
       String description,
-      UserType userType) {
+      UserType userType,
+      boolean isFakeUser) {
     this.userID = userID;
     this.email = email;
     this.name = name;
@@ -97,6 +97,7 @@ public abstract class UserAccount implements DatastoreEntity {
     this.educationLevelOther = educationLevelOther;
     this.description = description;
     this.userType = userType;
+    this.isFakeUser = isFakeUser;
   }
 
   protected UserAccount(Builder<?> builder) {
@@ -117,7 +118,8 @@ public abstract class UserAccount implements DatastoreEntity {
         builder.educationLevel,
         builder.educationLevelOther,
         builder.description,
-        builder.userType);
+        builder.userType,
+        builder.isFakeUser);
     this.keyInitialized = builder.keyInitialized;
     if (builder.keyInitialized) {
       this.datastoreKey = builder.datastoreKey;
@@ -135,33 +137,29 @@ public abstract class UserAccount implements DatastoreEntity {
     this.email = (String) entity.getProperty(ParameterConstants.EMAIL);
     this.name = (String) entity.getProperty(ParameterConstants.NAME);
     this.dateOfBirth = (Date) entity.getProperty(ParameterConstants.DATE_OF_BIRTH);
-    this.country =
-        Country.values()[toIntExact((long) entity.getProperty(ParameterConstants.COUNTRY))];
-    this.language =
-        Language.values()[toIntExact((long) entity.getProperty(ParameterConstants.LANGUAGE))];
-    this.timezone =
-        TimeZone.values()[toIntExact((long) entity.getProperty(ParameterConstants.TIMEZONE))];
+    this.country = Country.valueOf((String) entity.getProperty(ParameterConstants.COUNTRY));
+    this.language = Language.valueOf((String) entity.getProperty(ParameterConstants.LANGUAGE));
+    this.timezone = TimeZone.valueOf((String) entity.getProperty(ParameterConstants.TIMEZONE));
     this.ethnicityList =
         getEthnicityListFromProperty((Collection) entity.getProperty(ParameterConstants.ETHNICITY));
     this.ethnicityOther = (String) entity.getProperty(ParameterConstants.ETHNICITY_OTHER);
-    this.gender = Gender.values()[toIntExact((long) entity.getProperty(ParameterConstants.GENDER))];
+    this.gender = Gender.valueOf((String) entity.getProperty(ParameterConstants.GENDER));
     this.genderOther = (String) entity.getProperty(ParameterConstants.GENDER_OTHER);
     this.firstGen = (boolean) entity.getProperty(ParameterConstants.FIRST_GEN);
     this.lowIncome = (boolean) entity.getProperty(ParameterConstants.LOW_INCOME);
     this.educationLevel =
-        EducationLevel.values()[
-            toIntExact((long) entity.getProperty(ParameterConstants.EDUCATION_LEVEL))];
+        EducationLevel.valueOf((String) entity.getProperty(ParameterConstants.EDUCATION_LEVEL));
     this.educationLevelOther =
         (String) entity.getProperty(ParameterConstants.EDUCATION_LEVEL_OTHER);
     this.description = (String) entity.getProperty(ParameterConstants.DESCRIPTION);
-    this.userType =
-        UserType.values()[toIntExact((long) entity.getProperty(ParameterConstants.USER_TYPE))];
+    this.userType = UserType.valueOf((String) entity.getProperty(ParameterConstants.USER_TYPE));
+    this.isFakeUser = (boolean) entity.getProperty(ParameterConstants.IS_FAKE_USER);
   }
 
   public static UserAccount fromEntity(Entity entity) {
     return entity == null
         ? null
-        : UserType.values()[toIntExact((long) (entity.getProperty(ParameterConstants.USER_TYPE)))]
+        : UserType.valueOf((String) entity.getProperty(ParameterConstants.USER_TYPE))
                 == UserType.MENTEE
             ? new Mentee(entity)
             : new Mentor(entity);
@@ -187,21 +185,22 @@ public abstract class UserAccount implements DatastoreEntity {
     entity.setProperty(ParameterConstants.EMAIL, this.email);
     entity.setProperty(ParameterConstants.NAME, this.name);
     entity.setProperty(ParameterConstants.DATE_OF_BIRTH, this.dateOfBirth);
-    entity.setProperty(ParameterConstants.COUNTRY, this.country.ordinal());
-    entity.setProperty(ParameterConstants.LANGUAGE, this.language.ordinal());
-    entity.setProperty(ParameterConstants.TIMEZONE, this.timezone.ordinal());
+    entity.setProperty(ParameterConstants.COUNTRY, this.country.name());
+    entity.setProperty(ParameterConstants.LANGUAGE, this.language.name());
+    entity.setProperty(ParameterConstants.TIMEZONE, this.timezone.name());
     entity.setProperty(
         ParameterConstants.ETHNICITY,
-        ethnicityList.stream().map(ethnicity -> ethnicity.ordinal()).collect(Collectors.toList()));
+        ethnicityList.stream().map(ethnicity -> ethnicity.name()).collect(Collectors.toList()));
     entity.setProperty(ParameterConstants.ETHNICITY_OTHER, this.ethnicityOther);
-    entity.setProperty(ParameterConstants.GENDER, this.gender.ordinal());
+    entity.setProperty(ParameterConstants.GENDER, this.gender.name());
     entity.setProperty(ParameterConstants.GENDER_OTHER, this.genderOther);
     entity.setProperty(ParameterConstants.FIRST_GEN, this.firstGen);
     entity.setProperty(ParameterConstants.LOW_INCOME, this.lowIncome);
-    entity.setProperty(ParameterConstants.EDUCATION_LEVEL, this.educationLevel.ordinal());
+    entity.setProperty(ParameterConstants.EDUCATION_LEVEL, this.educationLevel.name());
     entity.setProperty(ParameterConstants.EDUCATION_LEVEL_OTHER, this.educationLevelOther);
     entity.setProperty(ParameterConstants.DESCRIPTION, this.description);
-    entity.setProperty(ParameterConstants.USER_TYPE, this.userType.ordinal());
+    entity.setProperty(ParameterConstants.USER_TYPE, this.userType.name());
+    entity.setProperty(ParameterConstants.IS_FAKE_USER, this.isFakeUser);
     return entity;
   }
 
@@ -217,7 +216,7 @@ public abstract class UserAccount implements DatastoreEntity {
         ? new ArrayList<Ethnicity>()
         : (Collection<Ethnicity>)
             ethnicityEnumIndexList.stream()
-                .map(index -> Ethnicity.values()[toIntExact((long) index)])
+                .map(name -> Ethnicity.valueOf((String) name))
                 .collect(Collectors.toList());
   }
 
@@ -321,6 +320,10 @@ public abstract class UserAccount implements DatastoreEntity {
     return userType;
   }
 
+  public boolean getIsFakeUser() {
+    return isFakeUser;
+  }
+
   private void updateAge() {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(dateOfBirth);
@@ -359,6 +362,7 @@ public abstract class UserAccount implements DatastoreEntity {
     private static String educationLevelOther;
     private static String description;
     private static UserType userType;
+    private static boolean isFakeUser;
 
     protected Builder() {}
 
@@ -450,6 +454,11 @@ public abstract class UserAccount implements DatastoreEntity {
 
     public T userType(UserType userType) {
       this.userType = userType;
+      return (T) this;
+    }
+
+    public T isFakeUser(boolean isFakeUser) {
+      this.isFakeUser = isFakeUser;
       return (T) this;
     }
   }

@@ -240,8 +240,9 @@ public class QuestionnaireServlet extends HttpServlet {
               MeetingFrequency.WEEKLY.toString());
       Topic goal =
           ServletUtils.getEnumParameter(
-              Topic.class, request, ParameterConstants.MENTEE_GOAL, Topic.OTHER.toString());
+              Topic.class, request, ParameterConstants.MENTEE_GOAL, Topic.values()[0].toString());
       return Mentee.Builder.newBuilder()
+          .isFakeUser(false)
           .name(name)
           .userID(dataAccess.getCurrentUser().getUserId())
           .email(dataAccess.getCurrentUser().getEmail())
@@ -267,9 +268,13 @@ public class QuestionnaireServlet extends HttpServlet {
     } else {
       List<Topic> focusList =
           ServletUtils.getListOfCheckedValues(
-              Topic.class, request, ParameterConstants.MENTOR_FOCUS_LIST, Topic.OTHER.toString());
+              Topic.class,
+              request,
+              ParameterConstants.MENTOR_FOCUS_LIST,
+              Topic.values()[0].toString());
 
       return Mentor.Builder.newBuilder()
+          .isFakeUser(false)
           .name(name)
           .userID(dataAccess.getCurrentUser().getUserId())
           .email(dataAccess.getCurrentUser().getEmail())

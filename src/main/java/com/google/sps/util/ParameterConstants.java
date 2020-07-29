@@ -44,6 +44,7 @@ public final class ParameterConstants {
   public static final String EDUCATION_LEVEL_OTHER = "educationLevelOther";
   public static final String DESCRIPTION = "description";
   public static final String USER_TYPE = "userType";
+  public static final String IS_FAKE_USER = "isFakeUser";
   public static final String MENTEE_GOAL = "goal";
   public static final String MENTEE_DESIRED_MEETING_FREQUENCY = "desiredMeetingFrequency";
   public static final String MENTEE_DESIRED_MENTOR_TYPE = "desiredMentorType";

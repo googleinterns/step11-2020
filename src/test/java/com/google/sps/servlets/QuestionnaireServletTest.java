@@ -73,7 +73,7 @@ public final class QuestionnaireServletTest {
             .timezone(TimeZone.GMT)
             .ethnicityList((Arrays.asList(Ethnicity.INDIAN)))
             .ethnicityOther("")
-            .gender(Gender.MAN)
+            .gender(Gender.MALE)
             .genderOther("")
             .firstGen(false)
             .lowIncome(false)
