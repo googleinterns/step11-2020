@@ -1,6 +1,7 @@
 package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
@@ -31,46 +32,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Seeds the database with based on a large input dataset in JSON format. Upon calling HTTP GET,
- * this servlet attempts to seed the database and returns a JSON object representing the operations
- * success.
+ * Generates random data and returns it as JSON data. This servlet will only handle responses in the development environment to avoid leaking the internal object structure of the UserAccount to external users. Upon calling HTTP GET, this servlet will generate 10000 fake UserAccounts and send them as a JSON response to the caller. This servlet does not support HTTP POST.
  *
- * @author sylviaziyuz
  * @author guptamudit
- * @author tquintanilla
  * @version 1.0
- * @param URLPatterns.SEED_DB this servlet serves requests at /seed-db
+ * @param "random" this servlet serves requests at /random
  */
 @WebServlet("random")
-public class RandomData extends HttpServlet {
+public class RandomDataServlet extends HttpServlet {
 
   private Gson gson;
-  private Collection<UserAccount> users;
 
   @Override
   public void init() {
     gson = new GsonBuilder().setDateFormat("MMM dd, yyyy, HH:mm:ss a").create();
-
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Collection<Entity> entities;
-    boolean success = false;
-    if (seeded < users.size()) {
-      entities =
-          users.stream()
-              .skip(seeded)
-              .limit(1000)
-              .map(UserAccount::convertToEntity)
-              .collect(Collectors.toList());
-      success = dataAccess.seed_db(entities);
-      if (success) {
-        seeded += 1000;
-      }
-    }
+    if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development) {
+      Collection<UserAccount> users = Stream.generate(RandomObjects::randomMentee).limit(5000).collect(Collectors.toList());
+      Stream.generate(RandomObjects::randomMentor).limit(5000).forEach(users::add);
 
-    response.setContentType(ServletUtils.CONTENT_JSON);
-    response.getWriter().println("{\"seeded\":\n" + success + "}");
+      response.setContentType(ServletUtils.CONTENT_JSON);
+      response.getWriter().println("{\"users\":\n" + gson.toJson(users) + "}");
+    }
   }
 }

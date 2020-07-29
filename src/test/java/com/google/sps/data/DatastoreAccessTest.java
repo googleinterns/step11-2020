@@ -80,7 +80,7 @@ public final class DatastoreAccessTest {
     defaultUserAccountEntity.setProperty(
         "ethnicity", Arrays.asList((long) Ethnicity.INDIAN.ordinal()));
     defaultUserAccountEntity.setProperty("ethnicityOther", "");
-    defaultUserAccountEntity.setProperty("gender", (long) Gender.MAN.ordinal());
+    defaultUserAccountEntity.setProperty("gender", (long) Gender.MALE.ordinal());
     defaultUserAccountEntity.setProperty("genderOther", "");
     defaultUserAccountEntity.setProperty("firstGen", false);
     defaultUserAccountEntity.setProperty("lowIncome", false);
@@ -88,6 +88,7 @@ public final class DatastoreAccessTest {
         "educationLevel", (long) EducationLevel.HIGHSCHOOL.ordinal());
     defaultUserAccountEntity.setProperty("educationLevelOther", "");
     defaultUserAccountEntity.setProperty("description", "I am very cool.");
+    defaultUserAccountEntity.setProperty("isFakeUser", true);
 
     defaultMenteeEntity = new Entity("UserAccount");
     defaultMenteeEntity.setPropertiesFrom(defaultUserAccountEntity);
@@ -125,7 +126,7 @@ public final class DatastoreAccessTest {
             .timezone(TimeZone.GMT)
             .ethnicityList((Arrays.asList(Ethnicity.INDIAN)))
             .ethnicityOther("")
-            .gender(Gender.MAN)
+            .gender(Gender.MALE)
             .genderOther("")
             .firstGen(false)
             .lowIncome(false)
@@ -137,6 +138,7 @@ public final class DatastoreAccessTest {
             .desiredMeetingFrequency(MeetingFrequency.WEEKLY)
             .dislikedMentorKeys(Collections.emptySet())
             .desiredMentorType(MentorType.CAREER)
+            .isFakeUser(true)
             .build();
 
     defaultMentor =
@@ -150,7 +152,7 @@ public final class DatastoreAccessTest {
             .timezone(TimeZone.GMT)
             .ethnicityList((Arrays.asList(Ethnicity.INDIAN)))
             .ethnicityOther("")
-            .gender(Gender.MAN)
+            .gender(Gender.MALE)
             .genderOther("")
             .firstGen(false)
             .lowIncome(false)
@@ -161,6 +163,7 @@ public final class DatastoreAccessTest {
             .visibility(true)
             .userType(UserType.MENTOR)
             .focusList(new ArrayList<Topic>(Arrays.asList(Topic.COMPUTER_SCIENCE)))
+            .isFakeUser(true)
             .build();
   }
 

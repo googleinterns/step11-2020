@@ -13,6 +13,7 @@ import com.google.sps.data.DatastoreAccess;
 import com.google.sps.data.Mentee;
 import com.google.sps.data.Mentor;
 import com.google.sps.data.UserAccount;
+import com.google.sps.data.UserTyper;
 import com.google.sps.util.DummyDataConstants;
 import com.google.sps.util.ErrorMessages;
 import com.google.sps.util.ParameterConstants;
@@ -73,7 +74,7 @@ public class SeedDatabaseServlet extends HttpServlet {
       JsonObject user = element.getAsJsonObject();
       if (user.get(ParameterConstants.USER_TYPE)
           .getAsString()
-          .equals(DummyDataConstants.MENTOR_CAPS)) {
+          .equals(UserType.MENTOR.name())) {
         users.add(gson.fromJson(user, Mentor.class));
       } else {
         users.add(gson.fromJson(user, Mentee.class));
