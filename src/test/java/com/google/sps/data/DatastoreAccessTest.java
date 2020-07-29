@@ -74,18 +74,18 @@ public final class DatastoreAccessTest {
   private void setUpDefaultEntities() {
     Entity defaultUserAccountEntity = new Entity("UserAccount");
     defaultUserAccountEntity.setProperty("dateOfBirth", new Date(984787200000L));
-    defaultUserAccountEntity.setProperty("country", (long) Country.US.ordinal());
-    defaultUserAccountEntity.setProperty("language", (long) Language.EN.ordinal());
-    defaultUserAccountEntity.setProperty("timezone", (long) TimeZone.GMT.ordinal());
+    defaultUserAccountEntity.setProperty("country", (String) Country.US.name());
+    defaultUserAccountEntity.setProperty("language", (String) Language.EN.name());
+    defaultUserAccountEntity.setProperty("timezone", (String) TimeZone.GMT.name());
     defaultUserAccountEntity.setProperty(
-        "ethnicity", Arrays.asList((long) Ethnicity.INDIAN.ordinal()));
+        "ethnicity", Arrays.asList((String) Ethnicity.INDIAN.name()));
     defaultUserAccountEntity.setProperty("ethnicityOther", "");
-    defaultUserAccountEntity.setProperty("gender", (long) Gender.MALE.ordinal());
+    defaultUserAccountEntity.setProperty("gender", (String) Gender.MALE.name());
     defaultUserAccountEntity.setProperty("genderOther", "");
     defaultUserAccountEntity.setProperty("firstGen", false);
     defaultUserAccountEntity.setProperty("lowIncome", false);
     defaultUserAccountEntity.setProperty(
-        "educationLevel", (long) EducationLevel.HIGHSCHOOL.ordinal());
+        "educationLevel", (String) EducationLevel.HIGHSCHOOL.name());
     defaultUserAccountEntity.setProperty("educationLevelOther", "");
     defaultUserAccountEntity.setProperty("description", "I am very cool.");
     defaultUserAccountEntity.setProperty("isFakeUser", true);
@@ -95,23 +95,23 @@ public final class DatastoreAccessTest {
     defaultMenteeEntity.setProperty("userID", "101");
     defaultMenteeEntity.setProperty("email", "mudito.mentee@example.com");
     defaultMenteeEntity.setProperty("name", "Mudito Mentee");
-    defaultMenteeEntity.setProperty("userType", (long) UserType.MENTEE.ordinal());
-    defaultMenteeEntity.setProperty("goal", (long) Topic.COMPUTER_SCIENCE.ordinal());
+    defaultMenteeEntity.setProperty("userType", (String) UserType.MENTEE.name());
+    defaultMenteeEntity.setProperty("goal", (String) Topic.COMPUTER_SCIENCE.name());
     defaultMenteeEntity.setProperty(
-        "desiredMeetingFrequency", (long) MeetingFrequency.WEEKLY.ordinal());
+        "desiredMeetingFrequency", (String) MeetingFrequency.WEEKLY.name());
     defaultMenteeEntity.setProperty("dislikedMentorKeys", Arrays.asList());
-    defaultMenteeEntity.setProperty("desiredMentorType", (long) MentorType.CAREER.ordinal());
+    defaultMenteeEntity.setProperty("desiredMentorType", (String) MentorType.CAREER.name());
 
     defaultMentorEntity = new Entity("UserAccount");
     defaultMentorEntity.setPropertiesFrom(defaultUserAccountEntity);
     defaultMentorEntity.setProperty("userID", "102");
     defaultMentorEntity.setProperty("email", "mudito.mentor@example.com");
     defaultMentorEntity.setProperty("name", "Mudito Mentor");
-    defaultMentorEntity.setProperty("userType", (long) UserType.MENTOR.ordinal());
+    defaultMentorEntity.setProperty("userType", (String) UserType.MENTOR.name());
     defaultMentorEntity.setProperty("visibility", true);
     defaultMentorEntity.setProperty(
-        "focusList", Arrays.asList((long) Topic.COMPUTER_SCIENCE.ordinal()));
-    defaultMentorEntity.setProperty("mentorType", (long) MentorType.CAREER.ordinal());
+        "focusList", Arrays.asList((String) Topic.COMPUTER_SCIENCE.name()));
+    defaultMentorEntity.setProperty("mentorType", (String) MentorType.CAREER.name());
   }
 
   private void setUpDefaultObjects() {
@@ -186,12 +186,12 @@ public final class DatastoreAccessTest {
     assertEquals(user.getEmail(), entity.getProperty("email"));
     assertEquals(user.getName(), entity.getProperty("name"));
     assertEquals(user.getDateOfBirth(), entity.getProperty("dateOfBirth"));
-    assertEquals((long) user.getCountry().ordinal(), entity.getProperty("country"));
-    assertEquals((long) user.getLanguage().ordinal(), entity.getProperty("language"));
-    assertEquals((long) user.getTimezone().ordinal(), entity.getProperty("timezone"));
+    assertEquals((String) user.getCountry().name(), entity.getProperty("country"));
+    assertEquals((String) user.getLanguage().name(), entity.getProperty("language"));
+    assertEquals((String) user.getTimezone().name(), entity.getProperty("timezone"));
     assertEquals(
         user.getEthnicityList().stream()
-            .map(ethnicity -> ethnicity.ordinal())
+            .map(ethnicity -> ethnicity.name())
             .collect(Collectors.toList())
             .toString(),
         (entity.getProperty("ethnicity") == null
@@ -199,21 +199,21 @@ public final class DatastoreAccessTest {
                 : entity.getProperty("ethnicity"))
             .toString());
     assertEquals(user.getEthnicityOther(), entity.getProperty("ethnicityOther"));
-    assertEquals((long) user.getGender().ordinal(), entity.getProperty("gender"));
+    assertEquals((String) user.getGender().name(), entity.getProperty("gender"));
     assertEquals(user.getGenderOther(), entity.getProperty("genderOther"));
     assertEquals(user.isFirstGen(), entity.getProperty("firstGen"));
     assertEquals(user.isLowIncome(), entity.getProperty("lowIncome"));
-    assertEquals((long) user.getEducationLevel().ordinal(), entity.getProperty("educationLevel"));
+    assertEquals((String) user.getEducationLevel().name(), entity.getProperty("educationLevel"));
     assertEquals(user.getEducationLevelOther(), entity.getProperty("educationLevelOther"));
     assertEquals(user.getDescription(), entity.getProperty("description"));
   }
 
   private void assertMenteeEqualsEntity(Mentee mentee, Entity entity) {
     assertUserEqualsEntity(mentee, entity);
-    assertEquals((long) mentee.getUserType().ordinal(), entity.getProperty("userType"));
-    assertEquals((long) mentee.getGoal().ordinal(), entity.getProperty("goal"));
+    assertEquals((String) mentee.getUserType().name(), entity.getProperty("userType"));
+    assertEquals((String) mentee.getGoal().name(), entity.getProperty("goal"));
     assertEquals(
-        (long) mentee.getDesiredMeetingFrequency().ordinal(),
+        (String) mentee.getDesiredMeetingFrequency().name(),
         entity.getProperty("desiredMeetingFrequency"));
     assertEquals(
         mentee.getDislikedMentorKeys(),
@@ -221,23 +221,23 @@ public final class DatastoreAccessTest {
             ? new HashSet()
             : new HashSet((Collection) entity.getProperty("dislikedMentorKeys")));
     assertEquals(
-        (long) mentee.getDesiredMentorType().ordinal(), entity.getProperty("desiredMentorType"));
+        (String) mentee.getDesiredMentorType().name(), entity.getProperty("desiredMentorType"));
   }
 
   private void assertMentorEqualsEntity(Mentor mentor, Entity entity) {
     assertUserEqualsEntity(mentor, entity);
-    assertEquals((long) mentor.getUserType().ordinal(), entity.getProperty("userType"));
+    assertEquals((String) mentor.getUserType().name(), entity.getProperty("userType"));
     assertEquals(mentor.getVisibility(), entity.getProperty("visibility"));
     assertEquals(
         mentor.getFocusList().stream()
-            .map(topic -> topic.ordinal())
+            .map(topic -> topic.name())
             .collect(Collectors.toList())
             .toString(),
         (entity.getProperty("focusList") == null
                 ? new ArrayList()
                 : entity.getProperty("focusList"))
             .toString());
-    assertEquals((long) mentor.getMentorType().ordinal(), entity.getProperty("mentorType"));
+    assertEquals((String) mentor.getMentorType().name(), entity.getProperty("mentorType"));
   }
 
   @Test

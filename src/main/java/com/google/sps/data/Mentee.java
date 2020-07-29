@@ -14,8 +14,6 @@
 
 package com.google.sps.data;
 
-import static java.lang.Math.toIntExact;
-
 import com.google.appengine.api.datastore.Entity;
 import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ServletUtils;
@@ -62,18 +60,16 @@ public class Mentee extends UserAccount implements DatastoreEntity {
 
   public Mentee(Entity entity) {
     super(entity);
-    this.goal =
-        Topic.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTEE_GOAL))];
+    this.goal = Topic.valueOf((String) entity.getProperty(ParameterConstants.MENTEE_GOAL));
     this.desiredMeetingFrequency =
-        MeetingFrequency.values()[
-            toIntExact(
-                (long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY))];
+        MeetingFrequency.valueOf(
+            (String) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY));
     this.dislikedMentorKeys =
         getDislikedSetFromProperty(
             (Collection) entity.getProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS));
     this.desiredMentorType =
-        MentorType.values()[
-            toIntExact((long) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE))];
+        MentorType.valueOf(
+            (String) entity.getProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE));
     this.servedMentorKeys =
         getServedSetFromProperty(
             (Collection) entity.getProperty(ParameterConstants.MENTEE_SERVED_MENTOR_KEYS));
@@ -110,17 +106,17 @@ public class Mentee extends UserAccount implements DatastoreEntity {
 
   public Entity convertToEntity() {
     Entity entity = super.convertToEntity();
-    entity.setProperty(ParameterConstants.MENTEE_GOAL, goal.ordinal());
+    entity.setProperty(ParameterConstants.MENTEE_GOAL, goal.name());
     entity.setProperty(
-        ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, desiredMeetingFrequency.ordinal());
+        ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, desiredMeetingFrequency.name());
     entity.setProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS, this.dislikedMentorKeys);
-    entity.setProperty(ParameterConstants.MENTOR_TYPE, desiredMentorType.ordinal());
+    entity.setProperty(ParameterConstants.MENTOR_TYPE, desiredMentorType.name());
     entity.setProperty(ParameterConstants.MENTEE_SERVED_MENTOR_KEYS, this.servedMentorKeys);
     entity.setProperty(
         ParameterConstants.MENTEE_LAST_DISLIKED_MENTOR_KEY, this.lastDislikedMentorKey);
     entity.setProperty(
         ParameterConstants.MENTEE_LAST_REQUESTED_MENTOR_KEY, this.lastRequestedMentorKey);
-    entity.setProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE, desiredMentorType.ordinal());
+    entity.setProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE, desiredMentorType.name());
     entity.setProperty(ParameterConstants.ENCODED_CURSOR, this.encodedCursor);
     return entity;
   }

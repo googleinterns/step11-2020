@@ -180,11 +180,11 @@ public class DatastoreAccess implements DataAccess {
                     new Query.FilterPredicate(
                         ParameterConstants.USER_TYPE,
                         Query.FilterOperator.EQUAL,
-                        UserType.MENTOR.ordinal()),
+                        UserType.MENTOR.name()),
                     new Query.FilterPredicate(
                         ParameterConstants.MENTOR_TYPE,
                         Query.FilterOperator.EQUAL,
-                        mentee.getDesiredMentorType().ordinal()),
+                        mentee.getDesiredMentorType().name()),
                     new Query.FilterPredicate(
                         ParameterConstants.MENTOR_VISIBILITY, Query.FilterOperator.EQUAL, true)));
     PreparedQuery results = datastoreService.prepare(query);

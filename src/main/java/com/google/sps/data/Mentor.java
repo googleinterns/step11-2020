@@ -14,8 +14,6 @@
 
 package com.google.sps.data;
 
-import static java.lang.Math.toIntExact;
-
 import com.google.appengine.api.datastore.Entity;
 import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ServletUtils;
@@ -52,7 +50,7 @@ public class Mentor extends UserAccount implements DatastoreEntity {
         getFocusListFromProperty(
             (Collection) entity.getProperty(ParameterConstants.MENTOR_FOCUS_LIST));
     this.mentorType =
-        MentorType.values()[toIntExact((long) entity.getProperty(ParameterConstants.MENTOR_TYPE))];
+        MentorType.valueOf((String) entity.getProperty(ParameterConstants.MENTOR_TYPE));
     this.sanitizeValues();
   }
 
@@ -69,8 +67,8 @@ public class Mentor extends UserAccount implements DatastoreEntity {
     entity.setProperty(ParameterConstants.MENTOR_VISIBILITY, visibility);
     entity.setProperty(
         ParameterConstants.MENTOR_FOCUS_LIST,
-        focusList.stream().map(focus -> focus.ordinal()).collect(Collectors.toList()));
-    entity.setProperty(ParameterConstants.MENTOR_TYPE, mentorType.ordinal());
+        focusList.stream().map(focus -> focus.name()).collect(Collectors.toList()));
+    entity.setProperty(ParameterConstants.MENTOR_TYPE, mentorType.name());
     return entity;
   }
 
@@ -85,7 +83,7 @@ public class Mentor extends UserAccount implements DatastoreEntity {
         ? new ArrayList<Topic>()
         : (Collection<Topic>)
             focusEnumIndexList.stream()
-                .map(index -> Topic.values()[toIntExact((long) index)])
+                .map(name -> Topic.valueOf((String) name))
                 .collect(Collectors.toList());
   }
 

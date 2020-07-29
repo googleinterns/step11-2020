@@ -31,7 +31,7 @@ const newMentorCardHTML = mentor =>
     <a class="stretched-link d-none" href="/profile?userID=${mentor.userID}"></a>
     <p class="mentor-id d-none" hidden>${mentor.datastoreKey}</p>
     <main class="container divider-top p-4 d-flex flex-row flex-wrap align-items-center justify-content-start justify-content-md-center">
-      <div class="d-flex flex-column align-items-start justify-content-start mb-3 mr-md-3 mw-md-50" id="profile-title" >
+      <div class="d-flex flex-column align-items-start justify-content-start pb-3 pr-md-3 mw-md-50" id="profile-title" >
         <h1 class="mb-0">${mentor.name}</h1>
         <h6 class="mb-1">${!mentor.visibility ? "Not a" : "A"}vailable for mentorship</h6>
         <p class="mb-2 mentor-mentor-type">${mentor.mentorType.title}</p>
