@@ -14,7 +14,13 @@ limitations under the License.
 */
 
 #about-description {
-  font-size: 1.4em;
-  line-height: 200%;
   white-space: pre-line;
+  font-size: 1.2em;
+}
+
+@media (min-width: 768px) {
+  #about-description {
+    font-size: 1.4em;
+    line-height: 200%;
+  }
 }
