@@ -23,3 +23,17 @@ limitations under the License.
 .creator-card {
   max-width: min-content;
 }
+
+.creator-picture {
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  padding: 5px;
+}
+
+.creator-college {
+  color: gray;
+}
+
+.creator-name {
+  padding-top: 0.3em;
+}
