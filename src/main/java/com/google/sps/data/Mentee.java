@@ -195,6 +195,14 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     return servedMentorKeys.add(servedMentorKey);
   }
 
+  protected void copyKeyData(Mentee oldMentee) {
+    this.dislikedMentorKeys = oldMentee.getDislikedMentorKeys();
+    this.servedMentorKeys = oldMentee.getServedMentorKeys();
+    this.encodedCursor = oldMentee.getEncodedCursor();
+    this.lastRequestedMentorKey = oldMentee.getLastRequestedMentorKey();
+    this.lastDislikedMentorKey = oldMentee.getLastDislikedMentorKey();
+  }
+
   @Override
   public boolean looselyEquals(UserAccount other) {
     return super.looselyEquals(other)

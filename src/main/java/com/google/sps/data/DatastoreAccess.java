@@ -135,6 +135,9 @@ public class DatastoreAccess implements DataAccess {
       if (user.isKeyInitialized()) {
         datastoreService.put(user.convertToEntity());
       } else {
+        if (oldUser.getUserType() == UserType.MENTEE) {
+          ((Mentee) user).copyKeyData((Mentee) oldUser);
+        }
         Entity newUserEntity =
             new Entity(
                 KeyFactory.createKey(
