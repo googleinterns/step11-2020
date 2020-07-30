@@ -14,6 +14,14 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
@@ -44,7 +52,9 @@ import com.hubspot.jinjava.loader.FileLocator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -131,7 +141,14 @@ public class QuestionnaireServlet extends HttpServlet {
             : currentUser.getUserType().getTitle().toLowerCase();
 
     if (formType.equals(MENTOR) || formType.equals(MENTEE)) {
+      BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+      String uploadUrl = blobstoreService.createUploadUrl(URLPatterns.QUESTIONNAIRE);
+      try {
+        uploadUrl = new URL(uploadUrl).getPath();
+      } catch (MalformedURLException e) {
+      }
       context.put(ContextFields.FORM_TYPE, formType.toLowerCase());
+      context.put(ContextFields.QUESTIONNAIRE_SUBMIT_URL, uploadUrl);
       context.put("ethnicities", EnumSet.complementOf(EnumSet.of(Ethnicity.UNSPECIFIED)));
       context.put("topics", Topic.valuesSorted());
       String renderTemplate = jinjava.render(questionnaireTemplate, context);
@@ -231,6 +248,12 @@ public class QuestionnaireServlet extends HttpServlet {
             MentorType.class, request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR.toString());
     String description = ServletUtils.getParameter(request, ParameterConstants.DESCRIPTION, "");
 
+    String imageURL = getUploadedFileUrl(request, ParameterConstants.PROFILE_PICTURE);
+    if (imageURL == null) {
+      imageURL = URLPatterns.DEFAULT_PROFILE_IMAGE;
+    }
+    LOG.info(imageURL);
+
     if (userType.equals(UserType.MENTEE)) {
       MeetingFrequency desiredMeetingFrequency =
           ServletUtils.getEnumParameter(
@@ -260,6 +283,7 @@ public class QuestionnaireServlet extends HttpServlet {
           .educationLevel(educationLevel)
           .educationLevelOther(educationLevelOther)
           .description(description)
+          .imageURL(imageURL)
           .goal(goal)
           .desiredMeetingFrequency(desiredMeetingFrequency)
           .desiredMentorType(mentorType)
@@ -292,10 +316,50 @@ public class QuestionnaireServlet extends HttpServlet {
           .educationLevel(educationLevel)
           .educationLevelOther(educationLevelOther)
           .description(description)
+          .imageURL(imageURL)
           .mentorType(mentorType)
           .visibility(true)
           .focusList(focusList)
           .build();
+    }
+  }
+
+  /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
+  private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    List<BlobKey> blobKeys = blobs.get(formInputElementName);
+
+    // User submitted form without selecting a file, so we can't get a URL. (dev server)
+    if (blobKeys == null || blobKeys.isEmpty()) {
+      return null;
+    }
+
+    // Our form only contains a single file input, so get the first index.
+    BlobKey blobKey = blobKeys.get(0);
+
+    // User submitted form without selecting a file, so we can't get a URL. (live server)
+    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
+    if (blobInfo.getSize() == 0) {
+      blobstoreService.delete(blobKey);
+      return null;
+    }
+
+    // We could check the validity of the file here, e.g. to make sure it's an image file
+    // https://stackoverflow.com/q/10779564/873165
+
+    // Use ImagesService to get a URL that points to the uploaded file.
+    ImagesService imagesService = ImagesServiceFactory.getImagesService();
+    ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
+
+    // To support running in Google Cloud Shell with AppEngine's dev server, we must use the
+    // relative
+    // path to the image, rather than the path returned by imagesService which contains a host.
+    try {
+      URL url = new URL(imagesService.getServingUrl(options));
+      return url.getPath();
+    } catch (MalformedURLException e) {
+      return imagesService.getServingUrl(options);
     }
   }
 

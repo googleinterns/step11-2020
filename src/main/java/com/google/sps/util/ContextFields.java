@@ -31,6 +31,7 @@ public class ContextFields {
   public static final String CURRENT_USER = "currentUser";
 
   public static final String FORM_TYPE = "formType";
+  public static final String QUESTIONNAIRE_SUBMIT_URL = "questionnaireSubmitURL";
 
   public static final String PROFILE_USER = "profileUser";
 

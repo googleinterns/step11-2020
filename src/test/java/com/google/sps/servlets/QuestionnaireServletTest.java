@@ -1,6 +1,7 @@
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
@@ -21,8 +22,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
@@ -48,8 +49,12 @@ public final class QuestionnaireServletTest {
   private QuestionnaireServlet servlet;
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
-              new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig())
-          .setEnvAttributes(Map.of("com.google.appengine.api.users.UserService.user_id_key", "101"))
+              new LocalUserServiceTestConfig(),
+              new LocalDatastoreServiceTestConfig(),
+              (new LocalBlobstoreServiceTestConfig()).setNoStorage(true))
+          .setEnvAttributes(
+              Collections.singletonMap(
+                  "com.google.appengine.api.users.UserService.user_id_key", "101"))
           .setEnvEmail("mudito@example.com")
           .setEnvAuthDomain("gmail.com")
           .setEnvIsLoggedIn(true);

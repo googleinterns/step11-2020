@@ -58,6 +58,7 @@ public abstract class UserAccount implements DatastoreEntity {
   private EducationLevel educationLevel;
   private String educationLevelOther;
   private String description;
+  private String imageURL;
   private UserType userType;
   private boolean isFakeUser;
 
@@ -78,6 +79,7 @@ public abstract class UserAccount implements DatastoreEntity {
       EducationLevel educationLevel,
       String educationLevelOther,
       String description,
+      String imageURL,
       UserType userType,
       boolean isFakeUser) {
     this.userID = userID;
@@ -96,6 +98,7 @@ public abstract class UserAccount implements DatastoreEntity {
     this.educationLevel = educationLevel;
     this.educationLevelOther = educationLevelOther;
     this.description = description;
+    this.imageURL = imageURL;
     this.userType = userType;
     this.isFakeUser = isFakeUser;
   }
@@ -118,6 +121,7 @@ public abstract class UserAccount implements DatastoreEntity {
         builder.educationLevel,
         builder.educationLevelOther,
         builder.description,
+        builder.imageURL,
         builder.userType,
         builder.isFakeUser);
     this.keyInitialized = builder.keyInitialized;
@@ -152,6 +156,7 @@ public abstract class UserAccount implements DatastoreEntity {
     this.educationLevelOther =
         (String) entity.getProperty(ParameterConstants.EDUCATION_LEVEL_OTHER);
     this.description = (String) entity.getProperty(ParameterConstants.DESCRIPTION);
+    this.imageURL = (String) entity.getProperty(ParameterConstants.IMAGE_URL);
     this.userType = UserType.valueOf((String) entity.getProperty(ParameterConstants.USER_TYPE));
     this.isFakeUser = (boolean) entity.getProperty(ParameterConstants.IS_FAKE_USER);
   }
@@ -199,6 +204,7 @@ public abstract class UserAccount implements DatastoreEntity {
     entity.setProperty(ParameterConstants.EDUCATION_LEVEL, this.educationLevel.name());
     entity.setProperty(ParameterConstants.EDUCATION_LEVEL_OTHER, this.educationLevelOther);
     entity.setProperty(ParameterConstants.DESCRIPTION, this.description);
+    entity.setProperty(ParameterConstants.IMAGE_URL, this.imageURL);
     entity.setProperty(ParameterConstants.USER_TYPE, this.userType.name());
     entity.setProperty(ParameterConstants.IS_FAKE_USER, this.isFakeUser);
     return entity;
@@ -316,6 +322,10 @@ public abstract class UserAccount implements DatastoreEntity {
     return description;
   }
 
+  public String getImageURL() {
+    return imageURL;
+  }
+
   public UserType getUserType() {
     return userType;
   }
@@ -361,6 +371,7 @@ public abstract class UserAccount implements DatastoreEntity {
     private static EducationLevel educationLevel;
     private static String educationLevelOther;
     private static String description;
+    private static String imageURL;
     private static UserType userType;
     private static boolean isFakeUser;
 
@@ -449,6 +460,11 @@ public abstract class UserAccount implements DatastoreEntity {
 
     public T description(String description) {
       this.description = description;
+      return (T) this;
+    }
+
+    public T imageURL(String imageURL) {
+      this.imageURL = imageURL;
       return (T) this;
     }
 

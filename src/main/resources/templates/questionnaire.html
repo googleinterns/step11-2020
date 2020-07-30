@@ -32,7 +32,7 @@ limitations under the License.  #}
 
 {% block main_content %}
 <div class="form-container d-flex align-items-center justify-content-center mt-4 pt-0 px-0">
-  <form id="information-form" action="/questionnaire" method="POST" onsubmit="return checkForm()">
+  <form id="information-form" enctype="multipart/form-data" action="{{"{{"}} questionnaireSubmitURL {{"}}"}}" method="POST" onsubmit="return checkForm()">
     <input type="hidden" name="formType" id="formType" value={{"{{"}}formType{{"}}"}} />
     <div class="step-div">
       <h3 class="display-4 step-header"> Step 1: Basic Personal Information </h3>
@@ -289,9 +289,9 @@ limitations under the License.  #}
     </div>
 
     <div id="image-div" class="form-group row">
-      <label for="image-upload" class="col-form-label col-sm-2"> (Optional) Upload an image of yourself </label>
+      <label for="profilePicture" class="col-form-label col-sm-2"> (Optional) Upload an image of yourself </label>
       <div class="col-sm-10">
-        <input type="file" id="image-upload" name="image-upload" class="form-control-file">
+        <input type="file" id="profilePicture" name="profilePicture" class="form-control-file">
       </div>
     </div>
     <div id="description-div" class="form-group row">

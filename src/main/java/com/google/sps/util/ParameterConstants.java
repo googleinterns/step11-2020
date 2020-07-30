@@ -43,6 +43,7 @@ public final class ParameterConstants {
   public static final String EDUCATION_LEVEL = "educationLevel";
   public static final String EDUCATION_LEVEL_OTHER = "educationLevelOther";
   public static final String DESCRIPTION = "description";
+  public static final String IMAGE_URL = "imageURL";
   public static final String USER_TYPE = "userType";
   public static final String IS_FAKE_USER = "isFakeUser";
   public static final String MENTEE_GOAL = "goal";
@@ -67,6 +68,7 @@ public final class ParameterConstants {
 
   public static final String CHOICE = "choice";
   public static final String FORM_TYPE = "formType";
+  public static final String PROFILE_PICTURE = "profilePicture";
   public static final String MENTOR_ID = "mentorID";
   public static final String REQUEST_ID = "requestID";
   public static final String REDIR = "redir";
