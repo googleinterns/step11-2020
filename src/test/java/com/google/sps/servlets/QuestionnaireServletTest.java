@@ -1,7 +1,6 @@
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
@@ -49,9 +48,7 @@ public final class QuestionnaireServletTest {
   private QuestionnaireServlet servlet;
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
-              new LocalUserServiceTestConfig(),
-              new LocalDatastoreServiceTestConfig(),
-              (new LocalBlobstoreServiceTestConfig()).setNoStorage(true))
+              new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig())
           .setEnvAttributes(
               Collections.singletonMap(
                   "com.google.appengine.api.users.UserService.user_id_key", "101"))
@@ -66,7 +63,7 @@ public final class QuestionnaireServletTest {
     MockitoAnnotations.initMocks(this);
     helper.setUp();
     dataAccess = new DatastoreAccess();
-    servlet = new QuestionnaireServlet();
+    servlet = new QuestionnaireServlet(true);
     defaultMentor =
         (Mentor.Builder.newBuilder())
             .name("Mudito Mentor")
@@ -106,6 +103,7 @@ public final class QuestionnaireServletTest {
 
     when(response.getWriter()).thenReturn(writer);
 
+    servlet.init();
     servlet.doPost(request, response);
 
     verify(request).getParameter("name");
@@ -122,6 +120,7 @@ public final class QuestionnaireServletTest {
 
     when(response.getWriter()).thenReturn(writer);
 
+    servlet.init();
     servlet.doPost(request, response);
 
     verify(request).getParameter("name");
@@ -193,6 +192,7 @@ public final class QuestionnaireServletTest {
 
     when(response.getWriter()).thenReturn(writer);
 
+    servlet.init();
     servlet.doPost(request, response);
 
     verify(request).getParameter("ethnicityOther");
@@ -210,6 +210,7 @@ public final class QuestionnaireServletTest {
 
     when(response.getWriter()).thenReturn(writer);
 
+    servlet.init();
     servlet.doPost(request, response);
 
     writer.flush();
@@ -226,6 +227,7 @@ public final class QuestionnaireServletTest {
 
     when(response.getWriter()).thenReturn(writer);
 
+    servlet.init();
     servlet.doPost(request, response);
 
     writer.flush();
@@ -242,6 +244,7 @@ public final class QuestionnaireServletTest {
 
     when(response.getWriter()).thenReturn(writer);
 
+    servlet.init();
     servlet.doPost(request, response);
 
     writer.flush();
@@ -258,6 +261,7 @@ public final class QuestionnaireServletTest {
 
     when(response.getWriter()).thenReturn(writer);
 
+    servlet.init();
     servlet.doPost(request, response);
 
     verify(request).getParameterValues("ethnicity");
@@ -275,6 +279,7 @@ public final class QuestionnaireServletTest {
 
     when(response.getWriter()).thenReturn(writer);
 
+    servlet.init();
     servlet.doPost(request, response);
 
     verify(request).getParameterValues("ethnicity");

@@ -58,7 +58,7 @@ public abstract class UserAccount implements DatastoreEntity {
   private EducationLevel educationLevel;
   private String educationLevelOther;
   private String description;
-  private String imageURL;
+  private String profilePicBlobKey;
   private UserType userType;
   private boolean isFakeUser;
 
@@ -79,7 +79,7 @@ public abstract class UserAccount implements DatastoreEntity {
       EducationLevel educationLevel,
       String educationLevelOther,
       String description,
-      String imageURL,
+      String profilePicBlobKey,
       UserType userType,
       boolean isFakeUser) {
     this.userID = userID;
@@ -98,7 +98,7 @@ public abstract class UserAccount implements DatastoreEntity {
     this.educationLevel = educationLevel;
     this.educationLevelOther = educationLevelOther;
     this.description = description;
-    this.imageURL = imageURL;
+    this.profilePicBlobKey = profilePicBlobKey;
     this.userType = userType;
     this.isFakeUser = isFakeUser;
   }
@@ -121,7 +121,7 @@ public abstract class UserAccount implements DatastoreEntity {
         builder.educationLevel,
         builder.educationLevelOther,
         builder.description,
-        builder.imageURL,
+        builder.profilePicBlobKey,
         builder.userType,
         builder.isFakeUser);
     this.keyInitialized = builder.keyInitialized;
@@ -156,7 +156,7 @@ public abstract class UserAccount implements DatastoreEntity {
     this.educationLevelOther =
         (String) entity.getProperty(ParameterConstants.EDUCATION_LEVEL_OTHER);
     this.description = (String) entity.getProperty(ParameterConstants.DESCRIPTION);
-    this.imageURL = (String) entity.getProperty(ParameterConstants.IMAGE_URL);
+    this.profilePicBlobKey = (String) entity.getProperty(ParameterConstants.PROFILE_PIC_BLOB_KEY);
     this.userType = UserType.valueOf((String) entity.getProperty(ParameterConstants.USER_TYPE));
     this.isFakeUser = (boolean) entity.getProperty(ParameterConstants.IS_FAKE_USER);
   }
@@ -204,7 +204,7 @@ public abstract class UserAccount implements DatastoreEntity {
     entity.setProperty(ParameterConstants.EDUCATION_LEVEL, this.educationLevel.name());
     entity.setProperty(ParameterConstants.EDUCATION_LEVEL_OTHER, this.educationLevelOther);
     entity.setProperty(ParameterConstants.DESCRIPTION, this.description);
-    entity.setProperty(ParameterConstants.IMAGE_URL, this.imageURL);
+    entity.setProperty(ParameterConstants.PROFILE_PIC_BLOB_KEY, this.profilePicBlobKey);
     entity.setProperty(ParameterConstants.USER_TYPE, this.userType.name());
     entity.setProperty(ParameterConstants.IS_FAKE_USER, this.isFakeUser);
     return entity;
@@ -224,6 +224,35 @@ public abstract class UserAccount implements DatastoreEntity {
             ethnicityEnumIndexList.stream()
                 .map(name -> Ethnicity.valueOf((String) name))
                 .collect(Collectors.toList());
+  }
+
+  /**
+   * This copies all the profile related fields from one user to another
+   *
+   * @param contentUser the UserAccount from which to copy data into this UserAccount
+   */
+  public void copyProfileData(UserAccount contentUser) {
+    this.userID = contentUser.userID;
+    this.email = contentUser.email;
+    this.name = contentUser.name;
+    this.dateOfBirth = contentUser.dateOfBirth;
+    this.country = contentUser.country;
+    this.language = contentUser.language;
+    this.timezone = contentUser.timezone;
+    this.ethnicityList = contentUser.ethnicityList;
+    this.ethnicityOther = contentUser.ethnicityOther;
+    this.gender = contentUser.gender;
+    this.genderOther = contentUser.genderOther;
+    this.firstGen = contentUser.firstGen;
+    this.lowIncome = contentUser.lowIncome;
+    this.educationLevel = contentUser.educationLevel;
+    this.educationLevelOther = contentUser.educationLevelOther;
+    this.description = contentUser.description;
+    if (contentUser.profilePicBlobKey != null && contentUser.profilePicBlobKey != "") {
+      this.profilePicBlobKey = contentUser.profilePicBlobKey;
+    }
+    this.userType = contentUser.userType;
+    this.isFakeUser = contentUser.isFakeUser;
   }
 
   public boolean looselyEquals(UserAccount other) {
@@ -322,8 +351,8 @@ public abstract class UserAccount implements DatastoreEntity {
     return description;
   }
 
-  public String getImageURL() {
-    return imageURL;
+  public String getProfilePicBlobKey() {
+    return profilePicBlobKey;
   }
 
   public UserType getUserType() {
@@ -371,7 +400,7 @@ public abstract class UserAccount implements DatastoreEntity {
     private static EducationLevel educationLevel;
     private static String educationLevelOther;
     private static String description;
-    private static String imageURL;
+    private static String profilePicBlobKey;
     private static UserType userType;
     private static boolean isFakeUser;
 
@@ -463,8 +492,8 @@ public abstract class UserAccount implements DatastoreEntity {
       return (T) this;
     }
 
-    public T imageURL(String imageURL) {
-      this.imageURL = imageURL;
+    public T profilePicBlobKey(String profilePicBlobKey) {
+      this.profilePicBlobKey = profilePicBlobKey;
       return (T) this;
     }
 

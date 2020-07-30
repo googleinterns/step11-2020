@@ -49,7 +49,7 @@ public class ImagesServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String blobKeyString = ServletUtils.getParameter(request, "blob-key", "");
     if (blobKeyString != "") {
-      // dataAccess.serveBlob(blobKeyString);
+      dataAccess.serveBlob(response, blobKeyString);
     }
   }
 }

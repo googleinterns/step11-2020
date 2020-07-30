@@ -19,9 +19,7 @@ import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
+import com.google.appengine.api.users.User;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
@@ -89,13 +87,14 @@ public class QuestionnaireServlet extends HttpServlet {
   private String questionnaireTemplate;
   private Jinjava jinjava;
   private DataAccess dataAccess;
+  private boolean testing;
 
   public QuestionnaireServlet() {
-    this(new DatastoreAccess());
+    this(false);
   }
 
-  public QuestionnaireServlet(DataAccess dataAccess) {
-    this.dataAccess = dataAccess;
+  public QuestionnaireServlet(boolean testing) {
+    this.testing = testing;
   }
 
   @Override
@@ -161,13 +160,19 @@ public class QuestionnaireServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    User authUser = dataAccess.getCurrentUser();
+    if (authUser == null) {
+      return;
+    }
     UserAccount user = constructNewUserFromRequest(request);
     response.getWriter().println(new Gson().toJson(user));
     boolean infoAdded;
-    if (dataAccess.getUser(dataAccess.getCurrentUser().getUserId()) == null) {
+    UserAccount oldUser = dataAccess.getUser(authUser.getUserId());
+    if (oldUser == null) {
       infoAdded = dataAccess.createUser(user);
     } else {
-      infoAdded = dataAccess.updateUser(user);
+      oldUser.copyProfileData(user);
+      infoAdded = dataAccess.updateUser(oldUser);
     }
     if (infoAdded) {
       if (user.getUserType().equals(UserType.MENTEE)) {
@@ -248,11 +253,8 @@ public class QuestionnaireServlet extends HttpServlet {
             MentorType.class, request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR.toString());
     String description = ServletUtils.getParameter(request, ParameterConstants.DESCRIPTION, "");
 
-    String imageURL = getUploadedFileUrl(request, ParameterConstants.PROFILE_PICTURE);
-    if (imageURL == null) {
-      imageURL = URLPatterns.DEFAULT_PROFILE_IMAGE;
-    }
-    LOG.info(imageURL);
+    String profilePicBlobKey =
+        this.testing ? "" : getUploadedFileBlobKey(request, ParameterConstants.PROFILE_PICTURE);
 
     if (userType.equals(UserType.MENTEE)) {
       MeetingFrequency desiredMeetingFrequency =
@@ -283,7 +285,7 @@ public class QuestionnaireServlet extends HttpServlet {
           .educationLevel(educationLevel)
           .educationLevelOther(educationLevelOther)
           .description(description)
-          .imageURL(imageURL)
+          .profilePicBlobKey(profilePicBlobKey)
           .goal(goal)
           .desiredMeetingFrequency(desiredMeetingFrequency)
           .desiredMentorType(mentorType)
@@ -316,7 +318,7 @@ public class QuestionnaireServlet extends HttpServlet {
           .educationLevel(educationLevel)
           .educationLevelOther(educationLevelOther)
           .description(description)
-          .imageURL(imageURL)
+          .profilePicBlobKey(profilePicBlobKey)
           .mentorType(mentorType)
           .visibility(true)
           .focusList(focusList)
@@ -325,7 +327,7 @@ public class QuestionnaireServlet extends HttpServlet {
   }
 
   /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
-  private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
+  private String getUploadedFileBlobKey(HttpServletRequest request, String formInputElementName) {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
     List<BlobKey> blobKeys = blobs.get(formInputElementName);
@@ -345,22 +347,15 @@ public class QuestionnaireServlet extends HttpServlet {
       return null;
     }
 
-    // We could check the validity of the file here, e.g. to make sure it's an image file
-    // https://stackoverflow.com/q/10779564/873165
-
-    // Use ImagesService to get a URL that points to the uploaded file.
-    ImagesService imagesService = ImagesServiceFactory.getImagesService();
-    ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
-
-    // To support running in Google Cloud Shell with AppEngine's dev server, we must use the
-    // relative
-    // path to the image, rather than the path returned by imagesService which contains a host.
-    try {
-      URL url = new URL(imagesService.getServingUrl(options));
-      return url.getPath();
-    } catch (MalformedURLException e) {
-      return imagesService.getServingUrl(options);
+    // make sure it's an image file
+    String contentType = blobInfo.getContentType();
+    if (!contentType.contains("png")
+        && !contentType.contains("jpg")
+        && !contentType.contains("jpeg")) {
+      return null;
     }
+
+    return blobKey.getKeyString();
   }
 
   private Map<String, Object> selectionListsForFrontEnd() {

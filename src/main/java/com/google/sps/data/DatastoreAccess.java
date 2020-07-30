@@ -14,6 +14,9 @@
 
 package com.google.sps.data;
 
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -31,6 +34,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ServletUtils;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * This class provides access to data from the datastore service provided by google appengine.
@@ -47,6 +52,7 @@ import java.util.stream.StreamSupport;
  */
 public class DatastoreAccess implements DataAccess {
 
+  private static BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
   private static DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
   private static UserService userService = UserServiceFactory.getUserService();
 
@@ -135,9 +141,6 @@ public class DatastoreAccess implements DataAccess {
       if (user.isKeyInitialized()) {
         datastoreService.put(user.convertToEntity());
       } else {
-        if (oldUser.getUserType() == UserType.MENTEE) {
-          ((Mentee) user).copyKeyData((Mentee) oldUser);
-        }
         Entity newUserEntity =
             new Entity(
                 KeyFactory.createKey(
@@ -475,5 +478,10 @@ public class DatastoreAccess implements DataAccess {
     } catch (Exception e) {
       return false;
     }
+  }
+
+  public void serveBlob(HttpServletResponse response, String blobKeyString) throws IOException {
+    BlobKey blobKey = new BlobKey(blobKeyString);
+    blobstoreService.serve(blobKey, response);
   }
 }

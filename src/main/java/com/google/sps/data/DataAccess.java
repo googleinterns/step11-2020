@@ -15,8 +15,10 @@
 package com.google.sps.data;
 
 import com.google.appengine.api.users.User;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * This class provides an interface for interacting with the database. This interface can be
@@ -261,4 +263,13 @@ public interface DataAccess {
    * @return a boolean representing the success of the operation
    */
   boolean deleteMentorMenteeRelation(MentorMenteeRelation relation);
+
+  /**
+   * Serves a blob from the Blobstore based on the specifed key. This method will write the data
+   * stored in the specifed blob to the response object.
+   *
+   * @param response the HTTP response object to be populated with blob data
+   * @param blobKeyString the key for the blobstore data
+   */
+  void serveBlob(HttpServletResponse response, String blobKeyString) throws IOException;
 }

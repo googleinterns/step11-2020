@@ -50,7 +50,7 @@ public final class FindMentorServletTest {
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
               new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig())
-          .setEnvAttributes(Map.of("com.google.appengine.api.users.UserService.user_id_key", "102"))
+          .setEnvAttributes(Collections.singletonMap("com.google.appengine.api.users.UserService.user_id_key", "102"))
           .setEnvEmail("mudito@example.com")
           .setEnvAuthDomain("gmail.com")
           .setEnvIsLoggedIn(true);

@@ -195,6 +195,17 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     return servedMentorKeys.add(servedMentorKey);
   }
 
+  @Override
+  public void copyProfileData(UserAccount contentUser) {
+    super.copyProfileData(contentUser);
+    if (contentUser instanceof Mentee) {
+      Mentee contentMentee = (Mentee) contentUser;
+      this.goal = contentMentee.goal;
+      this.desiredMeetingFrequency = contentMentee.desiredMeetingFrequency;
+      this.desiredMentorType = contentMentee.desiredMentorType;
+    }
+  }
+
   protected void copyKeyData(Mentee oldMentee) {
     this.dislikedMentorKeys = oldMentee.getDislikedMentorKeys();
     this.servedMentorKeys = oldMentee.getServedMentorKeys();
