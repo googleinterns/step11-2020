@@ -484,4 +484,9 @@ public class DatastoreAccess implements DataAccess {
     BlobKey blobKey = new BlobKey(blobKeyString);
     blobstoreService.serve(blobKey, response);
   }
+
+  public void deleteBlob(String blobKeyString) {
+    BlobKey blobKey = new BlobKey(blobKeyString);
+    blobstoreService.delete(blobKey);
+  }
 }

@@ -171,7 +171,11 @@ public class QuestionnaireServlet extends HttpServlet {
     if (oldUser == null) {
       infoAdded = dataAccess.createUser(user);
     } else {
+      String oldProfilePicKey = oldUser.getProfilePicBlobKey();
       oldUser.copyProfileData(user);
+      if (!oldUser.getProfilePicBlobKey().equals(oldProfilePicKey)) {
+        dataAccess.deleteBlob(oldProfilePicKey);
+      }
       infoAdded = dataAccess.updateUser(oldUser);
     }
     if (infoAdded) {

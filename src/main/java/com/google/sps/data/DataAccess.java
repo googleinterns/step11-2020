@@ -272,4 +272,11 @@ public interface DataAccess {
    * @param blobKeyString the key for the blobstore data
    */
   void serveBlob(HttpServletResponse response, String blobKeyString) throws IOException;
+
+  /**
+   * Deletes a blob from the Blobstore based on the specifed key. This method will remove the blob entry from the database.
+   *
+   * @param blobKeyString the key for the blobstore data
+   */
+  void deleteBlob(String blobKeyString);
 }
