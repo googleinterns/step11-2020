@@ -40,5 +40,5 @@ public final class URLPatterns {
   public static final String REFILL_MENTOR = "/refill-mentor";
   public static final String SEED_DB = "/seed-db";
 
-  public static final String DEFAULT_PROFILE_IMAGE = "/static/images/defaultProfilePic.png";
+  public static final String DEFAULT_PROFILE_IMAGE = "/static/images/defaultProfilePicture.png";
 }

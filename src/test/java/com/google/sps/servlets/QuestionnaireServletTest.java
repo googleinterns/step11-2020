@@ -1,6 +1,24 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package com.google.sps.servlets;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
@@ -16,21 +34,26 @@ import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZone;
 import com.google.sps.data.Topic;
 import com.google.sps.data.UserType;
-import com.google.sps.servlets.QuestionnaireServlet;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -44,8 +67,9 @@ import org.mockito.MockitoAnnotations;
 public final class QuestionnaireServletTest {
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
-  private DatastoreAccess dataAccess;
-  private QuestionnaireServlet servlet;
+  DatastoreAccess dataAccess = new DatastoreAccess();
+  @Mock private BlobstoreService blobstoreService;
+  @InjectMocks private QuestionnaireServlet servlet;
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
               new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig())
@@ -58,12 +82,13 @@ public final class QuestionnaireServletTest {
   private Mentor defaultMentor;
   private Mentee defaultMentee;
 
+  @Rule public TestName testName = new TestName();
+
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     helper.setUp();
-    dataAccess = new DatastoreAccess();
-    servlet = new QuestionnaireServlet(true);
+    setMockedUploadMap(new HashMap<>());
     defaultMentor =
         (Mentor.Builder.newBuilder())
             .name("Mudito Mentor")
@@ -92,6 +117,10 @@ public final class QuestionnaireServletTest {
   @After
   public void tearDown() {
     helper.tearDown();
+  }
+
+  private void setMockedUploadMap(Map<String, List<BlobKey>> map) {
+    when(blobstoreService.getUploads(request)).thenReturn(map);
   }
 
   @Test
@@ -285,5 +314,22 @@ public final class QuestionnaireServletTest {
     verify(request).getParameterValues("ethnicity");
     writer.flush();
     Assert.assertTrue(stringWriter.toString().contains("UNSPECIFIED"));
+  }
+
+  @Test
+  public void correctPictureKey() throws Exception {
+    setMockedUploadMap(
+        Collections.singletonMap("profilePicture", Arrays.asList(new BlobKey("testKey1"))));
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.init();
+    servlet.doPost(request, response);
+
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("testKey1"));
   }
 }

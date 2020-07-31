@@ -1,3 +1,19 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package com.google.sps.data;
+
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -5,7 +21,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -17,48 +39,42 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.sps.data.Country;
-import com.google.sps.data.DatastoreAccess;
-import com.google.sps.data.EducationLevel;
-import com.google.sps.data.Ethnicity;
-import com.google.sps.data.Gender;
-import com.google.sps.data.Language;
-import com.google.sps.data.MeetingFrequency;
-import com.google.sps.data.Mentee;
-import com.google.sps.data.Mentor;
-import com.google.sps.data.MentorMenteeRelation;
-import com.google.sps.data.MentorType;
-import com.google.sps.data.MentorshipRequest;
-import com.google.sps.data.TimeZone;
-import com.google.sps.data.Topic;
-import com.google.sps.data.UserAccount;
-import com.google.sps.data.UserType;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * This test class uses JUnit to test all the DataStore queries in the DatastoreAccess class. To run
  * the project without tests, use: mvn package appengine:run -DskipTests. The LocalServiceTestHelper
- * is used to simulate a testing environment for the AppEngien APIs.
+ * is used to simulate a testing environment for the AppEngine APIs.
  *
  * @param JUnit4.class makes the tests run under the JUnit 4 framework
  * @author guptamudit
- * @version 1.0
+ * @version 1.1
  */
 @RunWith(JUnit4.class)
 public final class DatastoreAccessTest {
-  private DatastoreAccess dataAccess;
+  @Mock private BlobstoreService blobstoreService;
+  @Mock private BlobInfoFactory blobInfoFactory;
+  @InjectMocks private DatastoreAccess dataAccess;
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
               new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig())
@@ -171,8 +187,8 @@ public final class DatastoreAccessTest {
 
   @Before
   public void setUp() {
+    MockitoAnnotations.initMocks(this);
     helper.setUp();
-    dataAccess = new DatastoreAccess();
     setUpDefaultEntities();
     setUpDefaultObjects();
   }
@@ -1260,5 +1276,78 @@ public final class DatastoreAccessTest {
     assertEquals(0, ds.prepare(new Query("MentorMenteeRelation")).countEntities(withLimit(10)));
     assertFalse(dataAccess.deleteMentorMenteeRelation(relation));
     assertEquals(0, ds.prepare(new Query("MentorMenteeRelation")).countEntities(withLimit(10)));
+  }
+
+  @Test
+  public void getBlobUploadsEmptyTest() {
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    when(blobstoreService.getUploads(request)).thenReturn(new HashMap());
+    Map<String, List<BlobKey>> blobUploads = dataAccess.getBlobUploads(request);
+    assertNotNull(blobUploads);
+    assertTrue(blobUploads.isEmpty());
+  }
+
+  @Test
+  public void getBlobUploadsCorrectTest() {
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    Map<String, List<BlobKey>> expectedBlobMap = new HashMap<>();
+    expectedBlobMap.put("requestParamName", Arrays.asList(new BlobKey("blobKey1")));
+    expectedBlobMap.put(
+        "otherRequestParamName", Arrays.asList(new BlobKey("blobKey2"), new BlobKey("blobKey3")));
+    when(blobstoreService.getUploads(request)).thenReturn(expectedBlobMap);
+    Map<String, List<BlobKey>> blobUploads = dataAccess.getBlobUploads(request);
+    assertNotNull(blobUploads);
+    assertEquals(2, blobUploads.size());
+    assertEquals(1, blobUploads.get("requestParamName").size());
+    assertEquals("blobKey1", blobUploads.get("requestParamName").get(0).getKeyString());
+    assertEquals(2, blobUploads.get("otherRequestParamName").size());
+    assertEquals("blobKey2", blobUploads.get("otherRequestParamName").get(0).getKeyString());
+    assertEquals("blobKey3", blobUploads.get("otherRequestParamName").get(1).getKeyString());
+  }
+
+  @Test
+  public void getBlobInfoNullTest() {
+    assertNull(dataAccess.getBlobInfo(null));
+  }
+
+  @Test
+  public void getBlobInfoBadKeyTest() {
+    BlobKey blobKey = new BlobKey("blobKey");
+    when(blobInfoFactory.loadBlobInfo(blobKey)).thenReturn(null);
+    assertNull(dataAccess.getBlobInfo(blobKey));
+  }
+
+  @Test
+  public void getBlobInfoValidKeyTest() {
+    BlobKey blobKey = new BlobKey("blobKey");
+    BlobInfo expectedInfo = new BlobInfo(blobKey, "image/png", new Date(0L), "fileName.png", 500);
+    when(blobInfoFactory.loadBlobInfo(blobKey)).thenReturn(expectedInfo);
+    BlobInfo blobInfo = dataAccess.getBlobInfo(blobKey);
+    assertNotNull(blobInfo);
+    assertEquals("blobKey", blobInfo.getBlobKey().getKeyString());
+    assertEquals(expectedInfo, blobInfo);
+  }
+
+  @Test
+  public void serveBlobTest() {
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    BlobKey blobKey = new BlobKey("blobKey");
+    try {
+      dataAccess.serveBlob(response, "blobKey");
+    } catch (Exception e) {
+      if (!(e instanceof IOException)) {
+        fail("serving should not throw error");
+      }
+    }
+  }
+
+  @Test
+  public void deleteBlobTest() {
+    BlobKey blobKey = new BlobKey("blobKey");
+    try {
+      dataAccess.deleteBlob("blobKey");
+    } catch (Exception e) {
+      fail("deleting should not throw error");
+    }
   }
 }

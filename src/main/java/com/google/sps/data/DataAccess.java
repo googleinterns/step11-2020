@@ -14,10 +14,14 @@
 
 package com.google.sps.data;
 
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.users.User;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -263,6 +267,23 @@ public interface DataAccess {
    * @return a boolean representing the success of the operation
    */
   boolean deleteMentorMenteeRelation(MentorMenteeRelation relation);
+
+  /**
+   * Gets the blobstore uploads that were sent to the passed in request. This method will return a
+   * mapping of the initial upload names to the key values as stored in Blobstore.
+   *
+   * @param request the HTTP Request object for which to find blob uploads
+   * @return A Map from String names to the associated Lists of BlobKeys
+   */
+  Map<String, List<BlobKey>> getBlobUploads(HttpServletRequest request);
+
+  /**
+   * This function extracts the blob information from the blostore based on a BlobKey
+   *
+   * @param blobKey the BlobKey of the blob to be retrieved from blobstore
+   * @return the BlobInfo based on the specified key (can be null)
+   */
+  BlobInfo getBlobInfo(BlobKey blobKey);
 
   /**
    * Serves a blob from the Blobstore based on the specifed key. This method will write the data

@@ -40,9 +40,12 @@ public class ImagesServlet extends HttpServlet {
 
   private DataAccess dataAccess;
 
-  @Override
-  public void init() {
-    dataAccess = new DatastoreAccess();
+  public ImagesServlet() {
+    this(new DatastoreAccess());
+  }
+
+  public ImagesServlet(DatastoreAccess dataAccess) {
+    this.dataAccess = dataAccess;
   }
 
   @Override

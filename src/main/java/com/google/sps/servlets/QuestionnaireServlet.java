@@ -15,11 +15,12 @@
 package com.google.sps.servlets;
 
 import com.google.appengine.api.blobstore.BlobInfo;
-import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
@@ -87,19 +88,25 @@ public class QuestionnaireServlet extends HttpServlet {
   private String questionnaireTemplate;
   private Jinjava jinjava;
   private DataAccess dataAccess;
-  private boolean testing;
 
   public QuestionnaireServlet() {
-    this(false);
+    dataAccess = new DatastoreAccess();
   }
 
-  public QuestionnaireServlet(boolean testing) {
-    this.testing = testing;
+  public QuestionnaireServlet(
+      UserService userService,
+      DatastoreService datastoreService,
+      BlobstoreService blobstoreService) {
+    dataAccess =
+        DatastoreAccess.newBuilder()
+            .userService(userService)
+            .datastoreService(datastoreService)
+            .blobstoreService(blobstoreService)
+            .build();
   }
 
   @Override
   public void init() {
-    dataAccess = new DatastoreAccess();
     JinjavaConfig config = new JinjavaConfig();
     jinjava = new Jinjava(config);
     try {
@@ -257,8 +264,7 @@ public class QuestionnaireServlet extends HttpServlet {
             MentorType.class, request, ParameterConstants.MENTOR_TYPE, MentorType.TUTOR.toString());
     String description = ServletUtils.getParameter(request, ParameterConstants.DESCRIPTION, "");
 
-    String profilePicBlobKey =
-        this.testing ? "" : getUploadedFileBlobKey(request, ParameterConstants.PROFILE_PICTURE);
+    String profilePicBlobKey = getUploadedFileBlobKey(request, ParameterConstants.PROFILE_PICTURE);
 
     if (userType.equals(UserType.MENTEE)) {
       MeetingFrequency desiredMeetingFrequency =
@@ -332,8 +338,7 @@ public class QuestionnaireServlet extends HttpServlet {
 
   /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
   private String getUploadedFileBlobKey(HttpServletRequest request, String formInputElementName) {
-    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    Map<String, List<BlobKey>> blobs = dataAccess.getBlobUploads(request);
     List<BlobKey> blobKeys = blobs.get(formInputElementName);
 
     // User submitted form without selecting a file, so we can't get a URL. (dev server)
@@ -345,18 +350,20 @@ public class QuestionnaireServlet extends HttpServlet {
     BlobKey blobKey = blobKeys.get(0);
 
     // User submitted form without selecting a file, so we can't get a URL. (live server)
-    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
-    if (blobInfo.getSize() == 0) {
-      blobstoreService.delete(blobKey);
-      return null;
-    }
+    BlobInfo blobInfo = dataAccess.getBlobInfo(blobKey);
+    if (blobInfo != null) {
+      if (blobInfo.getSize() == 0) {
+        dataAccess.deleteBlob(blobKey.getKeyString());
+        return null;
+      }
 
-    // make sure it's an image file
-    String contentType = blobInfo.getContentType();
-    if (!contentType.contains("png")
-        && !contentType.contains("jpg")
-        && !contentType.contains("jpeg")) {
-      return null;
+      // make sure it's an image file
+      String contentType = blobInfo.getContentType();
+      if (!contentType.contains("png")
+          && !contentType.contains("jpg")
+          && !contentType.contains("jpeg")) {
+        return null;
+      }
     }
 
     return blobKey.getKeyString();
