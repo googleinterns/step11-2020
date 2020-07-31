@@ -37,58 +37,76 @@ limitations under the License.  #}
   </div>
   <div class="row mb-4 mb-md-2">
     <div class="col-12 col-md-6">
-      <div class="row">
-        <p class="mb-1 col-6 user-country">Country:</p>
-        <p class="mb-1 col-6 text-right user-country">{{ profileCardUser.country.longName }}</p>
+      <div class="row no-gutters">
+        <p class="mb-1 col-4 user-country">Country:</p>
+        <p class="mb-1 col-8 text-left user-country">{{ profileCardUser.country.longName }}</p>
       </div>
-      <div class="row">
-        <p class="mb-1 col-6 user-language">Language:</p>
-        <p class="mb-1 col-6 text-right user-language">{{ profileCardUser.language.longName }}</p>
+      <div class="row no-gutters">
+        <p class="mb-1 col-4 user-language">Language:</p>
+        <p class="mb-1 col-8 text-left user-language">{{ profileCardUser.language.longName }}</p>
       </div>
-      <div class="row">
-        <p class="mb-1 col-6 user-timezone">Timezone:</p>
-        <p class="mb-1 col-6 text-right user-timezone">{{ profileCardUser.timezone.name }}: GMT {{ ("+" if profileCardUser.timezone.offset >= 0 else "") + profileCardUser.timezone.offset }}</p>
+      <div class="row no-gutters">
+        <p class="mb-1 col-4 user-timezone">Timezone:</p>
+        <p class="mb-1 col-8 text-left user-timezone">{{ profileCardUser.timezone.name }}: GMT {{ ("+" if profileCardUser.timezone.offset >= 0 else "") + profileCardUser.timezone.offset }}</p>
       </div>
-      <div class="row">
-        <p class="mb-1 col-6 user-ethnicity">Ethnicity:</p>
+      <div class="row no-gutters">
+        <p class="mb-1 col-4 user-ethnicity">Ethnicity:</p>
         {% set ethnicities = [] %}
         {% for ethnicity in profileCardUser.ethnicityList %}{% if ethnicity.title == "Other" %}{% if ethnicities.append(profileCardUser.ethnicityOther) %}{% endif %}{% else %}{% if ethnicity|string != "UNSPECIFIED" %}{% if ethnicities.append(ethnicity.title) %}{% endif %}{% endif %}{% endif %}{% endfor %}
-        <p class="mb-1 col-6 text-right user-ethnicity">{{ ethnicities|join(', ') }}</p>
+        <p class="mb-1 col-8 text-left user-ethnicity">{{ ethnicities|join(', ') }}</p>
       </div>
-      <div class="row">
-        <p class="mb-1 col-6 user-gender">Gender: </p>
-        <p class="mb-1 col-6 text-right user-gender">{% if profileCardUser.gender.title != "Other" %}{{ profileCardUser.gender.title }}
+      <div class="row no-gutters">
+        <p class="mb-1 col-4 user-gender">Gender:</p>
+        <p class="mb-1 col-8 text-left user-gender">{% if profileCardUser.gender.title != "Other" %}{{ profileCardUser.gender.title }}
             {% else %}{{ profileCardUser.genderOther }}{% endif %}</p>
       </div>
-      <div class="row">
-        <p class="mb-1 col-6 user-first-gen">First-gen: </p>
-        <p class="mb-1 col-6 text-right user-first-gen">{% if profileCardUser.firstGen %}Yes{% else %}No{% endif %}</p>
+      <div class="row no-gutters">
+        <p class="mb-1 col-4 user-first-gen">First-gen:</p>
+        <p class="mb-1 col-8 text-left user-first-gen">{% if profileCardUser.firstGen %}Yes{% else %}No{% endif %}</p>
       </div>
-      <div class="row">
-        <p class="mb-1 col-6 user-low-income">Low income: </p>
-        <p class="mb-1 col-6 text-right user-low-income">{% if profileCardUser.lowIncome %}Yes{% else %}No{% endif %}</p>
+      <div class="row no-gutters">
+        <p class="mb-1 col-4 user-low-income">Low income:</p>
+        <p class="mb-1 col-8 text-left user-low-income">{% if profileCardUser.lowIncome %}Yes{% else %}No{% endif %}</p>
       </div>
-      <div class="row">
-        <p class="mb-1 col-6 user-education-level">Education: </p>
-        <p class="mb-1 col-6 text-right user-education-level">{% if profileCardUser.educationLevel.title != "Other" %}{{ profileCardUser.educationLevel.title }}
+      <div class="row no-gutters">
+        <p class="mb-1 col-4 user-education-level">Education:</p>
+        <p class="mb-1 col-8 text-left user-education-level">{% if profileCardUser.educationLevel.title != "Other" %}{{ profileCardUser.educationLevel.title }}
             {% else %}{{ profileCardUser.educationLevelOther }}{% endif %}</p>
       </div>
     </div>
     <div class="col-12 col-md-6 order-first order-md-last">
       {% if profileCardUser.userType.title == "Mentor" %}
-        <p class="mb-1 user-mentor-type">{{ profileCardUser.mentorType.title }}</p>
-        {% set focuses = [] %}
-        {% for focus in profileCardUser.focusList %}{% if focuses.append(focus.title) %}{% endif %}{% endfor %}
-        <p class="mb-1 user-focus">Focus{% if focuses|length == 0 %}es: None{% else %}{% if focuses|length == 1 %}: {% else %}es: {% endif %}{% endif %}{{ focuses|join(', ') }}</p>
+        <div class="row no-gutters">
+          <p class="mb-1 col-4 user-mentor-type">Mentor type:</p>
+          <p class="mb-1 col-8 text-left user-mentor-type">{{ profileCardUser.mentorType.title }}</p>
+        </div>
+        <div class="row no-gutters">
+          {% set focuses = [] %}
+          {% for focus in profileCardUser.focusList %}{% if focuses.append(focus.title) %}{% endif %}{% endfor %}
+          <p class="mb-1 col-4 user-focus">Focus{% if focuses|length == 0 %}es: {% else %}{% if focuses|length == 1 %}: {% else %}es: {% endif %}{% endif %}</p>
+          <p class="mb-1 col-8 text-left user-focus">{% if focuses|length == 0 %}None{% else %}{{ focuses|join(', ') }}{% endif %}</p>
+        </div>
       {% else %}
-        <p class="mb-1 user-mentee-goal">Mentorship Goal: {{ profileCardUser.goal.title }}</p>
-        <p class="mb-1 user-mentee-desired-meeting-frequency">Meeting times: {{ profileCardUser.desiredMeetingFrequency.title }}</p>
-        <p class="mb-1 user-mentee-desired-mentor-type">Preferred mentor: {{ profileCardUser.desiredMentorType.title }}</p>
+        <div class="row no-gutters">
+          <p class="mb-1 col-4 user-mentee-goal">Mentorship Goal:</p>
+          <p class="mb-1 col-8 text-left user-mentee-goal">{{ profileCardUser.goal.title }}</p>
+        </div>
+        <div class="row no-gutters">
+          <p class="mb-1 col-4 user-mentee-desired-meeting-frequency">Meeting times:</p>
+          <p class="mb-1 col-8 text-left user-mentee-desired-meeting-frequency">{{ profileCardUser.desiredMeetingFrequency.title }}</p>
+        </div>
+        <div class="row no-gutters">
+          <p class="mb-1 col-4 user-mentee-desired-mentor-type">Preferred mentor:</p>
+          <p class="mb-1 col-8 text-left user-mentee-desired-mentor-type">{{ profileCardUser.desiredMentorType.title }}</p>
+        </div>
       {% endif %}
-        <p class="mb-1 user-age">Age: {{ profileCardUser.age }}</p>
+      <div class="row no-gutters">
+        <p class="mb-1 col-4 user-age">Age:</p>
+        <p class="mb-1 col-8 text-left user-age">{{ profileCardUser.age }}</p>
+      </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row no-gutters">
     <div class="col-12">
       <!-- <p class="m-0">Bio:</p> -->
       <p class="user-description text-break">{{profileCardUser.description}}</p>
