@@ -36,32 +36,9 @@ limitations under the License.  #}
     {% set mentee = request.fromUser %}
     <div class="card mentee-card mx-4 mb-4" id="user-{{ mentee.userID }}">
       <div class="card-body d-flex flex-column align-items-start justify-content-start position-relative">
-        <main class="container divider-top p-4 d-flex flex-row flex-wrap align-items-center justify-content-start justify-content-md-center">
-          <div class="d-flex flex-column align-items-start justify-content-start pb-3 pr-md-3 mw-md-50" id="profile-title" >
-            <p class="request-id invisible d-none" hidden>{{ request.datastoreKey }}</p>
-            <h1 class="mb-0"><a class="stretched-link" href="/profile?userID={{ mentee.userID }}">{{ mentee.name }}</a></h1>
-            <p class="lead user-email text-break">{{ mentee.email }}</p>
-            <p class="mb-2 user-mentee-goal">Mentorship Goal: {{ mentee.goal.title }}</p>
-            <p class="mb-2 user-mentee-desired-meeting-frequency">Meeting times: {{ mentee.desiredMeetingFrequency.title }}</p>
-            <p class="mb-2 user-mentee-desired-mentor-type">Preferred mentor: {{ mentee.desiredMentorType.title }}</p>
-            <p class="m-0">Bio:</p>
-            <p class="m-0 user-description text-break">{{mentee.description}}</p>
-          </div>
-          <div class="d-flex flex-column align-items-start justify-content-start mw-md-50">
-            <p class="mb-1 user-country">Country: {{ mentee.country.longName }}</p>
-            <p class="mb-1 user-language">Language: {{ mentee.language.longName }}</p>
-            <p class="mb-1 user-timezone">TimeZone: {{ mentee.timezone.name }}: GMT {{ ("+" if mentee.timezone.offset >= 0 else "") + mentee.timezone.offset }}</p>
-            {% set ethnicities = [] %}
-            {% for ethnicity in mentee.ethnicityList %}{% if ethnicity.title == "Other" %}{% if ethnicities.append(mentee.ethnicityOther) %}{% endif %}{% else %}{% if ethnicity|string != "UNSPECIFIED" %}{% if ethnicities.append(ethnicity.title) %}{% endif %}{% endif %}{% endif %}{% endfor %}
-            <p class="mb-1 user-ethnicity">Ethnicity: {{ ethnicities|join(', ') }}</p>
-            <p class="mb-1 user-gender">Gender: {% if mentee.gender.title != "Other" %}{{ mentee.gender.title }}
-                {% else %}{{ mentee.genderOther }}{% endif %}</p>
-            <p class="mb-1 user-first-gen">First-gen: {% if mentee.firstGen %}Yes{% else %}No{% endif %}</p>
-            <p class="mb-1 user-low-income">Low income: {% if mentee.lowIncome %}Yes{% else %}No{% endif %}</p>
-            <p class="mb-1 user-education-level">Education: {% if mentee.educationLevel.title != "Other" %}{{ mentee.educationLevel.title }}
-                {% else %}{{ mentee.educationLevelOther }}{% endif %}</p>
-          </div>
-        </main>
+        {% set profileCardUser = mentee %}
+        {% set profileCardLink = true %}
+        {% include "profile-card.html" %}
       </div>
       <div class="card-body btn-group-vertical request-buttons w-100" role="group" aria-label="Basic example">
         <button class="btn btn-outline-secondary" id="yes">Accept</button>
