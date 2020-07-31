@@ -270,7 +270,7 @@ limitations under the License.  #}
     <div id="goal-div" class="form-group row">
       <label for="goal" class="col-form-label col-sm-2">What subject would you like to focus on? </label>
       <div class="col-sm-10">
-        <select id="goal" name="goal" class="form-control">
+        <select id="goal" name="goal" class="form-control" required>
           {% raw %} {% if currentUser and currentUser.goal %}
           <option value="{{ currentUser.goal }}" selected hidden> {{currentUser.goal.title}} </option>
           {% else %}

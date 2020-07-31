@@ -29,6 +29,7 @@ import java.util.List;
  * @version 1.0
  */
 public enum Topic {
+  NOT_APPLICABLE("N/A"),
   ART("Art"),
   BIOLOGY("Biology"),
   CHEMISTRY("Chemistry"),
