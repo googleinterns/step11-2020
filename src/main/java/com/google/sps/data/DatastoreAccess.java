@@ -36,6 +36,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ServletUtils;
+import com.google.sps.util.URLPatterns;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -107,6 +108,11 @@ public class DatastoreAccess implements DataAccess {
       isMentor = currentUser == null ? false : currentUser.getUserType() == UserType.MENTOR;
       isMentee =
           currentUser == null ? false : !isMentor && currentUser.getUserType() == UserType.MENTEE;
+      context.put(
+          ContextFields.TOGGLE_LOGIN_URL,
+          URLPatterns.LOGOUT + "?" + ParameterConstants.REDIR + "=" + URLPatterns.BASE);
+    } else {
+      context.put(ContextFields.TOGGLE_LOGIN_URL, userService.createLoginURL(currentURL));
     }
     context.put(ContextFields.CURRENT_USER, currentUser);
     context.put(ContextFields.IS_MENTOR, isMentor);

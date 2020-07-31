@@ -27,7 +27,6 @@ public final class URLPatterns {
   public static final String BASE = "/";
   public static final String ABOUT = "/about";
   public static final String AUTHORS = "/authors";
-  public static final String AUTHENTICATE = "/authenticate";
   public static final String DASHBOARD = "/dashboard";
   public static final String FIND_MENTOR = "/find-mentor";
   public static final String IMAGES = "/images";
