@@ -30,6 +30,7 @@ public final class URLPatterns {
   public static final String AUTHENTICATE = "/authenticate";
   public static final String DASHBOARD = "/dashboard";
   public static final String FIND_MENTOR = "/find-mentor";
+  public static final String IMAGES = "/images";
   public static final String LANDING = "/landing";
   public static final String LOGOUT = "/logout";
   public static final String MAIN = "/main";
@@ -38,4 +39,6 @@ public final class URLPatterns {
   public static final String QUESTIONNAIRE = "/questionnaire";
   public static final String REFILL_MENTOR = "/refill-mentor";
   public static final String SEED_DB = "/seed-db";
+
+  public static final String DEFAULT_PROFILE_IMAGE = "/static/images/defaultProfilePicture.png";
 }

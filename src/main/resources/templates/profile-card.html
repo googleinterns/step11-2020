@@ -15,7 +15,7 @@ limitations under the License.  #}
 <main class="profile container divider-top position-relative p-3" id="{{ profileCardUser.userID }}-profile">
   <div class="row mb-2 mb-md-4">
     <div class="col-12 col-md-6 d-flex flex-column align-items-center align-items-md-end">
-      <img class="img-thumbnail rounded-circle" id="profile-image" src="/static/images/thomas.jpg" style="width: 20em">
+      <img class="img-thumbnail rounded-circle" id="profile-image" src="{{("/images?blob-key=" + profileUser.profilePicBlobKey) if profileUser.profilePicBlobKey else "/static/images/defaultProfilePicture.png"}}" style="width: 20em">
     </div>
     <div class="col-12 col-md-6 d-flex flex-column justify-content-between" id="profile-title">
       {% if profileCardUser.userID == currentUser.userID and url == "/profile" %}

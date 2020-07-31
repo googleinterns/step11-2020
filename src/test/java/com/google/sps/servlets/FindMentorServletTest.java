@@ -1,3 +1,19 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package com.google.sps.servlets;
+
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -16,14 +32,12 @@ import com.google.sps.data.MentorType;
 import com.google.sps.data.TimeZone;
 import com.google.sps.data.Topic;
 import com.google.sps.data.UserType;
-import com.google.sps.servlets.FindMentorServlet;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
@@ -50,7 +64,9 @@ public final class FindMentorServletTest {
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
               new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig())
-          .setEnvAttributes(Map.of("com.google.appengine.api.users.UserService.user_id_key", "102"))
+          .setEnvAttributes(
+              Collections.singletonMap(
+                  "com.google.appengine.api.users.UserService.user_id_key", "102"))
           .setEnvEmail("mudito@example.com")
           .setEnvAuthDomain("gmail.com")
           .setEnvIsLoggedIn(true);
