@@ -16,3 +16,8 @@ limitations under the License.
 #profile-header {
   height: 10em;
 }
+
+#profile-image {
+  width: 20em;
+  height: auto;
+}
