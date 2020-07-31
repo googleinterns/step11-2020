@@ -290,7 +290,7 @@ limitations under the License.  #}
 
     <div id="image-div" class="form-group row">
       <label for="profilePicture" class="col-form-label col-sm-2"> (Optional) Upload an image of yourself </label>
-      {% raw %}{% if currentUser %}
+      {% raw %}{% if currentUser and currentUser.profilePicBlobKey and currentUser.profilePicBlobKey|length > 0 %}
       <img class="img-thumbnail rounded-circle" src="/images?blob-key={{currentUser.profilePicBlobKey}}"/>
       {% endif %}{% endraw %}
       <div class="col-sm-10">
