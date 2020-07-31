@@ -32,8 +32,6 @@ limitations under the License.  #}
         {% endif %}
       </div>
     </div>
-    <!-- <div class="container d-flex flex-column align-items-start justify-content-start pb-3 pr-md-3 mw-md-50" id="profile-title">
-    </div> -->
   </div>
   <div class="row mb-4 mb-md-2">
     <div class="col-12 col-md-6">
@@ -50,10 +48,18 @@ limitations under the License.  #}
         <p class="mb-1 col-8 text-left user-timezone">{{ profileCardUser.timezone.name }}: GMT {{ ("+" if profileCardUser.timezone.offset >= 0 else "") + profileCardUser.timezone.offset }}</p>
       </div>
       <div class="row no-gutters">
-        <p class="mb-1 col-4 user-ethnicity">Ethnicity:</p>
-        {% set ethnicities = [] %}
-        {% for ethnicity in profileCardUser.ethnicityList %}{% if ethnicity.title == "Other" %}{% if ethnicities.append(profileCardUser.ethnicityOther) %}{% endif %}{% else %}{% if ethnicity|string != "UNSPECIFIED" %}{% if ethnicities.append(ethnicity.title) %}{% endif %}{% endif %}{% endif %}{% endfor %}
-        <p class="mb-1 col-8 text-left user-ethnicity">{{ ethnicities|join(', ') }}</p>
+        {% if profileCardUser.ethnicityList and profileCardUser.ethnicityList[0].title != "" %}
+          <p class="mb-1 col-4 user-ethnicity">Ethnicity:</p>
+          {% set ethnicities = [] %}
+          {% for ethnicity in profileCardUser.ethnicityList %}
+            {% if ethnicity.title == "Other" %}
+              {% do ethnicities.append(profileCardUser.ethnicityOther) %}
+            {% else %}
+              {% do ethnicities.append(ethnicity.title) %}
+            {% endif %}
+          {% endfor %}
+          <p class="mb-1 col-8 text-left user-ethnicity">{{ ethnicities|join(', ') }}</p>
+        {% endif %}
       </div>
       <div class="row no-gutters">
         <p class="mb-1 col-4 user-gender">Gender:</p>
