@@ -62,9 +62,11 @@ limitations under the License.  #}
         {% endif %}
       </div>
       <div class="row no-gutters">
+      {% if profileCardUser.gender|string != "UNSPECIFIED" %}
         <p class="mb-1 col-4 user-gender">Gender:</p>
         <p class="mb-1 col-8 text-left user-gender">{% if profileCardUser.gender.title != "Other" %}{{ profileCardUser.gender.title }}
             {% else %}{{ profileCardUser.genderOther }}{% endif %}</p>
+        {% endif %}
       </div>
       <div class="row no-gutters">
         <p class="mb-1 col-4 user-first-gen">First-gen:</p>
@@ -75,9 +77,11 @@ limitations under the License.  #}
         <p class="mb-1 col-8 text-left user-low-income">{% if profileCardUser.lowIncome %}Yes{% else %}No{% endif %}</p>
       </div>
       <div class="row no-gutters">
+        {% if profileCardUser.educationLevel|string != "UNSPECIFIED" %}
         <p class="mb-1 col-4 user-education-level">Education:</p>
         <p class="mb-1 col-8 text-left user-education-level">{% if profileCardUser.educationLevel.title != "Other" %}{{ profileCardUser.educationLevel.title }}
             {% else %}{{ profileCardUser.educationLevelOther }}{% endif %}</p>
+        {% endif %}
       </div>
     </div>
     <div class="col-12 col-md-6 order-first order-md-last">
