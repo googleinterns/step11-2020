@@ -43,12 +43,12 @@ limitations under the License.  #}
       <div class="col-sm-10">
         <input type="text" id="name" name="name" class="form-control" placeholder="Your name.." {% raw %}{% if currentUser and currentUser.name %} value="{{currentUser.name}}"
         {% endif %}{% endraw %} required>
-        <div class="valid-feedback">Please enter your name.</div>
+        <div class="valid-feedback">Please enter your name.*</div>
       </div>
     </div>
 
     <div class="form-group row">
-      <label for="dateOfBirth" class="col-form-label col-sm-2">Date of Birth:</label>
+      <label for="dateOfBirth" class="col-form-label col-sm-2">Date of Birth:*</label>
       <div class="col-sm-10">
         <input type="date" name="dateOfBirth" id="dateOfBirth" class="form-control" {% raw %}{% if currentUser and currentUser.dateOfBirth != '' %} value={{currentUser.dateOfBirth}}
         {% endif %}{% endraw %} required>
@@ -57,7 +57,7 @@ limitations under the License.  #}
     </div>
 
     <div class="form-group row">
-      <label for="country" class="col-form-label col-sm-2">Country</label>
+      <label for="country" class="col-form-label col-sm-2">Country*</label>
       <div class="col-sm-10">
         <select id="country" name="country" class="form-control" required>
           {% raw %} {% if currentUser and currentUser.country %}
@@ -74,7 +74,7 @@ limitations under the License.  #}
     </div>
 
     <div class="form-group row">
-      <label for="timezone" class="col-form-label col-sm-2">Your Location's Timezone</label>
+      <label for="timezone" class="col-form-label col-sm-2">Your Location's Timezone*</label>
       <div class="col-sm-10">
         <select id="timezone" name="timezone" class="form-control" required>
           {% raw %}{% if currentUser and currentUser.timezone %}
@@ -91,7 +91,7 @@ limitations under the License.  #}
     </div>
 
     <div class="form-group row">
-      <label for="language" class="col-form-label col-sm-2">Preferred Language</label>
+      <label for="language" class="col-form-label col-sm-2">Preferred Language*</label>
       <div class="col-sm-10">
         <select id="language" name="language" class="form-control">
           {% raw %}{% if currentUser and currentUser.language %}
@@ -201,7 +201,7 @@ limitations under the License.  #}
     <!-- Displayed to those who selected "Become a Mentor" -->
     {% raw %}{% if formType == "mentor" %} {% endraw %}
     <div id="mentorType-div" class="form-group row">
-      <label for="mentorType" class="col-form-label col-sm-2"> What type of Mentor would you like to be? </label>
+      <label for="mentorType" class="col-form-label col-sm-2"> What type of Mentor would you like to be?* </label>
       <div class="col-sm-10">
         <select id="mentorType" name="mentorType" class="form-control" required>
           {% raw %} {% if currentUser and currentUser.mentorType %}
@@ -219,7 +219,7 @@ limitations under the License.  #}
 
     <fieldset class="form-group">
       <div id="focusList-div" class="row">
-        <legend class="col-form-label col-sm-2">What areas would you like to focus on (Choose all that apply). </legend>
+        <legend class="col-form-label col-sm-2">What areas would you like to focus on (Choose all that apply).* </legend>
         <div class="col-sm-10 pl-5">
           {% raw %}{% for topic in topics %}
           <input type="checkbox" class="focusListCheckbox form-check-input" id="focus-{{topic.title}}" name="focusList" value="{{topic}}" {% if currentUser and topic in currentUser.focusList %} checked
@@ -233,7 +233,7 @@ limitations under the License.  #}
     <!-- Displayed to those who selected "Find a Mentor" -->
     {% raw %} {% else %} {% endraw %}
     <div id="mentorType-div" class="form-group row">
-      <label for="mentorType" class="col-form-label col-sm-2"> What type of Mentor are you looking for? </label>
+      <label for="mentorType" class="col-form-label col-sm-2"> What type of Mentor are you looking for?* </label>
       <div class="col-sm-10">
         <select id="mentorType" name="mentorType" class="form-control" required>
           {% raw %} {% if currentUser and currentUser.desiredMentorType %}
@@ -250,7 +250,7 @@ limitations under the License.  #}
     </div>
 
     <div id="desiredMeetingFrequency-div" class="form-group row">
-      <label for="desiredMeetingFrequency" class="col-form-label col-sm-2">How often would you like to meet?</label>
+      <label for="desiredMeetingFrequency" class="col-form-label col-sm-2">How often would you like to meet?*</label>
       <div class="col-sm-10">
         <select id="desiredMeetingFrequency" name="desiredMeetingFrequency" class="form-control" required>
           {% raw %} {% if currentUser  and currentUser.desiredMeetingFrequency %}
@@ -268,7 +268,7 @@ limitations under the License.  #}
 
 
     <div id="goal-div" class="form-group row">
-      <label for="goal" class="col-form-label col-sm-2">What subject would you like to focus on? </label>
+      <label for="goal" class="col-form-label col-sm-2">What subject would you like to focus on?* </label>
       <div class="col-sm-10">
         <select id="goal" name="goal" class="form-control" required>
           {% raw %} {% if currentUser and currentUser.goal %}
@@ -289,7 +289,7 @@ limitations under the License.  #}
     </div>
 
     <div id="image-div" class="form-group row">
-      <label for="profilePicture" class="col-form-label col-sm-2"> (Optional) Upload an image of yourself </label>
+      <label for="profilePicture" class="col-form-label col-sm-2">Upload an image of yourself </label>
       {% raw %}{% if currentUser %}
       <img class="img-thumbnail rounded-circle" src="/images?blob-key={{currentUser.profilePicBlobKey}}"/>
       {% endif %}{% endraw %}
@@ -298,7 +298,7 @@ limitations under the License.  #}
       </div>
     </div>
     <div id="description-div" class="form-group row">
-      <label for="description" class="col-form-label col-sm-2"> (Optional) Write a short bio about yourself</label>
+      <label for="description" class="col-form-label col-sm-2">Write a short bio about yourself</label>
       <div class="col-sm-10">
         <textarea name="description" placeholder="For example, what are your hobbies... " class="form-control"
         >{% raw %}{% if currentUser and currentUser.description %}{{currentUser.description}}{% endif %}{% endraw %}</textarea>
