@@ -12,64 +12,77 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.  #}
 
-<main class="profile divider-top position-relative p-3" id="{{ profileCardUser.userID }}-profile">
-  <div class="container pt-5 px-3 pb-3 d-flex flex-row flex-wrap align-items-center justify-content-start justify-content-md-center">
-    <div class="container d-flex flex-column align-items-end justify-content-end pr-md-3 mw-md-50">
+<main class="profile container divider-top position-relative p-3" id="{{ profileCardUser.userID }}-profile">
+  <div class="row mb-4">
+    <div class="col-12 col-md-6 d-flex flex-column align-items-center align-items-md-end">
       <img class="img-thumbnail rounded-circle" id="profile-image" src="/static/images/thomas.jpg" style="width: 20em">
     </div>
-    <div class="container d-flex flex-column align-items-start justify-content-start px-0 pl-md-3 mw-md-50" id="profile-title">
+    <div class="col-12 col-md-6 d-flex flex-column justify-content-between" id="profile-title">
       {% if profileCardUser.userID == currentUser.userID and url == "/profile" %}
-      <button class="btn btn-outline-secondary bg-white mb-4" id="edit" onclick="location.href='/questionnaire?formType={{currentUser.userType.title}}';">Edit My Profile</button>
+      <button class="btn btn-outline-secondary bg-white align-self-end mt-4 mt-md-0" id="edit" onclick="location.href='/questionnaire?formType={{currentUser.userType.title}}';">Edit My Profile</button>
       {% endif %}
-      <h1 class="mb-0">{% if profileCardLink %}<a class="stretched-link" href="/profile?userID={{ profileCardUser.userID }}">{% endif %}{{profileCardUser.name}}{% if profileCardLink %}</a>{% endif %}</h1>
-      <h4 class="mb-0">{{profileCardUser.userType.title}}</h4>
+      <div class="mb-md-5">
+        <h1 class="mb-0">{% if profileCardLink %}<a class="stretched-link" href="/profile?userID={{ profileCardUser.userID }}">{% endif %}{{profileCardUser.name}}{% if profileCardLink %}</a>{% endif %}</h1>
+        <h4 class="mb-0">{{profileCardUser.userType.title}}</h4>
+        {% if profileCardUser.userID == currentUser.userID %}
+          <p class="mb-1 lead user-email">{{ profileCardUser.email }}</p>
+        {% endif %}
+        {% if profileCardUser.userType.title == "Mentor" %}
+          <h6 class="mb-1">{% if !profileCardUser.visibility %}Not {% endif %}Available for mentorship</h6>
+        {% endif %}
+      </div>
     </div>
     <!-- <div class="container d-flex flex-column align-items-start justify-content-start pb-3 pr-md-3 mw-md-50" id="profile-title">
     </div> -->
   </div>
-  <div class="container px-0 py-4 d-flex flex-row flex-wrap align-items-start justify-content-start justify-content-md-center">
-    <div class="d-flex flex-column col-md-4 align-items-start justify-content-start pr-md-3 mw-md-50" id="profile-title">
-      <p class="mb-1 user-country">Country: {{ profileCardUser.country.longName }}</p>
-      <p class="mb-1 user-language">Language: {{ profileCardUser.language.longName }}</p>
-      <p class="mb-1 user-timezone">Timezone: {{ profileCardUser.timezone.name }}: GMT {{ ("+" if profileCardUser.timezone.offset >= 0 else "") + profileCardUser.timezone.offset }}</p>
+  <div class="row mb-4 mb-md-2">
+    <div class="col-6 col-md-3">
+      <p class="mb-1 user-country">Country:</p>
+      <p class="mb-1 user-language">Language:</p>
+      <p class="mb-1 user-timezone">Timezone:</p>
+      <p class="mb-1 user-ethnicity">Ethnicity:</p>
+      <p class="mb-1 user-gender">Gender: </p>
+      <p class="mb-1 user-first-gen">First-gen: </p>
+      <p class="mb-1 user-low-income">Low income: </p>
+      <p class="mb-1 user-education-level">Education: </p>
+    </div>
+    <div class="col-6 col-md-3 d-flex flex-column align-items-end">
+      <p class="mb-1 text-right user-country">{{ profileCardUser.country.longName }}</p>
+      <p class="mb-1 text-right user-language">{{ profileCardUser.language.longName }}</p>
+      <p class="mb-1 text-right user-timezone">{{ profileCardUser.timezone.name }}: GMT {{ ("+" if profileCardUser.timezone.offset >= 0 else "") + profileCardUser.timezone.offset }}</p>
       {% set ethnicities = [] %}
       {% for ethnicity in profileCardUser.ethnicityList %}{% if ethnicity.title == "Other" %}{% if ethnicities.append(profileCardUser.ethnicityOther) %}{% endif %}{% else %}{% if ethnicity|string != "UNSPECIFIED" %}{% if ethnicities.append(ethnicity.title) %}{% endif %}{% endif %}{% endif %}{% endfor %}
-      <p class="mb-1 user-ethnicity">Ethnicity: {{ ethnicities|join(', ') }}</p>
-      <p class="mb-1 user-gender">Gender: {% if profileCardUser.gender.title != "Other" %}{{ profileCardUser.gender.title }}
+      <p class="mb-1 text-right user-ethnicity">{{ ethnicities|join(', ') }}</p>
+      <p class="mb-1 text-right user-gender">{% if profileCardUser.gender.title != "Other" %}{{ profileCardUser.gender.title }}
           {% else %}{{ profileCardUser.genderOther }}{% endif %}</p>
-      <p class="mb-1 user-first-gen">First-gen: {% if profileCardUser.firstGen %}Yes{% else %}No{% endif %}</p>
-      <p class="mb-1 user-low-income">Low income: {% if profileCardUser.lowIncome %}Yes{% else %}No{% endif %}</p>
-      <p class="mb-1 user-education-level">Education: {% if profileCardUser.educationLevel.title != "Other" %}{{ profileCardUser.educationLevel.title }}
+      <p class="mb-1 text-right user-first-gen">{% if profileCardUser.firstGen %}Yes{% else %}No{% endif %}</p>
+      <p class="mb-1 text-right user-low-income">{% if profileCardUser.lowIncome %}Yes{% else %}No{% endif %}</p>
+      <p class="mb-1 text-right user-education-level">{% if profileCardUser.educationLevel.title != "Other" %}{{ profileCardUser.educationLevel.title }}
           {% else %}{{ profileCardUser.educationLevelOther }}{% endif %}</p>
     </div>
-    <div class="d-flex flex-column col-md-4 align-items-start justify-content-start mw-md-50">
-      {% if profileCardUser.userID == currentUser.userID %}
-        <p class="mb-1 user-email">Email: {{ profileCardUser.email }}</p>
-      {% endif %}
+    <div class="col-12 col-md-6 order-first order-md-last">
+
       {% if profileCardUser.userType.title == "Mentor" %}
-        <h6 class="mb-1">{% if !profileCardUser.visibility %}Not {% endif %}Available for mentorship</h6>
-      {% endif %}
-      {% if profileCardUser.userType.title == "Mentor" %}
-        <p class="mb-2 user-mentor-type">{{ profileCardUser.mentorType.title }}</p>
+        <p class="mb-1 user-mentor-type">{{ profileCardUser.mentorType.title }}</p>
         {% set focuses = [] %}
         {% for focus in profileCardUser.focusList %}{% if focuses.append(focus.title) %}{% endif %}{% endfor %}
-        <p class="mb-2 user-focus">Focus{% if focuses|length == 0 %}es: None{% else %}{% if focuses|length == 1 %}: {% else %}es: {% endif %}{% endif %}{{ focuses|join(', ') }}</p>
+        <p class="mb-1 user-focus">Focus{% if focuses|length == 0 %}es: None{% else %}{% if focuses|length == 1 %}: {% else %}es: {% endif %}{% endif %}{{ focuses|join(', ') }}</p>
       {% else %}
-        <p class="mb-2 user-mentee-goal">Mentorship Goal: {{ profileCardUser.goal.title }}</p>
-        <p class="mb-2 user-mentee-desired-meeting-frequency">Meeting times: {{ profileCardUser.desiredMeetingFrequency.title }}</p>
-        <p class="mb-2 user-mentee-desired-mentor-type">Preferred mentor: {{ profileCardUser.desiredMentorType.title }}</p>
+        <p class="mb-1 user-mentee-goal">Mentorship Goal: {{ profileCardUser.goal.title }}</p>
+        <p class="mb-1 user-mentee-desired-meeting-frequency">Meeting times: {{ profileCardUser.desiredMeetingFrequency.title }}</p>
+        <p class="mb-1 user-mentee-desired-mentor-type">Preferred mentor: {{ profileCardUser.desiredMentorType.title }}</p>
       {% endif %}
         <p class="mb-1 user-age">Age: {{ profileCardUser.age }}</p>
     </div>
   </div>
-  <div class="container d-flex flex-row flex-wrap align-items-center px-0 justify-content-start justify-content-md-center">
-    <div class="container d-flex flex-column column-md-8">
-      <p class="m-0">Bio:</p>
-      <p class="m-0 user-description text-break">{{profileCardUser.description}}</p>
+  <div class="row">
+    <div class="col-12">
+      <!-- <p class="m-0">Bio:</p> -->
+      <p class="user-description text-break">{{profileCardUser.description}}</p>
     </div>
   </div>
   {% if profileCardUser.userID == currentUser.userID and url == "/profile" %}
-  <div class="container d-flex justify-content-end">
+  <div class="row justify-content-end no-gutters">
     <button class="btn btn-outline-danger bg-white " id="delete" onclick="confirmDelete()">Delete Profile</button>
   </div>
   {% endif %}
