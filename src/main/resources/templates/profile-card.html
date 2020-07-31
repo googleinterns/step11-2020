@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.  #}
 
-<main class="profile container divider-top position-relative p-3" id="{{ profileCardUser.userID }}-profile" style="fit-content">
+<main class="profile container divider-top position-relative p-3" id="{{ profileCardUser.userID }}-profile" style="width: fit-content;">
   <div class="row mb-2 mb-md-4">
     <div class="col-12 col-md-6 d-flex flex-column align-items-center align-items-md-end">
       <div class="profile-image-container position-relative">
@@ -22,6 +22,8 @@ limitations under the License.  #}
     <div class="col-12 col-md-6 d-flex flex-column justify-content-between" id="profile-title">
       {% if profileCardUser.userID == currentUser.userID and url == "/profile" %}
       <button class="btn btn-outline-secondary bg-white align-self-end mt-4 mt-md-0" id="edit" onclick="location.href='/questionnaire?formType={{currentUser.userType.title}}';">Edit My Profile</button>
+      {% else %}
+      <span></span>
       {% endif %}
       <div class="mb-md-5">
         <h1 class="mb-0">{% if profileCardLink %}<a class="stretched-link" href="/profile?userID={{ profileCardUser.userID }}">{% endif %}{{profileCardUser.name}}{% if profileCardLink %}</a>{% endif %}</h1>
@@ -34,8 +36,6 @@ limitations under the License.  #}
         {% endif %}
       </div>
     </div>
-    <!-- <div class="container d-flex flex-column align-items-start justify-content-start pb-3 pr-md-3 mw-md-50" id="profile-title">
-    </div> -->
   </div>
   <div class="row mb-4 mb-md-2">
     <div class="col-12 col-md-6">
