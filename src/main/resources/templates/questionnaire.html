@@ -15,13 +15,8 @@ limitations under the License.  #}
 {% extends "base.html" %}
 
 {% block styles %}
-  {{ super() }}
-  {% set styles = [
-      "static/styles/questionnaire.css"
-    ] %}
-  {% for style in styles %}
-    <link rel="stylesheet" type="text/css" href={{ style }}>
-  {% endfor %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="static/styles/questionnaire.css">
 {% endblock %}
 
 {% block title_block %}
@@ -291,7 +286,9 @@ limitations under the License.  #}
     <div id="image-div" class="form-group row">
       <label for="profilePicture" class="col-form-label col-sm-2"> (Optional) Upload an image of yourself </label>
       {% raw %}{% if currentUser %}
-      <img class="img-thumbnail rounded-circle" src="/images?blob-key={{currentUser.profilePicBlobKey}}"/>
+      <div class="profile-image-container position-relative">
+        <img class="img-thumbnail rounded-circle" src="/images?blob-key={{currentUser.profilePicBlobKey}}"/>
+      </div>
       {% endif %}{% endraw %}
       <div class="col-sm-10">
         <input type="file" accept="image/png, image/jpeg" id="profilePicture" name="profilePicture" class="form-control-file">
