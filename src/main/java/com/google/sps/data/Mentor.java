@@ -88,6 +88,17 @@ public class Mentor extends UserAccount implements DatastoreEntity {
   }
 
   @Override
+  public void copyProfileData(UserAccount contentUser) {
+    super.copyProfileData(contentUser);
+    if (contentUser instanceof Mentor) {
+      Mentor contentMentor = (Mentor) contentUser;
+      this.visibility = contentMentor.visibility;
+      this.focusList = contentMentor.focusList;
+      this.mentorType = contentMentor.mentorType;
+    }
+  }
+
+  @Override
   public boolean looselyEquals(UserAccount other) {
     return super.looselyEquals(other)
         && this.visibility == ((Mentor) other).visibility

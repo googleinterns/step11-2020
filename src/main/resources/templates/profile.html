@@ -32,9 +32,7 @@ limitations under the License.  #}
   </header>
   <main class="container divider-top p-4 d-flex flex-row flex-wrap align-items-center justify-content-start justify-content-md-center">
     <div class="d-flex flex-column align-items-start justify-content-start pb-3 pr-md-3 mw-md-50" id="profile-title" >
-      <!-- <div class="photo-left"> -->
-        <!-- <img class="photo" src="https://images.pexels.com/photos/1804796/pexels-photo-1804796.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"/> -->
-      <!-- </div> -->
+      <img class="img-thumbnail rounded-circle" src="{{("/images?blob-key=" + profileUser.profilePicBlobKey) if profileUser.profilePicBlobKey else "/static/defaultProfilePicture.png"}}"/>
       <h1 class="mb-0">{{profileUser.name}}</h1>
       <h4 class="mb-0">{{profileUser.userType.title}}</h4>
       {% if profileUser.userType.title == "Mentor" %}

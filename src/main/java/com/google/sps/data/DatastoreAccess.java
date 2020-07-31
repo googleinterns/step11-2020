@@ -14,6 +14,11 @@
 
 package com.google.sps.data;
 
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -31,6 +36,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.util.ContextFields;
 import com.google.sps.util.ParameterConstants;
 import com.google.sps.util.ServletUtils;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * This class provides access to data from the datastore service provided by google appengine.
@@ -47,8 +55,39 @@ import java.util.stream.StreamSupport;
  */
 public class DatastoreAccess implements DataAccess {
 
-  private static DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
-  private static UserService userService = UserServiceFactory.getUserService();
+  private UserService userService;
+  private DatastoreService datastoreService;
+  private BlobstoreService blobstoreService;
+  private BlobInfoFactory blobInfoFactory;
+
+  public DatastoreAccess() {
+    this(
+        UserServiceFactory.getUserService(),
+        DatastoreServiceFactory.getDatastoreService(),
+        BlobstoreServiceFactory.getBlobstoreService(),
+        new BlobInfoFactory());
+  }
+
+  private DatastoreAccess(
+      UserService userService,
+      DatastoreService datastoreService,
+      BlobstoreService blobstoreService,
+      BlobInfoFactory blobInfoFactory) {
+    this.userService = userService != null ? userService : UserServiceFactory.getUserService();
+    this.datastoreService =
+        datastoreService != null ? datastoreService : DatastoreServiceFactory.getDatastoreService();
+    this.blobstoreService =
+        blobstoreService != null ? blobstoreService : BlobstoreServiceFactory.getBlobstoreService();
+    this.blobInfoFactory = blobInfoFactory != null ? blobInfoFactory : new BlobInfoFactory();
+  }
+
+  public DatastoreAccess(Builder builder) {
+    this(
+        builder.userService,
+        builder.datastoreService,
+        builder.blobstoreService,
+        builder.blobInfoFactory);
+  }
 
   public boolean seed_db(Collection<Entity> entities) {
     datastoreService.put(entities);
@@ -135,9 +174,6 @@ public class DatastoreAccess implements DataAccess {
       if (user.isKeyInitialized()) {
         datastoreService.put(user.convertToEntity());
       } else {
-        if (oldUser.getUserType() == UserType.MENTEE) {
-          ((Mentee) user).copyKeyData((Mentee) oldUser);
-        }
         Entity newUserEntity =
             new Entity(
                 KeyFactory.createKey(
@@ -474,6 +510,65 @@ public class DatastoreAccess implements DataAccess {
       return true;
     } catch (Exception e) {
       return false;
+    }
+  }
+
+  public Map<String, List<BlobKey>> getBlobUploads(HttpServletRequest request) {
+    return request == null ? null : blobstoreService.getUploads(request);
+  }
+
+  public BlobInfo getBlobInfo(BlobKey blobKey) {
+    return blobKey == null ? null : blobInfoFactory.loadBlobInfo(blobKey);
+  }
+
+  public void serveBlob(HttpServletResponse response, String blobKeyString) throws IOException {
+    if (response == null || blobKeyString == null) {
+      return;
+    }
+    BlobKey blobKey = new BlobKey(blobKeyString);
+    blobstoreService.serve(blobKey, response);
+  }
+
+  public void deleteBlob(String blobKeyString) {
+    if (blobKeyString == null) {
+      return;
+    }
+    BlobKey blobKey = new BlobKey(blobKeyString);
+    blobstoreService.delete(blobKey);
+  }
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public static class Builder {
+    private static UserService userService;
+    private static DatastoreService datastoreService;
+    private static BlobstoreService blobstoreService;
+    private static BlobInfoFactory blobInfoFactory;
+
+    public Builder userService(UserService userService) {
+      this.userService = userService;
+      return this;
+    }
+
+    public Builder datastoreService(DatastoreService datastoreService) {
+      this.datastoreService = datastoreService;
+      return this;
+    }
+
+    public Builder blobstoreService(BlobstoreService blobstoreService) {
+      this.blobstoreService = blobstoreService;
+      return this;
+    }
+
+    public Builder blobInfoFactory(BlobInfoFactory blobInfoFactory) {
+      this.blobInfoFactory = blobInfoFactory;
+      return this;
+    }
+
+    public DatastoreAccess build() {
+      return new DatastoreAccess(this);
     }
   }
 }
