@@ -14,63 +14,16 @@ limitations under the License.  #}
 
 {% extends "base.html" %}
 
-{% block styles %}
-  {{ super() }}
-  <link rel="stylesheet" type="text/css" href="static/styles/profile.css">
-{% endblock %}
+
 {% block page_title %}Profile{% endblock %}
 
 {% block main_content %}{% raw %}
 <div id="profile-container" class="mx-auto w-90 shadow mb-3">
-  <header class="w-100 bg-light-gray">
-    {% if profileUser.userID == currentUser.userID %}
-    <div class="container d-flex flex-column align-items-end justify-content-center p-3 personal-profile-buttons" id="profile-header">
-      <button class="btn btn-outline-secondary mb-3 bg-white" id="edit" onclick="location.href='/questionnaire?formType={{currentUser.userType.title}}';">Edit My Profile</button>
-      <button class="btn btn-outline-danger bg-white" id="delete" onclick="fetch('/profile',{method:'DELETE'});">Delete Profile</button>
-    </div>
-    {% endif %}
-  </header>
-  <main class="container divider-top p-4 d-flex flex-row flex-wrap align-items-center justify-content-start justify-content-md-center">
-    <div class="d-flex flex-column align-items-start justify-content-start pb-3 pr-md-3 mw-md-50" id="profile-title" >
-      <!-- <div class="photo-left"> -->
-        <!-- <img class="photo" src="https://images.pexels.com/photos/1804796/pexels-photo-1804796.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"/> -->
-      <!-- </div> -->
-      <h1 class="mb-0">{{profileUser.name}}</h1>
-      <h4 class="mb-0">{{profileUser.userType.title}}</h4>
-      {% if profileUser.userType.title == "Mentor" %}
-        <h6 class="mb-1">{% if !profileUser.visibility %}Not {% endif %}Available for mentorship</h6>
-      {% endif %}
-      {% if profileUser.userType.title == "Mentor" %}
-        <p class="mb-2 user-mentor-type">{{ profileUser.mentorType.title }}</p>
-        {% set focuses = [] %}
-        {% for focus in profileUser.focusList %}{% if focuses.append(focus.title) %}{% endif %}{% endfor %}
-        <p class="mb-2 user-focus">Focus{% if focuses|length == 0 %}es: None{% else %}{% if focuses|length == 1 %}: {% else %}es: {% endif %}{% endif %}{{ focuses|join(', ') }}</p>
-      {% else %}
-        <p class="mb-2 user-mentee-goal">Mentorship Goal: {{ profileUser.goal.title }}</p>
-        <p class="mb-2 user-mentee-desired-meeting-frequency">Meeting times: {{ profileUser.desiredMeetingFrequency.title }}</p>
-        <p class="mb-2 user-mentee-desired-mentor-type">Preferred mentor: {{ profileUser.desiredMentorType.title }}</p>
-      {% endif %}
-      <p class="m-0">Bio:</p>
-      <p class="m-0 user-description text-break">{{profileUser.description}}</p>
-    </div>
-    <div class="d-flex flex-column align-items-start justify-content-start mw-md-50">
-      {% if profileUser.userID == currentUser.userID %}
-        <p class="mb-1 user-age">Age: {{ profileUser.age }}</p>
-        <p class="mb-1 user-email">Email: {{ profileUser.email }}</p>
-      {% endif %}
-      <p class="mb-1 user-country">Country: {{ profileUser.country.longName }}</p>
-      <p class="mb-1 user-language">Language: {{ profileUser.language.longName }}</p>
-      <p class="mb-1 user-timezone">TimeZone: {{ profileUser.timezone.name }}: GMT {{ ("+" if profileUser.timezone.offset >= 0 else "") + profileUser.timezone.offset }}</p>
-      {% set ethnicities = [] %}
-      {% for ethnicity in profileUser.ethnicityList %}{% if ethnicity.title == "Other" %}{% if ethnicities.append(profileUser.ethnicityOther) %}{% endif %}{% else %}{% if ethnicity|string != "UNSPECIFIED" %}{% if ethnicities.append(ethnicity.title) %}{% endif %}{% endif %}{% endif %}{% endfor %}
-      <p class="mb-1 user-ethnicity">Ethnicity: {{ ethnicities|join(', ') }}</p>
-      <p class="mb-1 user-gender">Gender: {% if profileUser.gender.title != "Other" %}{{ profileUser.gender.title }}
-          {% else %}{{ profileUser.genderOther }}{% endif %}</p>
-      <p class="mb-1 user-first-gen">First-gen: {% if profileUser.firstGen %}Yes{% else %}No{% endif %}</p>
-      <p class="mb-1 user-low-income">Low income: {% if profileUser.lowIncome %}Yes{% else %}No{% endif %}</p>
-      <p class="mb-1 user-education-level">Education: {% if profileUser.educationLevel.title != "Other" %}{{ profileUser.educationLevel.title }}
-          {% else %}{{ profileUser.educationLevelOther }}{% endif %}</p>
-    </div>
-  </main>
+  {% set profileCardUser = profileUser %}
+  {% include "profile-card.html" %}
 </div>
 {% endraw %}{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script charset="utf-8" type="text/javascript" src="static/scripts/profile.js"></script>
+{% endblock %}

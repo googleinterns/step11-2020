@@ -22,15 +22,15 @@ limitations under the License.  #}
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       {% for nav_item in nav_items %}{% if nav_item.adjust == "left" %}
-      <li class="nav-item py-2{% if ("/"+nav_item.baseURL) == url %} active{% endif %}" id="nav-{{ nav_item.baseURL }}">
-        <a class="nav-link {{ nav_item.class }}{% if ("/"+nav_item.baseURL) != url %} text-light-blue{% else %} text-white font-weight-bold{% endif %}" href="/{{nav_item.baseURL}}"><i class="fa fa-fw fa-{{ nav_item.iconLabel }}"></i>{{ nav_item.text }}{% if nav_item.baseURL == url %} <span class="sr-only">(current)</span>{% endif %}</a>
+      <li class="nav-item py-2{% if nav_item.baseURL == url %} active{% endif %}" id="nav-{{ nav_item.baseURL }}">
+        <a class="nav-link {{ nav_item.class }}{% if nav_item.baseURL != url %} text-light-blue{% else %} text-white font-weight-bold{% endif %}" href="{{nav_item.baseURL}}"><i class="fa fa-fw fa-{{ nav_item.iconLabel }}"></i>{{ nav_item.text }}{% if nav_item.baseURL == url %} <span class="sr-only">(current)</span>{% endif %}</a>
       </li>
       {% endif %}{% endfor %}
     </ul>
     <ul class="navbar-nav ml-auto">
       {% for nav_item in nav_items %}{% if nav_item.adjust == "right" %}
-      <li class="nav-item py-2{% if ("/"+nav_item.baseURL) == url %} active{% endif %}" id="nav-{{ nav_item.baseURL }}">
-        <a class="nav-link {{ nav_item.class }}{% if ("/"+nav_item.baseURL) != url %} text-light-blue{% else %} text-white font-weight-bold{% endif %}" href="/{{nav_item.baseURL}}"><i class="fa fa-fw fa-{{ nav_item.iconLabel }}"></i>{{ nav_item.text }}{% if nav_item.baseURL == url %} <span class="sr-only">(current)</span>{% endif %}</a>
+      <li class="nav-item py-2{% if nav_item.baseURL == url %} active{% endif %}" id="nav-{{ nav_item.baseURL }}">
+        <a class="nav-link {{ nav_item.class }}{% if nav_item.baseURL != url %} text-light-blue{% else %} text-white font-weight-bold{% endif %}" href="{{nav_item.baseURL}}"><i class="fa fa-fw fa-{{ nav_item.iconLabel }}"></i>{{ nav_item.text }}{% if nav_item.baseURL == url %} <span class="sr-only">(current)</span>{% endif %}</a>
       </li>
       {% endif %}{% endfor %}
     </ul>
