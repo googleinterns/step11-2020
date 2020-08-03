@@ -30,10 +30,12 @@ const newMentorCardHTML = mentor =>
   `<div class="mentor-profile-card shadow-sm mx-1 mb-1 position-relative overflow-auto" id="mentor-${mentor.datastoreKey}-card" style="max-height: calc(95vh - 15rem);">
     <a class="stretched-link d-none" href="/profile?userID=${mentor.userID}"></a>
     <p class="mentor-id d-none" hidden>${mentor.datastoreKey}</p>
-    <main class="profile container divider-top position-relative p-3" id="${mentor.userID}-profile">
+    <main class="profile container divider-top position-relative p-3" id="${mentor.userID}-profile" style="width: fit-content;">
       <div class="row mb-2 mb-md-4">
-        <div class="col-12 col-md-6 d-flex flex-column align-items-center align-items-md-end" style="width: fit-content;">
-          <img class="img-thumbnail rounded-circle" id="profile-image" src="${ mentor.profilePicBlobKey ? ("/images?blob-key=" + mentor.profilePicBlobKey) : "/static/images/defaultProfilePicture.png"}" style="width: 20em">
+        <div class="col-12 col-md-6 d-flex flex-column align-items-center align-items-md-end">
+          <div class="profile-image-container col-12 p-0 position-relative">
+            <img class="img-thumbnail rounded-circle" id="profile-image" src="${ mentor.profilePicBlobKey ? ("/images?blob-key=" + mentor.profilePicBlobKey) : "/static/images/defaultProfilePicture.png"}" style="width: 20em">
+          </div>
         </div>
         <div class="col-12 col-md-6 d-flex flex-column justify-content-between" id="profile-title">
           <span></span>
