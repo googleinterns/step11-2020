@@ -52,15 +52,25 @@ limitations under the License.  #}
         <p class="mb-1 col-8 text-left user-timezone">{{ profileCardUser.timezone.name }}: GMT {{ ("+" if profileCardUser.timezone.offset >= 0 else "") + profileCardUser.timezone.offset }}</p>
       </div>
       <div class="row no-gutters">
-        <p class="mb-1 col-4 user-ethnicity">Ethnicity:</p>
-        {% set ethnicities = [] %}
-        {% for ethnicity in profileCardUser.ethnicityList %}{% if ethnicity.title == "Other" %}{% if ethnicities.append(profileCardUser.ethnicityOther) %}{% endif %}{% else %}{% if ethnicity|string != "UNSPECIFIED" %}{% if ethnicities.append(ethnicity.title) %}{% endif %}{% endif %}{% endif %}{% endfor %}
-        <p class="mb-1 col-8 text-left user-ethnicity">{{ ethnicities|join(', ') }}</p>
+        {% if profileCardUser.ethnicityList and profileCardUser.ethnicityList[0].title != "" %}
+          <p class="mb-1 col-4 user-ethnicity">Ethnicity:</p>
+          {% set ethnicities = [] %}
+          {% for ethnicity in profileCardUser.ethnicityList %}
+            {% if ethnicity.title == "Other" %}
+              {% do ethnicities.append(profileCardUser.ethnicityOther) %}
+            {% else %}
+              {% do ethnicities.append(ethnicity.title) %}
+            {% endif %}
+          {% endfor %}
+          <p class="mb-1 col-8 text-left user-ethnicity">{{ ethnicities|join(', ') }}</p>
+        {% endif %}
       </div>
       <div class="row no-gutters">
+      {% if profileCardUser.gender|string != "UNSPECIFIED" %}
         <p class="mb-1 col-4 user-gender">Gender:</p>
         <p class="mb-1 col-8 text-left user-gender">{% if profileCardUser.gender.title != "Other" %}{{ profileCardUser.gender.title }}
             {% else %}{{ profileCardUser.genderOther }}{% endif %}</p>
+        {% endif %}
       </div>
       <div class="row no-gutters">
         <p class="mb-1 col-4 user-first-gen">First-gen:</p>
@@ -71,9 +81,11 @@ limitations under the License.  #}
         <p class="mb-1 col-8 text-left user-low-income">{% if profileCardUser.lowIncome %}Yes{% else %}No{% endif %}</p>
       </div>
       <div class="row no-gutters">
+        {% if profileCardUser.educationLevel|string != "UNSPECIFIED" %}
         <p class="mb-1 col-4 user-education-level">Education:</p>
         <p class="mb-1 col-8 text-left user-education-level">{% if profileCardUser.educationLevel.title != "Other" %}{{ profileCardUser.educationLevel.title }}
             {% else %}{{ profileCardUser.educationLevelOther }}{% endif %}</p>
+        {% endif %}
       </div>
     </div>
     <div class="col-12 col-md-6 order-first order-md-last">
