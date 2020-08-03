@@ -139,7 +139,16 @@ for (const buttonName in buttonDict) {
       if (mentorCardContainer.childElementCount < MIN_MENTOR_THRESHOLD) {
         refillMentors();
       }
+
       getActiveMentorCard();
     }
   });
+}
+
+const updateButtonContainer = () => {
+  if (mentorCardContainer.children.length == 0) {
+    const buttonContainer = document.getElementById("mentor-rating-buttons");
+    buttonContainer.innerHTML = "<p> Sorry, we don't have more mentors matching your criteria."
+      + "<br> Change desired mentor type in your profile to see more mentors </p>";
+  }
 }
