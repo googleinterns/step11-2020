@@ -110,13 +110,12 @@ public class Mentee extends UserAccount implements DatastoreEntity {
     entity.setProperty(
         ParameterConstants.MENTEE_DESIRED_MEETING_FREQUENCY, desiredMeetingFrequency.name());
     entity.setProperty(ParameterConstants.MENTEE_DISLIKED_MENTOR_KEYS, this.dislikedMentorKeys);
-    entity.setProperty(ParameterConstants.MENTOR_TYPE, desiredMentorType.name());
+    entity.setProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE, desiredMentorType.name());
     entity.setProperty(ParameterConstants.MENTEE_SERVED_MENTOR_KEYS, this.servedMentorKeys);
     entity.setProperty(
         ParameterConstants.MENTEE_LAST_DISLIKED_MENTOR_KEY, this.lastDislikedMentorKey);
     entity.setProperty(
         ParameterConstants.MENTEE_LAST_REQUESTED_MENTOR_KEY, this.lastRequestedMentorKey);
-    entity.setProperty(ParameterConstants.MENTEE_DESIRED_MENTOR_TYPE, desiredMentorType.name());
     entity.setProperty(ParameterConstants.ENCODED_CURSOR, this.encodedCursor);
     return entity;
   }

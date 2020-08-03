@@ -180,7 +180,7 @@ public class QuestionnaireServlet extends HttpServlet {
     } else {
       String oldProfilePicKey = oldUser.getProfilePicBlobKey();
       oldUser.copyProfileData(user);
-      if (!oldUser.getProfilePicBlobKey().equals(oldProfilePicKey)) {
+      if (oldUser.getProfilePicBlobKey() != null && !oldUser.getProfilePicBlobKey().equals(oldProfilePicKey)) {
         dataAccess.deleteBlob(oldProfilePicKey);
       }
       infoAdded = dataAccess.updateUser(oldUser);
