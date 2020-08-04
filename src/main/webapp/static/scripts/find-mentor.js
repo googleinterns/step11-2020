@@ -116,6 +116,7 @@ const refillMentors = async () => {
       mentorCardContainer.appendChild(newCard);
     }
   });
+  updateButtonContainer();
 };
 refillMentors();
 
@@ -139,16 +140,22 @@ for (const buttonName in buttonDict) {
       if (mentorCardContainer.childElementCount < MIN_MENTOR_THRESHOLD) {
         refillMentors();
       }
-
       getActiveMentorCard();
+      updateButtonContainer();
     }
   });
 }
 
+const RATING_BUTTONS = document.getElementById("mentor-rating-buttons");
+const NO_MENTOR_WARNING = document.getElementById("no-mentors-warning");
 const updateButtonContainer = () => {
   if (mentorCardContainer.children.length == 0) {
-    const buttonContainer = document.getElementById("mentor-rating-buttons");
-    buttonContainer.innerHTML = "<p> Sorry, we don't have more mentors matching your criteria."
-      + "<br> Change desired mentor type in your profile to see more mentors </p>";
+    RATING_BUTTONS.classList.remove("d-flex");
+    RATING_BUTTONS.classList.add("d-none");
+    NO_MENTOR_WARNING.classList.remove("d-none");
+  } else {
+    RATING_BUTTONS.classList.remove("d-none");
+    RATING_BUTTONS.classList.add("d-flex");
+    NO_MENTOR_WARNING.classList.add("d-none");
   }
 }
