@@ -16,7 +16,7 @@ limitations under the License.
 #creator-cards-container {
   display: flex;
   flex-flow: row wrap;
-  align-items: center;
+  align-items: start;
   justify-content: space-around;
 }
 
@@ -28,6 +28,7 @@ limitations under the License.
   border-radius: 50%;
   border: 1px solid #ddd;
   padding: 5px;
+  max-width: 90vw;
 }
 
 .creator-college {
